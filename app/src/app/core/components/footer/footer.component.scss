@@ -1,0 +1,11 @@
+@import '../../../../variables';
+
+.footer {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: $FooterHeight;
+  background: $TertiaryColor;
+}

@@ -1,0 +1,46 @@
+/** Colors */
+$BackgroundColor: rgb(244, 247, 248);
+$ContentBackgroundColor: rgb(255, 255, 255);
+$LightGray: rgb(170, 170, 170);
+$PrimaryColor: orange;
+$SecondaryColor: rgb(175, 147, 77);
+$TertiaryColor: rgb(175, 94, 77);
+
+/** Font-Colors */
+$FontColorStandard: rgb(40, 48, 69);
+$FontColorLight: rgb(83, 90, 105);
+$FontColorInverted: rgb(255, 255, 255);
+
+/** Sizes */
+$SizeTiny: 0.125rem; //  2px
+$SizeSmall: 0.3125rem; //  5px
+$SizeRegular: 0.625rem; // 10px
+$SizeMedium: 1rem; // 16px
+$SizeLarge: 1.25rem; // 20px
+$SizeVeryLarge: 2rem; // 32px
+$SizeExtraLarge: 3rem; // 48px
+$HeaderHeight: 130px;
+$FooterHeight: 90px;
+
+/** Font-Sizes */
+$FontSizeTiny: 0.625rem; // =  10px
+$FontSizeSmall: 0.75rem; // = 12px
+$FontSizeRegular: 0.875rem; // = 14px
+$FontSizeMedium: 1rem; // = 16px
+$FontSizeLarge: 1.25rem; // = 20px
+$FontSizeVeryLarge: 1.5rem; // = 24px
+$FontSizeHuge: 3rem; // = 48px;
+
+// Font-Families
+$FontFamilyDefault: 'Muli', sans-serif;
+
+// Font-Weight
+$FontWeightExtraLight: 200;
+$FontWeightLight: 300;
+$FontWeightRegular: 400;
+$FontWeightSemiBold: 600;
+$FontWeightBold: 700;
+
+// Border-radius
+$BorderRadiusStandard: 2px;
+$BorderRadiusLarge: 4px;

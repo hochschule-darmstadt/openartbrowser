@@ -1,0 +1,17 @@
+@import '../../../../variables';
+
+.header {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: $HeaderHeight;
+  background: $TertiaryColor;
+  font-weight: $FontWeightBold;
+
+  &--heading {
+    font-size: $FontSizeHuge;
+    color: $FontColorStandard;
+  }
+}

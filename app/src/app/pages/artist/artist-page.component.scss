@@ -1,0 +1,9 @@
+@import '../../../variables';
+
+.artist-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: $SizeVeryLarge;
+  margin-bottom: $SizeVeryLarge;
+}

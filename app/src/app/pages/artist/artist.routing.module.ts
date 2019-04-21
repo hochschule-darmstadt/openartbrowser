@@ -1,19 +1,19 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { ArtistPageComponent } from './artist-page.component';
+import { ArtistComponent } from './artist.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 
 const artistRoutes: Routes = [
   {
     path: '',
-    component: ArtistPageComponent,
+    component: ArtistComponent,
   },
 ];
 
 @NgModule({
-  declarations: [ArtistPageComponent],
+  declarations: [ArtistComponent],
   imports: [CommonModule, SharedModule, RouterModule.forChild(artistRoutes)],
-  exports: [ArtistPageComponent],
+  exports: [ArtistComponent],
 })
-export class ArtistPageRoutingModule {}
+export class ArtistRoutingModule {}

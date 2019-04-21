@@ -11,7 +11,7 @@ import { SharedModule } from './shared/shared.module';
 const routes: Routes = [
   {
     path: 'artist/:artistId',
-    loadChildren: './pages/artist/artist-page.routing.module#ArtistPageRoutingModule',
+    loadChildren: './pages/artist/artist.routing.module#ArtistRoutingModule',
   },
 ];
 

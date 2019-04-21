@@ -1,0 +1,20 @@
+<div class="artist-wrapper">
+  <div class="artist-info">
+    <div class="artist-info-data">
+      <div class="artist-info-data-heading">
+        {{ artist.label }}
+      </div>
+      <span class="artist-info-data-field"> Description: {{ artist.description }}</span>
+      <span class="artist-info-data-field"> Gender: {{ artist.gender }}</span>
+      <span class="artist-info-data-field"> Date of birth: {{ artist.date_of_birth }}</span>
+      <span class="artist-info-data-field"> Date of death: {{ artist.date_of_death }}</span>
+      <span class="artist-info-data-field"> Place of birth: {{ artist.place_of_birth }}</span>
+      <span class="artist-info-data-field"> Place of death: {{ artist.place_of_death }}</span>
+    </div>
+    <div class="artist-info-image--container">
+      <img class="artist-info-image" src="{{ artist.image }}" alt="Picture couldnt be loaded" />
+    </div>
+  </div>
+
+  <app-picture-slider [items]="sliderItems"> </app-picture-slider>
+</div>

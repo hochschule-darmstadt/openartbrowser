@@ -1,10 +1,6 @@
 /** Colors */
-$BackgroundColor: rgb(244, 247, 248);
-$ContentBackgroundColor: rgb(255, 255, 255);
-$LightGray: rgb(170, 170, 170);
-$PrimaryColor: orange;
-$SecondaryColor: rgb(175, 147, 77);
-$TertiaryColor: rgb(175, 94, 77);
+$PrimaryColor: rgb(175, 147, 77);
+$SecondaryColor: rgb(175, 94, 77);
 
 /** Font-Colors */
 $FontColorStandard: rgb(40, 48, 69);
@@ -19,8 +15,9 @@ $SizeMedium: 1rem; // 16px
 $SizeLarge: 1.25rem; // 20px
 $SizeVeryLarge: 2rem; // 32px
 $SizeExtraLarge: 3rem; // 48px
-$HeaderHeight: 130px;
-$FooterHeight: 90px;
+$HeaderHeight: 6rem;
+$FooterHeight: 5rem;
+$MaxProfileImageSize: 16rem;
 
 /** Font-Sizes */
 $FontSizeTiny: 0.625rem; // =  10px

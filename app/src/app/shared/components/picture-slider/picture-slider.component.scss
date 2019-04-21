@@ -1,8 +1,9 @@
 @import '../../../../variables';
 
 .picture-slider {
-  padding: $SizeRegular;
   width: 100%;
   height: 160px;
   display: flex;
+  overflow: hidden;
+  position: relative;
 }

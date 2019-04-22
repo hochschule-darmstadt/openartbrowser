@@ -23,6 +23,10 @@ const routes: Routes = [
     loadChildren: './pages/artwork/artwork.routing.module#ArtworkRoutingModule',
   },
   {
+    path: 'genre/:genreId',
+    loadChildren: './pages/genre/genre.routing.module#GenreRoutingModule',
+  },
+  {
     path: 'location/:locationId',
     loadChildren: './pages/location/location.routing.module#LocationRoutingModule',
   },

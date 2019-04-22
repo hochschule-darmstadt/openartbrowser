@@ -11,8 +11,32 @@ import { HttpClientModule } from '@angular/common/http';
  **/
 const routes: Routes = [
   {
+    path: '',
+    loadChildren: './pages/home/home.routing.module#HomeRoutingModule',
+  },
+  {
     path: 'artist/:artistId',
     loadChildren: './pages/artist/artist.routing.module#ArtistRoutingModule',
+  },
+  {
+    path: 'artwork/:artworkId',
+    loadChildren: './pages/artwork/artwork.routing.module#ArtworkRoutingModule',
+  },
+  {
+    path: 'location/:locationId',
+    loadChildren: './pages/location/location.routing.module#LocationRoutingModule',
+  },
+  {
+    path: 'material/:materialId',
+    loadChildren: './pages/material/material.routing.module#MaterialRoutingModule',
+  },
+  {
+    path: 'movement/:movementId',
+    loadChildren: './pages/movement/movement.routing.module#MovementRoutingModule',
+  },
+  {
+    path: 'object/:objectId',
+    loadChildren: './pages/object/object.routing.module#ObjectRoutingModule',
   },
 ];
 

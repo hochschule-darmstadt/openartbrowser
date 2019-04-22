@@ -3,6 +3,7 @@ export interface Entity {
   label?: string;
   description?: string;
   image?: string;
+  type: string;
 }
 
 export interface Artist extends Entity {
@@ -14,6 +15,7 @@ export interface Artist extends Entity {
   citizenship?: string;
   movements: Partial<Movement>[];
   influencedBy: Partial<Artist>[];
+  type: 'artist';
 }
 
 export interface Artwork extends Entity {
@@ -27,9 +29,12 @@ export interface Artwork extends Entity {
   country?: string;
   height?: number;
   width?: number;
+  type: 'artwork';
 }
 
-export interface Genre extends Entity {}
+export interface Genre extends Entity {
+  type: 'genre';
+}
 
 export interface Location extends Entity {
   country?: string;
@@ -37,10 +42,14 @@ export interface Location extends Entity {
   part_of: Partial<Location>[];
   lat?: string;
   lon?: string;
+  type: 'location';
 }
 
-export interface Material extends Entity {}
+export interface Material extends Entity {
+  type: 'material';
+}
 
 export interface Movement extends Entity {
   influenced_by: Partial<Entity>[];
+  type: 'movement';
 }

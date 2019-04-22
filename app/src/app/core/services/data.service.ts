@@ -12,6 +12,10 @@ export class DataService {
    */
   constructor(private http: HttpClient) {}
 
+  /**
+   * Gets an entity from the server and makes sure it is an artist
+   * @param id Id of the artist to retrieve
+   */
   public async findArtistById(id: string): Promise<Artist> {
     const entity = await this.findById(id);
     if (entity && entity.type !== 'artist') {
@@ -21,6 +25,7 @@ export class DataService {
 
   /**
    * Gets an entity from the server
+   * @param id Id of the entity to retrieve
    */
   public async findById(id: string): Promise<Entity> {
     try {

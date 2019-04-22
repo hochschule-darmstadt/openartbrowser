@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PictureSliderItem } from 'src/app/shared/components/picture-slider/picture-slider.component';
-import { Artist } from 'src/app/shared/models/models';
+import { Artist, Entity } from 'src/app/shared/models/models';
 import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute } from '@angular/router';
 import { take } from 'rxjs/operators';
@@ -30,42 +29,5 @@ export class ArtistComponent implements OnInit {
 
   artist: Artist = null;
 
-  sliderItems: PictureSliderItem[] = [
-    {
-      picture: 'https://upload.wikimedia.org/wikipedia/commons/a/aa/Anselmi-Christ_and_Woman_of_Samaria.jpg',
-      label: 'test',
-    },
-    {
-      picture: 'https://upload.wikimedia.org/wikipedia/commons/a/aa/Anselmi-Christ_and_Woman_of_Samaria.jpg',
-      label: 'test',
-    },
-    {
-      picture: 'https://upload.wikimedia.org/wikipedia/commons/a/aa/Anselmi-Christ_and_Woman_of_Samaria.jpg',
-      label: 'test',
-    },
-    {
-      picture: 'https://upload.wikimedia.org/wikipedia/commons/a/aa/Anselmi-Christ_and_Woman_of_Samaria.jpg',
-      label: 'test',
-    },
-    {
-      picture: 'https://upload.wikimedia.org/wikipedia/commons/a/aa/Anselmi-Christ_and_Woman_of_Samaria.jpg',
-      label: 'test',
-    },
-    {
-      picture: 'https://upload.wikimedia.org/wikipedia/commons/a/aa/Anselmi-Christ_and_Woman_of_Samaria.jpg',
-      label: 'test',
-    },
-    {
-      picture: 'https://upload.wikimedia.org/wikipedia/commons/a/aa/Anselmi-Christ_and_Woman_of_Samaria.jpg',
-      label: 'test',
-    },
-    {
-      picture: 'https://upload.wikimedia.org/wikipedia/commons/a/aa/Anselmi-Christ_and_Woman_of_Samaria.jpg',
-      label: 'test',
-    },
-    {
-      picture: 'https://upload.wikimedia.org/wikipedia/commons/a/aa/Anselmi-Christ_and_Woman_of_Samaria.jpg',
-      label: 'test',
-    },
-  ];
+  sliderItems: Entity[] = [];
 }

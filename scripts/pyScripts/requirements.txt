@@ -1,0 +1,7 @@
+elasticsearch (7.0.0)
+glob3 (0.0.1)
+ijson (2.3)
+pip (9.0.1)
+pkg-resources (0.0.0)
+setuptools (39.0.1)
+urllib3 (1.24.1)

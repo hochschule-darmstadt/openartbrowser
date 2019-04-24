@@ -53,3 +53,7 @@ export interface Movement extends Entity {
   influenced_by: Partial<Entity>[];
   type: 'movement';
 }
+
+export interface Motif extends Entity {
+  type: 'motif';
+}

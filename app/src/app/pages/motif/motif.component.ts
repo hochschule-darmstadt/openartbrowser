@@ -2,26 +2,26 @@ import { Component, OnInit } from '@angular/core';
 import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute } from '@angular/router';
 import { take } from 'rxjs/operators';
-import { Genre } from 'src/app/shared/models/models';
+import { Motif } from 'src/app/shared/models/models';
 
 @Component({
-  selector: 'app-genre',
-  templateUrl: './genre.component.html',
-  styleUrls: ['./genre.component.scss'],
+  selector: 'app-motif',
+  templateUrl: './motif.component.html',
+  styleUrls: ['./motif.component.scss'],
 })
-export class GenreComponent implements OnInit {
+export class MotifComponent implements OnInit {
   constructor(private dataService: DataService, private route: ActivatedRoute) {}
 
   /** hook that is executed at component initialization */
   ngOnInit() {
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(take(1)).subscribe((params) => {
-      const genreId = params.get('genreId');
+      const motifId = params.get('motifId');
       /** Use data service to fetch entity from database */
       this.dataService
-        .findById(genreId)
+        .findById(motifId)
         .then((entity) => {
-          this.genre = entity as Genre;
+          this.motif = entity as Motif;
         })
         .catch((err) => {
           console.log(err);
@@ -30,5 +30,5 @@ export class GenreComponent implements OnInit {
   }
 
   /** The entity this page is about */
-  genre: Genre = null;
+  motif: Motif = null;
 }

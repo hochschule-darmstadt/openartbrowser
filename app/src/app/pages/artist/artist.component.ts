@@ -12,14 +12,16 @@ import { take } from 'rxjs/operators';
 export class ArtistComponent implements OnInit {
   constructor(private dataService: DataService, private route: ActivatedRoute) {}
 
+  /** hook that is executed at component initialization */
   ngOnInit() {
-    /** Take 1 -> unsubscribe immediately after getting params */
+    /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(take(1)).subscribe((params) => {
       const artistId = params.get('artistId');
+      /** Use data service to fetch entity from database */
       this.dataService
-        .findArtistById(artistId)
-        .then((artist) => {
-          this.artist = artist;
+        .findById(artistId)
+        .then((entity) => {
+          this.artist = entity as Artist;
         })
         .catch((err) => {
           console.log(err);
@@ -27,6 +29,7 @@ export class ArtistComponent implements OnInit {
     });
   }
 
+  /** The entity this page is about */
   artist: Artist = null;
 
   sliderItems: Entity[] = [];

@@ -39,8 +39,8 @@ const routes: Routes = [
     loadChildren: './pages/movement/movement.routing.module#MovementRoutingModule',
   },
   {
-    path: 'object/:objectId',
-    loadChildren: './pages/object/object.routing.module#ObjectRoutingModule',
+    path: 'motif/:motifId',
+    loadChildren: './pages/motif/motif.routing.module#MotifRoutingModule',
   },
 ];
 

@@ -1,14 +1,21 @@
-@import './variables';
+.dropdown-toggle::after {
+  display: none;
+}
 
-/* You can add global styles to this file, and also import other style files */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  width: 100%;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  width: 2%;
+}
+
+body {
+  height: 100%;
+}
 
 html {
   height: 100%;
-}
-body {
-  margin: 0;
-  width: 100%;
-  height: 100%;
-  overscroll-behavior: none;
-  font-family: $FontFamilyDefault;
 }

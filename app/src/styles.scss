@@ -1,16 +1,21 @@
-img{
-  max-height: 20em;
-}
-
 .dropdown-toggle::after {
   display: none;
 }
 
-.carousel-control-prev-icon, .carousel-control-next-icon{
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
   width: 100%;
 }
 
-.carousel-control-prev, .carousel-control-next {
+.carousel-control-prev,
+.carousel-control-next {
   width: 2%;
 }
 
+body {
+  height: 100%;
+}
+
+html {
+  height: 100%;
+}

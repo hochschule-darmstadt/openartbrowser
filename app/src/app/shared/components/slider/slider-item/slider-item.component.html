@@ -1,3 +1,39 @@
+<!--
 <div class="slider-item">
   <img class="slider-item-image" src="{{ item.image }}" alt="Image couldnt be loaded" />
 </div>
+-->
+<!--
+<div *ngFor="let item of items" >
+<div *ngIf="firstSlide">
+    <div class="carousel-item active" >      
+      <div class="row mx-3 border-bottom" >
+                <div *ngFor="let item of items" class="col-sm-3 img mb-4">
+                    <img class="img-fluid" src="{{item.image}}" alt="{{item.label}}" data-toggle="tooltip" data-placement="top" title="{{item.label}}">
+                </div>
+        </div>
+      </div>
+    
+    </div>
+    <div *ngIf="!firstSlide">
+      <div class="carousel-item">
+        <div class="row mx-3 border-bottom" >
+                <div *ngFor="let item of items" class="col-sm-3 img mb-4">
+                    <img class="img-fluid" src="{{item.image}}" alt="{{item.label}}" data-toggle="tooltip" data-placement="top" title="{{item.label}}">
+                </div>
+        </div>
+      </div>
+    </div>
+</div>
+-->
+
+<!--
+<img class="img-fluid" src="{{item?.image}}" alt="{{item?.label}}" data-toggle="tooltip" data-placement="top" title="{{item?.label}}">
+-->
+<div class=" img img_container" href="#">
+    <img class="img-fluid img_self" src="{{item?.image}}" alt="{{item?.label}}">
+    <div class="overlay_view">
+      <span class="img_description">{{item?.label}}</span>
+    </div>
+  </div>
+

@@ -1,20 +1,45 @@
-<div class="artist-wrapper">
-  <div class="artist-info">
-    <div class="artist-info-data">
-      <div class="artist-info-data-heading">
-        {{ artist?.label }}
+<div class="container">
+
+  <div class="row mb-5">
+      <div class="col-sm-7">
+          <span class="badge badge-pill badge-secondary"><i class="fas fa-user"></i> Artist</span>
+          <h2 class="mb-3">{{artist?.label}} </h2> 
+          <div class="mb-3 mt-5">
+              <span class="text-muted">Born: </span>&nbsp;&nbsp;&ensp;{{artist?.date_of_birth}} in {{artist?.place_of_birth}}
+          </div> 
+          <div *ngIf = "artist?.date_of_death !== ''">
+              <span class="text-muted">Died: </span>&nbsp;&nbsp;&ensp;{{artist?.date_of_death}} in {{artist?.place_of_death}}
+          </div>
+
+          <h4 class="mt-5 more" data-toggle="collapse" href="#collapseArtist" (click)="switchIcon()">More 
+            <i *ngIf="collapseDown" data-toggle="collapse" href="#collapseArtist" class="fas fa-chevron-down"> </i> 
+            <i *ngIf="!collapseDown" data-toggle="collapse" href="#collapseArtist" class="fas fa-chevron-up"> </i></h4>
+
+          <div class="mx-3 collapse border-bottom" id="collapseArtist">
+              <div class="mt-4 mb-2">
+                  <span class="text-muted">Gender: </span> <span class="tab">&nbsp;&nbsp;&nbsp; {{artist?.gender}} </span>
+              </div>
+              <div class="mb-2">
+                  <span class="text-muted">Citizenship: </span>&nbsp;&nbsp; &nbsp;&nbsp;&ensp; {{artist?.citizenship}} 
+                </div> 
+              <div class="mb-2">
+                  <span class="text-muted">Movement: </span>&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&ensp;  High Renaissance
+                    <span class="badge badge-pill badge-secondary"></span>                   
+              </div>
+              <div class="mb-4">
+                  <span class="text-muted">Influenced by: </span>&nbsp;&ensp; <span class="badge badge-pill badge-secondary"> someone </span>
+              </div> 
+
+                            
+          </div>
+
       </div>
-      <span class="artist-info-data-field"> Description: {{ artist?.description }}</span>
-      <span class="artist-info-data-field"> Gender: {{ artist?.gender }}</span>
-      <span class="artist-info-data-field"> Date of birth: {{ artist?.date_of_birth }}</span>
-      <span class="artist-info-data-field"> Date of death: {{ artist?.date_of_death }}</span>
-      <span class="artist-info-data-field"> Place of birth: {{ artist?.place_of_birth }}</span>
-      <span class="artist-info-data-field"> Place of death: {{ artist?.place_of_death }}</span>
-    </div>
-    <div class="artist-info-image--container">
-      <img class="artist-info-image" src="{{ artist?.image }}" alt="Picture couldnt be loaded" />
-    </div>
+      <div class="col-sm-5 img">
+          <img class="img-fluid rounded-circle" src="{{artist?.image}}" alt="{{artist?.label}}">
+      </div>
   </div>
+
+  <h4>Artworks</h4>
 
   <app-slider [items]="sliderItems"> </app-slider>
 </div>

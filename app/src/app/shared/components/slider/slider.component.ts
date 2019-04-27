@@ -11,6 +11,9 @@ export class SliderComponent implements OnInit {
 
   ngOnInit() {}
 
+  //firstSlide: boolean;
   @Input()
-  items: Entity[];
+  //items: Entity[];
+  items: Array<Entity[]>;
+
 }

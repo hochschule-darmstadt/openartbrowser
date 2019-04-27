@@ -1,44 +1,11 @@
-@import '../../../variables';
+img {
+  max-height: 20em;
+}
 
-.artist {
-  &-wrapper {
-    display: flex;
-    flex-direction: column;
-  }
+.tab{
+  margin-left: 2em;
+}
 
-  &-info {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: $SizeExtraLarge;
-
-    &-data {
-      display: flex;
-      flex-direction: column;
-      padding-right: 3 * $SizeLarge;
-
-      &-heading {
-        height: $SizeExtraLarge;
-        font-size: $FontSizeLarge;
-        font-weight: $FontWeightRegular;
-      }
-      &-field {
-        padding: $SizeTiny;
-      }
-    }
-
-    &-image {
-      margin: $SizeRegular;
-      max-height: $MaxProfileImageSize;
-      max-width: $MaxProfileImageSize;
-      height: auto;
-      width: auto;
-
-      &--container {
-        display: flex;
-        justify-content: flex-end;
-        align-items: flex-start;
-      }
-    }
-  }
+.more{
+  cursor: pointer;
 }

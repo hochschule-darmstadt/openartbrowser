@@ -27,24 +27,22 @@ export class ArtistComponent implements OnInit {
           console.log(err);
         });
     });
-    /** Cuts big array into smaller arrays */
-    this.spliceArray(this.sliderItemsDummy);
   }
 
   /** The entity this page is about */
   artist: Artist = null;
 
-  //sliderItems: Entity[] = [];
-
   /** Change collapse icon */
   collapseDown: boolean = true;
 
-  switchIcon(){
+  heading: string = "Artworks";
+
+  toggleDetails(){
     this.collapseDown = !this.collapseDown;
   }
 
   /** Dummy artworks */
-  sliderItemsDummy: Entity[] = [
+  sliderItems: Entity[] = [
     {
       id: '',
       description: '',
@@ -173,21 +171,5 @@ export class ArtistComponent implements OnInit {
     }
   ];
 
-  /** Cut array of artworks in multiple arrays each with 8 items 
-   * arrayNumber : how many arrays with 8 items
-   * sliderItems: Array<Entity[]> = [];  Is Array of arrays with 8 items each
-   * temporaryArray   one array with 8 items
-  */
-  arrayNumber: number;
-  sliderItems: Array<Entity[]> = [];
-  temporaryArray: Entity[] = [];
-
-  spliceArray(arrayToSplice: Entity[]){ 
-    // There are 8 images on each slide. 
-    this.arrayNumber = arrayToSplice.length / 8;
-    for (let i = 0; i < this.arrayNumber; i++ ){   
-      this.temporaryArray = arrayToSplice.splice(0,8);
-      this.sliderItems.push(this.temporaryArray);      
-    }
-  }
+ 
 }

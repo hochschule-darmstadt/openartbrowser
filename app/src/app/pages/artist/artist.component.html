@@ -11,7 +11,7 @@
               <span class="text-muted">Died: </span>&nbsp;&nbsp;&ensp;{{artist?.date_of_death}} in {{artist?.place_of_death}}
           </div>
 
-          <h4 class="mt-5 more" data-toggle="collapse" href="#collapseArtist" (click)="switchIcon()">More 
+          <h4 class="mt-5 more" data-toggle="collapse" href="#collapseArtist" (click)="toggleDetails()">More 
             <i *ngIf="collapseDown" data-toggle="collapse" href="#collapseArtist" class="fas fa-chevron-down"> </i> 
             <i *ngIf="!collapseDown" data-toggle="collapse" href="#collapseArtist" class="fas fa-chevron-up"> </i></h4>
 
@@ -19,16 +19,16 @@
               
               <div class="row">
                     <div class="col-sm ">
-                      <p class="text-muted"> Gender:</p> 
-                      <p class="text-muted"> Citizenship:</p>
-                      <p class="text-muted"> Movement: </p>
-                      <p class="text-muted"> Influenced by:</p>
+                      <p *ngIf="artist?.gender" class="text-muted"> Gender:</p> 
+                      <p *ngIf="artist?.citizenship" class="text-muted"> Citizenship:</p>
+                      <p *ngIf="artist?.movement?.length" class="text-muted"> Movement: </p>
+                      <p *ngIf="artist?.influencedBy?.length" class="text-muted"> Influenced by:</p>
                     </div>
                     <div class="col-9">
-                        <p>{{artist?.gender}}</p>
-                        <p>{{artist?.citizenship}}</p>
-                        <p><span class="badge badge-pill badge-secondary">High Renaissance</span>
-                        <p><span class="badge badge-pill badge-secondary"> Someone</span></p>
+                        <p *ngIf="artist?.gender">{{artist?.gender}}</p>
+                        <p *ngIf="artist?.citizenship">{{artist?.citizenship}}</p>
+                        <p *ngIf="artist?.movement?.length"><span class="badge badge-pill badge-secondary">High Renaissance</span></p>
+                        <p *ngIf="artist?.influencedBy?.length"><span class="badge badge-pill badge-secondary"> Someone</span></p>
                     </div>
                   </div>
 
@@ -41,7 +41,5 @@
       </div>
   </div>
 
-  <h4>Artworks</h4>
-
-  <app-slider [items]="sliderItems"> </app-slider>
+  <app-slider [items]="sliderItems" [heading] = "heading"> </app-slider>
 </div>

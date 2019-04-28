@@ -16,19 +16,20 @@
             <i *ngIf="!collapseDown" data-toggle="collapse" href="#collapseArtist" class="fas fa-chevron-up"> </i></h4>
 
           <div class="mx-3 collapse border-bottom" id="collapseArtist">
-              <div class="mt-4 mb-2">
-                  <span class="text-muted">Gender: </span> <span class="tab">&nbsp;&nbsp;&nbsp; {{artist?.gender}} </span>
-              </div>
-              <div class="mb-2">
-                  <span class="text-muted">Citizenship: </span>&nbsp;&nbsp; &nbsp;&nbsp;&ensp; {{artist?.citizenship}} 
-                </div> 
-              <div class="mb-2">
-                  <span class="text-muted">Movement: </span>&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&ensp;<span class="badge badge-pill badge-secondary">High Renaissance </span>  
-                    <span class="badge badge-pill badge-secondary"></span>                   
-              </div>
-              <div class="mb-4">
-                  <span class="text-muted">Influenced by: </span>&nbsp;&ensp; <span class="badge badge-pill badge-secondary"> someone </span>
-              </div> 
+              <div class="row">
+                    <div class="col-sm ">
+                      <p class="text-muted"> Gender:</p> 
+                      <p class="text-muted"> Citizenship:</p>
+                      <p class="text-muted"> Movement: </p>
+                      <p class="text-muted"> Influenced by:</p>
+                    </div>
+                    <div class="col-9">
+                        <p>{{artist?.gender}}</p>
+                        <p>{{artist?.citizenship}}</p>
+                        <p><span class="badge badge-pill badge-secondary">High Renaissance</span>
+                        <p><span class="badge badge-pill badge-secandary"> Someone</span></p>
+                    </div>
+                  </div>
 
                             
           </div>
@@ -42,4 +43,22 @@
   <h4>Artworks</h4>
 
   <app-slider [items]="sliderItems"> </app-slider>
+
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <p> One of three columns</p> 
+        <p>One of three columns</p>
+        <p>One of three columns</p>
+      </div>
+      <div class="col-7">
+          <p>One of three</p>
+          <p>One of three</p>
+          <p>One of three</p>
+      </div>
+      <div class="col">
+        One of three columns
+      </div>
+    </div>
+  </div>
 </div>

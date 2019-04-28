@@ -13,7 +13,5 @@ export class SliderItemComponent implements OnInit {
 
   @Input()
   item: Entity;
-  
-  //items: Entity[];
- 
+   
 }

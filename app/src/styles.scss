@@ -1,5 +1,19 @@
-.dropdown-toggle::after {
-  display: none;
+body {
+  height: 100%;
+}
+
+html {
+  height: 100%;
+}
+
+/* Badge */
+.badge:hover{
+  cursor: pointer;
+}
+
+/* Customize carousel  (has no power in slider.compoent.scss)*/
+.carousel-indicators{
+  visibility: hidden;
 }
 
 .carousel-control-prev-icon,
@@ -12,10 +26,8 @@
   width: 2%;
 }
 
-body {
-  height: 100%;
+*:focus {
+  outline: transparent;
 }
 
-html {
-  height: 100%;
-}
+

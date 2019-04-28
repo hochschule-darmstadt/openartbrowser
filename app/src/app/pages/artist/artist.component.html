@@ -1,20 +1,50 @@
-<div class="artist-wrapper">
-  <div class="artist-info">
-    <div class="artist-info-data">
-      <div class="artist-info-data-heading">
-        {{ artist?.label }}
+<div class="container">
+  <div class="row mb-5">
+    <div class="col-sm-7">
+      <span class="badge badge-pill badge-secondary"><i class="fas fa-user"></i> Artist</span>
+      <h2 class="mb-3">{{ artist?.label }}</h2>
+      <div *ngIf="artist?.date_of_birth || artist?.place_of_birth" class="mb-3 mt-5">
+        <span class="text-muted">Born: </span>&nbsp;&nbsp;&ensp;{{ artist?.date_of_birth }}
+        {{ artist?.place_of_birth ? ' in ' + artist?.place_of_birth : '' }}
       </div>
-      <span class="artist-info-data-field"> Description: {{ artist?.description }}</span>
-      <span class="artist-info-data-field"> Gender: {{ artist?.gender }}</span>
-      <span class="artist-info-data-field"> Date of birth: {{ artist?.date_of_birth }}</span>
-      <span class="artist-info-data-field"> Date of death: {{ artist?.date_of_death }}</span>
-      <span class="artist-info-data-field"> Place of birth: {{ artist?.place_of_birth }}</span>
-      <span class="artist-info-data-field"> Place of death: {{ artist?.place_of_death }}</span>
+      <div *ngIf="artist?.date_of_death || artist?.place_of_death">
+        <span class="text-muted">Died: </span>&nbsp;&nbsp;&ensp;{{ artist?.date_of_death }}
+        {{ artist?.place_of_death ? ' in ' + artist.place_of_death : '' }}
+      </div>
+
+      <div *ngIf="artist?.gender || artist?.citizenship || artist?.movements?.length || artist?.influenced_by?.length">
+        <h4 class="mt-5 more" data-toggle="collapse" href="#collapseArtist" (click)="toggleDetails()">
+          More
+          <i *ngIf="collapseDown" data-toggle="collapse" href="#collapseArtist" class="fas fa-chevron-down"> </i>
+          <i *ngIf="!collapseDown" data-toggle="collapse" href="#collapseArtist" class="fas fa-chevron-up"> </i>
+        </h4>
+
+        <div class="mx-3 collapse border-bottom" id="collapseArtist">
+          <div class="row">
+            <div class="col-sm ">
+              <p *ngIf="artist?.gender" class="text-muted">Gender:</p>
+              <p *ngIf="artist?.citizenship" class="text-muted">Citizenship:</p>
+              <p *ngIf="artist?.movements?.length" class="text-muted">Movement:</p>
+              <p *ngIf="artist?.influenced_by?.length" class="text-muted">Influenced by:</p>
+            </div>
+            <div class="col-9">
+              <p *ngIf="artist?.gender">{{ artist?.gender }}</p>
+              <p *ngIf="artist?.citizenship">{{ artist?.citizenship }}</p>
+              <p *ngIf="artist?.movements?.length">
+                <span class="badge badge-pill badge-secondary">High Renaissance</span>
+              </p>
+              <p *ngIf="artist?.influenced_by?.length">
+                <span class="badge badge-pill badge-secondary"> Someone</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="artist-info-image--container">
-      <img class="artist-info-image" src="{{ artist?.image }}" alt="Picture couldnt be loaded" />
+    <div class="col-sm-5 img">
+      <img class="img-fluid rounded-circle" src="{{ artist?.image }}" alt="{{ artist?.label }}" />
     </div>
   </div>
 
-  <app-slider [items]="sliderItems"> </app-slider>
+  <app-slider [items]="sliderItems" heading="Artworks"> </app-slider>
 </div>

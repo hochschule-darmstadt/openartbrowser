@@ -5,6 +5,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
 import { HttpClientModule } from '@angular/common/http';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 
 /** routes to our feature modules.
  * advantage of routing to modules instead of components: lazy loading.
@@ -46,7 +48,8 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, HttpClientModule, CoreModule, SharedModule, RouterModule.forRoot(routes)],
+  imports: [BrowserModule, HttpClientModule, CoreModule, SharedModule, RouterModule.forRoot(routes),
+  NgbModule.forRoot()],
   bootstrap: [AppComponent],
 })
 export class AppRoutingModule {}

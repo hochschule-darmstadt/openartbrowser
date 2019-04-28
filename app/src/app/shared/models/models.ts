@@ -14,7 +14,7 @@ export interface Artist extends Entity {
   place_of_death?: string;
   citizenship?: string;
   movements: Partial<Movement>[];
-  influencedBy: Partial<Artist>[];
+  influenced_by: Partial<Artist>[];
   type: 'artist';
 }
 

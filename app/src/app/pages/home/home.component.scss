@@ -1,1 +1,118 @@
 @import '../../../variables';
+
+.content-title {
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 0;
+  margin-bottom: 6rem;
+}
+
+.page-title {
+  font-size: 8rem;
+  letter-spacing: 0rem;
+  color: #00bc8c;
+  width: 100%;
+  margin-bottom: 6rem;
+}
+
+.form-control-lg {
+  height: 3.5rem;
+  font-size: 1.7rem;
+  background-color: transparent;
+  border-bottom: 1px solid white;
+
+  transition: all .3s ease;
+  -webkit-animation: fade 4s infinite;
+  -moz-animation: fade 4s infinite;
+  -o-animation: fade 4s infinite;
+  animation: fade 4s infinite;
+
+}
+
+.form-control-lg:focus {
+  background-color: white;
+  box-shadow: 0 0 50px 2px #00bc8c;
+  border-bottom: none;
+}
+
+.box {
+  height: 15rem;
+  padding: 0 10px;
+}
+
+.category-image {
+  border-radius: 15px;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0);
+
+  transition: all .5s ease;
+  -webkit-animation: fade 4s infinite;
+  -moz-animation: fade 4s infinite;
+  -o-animation: fade 4s infinite;
+  animation: fade 4s infinite;
+}
+
+.category-image::after {
+  background: black;
+}
+
+.category-image:hover {
+  cursor: pointer;
+  transition: all .2s ease;
+  transform: scale(1.05);
+  box-shadow: 0 0 20px 1px #00bc8c;
+}
+
+.category-image:hover>.overlay {
+  transition: all .2s ease;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background-color: #000;
+  opacity: 0.8;
+  border-radius: 15px;
+}
+
+.overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  -webkit-transition: .3s ease;
+  transition: .3s ease;
+  border-radius: 15px;
+}
+
+.category-label {
+  color: white;
+  font-size: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.category-type {
+  color: white;
+  font-size: 15px;
+  position: absolute;
+  bottom: 5%;
+  left: 50%;
+  -webkit-transform: translate(-50%, 0);
+  -ms-transform: translate(-50%, 0);
+  transform: translate(-50%, 0);
+  text-align: center;
+}

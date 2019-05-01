@@ -52,9 +52,22 @@ export class HomeComponent implements OnInit {
   }
 
   setItem = (id: string, num: number): void => {
-    document.getElementById(`label-${id}`).textContent = eval(`this.${id}Items[num].label`);
+    let imgEl = document.getElementById(`category-${id}`);
+    let labelEl = document.getElementById(`label-${id}`);
+
     let imgSrc = eval(`this.${id}Items[num].image`);
-    document.getElementById(`category-${id}`).style.backgroundImage = `url(${imgSrc})`;
+    let dataId = eval(`this.${id}Items[num].id`);
+
+    imgEl.style.backgroundImage = `url(${imgSrc})`;
+    imgEl.setAttribute('data-id', dataId);
+    labelEl.textContent = eval(`this.${id}Items[num].label`);
+  }
+
+  redirectPage = (event): void => {
+    let target = event.target.parentElement;
+    let id = target.dataset.id;
+    let path = target.id.split("-")[1];
+    window.open(`/${path}/${id}`, '_self');
   }
 
   initDummyData = (): void => {

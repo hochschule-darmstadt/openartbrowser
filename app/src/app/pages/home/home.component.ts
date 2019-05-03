@@ -22,52 +22,9 @@ export class HomeComponent implements OnInit {
   
   ngOnInit() { 
     this.initDummyData();
-    this.initHome();
-  }
-
-  initHome = (): void => {
-    // Something wrong with the linear gradient, it wont cover all the background image
-    // document.body.style.backgroundImage = "linear-gradient(rgba(34, 34, 34, 0.5), rgba(34, 34, 34, 0.5)), url('https://upload.wikimedia.org/wikipedia/commons/1/14/Michaelina_wautier-anunciaci%C3%B3n.jpg')";
-    // document.body.style.backgroundPosition = "center";
-    // document.body.style.backgroundRepeat = "no-repeat";
-    // document.body.style.backgroundSize = "cover";
-
-    this.setCategories();
-    setInterval(() => {this.iterateItem()}, 10000);
-  }
-  
-  iterateItem = (): void => {
-    this.iterator = (this.iterator == this.maxItems - 1) ? 0 : this.iterator + 1;
-    this.setCategories();
-  }
-
-  setCategories = (): void => {
-    this.setItem('artwork', this.iterator);
-    this.setItem('artist', this.iterator);
-    this.setItem('movement', this.iterator);
-    this.setItem('location', this.iterator);
-    this.setItem('material', this.iterator);
-    this.setItem('genre', this.iterator);
-    this.setItem('motif', this.iterator);
-  }
-
-  setItem = (id: string, num: number): void => {
-    let imgEl = document.getElementById(`category-${id}`);
-    let labelEl = document.getElementById(`label-${id}`);
-
-    let imgSrc = eval(`this.${id}Items[num].image`);
-    let dataId = eval(`this.${id}Items[num].id`);
-
-    imgEl.style.backgroundImage = `url(${imgSrc})`;
-    imgEl.setAttribute('data-id', dataId);
-    labelEl.textContent = eval(`this.${id}Items[num].label`);
-  }
-
-  redirectPage = (event): void => {
-    let target = event.target.parentElement;
-    let id = target.dataset.id;
-    let path = target.id.split("-")[1];
-    window.open(`/${path}/${id}`, '_self');
+    setInterval(() => {
+      this.iterator = (this.iterator == this.maxItems - 1) ? 0 : this.iterator + 1;
+    }, 10000);
   }
 
   initDummyData = (): void => {

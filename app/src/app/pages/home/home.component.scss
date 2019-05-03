@@ -1,1 +1,134 @@
 @import '../../../variables';
+
+/** test variable for background image (will be removed later) */
+$monalisa:"https://upload.wikimedia.org/wikipedia/commons/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg";
+$michaelina:"https://upload.wikimedia.org/wikipedia/commons/1/14/Michaelina_wautier-anunciaci%C3%B3n.jpg";
+
+$color1:#00bc8c;
+
+/** Set background of the home page */
+.background-image{
+  position: fixed;
+  display: block;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: linear-gradient(rgba(34, 34, 34, 0.5), rgba(34, 34, 34, 0.5)), url($michaelina);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -1;
+}
+
+/** Styling for the title & search div */
+.container-content {
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 0;
+  margin-bottom: 6rem;
+
+    .title {
+      font-size: 8rem;
+      letter-spacing: 0rem;
+      color: $color1;
+      width: 100%;
+      margin-bottom: 6rem;
+    }
+    .search {
+      height: 3.5rem;
+      font-size: 1.7rem;
+      background-color: transparent;
+      border-bottom: 1px solid white;
+    
+      transition: all .3s ease;
+      -webkit-animation: fade 4s infinite;
+      -moz-animation: fade 4s infinite;
+      -o-animation: fade 4s infinite;
+      animation: fade 4s infinite;
+    
+      &:focus{
+      background-color: white;
+      box-shadow: 0 0 50px 2px $color1;
+      border-bottom: none;
+      }
+    }
+}
+
+/** Styling for the category boxes */
+.container-category {
+  height: 15rem;
+  padding: 0 10px;
+
+  .overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    -webkit-transition: .3s ease;
+    transition: .3s ease;
+    border-radius: 15px;
+  }
+
+  .image {
+    border-radius: 15px;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    box-shadow: 0 0 30px 1px black;
+    transition: all .5s ease;
+    -webkit-animation: fade 4s infinite;
+    -moz-animation: fade 4s infinite;
+    -o-animation: fade 4s infinite;
+    animation: fade 4s infinite;
+
+    &:hover {
+      cursor: pointer;
+      transition: all .2s ease;
+      transform: scale(1.05);
+      box-shadow: 0 0 20px 1px $color1;
+    }
+    
+    &:hover>.overlay {
+      transition: all .2s ease;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      background-color: black;
+      opacity: 0.8;
+      border-radius: 15px;
+    }
+  }
+
+  .label {
+    color: white;
+    font-size: 20px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+  
+  .type {
+    color: white;
+    font-size: 15px;
+    position: absolute;
+    bottom: 5%;
+    left: 50%;
+    -webkit-transform: translate(-50%, 0);
+    -ms-transform: translate(-50%, 0);
+    transform: translate(-50%, 0);
+    text-align: center;
+  }
+}

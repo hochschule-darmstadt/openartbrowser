@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute } from '@angular/router';
 import { take } from 'rxjs/operators';
-import { Location } from 'src/app/shared/models/models';
+import { Location, Entity } from 'src/app/shared/models/models';
 
 @Component({
   selector: 'app-location',
@@ -31,4 +31,45 @@ export class LocationComponent implements OnInit {
 
   /** The entity this page is about */
   location: Location = null;
+
+  /** Change collapse icon */
+  collapseDown: boolean = true;
+  collapseDownMaps: boolean = true;
+
+  toggleMaps() {
+    this.collapseDownMaps = !this.collapseDownMaps;
+  }
+
+  toggleDetails() {
+    this.collapseDown = !this.collapseDown;
+  }
+
+  /** Dummy artworks */
+  sliderItems: Entity[] = [
+    {
+      id: '',
+      description: '',
+      type: '',
+      image:
+        'https://upload.wikimedia.org/wikipedia/commons/9/91/Akseli_Gallen-Kallela_Carl_Gustaf_Emil_Mannerheimin_muotokuva.jpg',
+      label: 'Portrait of Carl Gustaf Emil Mannerheim',
+    },
+    {
+      id: '',
+      description: '',
+      type: '',
+      image:
+        'https://upload.wikimedia.org/wikipedia/commons/b/b9/Akseli_Gallen-Kallela_Cheetah.jpg',
+      label: 'Cheetah',
+    },
+    {
+      id: '',
+      description: '',
+      type: '',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/f/fe/Akseli_Gallen-Kallela_Februari_fantasi.jpg',
+      label: 'February fantasy',
+    }
+  ];
+
+  
 }

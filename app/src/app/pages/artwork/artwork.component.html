@@ -11,70 +11,98 @@
 
             <h2 class="mb-1">Mona Lisa</h2>
 
-            <div class="mb-1 mt-2">
-                <span class="text-muted">Artist:</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                &nbsp;&nbsp;&nbsp;&nbsp;&ensp;
-                <span class="badge badge-pill badge-secondary">Leonardo Da Vinci</span>
-            </div>
+            <div class="row">
+                <div class="col-sm" id="metadata-left">
+                    <div class="mb-1">
+                        <span class="text-muted">Artist:</span>
+                    </div>
 
-            <div *ngIf="artwork?.locations?.length" class="mb-1">
-                <span class="text-muted">Location: </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&ensp;
-                <span class="badge badge-pill badge-secondary"
-                    ng-repeat="location in artwork.locations">{{ location?.label }}</span>
-            </div>
+                    <div *ngIf="artwork?.locations?.length" class="mb-1">
+                        <span class="text-muted">Location: </span>
+                    </div>
 
-            <div *ngIf="artwork?.inception" class="mb-1">
-                <span class="text-muted">Inception: </span>&nbsp;&nbsp;&nbsp;&nbsp;&ensp;
-                {{ artwork?.inception }}
-            </div>
-
-            <div>
-                    <h4 class="mt-2 more" data-toggle="collapse" href="#collapseArtwork" (click)="toggleDetails()">
-                        More
-                        <i *ngIf="collapseDown" data-toggle="collapse" href="#collapseArtwork" class="fas fa-chevron-down"></i>
-                        <i *ngIf="!collapseDown" data-toggle="collapse" href="#collapseArtwork" class="fas fa-chevron-up"></i>
-                    </h4>
-        
-                    <div class="collapse" id="collapseArtwork">
-                        
-        
-                            <div class="mb-1">
-                                <span class="text-muted">Genre: </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                &nbsp;&nbsp;&nbsp;&ensp;
-                                <span class="badge badge-pill badge-secondary">Potrait</span>
-                                <span class="badge badge-pill badge-secondary">Test</span>
-                            </div>
-        
-                            <div *ngIf="artwork?.movements?.length" class="mb-1">
-                                <span class="text-muted">Movement: </span>&ensp;
-                                <span class="badge badge-pill badge-secondary" ng-repeat="movement in artwork?.movements">
-                                    {{ movement?.label }}</span>
-                            </div>
-        
-                            <div *ngIf="artwork?.materials?.length" class="mb-1">
-                                <span class="text-muted">Material: </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&ensp;
-                                <span class="badge badge-pill badge-secondary" ng-repeat="material in artwork?.materials">
-                                    {{ material?.label }}</span>
-                            </div>
-        
-                            <div *ngIf="artwork?.objects?.length" class="mb-1">
-                                <span class="text-muted">Motif: </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                &nbsp;&nbsp;&nbsp;&nbsp;&ensp;
-                                <span class="badge badge-pill badge-secondary" ng-repeat="object in artwork?.objects">
-                                    {{ object?.label }}</span>
-                            </div>
-        
-                            <div *ngIf="artwork?.height && artwork?.width" class="mb-1">
-                                <span class="text-muted">Dimension: </span>&nbsp;&ensp;
-                                {{ artwork?.height }} x {{ artwork?.width }}cm
-                            </div>
-                        
-        
+                    <div *ngIf="artwork?.inception" class="mb-1">
+                        <span class="text-muted">Inception: </span>
                     </div>
                 </div>
 
+                <div class="col-11" id="metadata-right">
+                    <div class="mb-1">
+                        <span class="badge badge-pill badge-secondary">Leonardo Da Vinci</span>
+                    </div>
+                    <div *ngIf="artwork?.locations?.length" class="mb-1">
+                        <span class="badge badge-pill badge-secondary"
+                            ng-repeat="location in artwork.locations">{{ location?.label }}</span>
+                    </div>
+                    <div *ngIf="artwork?.inception" class="mb-1">
+                        {{ artwork?.inception }}
+                    </div>
+                </div>
+            </div>
+            <div>
+                <h4 class="mt-2 more" data-toggle="collapse" href="#collapseArtwork" (click)="toggleDetails()">
+                    More
+                    <i *ngIf="collapseDown" data-toggle="collapse" href="#collapseArtwork"
+                        class="fas fa-chevron-down"></i>
+                    <i *ngIf="!collapseDown" data-toggle="collapse" href="#collapseArtwork"
+                        class="fas fa-chevron-up"></i>
+                </h4>
+
+                <div class="collapse" id="collapseArtwork">
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="mb-1">
+                                <span class="text-muted">Genre: </span>
+                            </div>
+
+                            <div *ngIf="artwork?.movements?.length" class="mb-1">
+                                <span class="text-muted">Movement: </span>
+                            </div>
+
+                            <div *ngIf="artwork?.materials?.length" class="mb-1">
+                                <span class="text-muted">Material: </span>
+                            </div>
+
+                            <div *ngIf="artwork?.objects?.length" class="mb-1">
+                                <span class="text-muted">Motif: </span>
+                            </div>
+
+                            <div *ngIf="artwork?.height && artwork?.width" class="mb-1">
+                                <span class="text-muted">Dimension: </span>
+                            </div>
+                        </div>
+
+                        <div class="col-11">
+                            <div class="mb-1">
+                                <span class="badge badge-pill badge-secondary">Potrait</span>
+                                <span class="badge badge-pill badge-secondary">Test</span>
+                            </div>
+
+                            <div *ngIf="artwork?.movements?.length" class="mb-1">
+                                <span class="badge badge-pill badge-secondary"
+                                    ng-repeat="movement in artwork?.movements">
+                                    {{ movement?.label }}</span>
+                            </div>
+
+                            <div *ngIf="artwork?.materials?.length" class="mb-1">
+                                <span class="badge badge-pill badge-secondary"
+                                    ng-repeat="material in artwork?.materials">
+                                    {{ material?.label }}</span>
+                            </div>
+
+                            <div *ngIf="artwork?.objects?.length" class="mb-1">
+                                <span class="badge badge-pill badge-secondary" ng-repeat="object in artwork?.objects">
+                                    {{ object?.label }}</span>
+                            </div>
+
+                            <div *ngIf="artwork?.height && artwork?.width" class="mb-1">
+                                {{ artwork?.height }} x {{ artwork?.width }}cm
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        
     </div>
 
     <div class="row mb-3 pt-3">

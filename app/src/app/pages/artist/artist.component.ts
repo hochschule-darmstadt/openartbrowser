@@ -42,7 +42,7 @@ export class ArtistComponent implements OnInit {
   /** Dummy artworks */
   sliderItems: Entity[] = [
     {
-      id: '',
+      id: 'Q27955518',
       description: '',
       type: '',
       image:

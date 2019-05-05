@@ -4,7 +4,7 @@ import { take } from 'rxjs/operators';
 import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute } from '@angular/router';
 
-/*Interface for the tabs*/
+/** interface for the tabs */
 interface SliderTab {
   heading: string;
   items: Entity[];
@@ -47,7 +47,7 @@ export class ArtworkComponent implements OnInit {
     this.collapseDown = !this.collapseDown;
   }
 
-  /** Dummy artworks */
+  /** Dummy artworks for "all" slider */
   sliderItems_all: Entity[] = [
     {
       id: '',
@@ -182,6 +182,7 @@ export class ArtworkComponent implements OnInit {
     },
   ];
 
+  /** Dummy artworks for artist slider */
   sliderItems_artist: Entity[] = [
     {
       id: '',
@@ -287,6 +288,7 @@ export class ArtworkComponent implements OnInit {
     },
   ];
 
+  /** Dummy artworks for location slider */
   sliderItems_location: Entity[] = [
     {
       id: '',
@@ -392,6 +394,7 @@ export class ArtworkComponent implements OnInit {
     },
   ];
 
+  /** Dummy artworks for genre slider */
   sliderItems_genre: Entity[] = [
     {
       id: '',
@@ -496,6 +499,7 @@ export class ArtworkComponent implements OnInit {
     },
   ];
 
+  /** Dummy artworks for movement slider */
   sliderItems_movement: Entity[] = [
     {
       id: '',
@@ -599,6 +603,7 @@ export class ArtworkComponent implements OnInit {
     },
   ];
 
+  /** Dummy artworks for material slider */
   sliderItems_material: Entity[] = [
     {
       id: '',
@@ -698,6 +703,7 @@ export class ArtworkComponent implements OnInit {
     },
   ];
 
+  /** Dummy artworks for depict slider */
   sliderItems_depict: Entity[] = [
     {
       id: '',
@@ -804,7 +810,7 @@ export class ArtworkComponent implements OnInit {
     },
   ];
 
-  /*Fill SliderTab with tab categories*/
+  /** fill SliderTab with slider items*/
   artworkTabs: SliderTab[] = [
     {
       heading: 'All',

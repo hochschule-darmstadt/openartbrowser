@@ -1,20 +1,11 @@
 #image-main{
     max-width: 100%;
-    max-height: 100%;
-}
-.metadata-left{
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-.metadata-right{
-    display: flex;
-    flex-direction: column;
+    max-height: 70vh;
 }
 
 .badge {
     margin-right: 2px;
+    text-transform: capitalize;
 }
 
 .more{

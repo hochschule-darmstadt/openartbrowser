@@ -31,10 +31,21 @@
               <p *ngIf="artist?.gender">{{ artist?.gender }}</p>
               <p *ngIf="artist?.citizenship">{{ artist?.citizenship }}</p>
               <p *ngIf="artist?.movements?.length">
-                <span class="badge badge-pill badge-secondary">High Renaissance</span>
+                <span
+                  *ngFor="let movement of artist?.movements"
+                  class="badge badge-pill badge-secondary"
+                  [routerLink]="'/movement/' + movement.id"
+                  >{{ movement.label }}</span
+                >
               </p>
               <p *ngIf="artist?.influenced_by?.length">
-                <span class="badge badge-pill badge-secondary"> Someone</span>
+                <span
+                  *ngFor="let influencer of artist?.influenced_by"
+                  class="badge badge-pill badge-secondary"
+                  [routerLink]="'/artist/' + influencer.id"
+                >
+                  {{ influencer.label }}</span
+                >
               </p>
             </div>
           </div>

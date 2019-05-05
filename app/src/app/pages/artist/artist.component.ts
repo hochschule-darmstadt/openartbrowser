@@ -1,21 +1,35 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Artist, Entity } from 'src/app/shared/models/models';
 import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute } from '@angular/router';
-import { take } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-artist',
   templateUrl: './artist.component.html',
   styleUrls: ['./artist.component.scss'],
 })
-export class ArtistComponent implements OnInit {
+export class ArtistComponent implements OnInit, OnDestroy {
+  /** use this to end subscription to url parameter in ngOnDestroy */
+  private ngUnsubscribe = new Subject();
+
+  /** The entity this page is about */
+  artist: Artist = null;
+
+  /** Change collapse icon */
+  collapseDown: boolean = true;
+
   constructor(private dataService: DataService, private route: ActivatedRoute) {}
+
+  toggleDetails() {
+    this.collapseDown = !this.collapseDown;
+  }
 
   /** hook that is executed at component initialization */
   ngOnInit() {
     /** Extract the id of entity from URL params. */
-    this.route.paramMap.pipe(take(1)).subscribe((params) => {
+    this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe((params) => {
       const artistId = params.get('artistId');
       /** Use data service to fetch entity from database */
       this.dataService
@@ -29,14 +43,9 @@ export class ArtistComponent implements OnInit {
     });
   }
 
-  /** The entity this page is about */
-  artist: Artist = null;
-
-  /** Change collapse icon */
-  collapseDown: boolean = true;
-
-  toggleDetails() {
-    this.collapseDown = !this.collapseDown;
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   /** Dummy artworks */
@@ -128,7 +137,7 @@ export class ArtistComponent implements OnInit {
       description: '',
       type: '',
       image: 'https://www.leonardodavinci.net/images/gallery/lady-with-an-ermine.jpg',
-      label: 'Lady with	an Ermine',
+      label: 'Lady with an Ermine',
     },
     {
       id: '',
@@ -142,7 +151,7 @@ export class ArtistComponent implements OnInit {
       description: '',
       type: '',
       image: 'http://kulturmeister.de/assets/images/9/A2-madonna-mit-spindel-da-vinci-c38035e9.jpg',
-      label: '	Madonna of the Yarnwinder',
+      label: '  Madonna of the Yarnwinder',
     },
     {
       id: '',

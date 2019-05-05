@@ -19,12 +19,20 @@
 
         <div class="metadata-right col-11">
           <p *ngIf="artwork?.creators?.length" class="mb-1">
-            <span class="badge badge-pill badge-secondary" *ngFor="let creator of artwork?.creators">
+            <span
+              class="badge badge-pill badge-secondary"
+              *ngFor="let creator of artwork?.creators"
+              [routerLink]="'/artist/' + creator.id"
+            >
               {{ creator?.label }}</span
             >
           </p>
           <p *ngIf="artwork?.locations?.length" class="mb-1">
-            <span class="badge badge-pill badge-secondary" *ngFor="let location of artwork?.locations">
+            <span
+              class="badge badge-pill badge-secondary"
+              *ngFor="let location of artwork?.locations"
+              [routerLink]="'/location/' + location.id"
+            >
               {{ location?.label }}</span
             >
           </p>
@@ -44,32 +52,48 @@
               <p *ngIf="artwork?.genres?.length" class="mb-1 text-muted">Genre:</p>
               <p *ngIf="artwork?.movements?.length" class="mb-1 text-muted">Movement:</p>
               <p *ngIf="artwork?.materials?.length" class="mb-1 text-muted">Material:</p>
-              <p *ngIf="artwork?.depicts?.length" class="mb-1 text-muted">Motif:</p>
+              <p *ngIf="artwork?.motifs?.length" class="mb-1 text-muted">Motif:</p>
               <p *ngIf="artwork?.height && artwork?.width" class="mb-1 text-muted">Dimension:</p>
             </div>
 
             <div class="metadata-right col-11">
               <p *ngIf="artwork?.genres?.length" class="mb-1">
-                <span class="badge badge-pill badge-secondary" *ngFor="let genre of artwork?.genres">
+                <span
+                  class="badge badge-pill badge-secondary"
+                  *ngFor="let genre of artwork?.genres"
+                  [routerLink]="'/genre/' + genre.id"
+                >
                   {{ genre?.label }}</span
                 >
               </p>
 
               <p *ngIf="artwork?.movements?.length" class="mb-1">
-                <span class="badge badge-pill badge-secondary" *ngFor="let movement of artwork?.movements">
+                <span
+                  class="badge badge-pill badge-secondary"
+                  *ngFor="let movement of artwork?.movements"
+                  [routerLink]="'/movement/' + movement.id"
+                >
                   {{ movement?.label }}</span
                 >
               </p>
 
               <p *ngIf="artwork?.materials?.length" class="mb-1">
-                <span class="badge badge-pill badge-secondary" *ngFor="let material of artwork?.materials">
+                <span
+                  class="badge badge-pill badge-secondary"
+                  *ngFor="let material of artwork?.materials"
+                  [routerLink]="'/material/' + material.id"
+                >
                   {{ material?.label }}</span
                 >
               </p>
 
-              <p *ngIf="artwork?.depicts?.length" class="mb-1">
-                <span class="badge badge-pill badge-secondary" *ngFor="let depict of artwork?.depicts">
-                  {{ depict?.label }}</span
+              <p *ngIf="artwork?.motifs?.length" class="mb-1">
+                <span
+                  class="badge badge-pill badge-secondary"
+                  *ngFor="let motif of artwork?.motifs"
+                  [routerLink]="'/motif/' + motif.id"
+                >
+                  {{ motif?.label }}</span
                 >
               </p>
 

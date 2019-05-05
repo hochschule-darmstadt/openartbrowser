@@ -34,7 +34,7 @@ export class LocationComponent implements OnInit {
 
   /** Change collapse icon */
   collapseDown: boolean = true;
-  collapseDownMaps: boolean = true;
+  collapseDownMaps: boolean = true; 
 
   toggleMaps() {
     this.collapseDownMaps = !this.collapseDownMaps;

@@ -4,31 +4,30 @@
       <span class="badge badge-pill badge-secondary"><i class="fas fa-archway"></i> Location</span>
       <h2 class="mb-3">{{ location?.label }}</h2>
       <div *ngIf="location?.country || location?.website" class="row mb-3 mt-5">
-          <div class="col-sm pr-0">
-              <p *ngIf="location?.country" class="text-muted">Country:</p>
-              <p *ngIf="location?.website" class="text-muted">Official page:</p>
-              <p *ngIf="location?.description" class="text-muted">Description:</p>
-            </div>
-            <div class="col-9 pl-0">
-                <p *ngIf="location?.country">{{location?.country}}</p>
-                <p *ngIf="location?.website"><a href="{{location?.website}}">{{location?.label}}</a></p>
-                <p *ngIf="location?.website">{{location?.description | titlecase}}</p>
-            </div>
+        <div class="col-sm pr-0">
+          <p *ngIf="location?.country" class="text-muted">Country:</p>
+          <p *ngIf="location?.website" class="text-muted">Official page:</p>
+          <p *ngIf="location?.description" class="text-muted">Description:</p>
+        </div>
+        <div class="col-9 pl-0">
+          <p *ngIf="location?.country">{{location?.country}}</p>
+          <p *ngIf="location?.website"><a href="{{location?.website}}">{{location?.label}}</a></p>
+          <p *ngIf="location?.website">{{location?.description | titlecase}}</p>
+        </div>
       </div>
       <div *ngIf="location?.lat && location?.lon">
         <h4 class="mt-5 more" data-toggle="collapse" href="#collapseMaps" (click)="toggleMaps()">Maps 
           <i *ngIf="collapseDown" data-toggle="collapse" href="#collapseMaps" class="fas fa-chevron-down"> </i>
           <i *ngIf="!collapseDown" data-toggle="collapse" href="#collapseMaps" class="fas fa-chevron-up"> </i>
         </h4>
-          <!-- Map -->
-          <div class="row mx-3 collapse border-bottom google-maps" id="collapseMaps">
-            <<div id="map-container-google-1" class="z-depth-1-half map-container" style="height: 1em">
-              <iframe src="https://maps.google.com/maps?q=manhatan&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0"
+        <!-- Map -->
+        <div class="row mx-3 collapse border-bottom google-maps" id="collapseMaps">
+          <div id="map-container-google-1" class="z-depth-1-half map-container" style="height: 1em">
+            <iframe src="https://maps.google.com/maps?q=manhatan&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0"
               style="border:0" allowfullscreen></iframe>
-            </div>>
-          </div>
+          </div> 
         </div>
-
+      </div>
     </div>
     <div class="col-sm-5 img">
       <img class="img-fluid rounded-circle" src="{{ location?.image }}" alt="{{ location?.label }}" />

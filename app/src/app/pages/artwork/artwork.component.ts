@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Artwork, Entity } from 'src/app/shared/models/models';
-import { take } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute } from '@angular/router';
+import { Subject } from 'rxjs';
 
 /** interface for the tabs */
 interface SliderTab {
@@ -16,14 +17,22 @@ interface SliderTab {
   templateUrl: './artwork.component.html',
   styleUrls: ['./artwork.component.scss'],
 })
-
 export class ArtworkComponent implements OnInit {
+  /** use this to end subscription to url parameter in ngOnDestroy */
+  private ngUnsubscribe = new Subject();
+
+  /** The entity this page is about */
+  artwork: Artwork = null;
+
+  /** Change collapse icon */
+  collapseDown: boolean = true;
+
   constructor(private dataService: DataService, private route: ActivatedRoute) {}
 
   /** hook that is executed at component initialization */
   ngOnInit() {
     /** Extract the id of entity from URL params. */
-    this.route.paramMap.pipe(take(1)).subscribe((params) => {
+    this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe((params) => {
       const artworkId = params.get('artworkId');
       /** Use data service to fetch entity from database */
       this.dataService
@@ -37,11 +46,10 @@ export class ArtworkComponent implements OnInit {
     });
   }
 
-  /** The entity this page is about */
-  artwork: Artwork = null;
-
-  /** Change collapse icon */
-  collapseDown: boolean = true;
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
 
   toggleDetails() {
     this.collapseDown = !this.collapseDown;
@@ -847,5 +855,5 @@ export class ArtworkComponent implements OnInit {
       items: this.sliderItems_depict,
       active: false,
     },
-  ]
+  ];
 }

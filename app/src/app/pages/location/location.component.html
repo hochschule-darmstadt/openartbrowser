@@ -7,12 +7,10 @@
         <div class="col-sm pr-0">
           <p *ngIf="location?.country" class="text-muted">Country:</p>
           <p *ngIf="location?.website" class="text-muted">Official page:</p>
-          <p *ngIf="location?.description" class="text-muted">Description:</p>
         </div>
         <div class="col-9 pl-0">
           <p *ngIf="location?.country">{{location?.country}}</p>
           <p *ngIf="location?.website"><a href="{{location?.website}}">{{location?.label}}</a></p>
-          <p *ngIf="location?.website">{{location?.description | titlecase}}</p>
         </div>
       </div>
       <div *ngIf="location?.lat && location?.lon">

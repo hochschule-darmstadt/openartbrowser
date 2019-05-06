@@ -9,16 +9,16 @@ img {
 /* google maps */
 .google-maps {
     position: relative;
-    padding-bottom: 60%; // This is the aspect ratio
+    padding-bottom: 30%; // This is the aspect ratio
     height: 0;
     overflow: hidden;
-}
 
+    iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100% !important;
+      height: 100% !important;
+    }
 
-.google-maps iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100% !important;
-    height: 100% !important;
 }

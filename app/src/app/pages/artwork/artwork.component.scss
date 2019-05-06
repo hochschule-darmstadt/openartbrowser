@@ -1,1 +1,13 @@
-@import '../../../variables';
+#image-main{
+    max-width: 100%;
+    max-height: 70vh;
+}
+
+.badge {
+    margin-right: 2px;
+    text-transform: capitalize;
+}
+
+.more{
+    cursor: pointer;
+}

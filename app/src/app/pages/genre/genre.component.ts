@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute } from '@angular/router';
 import { take } from 'rxjs/operators';
-import { Genre } from 'src/app/shared/models/models';
+import { Genre, Entity } from 'src/app/shared/models/models';
 
 @Component({
   selector: 'app-genre',
@@ -31,4 +31,45 @@ export class GenreComponent implements OnInit {
 
   /** The entity this page is about */
   genre: Genre = null;
+
+  sliderItems: Entity[] = [
+    {
+      id: '',
+      description: '',
+      type: '',
+      image:
+        'https://upload.wikimedia.org/wikipedia/commons/1/19/Feminine_figure-Ma_4998-IMG_4949-gradient.jpg',
+      label: 'Feminine figure-Ma 4998',
+    },
+    {
+      id: '',
+      description: '',
+      type: '',
+      image:
+        'https://upload.wikimedia.org/wikipedia/commons/c/c8/Feminine_figure-Ma_5010-IMG_4959-gradient.jpg',
+      label: 'Feminine figure-Ma 5010',
+    },
+    {
+      id: '',
+      description: '',
+      type: '',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/e/e0/Seated_woman-Ma_4992-IMG_4946-gradient.jpg',
+      label: 'Seated woman-Ma 4992',
+    },
+    {
+      id: '',
+      description: '',
+      type: '',
+      image:
+        'https://upload.wikimedia.org/wikipedia/commons/3/39/Feminine_figure-Ma_4999-IMG_4950-gradient.jpg',
+      label: 'Feminine figure-Ma 4999',
+    },
+    {
+      id: '',
+      description: '',
+      type: '',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/b/b4/Feminine_figure-Ma_4997-IMG_4954-gradient.jpg',
+      label: 'Feminine figure-Ma 4997',
+    },
+  ];
 }

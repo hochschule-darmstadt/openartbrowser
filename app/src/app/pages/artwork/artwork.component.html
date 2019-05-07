@@ -41,7 +41,10 @@
       </div>
       <div
         *ngIf="
-          artwork?.genres?.length || artwork?.movements?.length || artwork?.materials?.length || artwork?.motifs?.length
+          artwork?.genres?.length ||
+          artwork?.movements?.length ||
+          artwork?.materials?.length ||
+          artwork?.depicts?.length
         "
       >
         <h4 class="mt-2 more" data-toggle="collapse" href="#collapseArtwork" (click)="toggleDetails()">
@@ -56,7 +59,7 @@
               <p *ngIf="artwork?.genres?.length" class="mb-1 text-muted">Genre:</p>
               <p *ngIf="artwork?.movements?.length" class="mb-1 text-muted">Movement:</p>
               <p *ngIf="artwork?.materials?.length" class="mb-1 text-muted">Material:</p>
-              <p *ngIf="artwork?.motifs?.length" class="mb-1 text-muted">Motif:</p>
+              <p *ngIf="artwork?.depicts?.length" class="mb-1 text-muted">Motif:</p>
               <p *ngIf="artwork?.height && artwork?.width" class="mb-1 text-muted">Dimension:</p>
             </div>
 
@@ -91,10 +94,10 @@
                 >
               </p>
 
-              <p *ngIf="artwork?.motifs?.length" class="mb-1">
+              <p *ngIf="artwork?.depicts?.length" class="mb-1">
                 <span
                   class="badge badge-pill badge-secondary"
-                  *ngFor="let motif of artwork?.motifs"
+                  *ngFor="let motif of artwork?.depicts"
                   [routerLink]="'/motif/' + motif.id"
                 >
                   {{ motif?.label }}</span

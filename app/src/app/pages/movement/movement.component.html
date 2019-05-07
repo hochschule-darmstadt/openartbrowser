@@ -1,3 +1,12 @@
-<p>
-  movement works!
-</p>
+<div class="container">
+  <div class="row mb-5">
+    <div class="col-sm-7">
+      <span class="badge badge-pill badge-secondary"><i class="fas fa-wind"></i> Movement</span>
+            <h2 class="mb-3">{{ movement?.label }}</h2>
+    </div>
+    <div class="col-sm-5 img">
+      <img class="img-fluid rounded-circle" src="{{ movement?.image }}" alt="{{ movement?.label }}" />
+    </div>
+   </div>
+        <app-slider [items]="sliderItems" heading="Artworks"> </app-slider>
+</div>

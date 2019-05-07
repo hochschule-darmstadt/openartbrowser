@@ -19,6 +19,10 @@ $color1:#00bc8c;
   background-position: center;
   background-repeat: no-repeat;
   z-index: -1;
+  
+  /* Add the blur effect */
+  filter: blur(10px);
+  -webkit-filter: blur(10px);
 }
 
 /** Styling for the title & search div */

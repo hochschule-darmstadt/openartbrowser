@@ -51,7 +51,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
   /** Dummy artworks */
   sliderItems: Entity[] = [
     {
-      id: '',
+      id: 'Q27955518',
       description: '',
       type: '',
       image:

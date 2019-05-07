@@ -1,3 +1,18 @@
-<p>
-  motif works!
-</p>
+<div class="container">
+  <div class="row mb-5">
+    <div class="col-sm-7">
+      <span class="badge badge-pill badge-secondary"><i class="fas fa-image"></i> Motif</span>
+      <h2 class="mb-3">{{ motif?.label }}</h2>
+        <div class="mb-3 mt-5 pl-2">
+          <p *ngIf="motif?.description" class="mb-1">
+            {{ motif?.description }}
+          </p>
+        </div>
+    </div>
+    <div class="col-sm-5 img d-flex justify-content-center">
+      <img class="img-fluid rounded-circle" src="{{ motif?.image }}" alt="{{ motif?.label }}" />
+    </div>
+  </div>
+
+  <app-slider [items]="sliderItems" heading="Artworks"> </app-slider>
+</div>

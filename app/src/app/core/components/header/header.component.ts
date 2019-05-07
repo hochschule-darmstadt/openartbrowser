@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {Observable} from 'rxjs';
 import {debounceTime, map, startWith} from 'rxjs/operators';
-import { FormControl } from '@angular/forms';
 
 const artworks: {label: String, image: String}[] = [
   {

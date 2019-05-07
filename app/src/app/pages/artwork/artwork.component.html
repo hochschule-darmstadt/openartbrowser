@@ -11,13 +11,13 @@
       <h2 class="mb-1">{{ artwork?.label }}</h2>
 
       <div class="row">
-        <div class="metadata-left col-1">
+        <div class="col-1">
           <p *ngIf="artwork?.creators?.length" class="mb-1 text-muted">Artist:</p>
           <p *ngIf="artwork?.locations?.length" class="mb-1 text-muted">Location:</p>
           <p *ngIf="artwork?.inception" class="mb-1 text-muted">Inception:</p>
         </div>
 
-        <div class="metadata-right col-11">
+        <div class="col-11">
           <p *ngIf="artwork?.creators?.length" class="mb-1">
             <span
               class="badge badge-pill badge-secondary"
@@ -39,7 +39,14 @@
           <p *ngIf="artwork?.inception" class="mb-1">{{ artwork?.inception }}</p>
         </div>
       </div>
-      <div>
+      <div
+        *ngIf="
+          artwork?.genres?.length ||
+          artwork?.movements?.length ||
+          artwork?.materials?.length ||
+          artwork?.depicts?.length
+        "
+      >
         <h4 class="mt-2 more" data-toggle="collapse" href="#collapseArtwork" (click)="toggleDetails()">
           More
           <i *ngIf="collapseDown" data-toggle="collapse" href="#collapseArtwork" class="fas fa-chevron-down"></i>
@@ -48,15 +55,15 @@
 
         <div class="collapse" id="collapseArtwork">
           <div class="row">
-            <div class="metadata-left col-1">
+            <div class="col-1">
               <p *ngIf="artwork?.genres?.length" class="mb-1 text-muted">Genre:</p>
               <p *ngIf="artwork?.movements?.length" class="mb-1 text-muted">Movement:</p>
               <p *ngIf="artwork?.materials?.length" class="mb-1 text-muted">Material:</p>
-              <p *ngIf="artwork?.motifs?.length" class="mb-1 text-muted">Motif:</p>
+              <p *ngIf="artwork?.depicts?.length" class="mb-1 text-muted">Motif:</p>
               <p *ngIf="artwork?.height && artwork?.width" class="mb-1 text-muted">Dimension:</p>
             </div>
 
-            <div class="metadata-right col-11">
+            <div class="col-11">
               <p *ngIf="artwork?.genres?.length" class="mb-1">
                 <span
                   class="badge badge-pill badge-secondary"
@@ -87,10 +94,10 @@
                 >
               </p>
 
-              <p *ngIf="artwork?.motifs?.length" class="mb-1">
+              <p *ngIf="artwork?.depicts?.length" class="mb-1">
                 <span
                   class="badge badge-pill badge-secondary"
-                  *ngFor="let motif of artwork?.motifs"
+                  *ngFor="let motif of artwork?.depicts"
                   [routerLink]="'/motif/' + motif.id"
                 >
                   {{ motif?.label }}</span

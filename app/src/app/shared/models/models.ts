@@ -25,7 +25,7 @@ export interface Artwork extends Entity {
   movements: Partial<Movement>[];
   inception?: number;
   materials: Partial<Material>[];
-  motifs: Partial<Motif>[];
+  depicts: Partial<Motif>[];
   country?: string;
   height?: number;
   width?: number;

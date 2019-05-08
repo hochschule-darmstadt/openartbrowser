@@ -6,7 +6,7 @@
 .img_self {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
 }
 
 .overlay_view {
@@ -25,6 +25,10 @@
   transition: .3s ease;
 }
 
+.item{
+  max-height: 20em;
+  overflow: hidden;
+}
 
 .img_container:hover .overlay_view {
   -webkit-transform: scale(1);

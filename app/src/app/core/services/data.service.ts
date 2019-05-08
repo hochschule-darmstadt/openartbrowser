@@ -21,6 +21,9 @@ export class DataService {
     try {
       const result: any = await this.http.get<Entity>('http://localhost:4200/wiki_data/_search?q=id:' + id).toPromise();
       // due to some ids being present multiple times in the data store (bug)-> always take the first result
+      if (!result || !result.hits || !result.hits.hits[0]) {
+        return null;
+      }
       const rawEntity = result.hits.hits[0]._source;
       if (!enrich) {
         return rawEntity;
@@ -47,12 +50,15 @@ export class DataService {
         for (const relatedEntityId of entity[key]) {
           if (relatedEntityId !== '') {
             const relatedEntity = await this.findById(relatedEntityId, false);
-            newValues.push({
-              id: relatedEntity.id,
-              label: relatedEntity.label,
-              description: relatedEntity.description,
-              image: relatedEntity.image,
-            });
+            if (relatedEntity) {
+              newValues.push({
+                id: relatedEntity.id,
+                label: relatedEntity.label,
+                description: relatedEntity.description,
+                image: relatedEntity.image,
+                type: relatedEntity.type,
+              });
+            }
           }
         }
         /** replace the old array holding only the ids with the new array holding the fetched entities */

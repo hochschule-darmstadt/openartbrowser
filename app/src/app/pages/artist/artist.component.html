@@ -1,5 +1,5 @@
 <div class="container">
-  <div class="row mb-5">
+  <div class="row mb-5 border-bottom pb-4">
     <div class="col-sm-7">
       <span class="badge badge-pill badge-secondary"><i class="fas fa-user"></i> Artist</span>
       <h2 class="mb-3">{{ artist?.label }}</h2>
@@ -21,24 +21,24 @@
       </div>
 
       <div *ngIf="artist?.gender || artist?.citizenship || artist?.movements?.length || artist?.influenced_by?.length">
-        <h4 class="mt-5 more" data-toggle="collapse" href="#collapseArtist" (click)="toggleDetails()">
+        <h4 class="mt-2 more" data-toggle="collapse" href="#collapseArtist" (click)="toggleDetails()">
           More
           <i *ngIf="collapseDown" data-toggle="collapse" href="#collapseArtist" class="fas fa-chevron-down"> </i>
           <i *ngIf="!collapseDown" data-toggle="collapse" href="#collapseArtist" class="fas fa-chevron-up"> </i>
         </h4>
 
-        <div class="mx-3 collapse border-bottom" id="collapseArtist">
+        <div class="mx-3 collapse" id="collapseArtist">
           <div class="row">
-            <div class="col-sm ">
-              <p *ngIf="artist?.gender" class="text-muted">Gender:</p>
-              <p *ngIf="artist?.citizenship" class="text-muted">Citizenship:</p>
-              <p *ngIf="artist?.movements?.length" class="text-muted">Movement:</p>
-              <p *ngIf="artist?.influenced_by?.length" class="text-muted">Influenced by:</p>
+            <div class="col-3 pr-0 ">
+              <p *ngIf="artist?.gender" class="text-muted mb-1">Gender:</p>
+              <p *ngIf="artist?.citizenship" class="text-muted mb-1">Citizenship:</p>
+              <p *ngIf="artist?.movements?.length" class="text-muted mb-1">Movement:</p>
+              <p *ngIf="artist?.influenced_by?.length" class="text-muted mb-1">Influenced by:</p>
             </div>
-            <div class="col-9">
-              <p *ngIf="artist?.gender">{{ artist?.gender }}</p>
-              <p *ngIf="artist?.citizenship">{{ artist?.citizenship }}</p>
-              <p *ngIf="artist?.movements?.length">
+            <div class="col-9 pl-0">
+              <p *ngIf="artist?.gender" class="mb-1">{{ artist?.gender }}</p>
+              <p *ngIf="artist?.citizenship" class="mb-1">{{ artist?.citizenship }}</p>
+              <p *ngIf="artist?.movements?.length" class="mb-1">
                 <span
                   *ngFor="let movement of artist?.movements"
                   class="badge badge-pill badge-secondary"

@@ -1,20 +1,45 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute } from '@angular/router';
-import { take } from 'rxjs/operators';
-import {Entity, Motif} from 'src/app/shared/models/models';
+import { takeUntil } from 'rxjs/operators';
+import { Entity, Motif } from 'src/app/shared/models/models';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-motif',
   templateUrl: './motif.component.html',
   styleUrls: ['./motif.component.scss'],
 })
-export class MotifComponent implements OnInit {
-  constructor(private dataService: DataService, private route: ActivatedRoute) {}
-
+export class MotifComponent implements OnInit, OnDestroy {
   /** The entity this page is about */
   motif: Motif = null;
 
+  /** use this to end subscription to url parameter in ngOnDestroy */
+  private ngUnsubscribe = new Subject();
+
+  constructor(private dataService: DataService, private route: ActivatedRoute) {}
+
+  /** hook that is executed at component initialization */
+  ngOnInit() {
+    /** Extract the id of entity from URL params. */
+    this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe((params) => {
+      const motifId = params.get('motifId');
+      /** Use data service to fetch entity from database */
+      this.dataService
+        .findById(motifId)
+        .then((entity) => {
+          this.motif = entity as Motif;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
   /** Dummy artworks */
   sliderItems: Entity[] = [
     {
@@ -29,15 +54,15 @@ export class MotifComponent implements OnInit {
       id: '',
       description: '',
       type: '',
-      image:
-        'https://upload.wikimedia.org/wikipedia/commons/b/b2/13th_Light_Dragoons_Waterloo.jpg',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/b/b2/13th_Light_Dragoons_Waterloo.jpg',
       label: 'Ginevra de Benci',
     },
     {
       id: '',
       description: '',
       type: '',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/5/57/The_Battle_of_Waterloo_-_Orme%27s_Historic%2C_military%2C_and_naval_anecdotes_%281819%29%2C_opposite_15_-_BL.jpg',
+      image:
+        'https://upload.wikimedia.org/wikipedia/commons/5/57/The_Battle_of_Waterloo_-_Orme%27s_Historic%2C_military%2C_and_naval_anecdotes_%281819%29%2C_opposite_15_-_BL.jpg',
       label: 'Maria Magdalena',
     },
     {
@@ -66,8 +91,7 @@ export class MotifComponent implements OnInit {
       id: '',
       description: '',
       type: '',
-      image:
-        'https://upload.wikimedia.org/wikipedia/commons/e/e3/Jan_Willem_Pieneman00.jpg',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/e/e3/Jan_Willem_Pieneman00.jpg',
       label: 'Mona Lisa',
     },
     {
@@ -134,22 +158,4 @@ export class MotifComponent implements OnInit {
       label: 'The Virgin and Child with St Anne',
     },
   ];
-
-  /** hook that is executed at component initialization */
-  ngOnInit() {
-    /** Extract the id of entity from URL params. */
-    this.route.paramMap.pipe(take(1)).subscribe((params) => {
-      const motifId = params.get('motifId');
-      /** Use data service to fetch entity from database */
-      this.dataService
-        .findById(motifId)
-        .then((entity) => {
-          this.motif = entity as Motif;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    });
-  }
-
 }

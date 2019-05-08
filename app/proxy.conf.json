@@ -1,5 +1,5 @@
 {
-  "/wiki_data": {
+  "/art_data": {
     "target": "http://141.100.60.99:9200",
     "secure": false,
     "pathRewrite": {

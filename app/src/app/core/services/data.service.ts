@@ -19,7 +19,7 @@ export class DataService {
    */
   public async findById(id: string, enrich: boolean = true): Promise<Entity> {
     try {
-      const result: any = await this.http.get<Entity>('http://localhost:4200/wiki_data/_search?q=id:' + id).toPromise();
+      const result: any = await this.http.get<Entity>('http://localhost:4200/art_data/_search?q=id:' + id).toPromise();
       // due to some ids being present multiple times in the data store (bug)-> always take the first result
       if (!result || !result.hits || !result.hits.hits[0]) {
         return null;

@@ -4,6 +4,8 @@ export interface Entity {
   description?: string;
   image?: string;
   type: string;
+  absoluteRank: number;
+  relativeRank: number;
 }
 
 export interface Artist extends Entity {

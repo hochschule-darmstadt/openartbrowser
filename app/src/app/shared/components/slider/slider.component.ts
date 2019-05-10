@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, SimpleChanges, OnChanges } from '@angular/core';
 import { Entity } from '../../models/models';
 
 @Component({
@@ -6,12 +6,13 @@ import { Entity } from '../../models/models';
   templateUrl: './slider.component.html',
   styleUrls: ['./slider.component.scss'],
 })
-export class SliderComponent implements OnInit {
+export class SliderComponent implements OnChanges {
   constructor() {}
 
-  ngOnInit() {
-    /** Cuts big array into smaller arrays */
-    this.buildSliderPages();
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.items) {
+      this.buildSliderPages();
+    }
   }
 
   splicedItems: Array<Entity[]> = [];

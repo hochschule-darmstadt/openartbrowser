@@ -93,17 +93,18 @@
       <h3>Related Artworks</h3>
 
       <ul class="nav nav-tabs">
-        <li class="nav-item" *ngFor="let tab of artworkTabs">
-          <a class="nav-link" [ngClass]="{ active: tab.active }" data-toggle="tab" href="#{{ tab.heading }}_tab">
-            {{ tab.heading }}
+        <li class="nav-item" *ngFor="let tab of Object.keys(artworkTabs)">
+          <a class="nav-link" [ngClass]="{ active: artworkTabs[tab].active }" data-toggle="tab"
+            href="#{{ artworkTabs[tab].heading }}_tab">
+            {{ artworkTabs[tab].heading }}
           </a>
         </li>
       </ul>
 
       <div class="tab-content">
-        <div *ngFor="let tab of artworkTabs" class="tab-pane fade" [ngClass]="{ 'show active': tab.active }"
-          id="{{ tab.heading }}_tab">
-          <app-slider [items]="tab.items"> </app-slider>
+        <div *ngFor="let tab of Object.keys(artworkTabs)" class="tab-pane fade"
+          [ngClass]="{ 'show active': tab?.value?.active }" id="{{ artworkTabs[tab].heading }}_tab">
+          <app-slider [items]="artworkTabs[tab].items"> </app-slider>
         </div>
       </div>
     </div>

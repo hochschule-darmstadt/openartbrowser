@@ -11,18 +11,14 @@
 
         <div class="col-9">
           <p *ngIf="movement?.influenced_by?.length" class="mb-1">
-            <span
-              *ngFor="let influence of movement?.influenced_by"
-              class="badge badge-pill badge-secondary"
-              [routerLink]="influence.type === 'artist' ? '/artist/' + influence.id : '/movement/' + influence.id"
-            >
-              {{ influence.label }}</span
-            >
+            <span *ngFor="let influence of movement?.influenced_by" class="badge badge-pill badge-secondary"
+              [routerLink]="influence.type === 'artist' ? '/artist/' + influence.id : '/movement/' + influence.id">
+              {{ influence.label }}</span>
           </p>
         </div>
       </div>
     </div>
-    <div class="col-sm-5 img">
+    <div class="col-sm-5 img" *ngIf="movement?.image">
       <img class="img-fluid rounded-circle" src="{{ movement?.image }}" alt="{{ movement?.label }}" />
     </div>
   </div>

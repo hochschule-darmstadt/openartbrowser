@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Artwork, Entity } from 'src/app/shared/models/models';
 import { takeUntil } from 'rxjs/operators';
 import { DataService } from 'src/app/core/services/data.service';
@@ -17,7 +17,7 @@ interface SliderTab {
   templateUrl: './artwork.component.html',
   styleUrls: ['./artwork.component.scss'],
 })
-export class ArtworkComponent implements OnInit {
+export class ArtworkComponent implements OnInit, OnDestroy {
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();
 

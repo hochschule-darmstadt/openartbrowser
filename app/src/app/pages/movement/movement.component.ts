@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
@@ -10,7 +10,7 @@ import { Subject } from 'rxjs';
   templateUrl: './movement.component.html',
   styleUrls: ['./movement.component.scss'],
 })
-export class MovementComponent implements OnInit {
+export class MovementComponent implements OnInit, OnDestroy {
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();
 

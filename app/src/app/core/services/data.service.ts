@@ -45,7 +45,7 @@ export class DataService {
    * @param id Id of the entity to retrieve
    * @param enrich whether related entities should also be loaded
    */
-  public async findById(id: string, enrich: boolean = false): Promise<Entity> {
+  public async findById(id: string, enrich: boolean = true): Promise<Entity> {
     let result;
     try {
       result = await this.http.get<Entity>('http://localhost:4200/art_data/_search?q=id:' + id).toPromise();
@@ -53,12 +53,11 @@ export class DataService {
       console.log('Something went wrong during API request');
       return null;
     }
-    // due to some ids being present multiple times in the data store (bug)-> always take the first result
     if (!result || !result.hits || !result.hits.hits[0]) {
       return null;
     }
+    // due to some ids being present multiple times in the data store (bug)-> always take the first result
     const rawEntity = result.hits.hits[0]._source;
-    console.log(rawEntity);
     if (!enrich) {
       return rawEntity;
     } else {
@@ -73,8 +72,7 @@ export class DataService {
   private async enrichEntity(entity: Entity): Promise<Entity> {
     /** go though all attributes of entity */
     for (const key of Object.keys(entity)) {
-      console.log('attribute ' + key + ' value: ' + entity[key] + ' Array.isArray: ' + Array.isArray(entity[key]));
-      /** check if attribute is an array (only attributes holding relations to other entites are arrays) */
+      /** check if attribute is an array (only attributes holding relations to other entities are arrays) */
       if (Array.isArray(entity[key]) && key !== 'classes') {
         const newValues = [];
         /** for every id in the array-> fetch entity and extract values from it  */

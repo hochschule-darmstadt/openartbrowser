@@ -59,7 +59,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
       label: 'Salome with the Head of John the Baptist',
     },
     {
-      id: '',
+      id: 'Q1267893',
       description: '',
       type: '',
       image:
@@ -67,14 +67,14 @@ export class ArtistComponent implements OnInit, OnDestroy {
       label: 'Ginevra de Benci',
     },
     {
-      id: '',
+      id: 'Q12734910',
       description: '',
       type: '',
       image: 'https://upload.wikimedia.org/wikipedia/commons/b/b6/Giampetrino-Leonardo.jpg',
       label: 'Maria Magdalena',
     },
     {
-      id: '',
+      id: 'Q18633460',
       description: '',
       type: '',
       image:
@@ -82,21 +82,21 @@ export class ArtistComponent implements OnInit, OnDestroy {
       label: 'La Belle Ferronière',
     },
     {
-      id: '',
+      id: 'Q1487435',
       description: '',
       type: '',
       image: 'https://upload.wikimedia.org/wikipedia/commons/6/66/Lorenzo_di_Credi_-_Madonna_Dreyfus.jpg',
       label: 'Madonna and Child with a Pomegranate',
     },
     {
-      id: '',
+      id: 'Q4390923',
       description: '',
       type: '',
       image: 'https://upload.wikimedia.org/wikipedia/commons/b/bb/The_Isleworth_Mona_Lisa.jpg',
       label: 'Isleworth Mona Lisa',
     },
     {
-      id: '',
+      id: 'Q1327676',
       description: '',
       type: '',
       image: 'https://upload.wikimedia.org/wikipedia/commons/6/6f/Leonardo_da_Vinci_attributed_-_Madonna_Litta.jpg',

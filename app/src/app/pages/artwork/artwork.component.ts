@@ -28,6 +28,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
 
   /** Change collapse icon */
   collapseDown: boolean = true;
+  collapseDownTags: boolean = true;
 
   /** tabs with artwork sliders */
   artworkTabs: { [key: string]: SliderTab } = {
@@ -119,4 +120,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   toggleDetails() {
     this.collapseDown = !this.collapseDown;
   }
-}
+
+  toggleCommonTags() {
+    this.collapseDownTags = !this.collapseDownTags;
+  }}

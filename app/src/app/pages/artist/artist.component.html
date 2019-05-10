@@ -36,15 +36,15 @@
               <p *ngIf="artist?.influenced_by?.length" class="text-muted mb-1">Influenced by:</p>
             </div>
             <div class="col-9 pl-0">
-              <p *ngIf="artist?.gender" class="mb-1">{{ artist?.gender }}</p>
-              <p *ngIf="artist?.citizenship" class="mb-1">{{ artist?.citizenship }}</p>
+              <p *ngIf="artist?.gender" class="mb-1 first-letter">{{ artist?.gender }}</p>
+              <p *ngIf="artist?.citizenship" class="mb-1 first-letter">{{ artist?.citizenship }}</p>
               <p *ngIf="artist?.movements?.length" class="mb-1">
-                <span *ngFor="let movement of artist?.movements" class="badge badge-pill badge-secondary"
+                <span *ngFor="let movement of artist?.movements" class="badge badge-pill badge-secondary first-letter"
                   [routerLink]="'/movement/' + movement.id">{{ movement.label }}</span>
               </p>
               <p *ngIf="artist?.influenced_by?.length">
-                <span *ngFor="let influencer of artist?.influenced_by" class="badge badge-pill badge-secondary"
-                  [routerLink]="'/artist/' + influencer.id">
+                <span *ngFor="let influencer of artist?.influenced_by"
+                  class="badge badge-pill badge-secondary first-letter" [routerLink]="'/artist/' + influencer.id">
                   {{ influencer.label }}</span>
               </p>
             </div>

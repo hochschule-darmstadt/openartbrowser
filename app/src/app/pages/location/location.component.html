@@ -2,14 +2,14 @@
   <div class="row mb-5">
     <div class="col-sm-7">
       <span class="badge badge-pill badge-secondary"><i class="fas fa-archway"></i> Location</span>
-      <h2 class="mb-3">{{ location?.label }}</h2>
+      <h2 class="mb-3 first-letter">{{ location?.label }}</h2>
       <div *ngIf="location?.country || location?.website" class="row mb-3 mt-5">
         <div class="col-sm pr-0">
           <p *ngIf="location?.country" class="text-muted">Country:</p>
           <p *ngIf="location?.website" class="text-muted">Official page:</p>
         </div>
         <div class="col-9 pl-0">
-          <p *ngIf="location?.country">{{location?.country}}</p>
+          <p *ngIf="location?.country" class="first-letter">{{location?.country}}</p>
           <p *ngIf="location?.website"><a href="{{location?.website}}">{{location?.label}}</a></p>
         </div>
       </div>

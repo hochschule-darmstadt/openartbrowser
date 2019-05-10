@@ -2,11 +2,11 @@
   <div class="row mb-5">
     <div class="col-sm-7">
       <span class="badge badge-pill badge-secondary"><i class="fas fa-wind"></i> Movement</span>
-      <h2 class="mb-3">{{ movement?.label }}</h2>
+      <h2 class="mb-3 first-letter">{{ movement?.label }}</h2>
 
       <div class="row">
         <div class="col-sm">
-          <p *ngIf="movement?.influenced_by?.length" class="mb-1 text-muted">Influenced by:</p>
+          <p *ngIf="movement?.influenced_by?.length" class="mb-1 text-muted first-letter">Influenced by:</p>
         </div>
 
         <div class="col-9">

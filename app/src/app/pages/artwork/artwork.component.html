@@ -5,7 +5,7 @@
   <div class="row pt-3 pb-3 border-bottom">
     <div class="col-sm-12">
       <div class="text-muted">
-        <span class="badge badge-secondary"><i class="fas fa-palette"></i> Artwork</span>
+        <span class="badge badge-secondary chip"><i class="fas fa-palette"></i> Artwork</span>
       </div>
 
       <h2 class="mb-1 first-letter">{{ artwork?.label }}</h2>
@@ -19,12 +19,12 @@
 
         <div class="col-11">
           <p *ngIf="artwork?.creators?.length" class="mb-1">
-            <span class="badge badge-pill badge-secondary first-letter" *ngFor="let creator of artwork?.creators"
+            <span class="badge badge-pill badge-secondary first-letter chip" *ngFor="let creator of artwork?.creators"
               [routerLink]="'/artist/' + creator.id">
               {{ creator?.label }}</span>
           </p>
           <p *ngIf="artwork?.locations?.length" class="mb-1">
-            <span class="badge badge-pill badge-secondary first-letter" *ngFor="let location of artwork?.locations"
+            <span class="badge badge-pill badge-secondary first-letter chip" *ngFor="let location of artwork?.locations"
               [routerLink]="'/location/' + location.id">
               {{ location?.label }}</span>
           </p>
@@ -55,25 +55,25 @@
 
             <div class="col-11">
               <p *ngIf="artwork?.genres?.length" class="mb-1">
-                <span class="badge badge-pill badge-secondary first-letter" *ngFor="let genre of artwork?.genres"
+                <span class="badge badge-pill badge-secondary first-letter chip" *ngFor="let genre of artwork?.genres"
                   [routerLink]="'/genre/' + genre.id">
                   {{ genre?.label }}</span>
               </p>
 
               <p *ngIf="artwork?.movements?.length" class="mb-1">
-                <span class="badge badge-pill badge-secondary first-letter" *ngFor="let movement of artwork?.movements"
-                  [routerLink]="'/movement/' + movement.id">
+                <span class="badge badge-pill badge-secondary first-letter chip"
+                  *ngFor="let movement of artwork?.movements" [routerLink]="'/movement/' + movement.id">
                   {{ movement?.label }}</span>
               </p>
 
               <p *ngIf="artwork?.materials?.length" class="mb-1">
-                <span class="badge badge-pill badge-secondary first-letter" *ngFor="let material of artwork?.materials"
-                  [routerLink]="'/material/' + material.id">
+                <span class="badge badge-pill badge-secondary first-letter chip"
+                  *ngFor="let material of artwork?.materials" [routerLink]="'/material/' + material.id">
                   {{ material?.label }}</span>
               </p>
 
               <p *ngIf="artwork?.depicts?.length" class="mb-1">
-                <span class="badge badge-pill badge-secondary first-letter" *ngFor="let motif of artwork?.depicts"
+                <span class="badge badge-pill badge-secondary first-letter chip" *ngFor="let motif of artwork?.depicts"
                   [routerLink]="'/motif/' + motif.id">
                   {{ motif?.label }}</span>
               </p>

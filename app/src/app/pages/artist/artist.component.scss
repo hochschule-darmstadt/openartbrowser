@@ -6,6 +6,14 @@ img {
   cursor: pointer;
 }
 
-.info {
-  margin-left: -2em;
+@media (min-width: 992px) {
+  .info {
+    margin-left: -2em;
+  }
+}
+
+@media (max-width: 992px) {
+  .info {
+    margin-left: 1em;
+  }
 }

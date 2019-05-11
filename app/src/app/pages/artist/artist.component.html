@@ -30,27 +30,47 @@
         <div class="collapse" id="collapseArtist">
           <div class="row">
             <div class="col-3 pr-0 ">
-              <p *ngIf="artist?.gender" class="text-muted mb-1">Gender:</p>
-              <p *ngIf="artist?.citizenship" class="text-muted mb-1">Citizenship:</p>
-              <p *ngIf="artist?.movements?.length" class="text-muted mb-1">Movement:</p>
-              <p *ngIf="artist?.influenced_by?.length" class="text-muted mb-1">Influenced by:</p>
+              <p *ngIf="artist?.gender" class="text-muted mb-2">Gender:</p>
             </div>
-            <div class="col-9 pl-0">
-              <p *ngIf="artist?.gender" class="mb-1 first-letter">{{ artist?.gender }}</p>
-              <p *ngIf="artist?.citizenship" class="mb-1 first-letter">{{ artist?.citizenship }}</p>
-              <p *ngIf="artist?.movements?.length" class="mb-1">
+            <div class="col-9 pl-0 info">
+              <p *ngIf="artist?.gender" class="mb-2 first-letter">{{ artist?.gender }}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-3 pr-0 ">
+              <p *ngIf="artist?.citizenship" class="text-muted mb-2">Citizenship:</p>
+            </div>
+            <div class="col-9 pl-0 info">
+              <p *ngIf="artist?.citizenship" class="mb-2 first-letter">{{ artist?.citizenship }}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-3 pr-0 ">
+              <p *ngIf="artist?.movements?.length" class="text-muted mb-2">Movement:</p>
+            </div>
+            <div class="col-9 pl-0 info">
+              <p *ngIf="artist?.movements?.length" class="mb-2">
                 <span *ngFor="let movement of artist?.movements"
                   class="badge badge-pill badge-secondary first-letter chip"
                   [routerLink]="'/movement/' + movement.id">{{ movement.label }}</span>
               </p>
-              <p *ngIf="artist?.influenced_by?.length">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-3 pr-0 ">
+              <p *ngIf="artist?.influenced_by?.length" class="text-muted mb-2">Influenced by:</p>
+            </div>
+            <div class="col-9 pl-0 info">
+              <p *ngIf="artist?.influenced_by?.length" class="mb-2">
                 <span *ngFor="let influencer of artist?.influenced_by"
                   class="badge badge-pill badge-secondary first-letter chip" [routerLink]="'/artist/' + influencer.id">
                   {{ influencer.label }}</span>
               </p>
             </div>
           </div>
+
         </div>
+
       </div>
     </div>
     <div class="col-sm-5 img" *ngIf="artist?.image">

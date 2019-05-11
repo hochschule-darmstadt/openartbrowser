@@ -5,11 +5,11 @@
       <h2 class="mb-3 first-letter">{{ movement?.label }}</h2>
 
       <div class="row">
-        <div class="col-sm">
+        <div class="col-md-3 pr-0">
           <p *ngIf="movement?.influenced_by?.length" class="mb-1 text-muted">Influenced by:</p>
         </div>
 
-        <div class="col-9">
+        <div class="col-md-9 pl-0 info">
           <p *ngIf="movement?.influenced_by?.length" class="mb-1">
             <span *ngFor="let influence of movement?.influenced_by"
               class="badge badge-pill badge-secondary first-letter chip"

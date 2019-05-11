@@ -1,24 +1,37 @@
 img {
-    max-height: 20em;
-  }
-  
-  .more{
-    cursor: pointer;
-  }
+  max-height: 20em;
+}
+
+.more {
+  cursor: pointer;
+}
 
 /* google maps */
 .google-maps {
-    position: relative;
-    padding-bottom: 30%; // This is the aspect ratio
-    height: 0;
-    overflow: hidden;
+  position: relative;
+  padding-bottom: 30%; // This is the aspect ratio
+  height: 0;
+  overflow: hidden;
 
-    iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100% !important;
-      height: 100% !important;
-    }
+  iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+  }
 
+}
+
+
+@media (min-width: 992px) {
+  .info {
+    margin-left: -2em;
+  }
+}
+
+@media (max-width: 992px) {
+  .info {
+    margin-left: 1em;
+  }
 }

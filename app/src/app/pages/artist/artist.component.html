@@ -68,15 +68,12 @@
               </p>
             </div>
           </div>
-
         </div>
-
       </div>
     </div>
     <div class="col-sm-5 img" *ngIf="artist?.image">
       <img class="img-fluid rounded-circle" src="{{ artist?.image }}" alt="{{ artist?.label }}" />
     </div>
   </div>
-
   <app-slider [items]="sliderItems" heading="Artworks"> </app-slider>
 </div>

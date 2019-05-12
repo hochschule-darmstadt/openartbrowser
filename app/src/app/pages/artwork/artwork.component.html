@@ -93,12 +93,14 @@
       <h3>Related Artworks</h3>
 
       <ul class="nav nav-tabs">
-        <li class="nav-item" *ngFor="let tab of Object.keys(artworkTabs)">
-          <a class="nav-link" [ngClass]="{ active: artworkTabs[tab].active }" data-toggle="tab"
-            href="#{{ artworkTabs[tab].heading }}_tab">
-            {{ artworkTabs[tab].heading }}
-          </a>
-        </li>
+        <ng-template ngFor let-tab [ngForOf]="Object.keys(artworkTabs)">
+          <li class="nav-item" *ngIf="tab == 'all' || artworkTabs[tab].items.length">
+            <a class="nav-link" [ngClass]="{ active: artworkTabs[tab].active }" data-toggle="tab"
+              href="#{{ artworkTabs[tab].heading }}_tab">
+              <i class="fas fa-{{ artworkTabs[tab].icon }}"></i> {{ artworkTabs[tab].heading }}
+            </a>
+          </li>
+        </ng-template>
       </ul>
 
       <div class="tab-content">

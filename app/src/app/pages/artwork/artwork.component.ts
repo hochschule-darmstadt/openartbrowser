@@ -9,6 +9,7 @@ import { Subject } from 'rxjs';
 interface SliderTab {
   heading: string;
   items: Entity[];
+  icon: string;
   active: boolean;
 }
 
@@ -35,36 +36,43 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     artist: {
       heading: 'Artist',
       items: [],
+      icon: 'user',
       active: false,
     },
     all: {
       heading: 'All',
       items: [],
+      icon: 'list-ul',
       active: true,
     },
     location: {
       heading: 'Location',
       items: [],
+      icon: 'archway',
       active: false,
     },
     genre: {
       heading: 'Genre',
       items: [],
+      icon: 'tags',
       active: false,
     },
     movement: {
       heading: 'Movement',
       items: [],
+      icon: 'wind',
       active: false,
     },
     material: {
       heading: 'Material',
       items: [],
+      icon: 'scroll',
       active: false,
     },
     motif: {
       heading: 'Motif',
       items: [],
+      icon: 'image',
       active: false,
     },
   };

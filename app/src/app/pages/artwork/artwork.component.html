@@ -28,7 +28,7 @@
               [routerLink]="'/location/' + location.id">
               {{ location?.label }}</span>
           </p>
-          <p *ngIf="artwork?.inception" class="mb-1">{{ artwork?.inception }}</p>
+          <p *ngIf="artwork?.inception" class="mb-1 notchip">{{ artwork?.inception }}</p>
         </div>
       </div>
       <div *ngIf="
@@ -78,7 +78,7 @@
                   {{ motif?.label }}</span>
               </p>
 
-              <p *ngIf="artwork?.height && artwork?.width" class="mb-1">
+              <p *ngIf="artwork?.height && artwork?.width" class="mb-1 notchip">
                 {{ artwork?.height }} x {{ artwork?.width }}cm
               </p>
             </div>

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Entity, Artwork } from 'src/app/shared/models/models';
+import { Observable } from 'rxjs';
 
 /**
  * Service that handles the requests to the API

@@ -37,13 +37,13 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       heading: 'Artist',
       items: [],
       icon: 'user',
-      active: false,
+      active: true,
     },
     all: {
       heading: 'All',
       items: [],
       icon: 'list-ul',
-      active: true,
+      active: false,
     },
     location: {
       heading: 'Location',
@@ -131,4 +131,26 @@ export class ArtworkComponent implements OnInit, OnDestroy {
 
   toggleCommonTags() {
     this.collapseDownTags = !this.collapseDownTags;
-  }}
+  }
+
+  showTab(key: string){
+    if (this.artwork) {
+      switch (key) {
+        case 'artist':
+          return this.artwork.creators.length;
+        case 'movement':
+          return this.artwork.movements.length;
+        case 'genre':
+          return this.artwork.genres.length;
+        case 'motif':
+          return this.artwork.depicts.length;
+        case 'location':
+          return this.artwork.locations.length;
+        case 'material':
+          return this.artwork.materials.length;
+        default:
+          return true;
+      }
+    }
+  }
+}

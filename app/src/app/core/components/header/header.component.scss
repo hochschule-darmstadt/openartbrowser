@@ -12,9 +12,6 @@
   border-radius: 25px;
   border: 1px solid #ccc;
   margin-top: 10px;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
 }
 
 .search-form .form-group:hover,
@@ -30,11 +27,4 @@
     width: 500px;
     border-radius: 4px 25px 25px 4px;
   }
-}
-
-.fa-search {
-  color: #38dfa7;
-  width: 15px;
-  margin: -30px 7px;
-  float: right;
 }

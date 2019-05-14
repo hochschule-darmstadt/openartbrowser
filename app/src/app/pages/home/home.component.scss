@@ -1,13 +1,13 @@
 @import '../../../variables';
 
 /** test variable for background image (will be removed later) */
-$monalisa:"https://upload.wikimedia.org/wikipedia/commons/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg";
-$michaelina:"https://upload.wikimedia.org/wikipedia/commons/1/14/Michaelina_wautier-anunciaci%C3%B3n.jpg";
+$monalisa: 'https://upload.wikimedia.org/wikipedia/commons/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg';
+$michaelina: 'https://upload.wikimedia.org/wikipedia/commons/1/14/Michaelina_wautier-anunciaci%C3%B3n.jpg';
 
-$color1:#00bc8c;
+$color1: #00bc8c;
 
 /** Set background of the home page */
-.background-image{
+.background-image {
   position: fixed;
   display: block;
   top: 0;
@@ -19,7 +19,7 @@ $color1:#00bc8c;
   background-position: center;
   background-repeat: no-repeat;
   z-index: -1;
-  
+
   /* Add the blur effect */
   filter: blur(10px);
   -webkit-filter: blur(10px);
@@ -33,31 +33,31 @@ $color1:#00bc8c;
   margin-top: 0;
   margin-bottom: 6rem;
 
-    .title {
-      font-size: 8vh;
-      letter-spacing: 0rem;
-      color: $color1;
-      width: 100%;
-      margin-bottom: 6rem;
-    }
-    .search {
-      height: 3.5rem;
-      font-size: 1.7rem;
-      background-color: transparent;
-      border-bottom: 1px solid white;
-    
-      transition: all .3s ease;
-      -webkit-animation: fade 4s infinite;
-      -moz-animation: fade 4s infinite;
-      -o-animation: fade 4s infinite;
-      animation: fade 4s infinite;
-    
-      &:focus{
-      background-color: white;
-      box-shadow: 0 0 50px 2px $color1;
-      border-bottom: none;
-      }
-    }
+  .title {
+    font-size: 8vh;
+    letter-spacing: 0rem;
+    color: $color1;
+    width: 100%;
+    margin-bottom: 6rem;
+  }
+}
+/** Styling search component input field */
+:host ::ng-deep .search div input {
+  height: 3.5rem;
+  font-size: 1.7rem;
+  border-bottom: 1px solid white;
+
+  transition: all 0.3s ease;
+  -webkit-animation: fade 4s infinite;
+  -moz-animation: fade 4s infinite;
+  -o-animation: fade 4s infinite;
+  animation: fade 4s infinite;
+
+  &:focus {
+    background-color: white;
+    box-shadow: 0 0 50px 2px $color1;
+    border-bottom: none;
+  }
 }
 
 /** Styling for the category boxes */
@@ -74,8 +74,8 @@ $color1:#00bc8c;
     overflow: hidden;
     width: 100%;
     height: 100%;
-    -webkit-transition: .3s ease;
-    transition: .3s ease;
+    -webkit-transition: 0.3s ease;
+    transition: 0.3s ease;
     border-radius: 15px;
   }
 
@@ -88,7 +88,7 @@ $color1:#00bc8c;
     background-repeat: no-repeat;
     background-size: cover;
     box-shadow: 0 0 30px 1px black;
-    transition: all .5s ease;
+    transition: all 0.5s ease;
     -webkit-animation: fade 4s infinite;
     -moz-animation: fade 4s infinite;
     -o-animation: fade 4s infinite;
@@ -96,13 +96,13 @@ $color1:#00bc8c;
 
     &:hover {
       cursor: pointer;
-      transition: all .2s ease;
+      transition: all 0.2s ease;
       transform: scale(1.05);
       box-shadow: 0 0 20px 1px $color1;
     }
-    
-    &:hover>.overlay {
-      transition: all .2s ease;
+
+    &:hover > .overlay {
+      transition: all 0.2s ease;
       width: 100%;
       height: 100%;
       position: absolute;
@@ -123,7 +123,7 @@ $color1:#00bc8c;
     transform: translate(-50%, -50%);
     text-align: center;
   }
-  
+
   .type {
     color: white;
     font-size: 15px;

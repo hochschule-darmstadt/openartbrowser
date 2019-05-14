@@ -1,21 +1,23 @@
-<div class="background-image">
-</div>
+<div class="background-image"></div>
 <div class="container">
   <div class="container-content">
     <div class="text-center">
       <h1 class="title">ArtBrowser</h1>
     </div>
     <div class="container">
-      <input class="search form-control form-control-lg" type="text" placeholder='search for "mona lisa"'>
+      <app-search class="search"> </app-search>
     </div>
   </div>
 
   <div class="row pt-4">
-
     <div class="col-lg-4 mb-4 container-category">
-      <div class="image"
-        [ngStyle]="{'background-image': artworkItems[iterator]?.image ? 'url('+artworkItems[iterator].image+')' : null}"
-        [routerLink]="'/artwork/' + artworkItems[iterator]?.id">
+      <div
+        class="image"
+        [ngStyle]="{
+          'background-image': artworkItems[iterator]?.image ? 'url(' + artworkItems[iterator].image + ')' : null
+        }"
+        [routerLink]="'/artwork/' + artworkItems[iterator]?.id"
+      >
         <div class="overlay">
           <span class="type badge badge-secondary badge-pill"><i class="fas fa-palette"></i> Artwork</span>
           <span class="label">{{ artworkItems[iterator]?.label }}</span>
@@ -24,9 +26,13 @@
     </div>
 
     <div class="col-lg-4 mb-4 container-category">
-      <div class="image"
-      [ngStyle]="{'background-image': artistItems[iterator]?.image ? 'url('+artistItems[iterator].image+')' : null}"
-        [routerLink]="'/artist/' + artistItems[iterator]?.id">
+      <div
+        class="image"
+        [ngStyle]="{
+          'background-image': artistItems[iterator]?.image ? 'url(' + artistItems[iterator].image + ')' : null
+        }"
+        [routerLink]="'/artist/' + artistItems[iterator]?.id"
+      >
         <div class="overlay">
           <span class="type badge badge-secondary badge-pill"><i class="fa fa-user"></i> Artist</span>
           <span class="label">{{ artistItems[iterator]?.label }}</span>
@@ -35,24 +41,30 @@
     </div>
 
     <div class="col-lg-4 mb-4 container-category">
-      <div class="image"
-      [ngStyle]="{'background-image': movementItems[iterator]?.image ? 'url('+movementItems[iterator].image+')' : null}"
-        [routerLink]="'/movement/' + movementItems[iterator]?.id">
+      <div
+        class="image"
+        [ngStyle]="{
+          'background-image': movementItems[iterator]?.image ? 'url(' + movementItems[iterator].image + ')' : null
+        }"
+        [routerLink]="'/movement/' + movementItems[iterator]?.id"
+      >
         <div class="overlay">
           <span class="type badge badge-secondary badge-pill"><i class="fa fa-wind"></i> Movement</span>
           <span class="label">{{ movementItems[iterator]?.label }}</span>
         </div>
       </div>
     </div>
-
   </div>
 
   <div class="row pt-4">
-
     <div class="col-lg-3 mb-4 container-category">
-      <div class="image"
-      [ngStyle]="{'background-image': locationItems[iterator]?.image ? 'url('+locationItems[iterator].image+')' : null}"
-        [routerLink]="'/location/' + locationItems[iterator]?.id">
+      <div
+        class="image"
+        [ngStyle]="{
+          'background-image': locationItems[iterator]?.image ? 'url(' + locationItems[iterator].image + ')' : null
+        }"
+        [routerLink]="'/location/' + locationItems[iterator]?.id"
+      >
         <div class="overlay">
           <span class="type badge badge-secondary badge-pill"><i class="fas fa-archway"></i> Location</span>
           <span class="label">{{ locationItems[iterator]?.label }}</span>
@@ -61,9 +73,13 @@
     </div>
 
     <div class="col-lg-3 mb-4 container-category">
-      <div class="image"
-      [ngStyle]="{'background-image': materialItems[iterator]?.image ? 'url('+materialItems[iterator].image+')' : null}"
-        [routerLink]="'/material/' + materialItems[iterator]?.id">
+      <div
+        class="image"
+        [ngStyle]="{
+          'background-image': materialItems[iterator]?.image ? 'url(' + materialItems[iterator].image + ')' : null
+        }"
+        [routerLink]="'/material/' + materialItems[iterator]?.id"
+      >
         <div class="overlay">
           <span class="type badge badge-secondary badge-pill"><i class="fa fa-scroll"></i> Material</span>
           <span class="label">{{ materialItems[iterator]?.label }}</span>
@@ -72,9 +88,13 @@
     </div>
 
     <div class="col-lg-3 mb-4 container-category">
-      <div class="image"
-      [ngStyle]="{'background-image': genreItems[iterator]?.image ? 'url('+genreItems[iterator].image+')' : null}"
-        [routerLink]="'/genre/' + genreItems[iterator]?.id">
+      <div
+        class="image"
+        [ngStyle]="{
+          'background-image': genreItems[iterator]?.image ? 'url(' + genreItems[iterator].image + ')' : null
+        }"
+        [routerLink]="'/genre/' + genreItems[iterator]?.id"
+      >
         <div class="overlay">
           <span class="type badge badge-secondary badge-pill"><i class="fa fa-tags"></i> Genre</span>
           <span class="label">{{ genreItems[iterator]?.label }}</span>
@@ -83,9 +103,13 @@
     </div>
 
     <div class="col-lg-3 mb-4 container-category">
-      <div class="image"
-      [ngStyle]="{'background-image': motifItems[iterator]?.image ? 'url('+motifItems[iterator].image+')' : null}"
-        [routerLink]="'/motif/' + motifItems[iterator]?.id">
+      <div
+        class="image"
+        [ngStyle]="{
+          'background-image': motifItems[iterator]?.image ? 'url(' + motifItems[iterator].image + ')' : null
+        }"
+        [routerLink]="'/motif/' + motifItems[iterator]?.id"
+      >
         <div class="overlay">
           <span class="type badge badge-secondary badge-pill"><i class="fa fa-image"></i> Motif</span>
           <span class="label">{{ motifItems[iterator]?.label }}</span>

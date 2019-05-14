@@ -1,11 +1,11 @@
-#image-main{
-    max-width: 100%;
-    max-height: 70vh;
+#image-main {
+  max-width: 100%;
+  max-height: 70vh;
 }
 
 .badge {
-    margin-right: 2px;
-    text-transform: capitalize;
+  margin-right: 2px;
+  text-transform: capitalize;
 }
 
 .nav-tabs > li > a.active,
@@ -24,4 +24,20 @@
 .badge-light{
     color: #444;
     background-color: #fff;
+}
+
+@media (min-width: 992px) {
+
+  /*pl-1*/
+  .notchip {
+    padding-left: 0.25rem;
+  }
+}
+
+@media (max-width: 992px) {
+
+  /*pl-0*/
+  .notchip {
+    padding-left: 0;
+  }
 }

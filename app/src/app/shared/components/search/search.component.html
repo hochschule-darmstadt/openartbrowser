@@ -1,0 +1,21 @@
+<ng-template #rt let-r="result" let-t="term">
+  <img [src]="r['image']" class="mr-1" style="width: 75px; padding: 5px;" />
+  <ngb-highlight [result]="r.label" [term]="t" style="padding: 8px;"></ngb-highlight>
+  <span id="search-badge" class="badge badge-secondary"
+    ><i class="'fas '+ {{ r?.chip }}"></i>&nbsp; {{ r?.category }}</span
+  >
+</ng-template>
+<div class="chips chips-placeholder">
+  <input
+    class="form-control"
+    id="search-header"
+    type="text"
+    class="form-control"
+    name="Artwork"
+    placeholder="Search for an Artwork ..."
+    [ngbTypeahead]="search"
+    [resultTemplate]="rt"
+    [inputFormatter]="formatter"
+  />
+  <span class="fas fa-search"></span>
+</div>

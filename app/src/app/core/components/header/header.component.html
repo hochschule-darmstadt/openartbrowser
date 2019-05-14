@@ -1,40 +1,45 @@
 <nav class="navbar navbar-expand-sm mb-3 ">
-        <div class="container border-bottom">
-            <a class="navbar-brand" href="#"><h3 >ArtBrowser</h3></a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-      
-            <div class="collapse navbar-collapse" id="navbarColor03">
-            
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item ">
-                      <form action="" class="search-form">
-                          <div class="form-group has-feedback">                                    
-                                <ng-template #rt let-r="result" let-t="term">
-                                        <img [src]="r['image']" class="mr-1" style="width: 75px; padding: 5px;">
-                                        <ngb-highlight [result]="r.label" [term]="t" style="padding: 8px;"></ngb-highlight>
-                                        <span id="search-badge" class="badge badge-secondary"><i class="'fas '+ {{r?.chip}}"></i>&nbsp; {{r?.category}}</span>
-                                </ng-template>
-                                <div class="chips chips-placeholder">
-                                    <input class="form-control" id="search-header" type="text" class="form-control" name="Artwork" placeholder="Search for an Artwork ..." 
-                                        [(ngModel)]="model" [ngbTypeahead]="search" [resultTemplate]="rt" [inputFormatter]="formatter" />
-                                </div>
-                              <span class="fas fa-search fa-search"></span>
-                          </div>
-                      </form>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true"><h3><i class="fas fa-bars"></i></h3></a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="#">Home</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">Impressum</a>
-                            </div>
-                    </li>
-                    
-                </ul>         
+  <div class="container border-bottom">
+    <a class="navbar-brand" href="#"><h3>ArtBrowser</h3></a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-toggle="collapse"
+      data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarColor03">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item ">
+          <form action="" class="search-form">
+            <div class="form-group has-feedback">
+              <app-search></app-search>
             </div>
-        </div>
-      </nav>
-      
+          </form>
+        </li>
+        <li class="nav-item dropdown">
+          <a
+            href="#"
+            class="nav-link dropdown-toggle"
+            data-toggle="dropdown"
+            href="#"
+            role="button"
+            aria-haspopup="true"
+            aria-expanded="true"
+            ><h3><i class="fas fa-bars"></i></h3
+          ></a>
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="#">Home</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">Impressum</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

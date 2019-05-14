@@ -13,9 +13,8 @@ import { async } from 'q';
 })
 export class SearchComponent implements OnInit {
 
-  private ngUnsubscribe = new Subject();
-
   artworks: Artwork[] = [];
+  result: Artwork[] = [];
 
   constructor(private dataService: DataService, private route: ActivatedRoute) { }
 
@@ -27,11 +26,22 @@ export class SearchComponent implements OnInit {
   public model: any;
 
   search = (text$: Observable<string>) => {
-    this.route.paramMap.subscribe(async(params) => {
+     this.route.paramMap.subscribe(async(params) => {
       const label = params.get('label');
       this.artworks = (await this.dataService.findEntitiesByLabelText(label)) as Artwork[];
+      
+      this.artworks = this.artworks.sort(function(a,b): any {
+        const rankA = a['relativeRank'];
+        const rankB = b['relativeRank'];
+        const typeA = a['type'];
+        const typeB = b['type'];
+        return typeB < typeA ? 1 : typeB > typeA ? -1 : rankB > rankA ? 1 : rankB < rankA ? -1 : 0;
+      });
       console.log(this.artworks);
     });
+    
+
+
     return text$.pipe(
       debounceTime(200),
       map(term => term === '' ? []

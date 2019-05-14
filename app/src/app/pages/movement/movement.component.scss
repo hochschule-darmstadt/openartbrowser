@@ -1,7 +1,19 @@
-img{
-    max-height: 20em;
+img {
+  max-height: 20em;
 }
 
-.more{
-    cursor: pointer;
+.more {
+  cursor: pointer;
+}
+
+@media (min-width: 992px) {
+  .info {
+    margin-left: -2em;
+  }
+}
+
+@media (max-width: 992px) {
+  .info {
+    margin-left: 1em;
+  }
 }

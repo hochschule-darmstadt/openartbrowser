@@ -23,7 +23,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
   /** Change collapse icon */
   collapseDown: boolean = true;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {}
+  constructor(private dataService: DataService, private route: ActivatedRoute) { }
 
   toggleDetails() {
     this.collapseDown = !this.collapseDown;

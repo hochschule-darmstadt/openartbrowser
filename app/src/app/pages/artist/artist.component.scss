@@ -2,6 +2,28 @@ img {
   max-height: 20em;
 }
 
-.more{
+.more {
   cursor: pointer;
+}
+
+@media (min-width: 992px) {
+  .info {
+    margin-left: -2em;
+  }
+
+  /*pl-1*/
+  .notchip {
+    padding-left: 0.25rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .info {
+    margin-left: 1em;
+  }
+
+  /*pl-0*/
+  .notchip {
+    padding-left: 0;
+  }
 }

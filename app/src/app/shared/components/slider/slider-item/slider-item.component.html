@@ -1,4 +1,4 @@
-<div class="img img_container" [routerLink]="['/artwork', item?.id]">
+<div (mouseenter)="highlightCommonTags()" (mouseleave)="resetTags()" class="img img_container" [routerLink]="['/artwork', item?.id]">
     <img class="img-fluid img_self" src="{{item?.image}}" alt="{{item?.label}}">
     <div class="overlay_view">
       <span class="img_description">{{item?.label}}</span>

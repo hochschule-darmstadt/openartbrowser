@@ -14,4 +14,26 @@ export class SliderItemComponent implements OnInit {
   @Input()
   item: Entity;
    
+  highlightCommonTags(){
+    this.resetTags();
+    let tags = document.getElementsByClassName('common-tag');
+    for (let index = 0; index < tags.length; index++) {
+      const element = tags[index];
+      const text = element.textContent.trim().toLowerCase();
+  
+      if (text == 'panel') { 
+        element.classList.remove('badge-secondary');
+        element.classList.add('badge-light');
+      }
+    }
+  }
+
+  resetTags(){
+    let tags = document.getElementsByClassName('common-tag');
+    for (let index = 0; index < tags.length; index++) {
+      const element = tags[index];
+      element.classList.remove('badge-light');
+      element.classList.add('badge-secondary');
+    }
+  }
 }

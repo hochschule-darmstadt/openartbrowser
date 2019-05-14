@@ -21,7 +21,8 @@ export class SliderItemComponent implements OnInit {
       const element = tags[index];
       const text = element.textContent.trim().toLowerCase();
   
-      if (text == 'panel') { 
+      // testing purpose
+      if (Math.random() >= 0.5) { 
         element.classList.remove('badge-secondary');
         element.classList.add('badge-light');
       }

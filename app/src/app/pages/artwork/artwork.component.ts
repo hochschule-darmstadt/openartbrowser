@@ -33,16 +33,16 @@ export class ArtworkComponent implements OnInit, OnDestroy {
 
   /** tabs with artwork sliders */
   artworkTabs: { [key: string]: SliderTab } = {
-    artist: {
-      heading: 'Artist',
-      items: [],
-      icon: 'user',
-      active: true,
-    },
     all: {
       heading: 'All',
       items: [],
       icon: 'list-ul',
+      active: true,
+    },
+    artist: {
+      heading: 'Artist',
+      items: [],
+      icon: 'user',
       active: false,
     },
     location: {
@@ -117,7 +117,22 @@ export class ArtworkComponent implements OnInit, OnDestroy {
           return motif.id;
         })
       );
-    });
+
+      // testing purpose
+      let tempArray = []
+      for (let index = 0; index < 4; index++) { 
+        for (let key of Object.keys(this.artworkTabs)) {
+          if (key == 'all') {
+            continue;
+          }
+          if (this.artworkTabs[key].items && this.artworkTabs[key].items[index]) {
+            tempArray.push(this.artworkTabs[key].items[index]);           
+          }
+        }
+      }
+      this.artworkTabs.all.items = tempArray;
+
+      });
   }
 
   ngOnDestroy() {

@@ -113,7 +113,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     });
   }
 
-  /** select items for all tab by taking up to 5 from every other tab and shuffling them together */
+  /** select items for all tab by taking items from every tab and shuffling them together */
   selectAllTabItems(maxAmountFromEachTab: number) {
     /** use map to filter duplicates */
     const allTabItems = new Map<string, Entity>();

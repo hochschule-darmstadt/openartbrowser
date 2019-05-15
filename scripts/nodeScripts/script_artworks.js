@@ -1,10 +1,12 @@
-const csvFilePath = 'artworks.csv';
-const jsonFilePath = 'artworks.json';
+const csvFilePath = '/Users/marouanekherrabi/Documents/STUDY/PSE/ArtOntology/ArtOntology/artworks.csv';
+const jsonFilePath = '/Users/marouanekherrabi/Documents/STUDY/PSE/ArtOntology/jsonData/artworks.json';
 
 const fs = require('fs');
 const es = require('event-stream');
 const _ = require('lodash');
-const type = 'artworks';
+const csv = require('fast-csv')
+const stream = fs.createReadStream(csvFilePath)
+const type = 'artwork';
 let numberOfLines = 0;
 let obj = {
 	id: '',
@@ -25,46 +27,47 @@ let obj = {
 	type: '',
 }
 let objArr = [];
-let lines = [];
+let ids = [];
 
-fs.createReadStream(csvFilePath)
-	.pipe(es.split())
-	.pipe(es.mapSync(function (line) {
+const csvStream = csv({ delimiter: ';' })
+	.on("data", function (data) {
 		let myObj = _.cloneDeep(obj);
-		if (numberOfLines !== 0 && !_.isEmpty(line) && !_.includes(lines, line)) {
-			let splitedLine = line.split(';');
+		if (numberOfLines !== 0 && !_.isEmpty(data) && !_.includes(ids, data[0])) {
 
-			myObj.id = splitedLine[0];
-			myObj.classes = constructArray(splitedLine[1]);
-			myObj.label = splitedLine[2];
-			myObj.description = splitedLine[3];
-			myObj.image = splitedLine[4];
-			myObj.creators = constructArray(splitedLine[5]);
-			myObj.locations = constructArray(splitedLine[6]);
-			myObj.genres = constructArray(splitedLine[7]);
-			myObj.movements = constructArray(splitedLine[8]);
-			myObj.inception = splitedLine[9];
-			myObj.materials = constructArray(splitedLine[10]);
-			myObj.depicts = constructArray(splitedLine[11]);
-			myObj.country = splitedLine[12];
-			myObj.height = splitedLine[13];
-			myObj.width = splitedLine[14];
-
+			myObj.id = data[0];
+			myObj.classes = constructArray(data[1]);
+			myObj.label = data[2];
+			myObj.description = data[3];
+			myObj.image = data[4];
+			myObj.creators = constructArray(data[5]);
+			myObj.locations = constructArray(data[6]);
+			myObj.genres = constructArray(data[7]);
+			myObj.movements = constructArray(data[8]);
+			myObj.inception = data[9];
+			myObj.materials = constructArray(data[10]);
+			myObj.depicts = constructArray(data[11]);
+			myObj.country = data[12];
+			myObj.height = data[13];
+			myObj.width = data[14];
 			myObj.type = type;
+
 			objArr.push(myObj);
-			lines.push(line);
+			ids.push(myObj.id);
 		}
 		++numberOfLines;
 
-	}).on('error', (err) => console.log(err))
-		.on('end', () => {
-			fs.writeFile(jsonFilePath, JSON.stringify(objArr), 'utf-8', (err) => {
-				if (err)
-					console.log(err);
-				console.log(`${numberOfLines} lines processed.`);
-			});
-		})
-	);
+	}).on('data-invalid', (err) => console.log("error! data invalid"))
+	.on('end', () => {
+		fs.writeFile(jsonFilePath, JSON.stringify(objArr), 'utf-8', (err) => {
+			if (err)
+				console.log(err);
+			console.log(`${numberOfLines} lines processed.`);
+		});
+	})
+
+stream.pipe(csvStream)
+
+
 function constructArray(str) {
 	let splittedString = str.split('');
 	splittedString = _.without(splittedString, "'", '[', ']', " ");

@@ -13,10 +13,7 @@
       <div class="row">
         <div class="col-1">
           <p *ngIf="artwork?.creators?.length" class="mb-1 text-muted">Artist:</p>
-          <p *ngIf="artwork?.locations?.length" class="mb-1 text-muted">Location:</p>
-          <p *ngIf="artwork?.inception" class="mb-1 text-muted">Inception:</p>
         </div>
-
         <div class="col-11">
           <p *ngIf="artwork?.creators?.length" class="mb-1">
             <span class="badge badge-pill badge-secondary first-letter chip" *ngFor="let creator of artwork?.creators"
@@ -24,12 +21,27 @@
               <i class="fas fa-user"></i>
               {{ creator?.label }}</span>
           </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-1">
+          <p *ngIf="artwork?.locations?.length" class="mb-1 text-muted">Location:</p>
+        </div>
+        <div class="col-11">
           <p *ngIf="artwork?.locations?.length" class="mb-1">
             <span class="badge badge-pill badge-secondary first-letter chip" *ngFor="let location of artwork?.locations"
               [routerLink]="'/location/' + location.id">
               <i class="fas fa-archway"></i>
               {{ location?.label }}</span>
           </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-1">
+          <p *ngIf="artwork?.inception" class="mb-1 text-muted">Inception:</p>
+        </div>
+        <div class="col-11">
+
           <p *ngIf="artwork?.inception" class="mb-1 notchip">{{ artwork?.inception }}</p>
         </div>
       </div>
@@ -49,12 +61,7 @@
           <div class="row">
             <div class="col-1">
               <p *ngIf="artwork?.genres?.length" class="mb-1 text-muted">Genre:</p>
-              <p *ngIf="artwork?.movements?.length" class="mb-1 text-muted">Movement:</p>
-              <p *ngIf="artwork?.materials?.length" class="mb-1 text-muted">Material:</p>
-              <p *ngIf="artwork?.depicts?.length" class="mb-1 text-muted">Motif:</p>
-              <p *ngIf="artwork?.height && artwork?.width" class="mb-1 text-muted">Dimension:</p>
             </div>
-
             <div class="col-11">
               <p *ngIf="artwork?.genres?.length" class="mb-1">
                 <span class="badge badge-pill badge-secondary first-letter chip" *ngFor="let genre of artwork?.genres"
@@ -62,14 +69,26 @@
                   <i class="fas fa-tag"></i>
                   {{ genre?.label }}</span>
               </p>
-
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-1">
+              <p *ngIf="artwork?.movements?.length" class="mb-1 text-muted">Movement:</p>
+            </div>
+            <div class="col-11">
               <p *ngIf="artwork?.movements?.length" class="mb-1">
                 <span class="badge badge-pill badge-secondary first-letter chip"
                   *ngFor="let movement of artwork?.movements" [routerLink]="'/movement/' + movement.id">
                   <i class="fas fa-wind"></i>
                   {{ movement?.label }}</span>
               </p>
-
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-1">
+              <p *ngIf="artwork?.materials?.length" class="mb-1 text-muted">Material:</p>
+            </div>
+            <div class="col-11">
               <p *ngIf="artwork?.materials?.length" class="mb-1">
 
                 <span class="badge badge-pill badge-secondary first-letter chip"
@@ -77,14 +96,26 @@
                   <i class="fas fa-scroll"></i>
                   {{ material?.label }}</span>
               </p>
-
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-1">
+              <p *ngIf="artwork?.depicts?.length" class="mb-1 text-muted">Motif:</p>
+            </div>
+            <div class="col-11">
               <p *ngIf="artwork?.depicts?.length" class="mb-1">
                 <span class="badge badge-pill badge-secondary first-letter chip" *ngFor="let motif of artwork?.depicts"
                   [routerLink]="'/motif/' + motif.id">
                   <i class="fas fa-image"></i>
                   {{ motif?.label }}</span>
               </p>
-
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-1">
+              <p *ngIf="artwork?.height && artwork?.width" class="mb-1 text-muted">Dimension:</p>
+            </div>
+            <div class="col-11">
               <p *ngIf="artwork?.height && artwork?.width" class="mb-1 notchip">
                 {{ artwork?.height }} x {{ artwork?.width }}cm
               </p>

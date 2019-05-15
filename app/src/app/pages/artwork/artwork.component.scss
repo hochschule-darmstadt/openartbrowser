@@ -8,13 +8,21 @@
   text-transform: capitalize;
 }
 
+.nav-tabs {
+  border-color: #FFFFFF;
+}
+
 .nav-tabs > li > a.active,
 .nav-tabs > li > a.active:focus,
 .nav-tabs > li > a.active:hover,
-.nav-tabs > li > a:hover,
 .nav > li > a:hover {
-    background-color: #868e96;
-    border-color: #FFFFFF;
+  background-color: #868e96;
+  border-color: #FFFFFF;
+}
+
+.nav-tabs > li > a:hover {
+  background-color: #868e9644;
+  border-color: rgba(255, 255, 255, 0.274);
 }
 
 .more{

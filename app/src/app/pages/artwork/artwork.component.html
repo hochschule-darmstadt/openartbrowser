@@ -19,34 +19,26 @@
 
         <div class="col-11">
           <p *ngIf="artwork?.creators?.length" class="mb-1">
-            <span
-              class="badge badge-pill badge-secondary first-letter chip"
-              *ngFor="let creator of artwork?.creators"
-              [routerLink]="'/artist/' + creator.id"
-            >
-              {{ creator?.label }}</span
-            >
+            <span class="badge badge-pill badge-secondary first-letter chip" *ngFor="let creator of artwork?.creators"
+              [routerLink]="'/artist/' + creator.id">
+              <i class="fas fa-user"></i>
+              {{ creator?.label }}</span>
           </p>
           <p *ngIf="artwork?.locations?.length" class="mb-1">
-            <span
-              class="badge badge-pill badge-secondary first-letter chip"
-              *ngFor="let location of artwork?.locations"
-              [routerLink]="'/location/' + location.id"
-            >
-              {{ location?.label }}</span
-            >
+            <span class="badge badge-pill badge-secondary first-letter chip" *ngFor="let location of artwork?.locations"
+              [routerLink]="'/location/' + location.id">
+              <i class="fas fa-archway"></i>
+              {{ location?.label }}</span>
           </p>
           <p *ngIf="artwork?.inception" class="mb-1 notchip">{{ artwork?.inception }}</p>
         </div>
       </div>
-      <div
-        *ngIf="
+      <div *ngIf="
           artwork?.genres?.length ||
           artwork?.movements?.length ||
           artwork?.materials?.length ||
           artwork?.depicts?.length
-        "
-      >
+        ">
         <h4 class="mt-2 more" data-toggle="collapse" href="#collapseArtwork" (click)="toggleDetails()">
           More
           <i *ngIf="collapseDown" data-toggle="collapse" href="#collapseArtwork" class="fas fa-chevron-down"></i>
@@ -65,43 +57,32 @@
 
             <div class="col-11">
               <p *ngIf="artwork?.genres?.length" class="mb-1">
-                <span
-                  class="badge badge-pill badge-secondary first-letter chip"
-                  *ngFor="let genre of artwork?.genres"
-                  [routerLink]="'/genre/' + genre.id"
-                >
-                  {{ genre?.label }}</span
-                >
+                <span class="badge badge-pill badge-secondary first-letter chip" *ngFor="let genre of artwork?.genres"
+                  [routerLink]="'/genre/' + genre.id">
+                  <i class="fas fa-tag"></i>
+                  {{ genre?.label }}</span>
               </p>
 
               <p *ngIf="artwork?.movements?.length" class="mb-1">
-                <span
-                  class="badge badge-pill badge-secondary first-letter chip"
-                  *ngFor="let movement of artwork?.movements"
-                  [routerLink]="'/movement/' + movement.id"
-                >
-                  {{ movement?.label }}</span
-                >
+                <span class="badge badge-pill badge-secondary first-letter chip"
+                  *ngFor="let movement of artwork?.movements" [routerLink]="'/movement/' + movement.id">
+                  <i class="fas fa-wind"></i>
+                  {{ movement?.label }}</span>
               </p>
 
               <p *ngIf="artwork?.materials?.length" class="mb-1">
-                <span
-                  class="badge badge-pill badge-secondary first-letter chip"
-                  *ngFor="let material of artwork?.materials"
-                  [routerLink]="'/material/' + material.id"
-                >
-                  {{ material?.label }}</span
-                >
+
+                <span class="badge badge-pill badge-secondary first-letter chip"
+                  *ngFor="let material of artwork?.materials" [routerLink]="'/material/' + material.id">
+                  <i class="fas fa-scroll"></i>
+                  {{ material?.label }}</span>
               </p>
 
               <p *ngIf="artwork?.depicts?.length" class="mb-1">
-                <span
-                  class="badge badge-pill badge-secondary first-letter chip"
-                  *ngFor="let motif of artwork?.depicts"
-                  [routerLink]="'/motif/' + motif.id"
-                >
-                  {{ motif?.label }}</span
-                >
+                <span class="badge badge-pill badge-secondary first-letter chip" *ngFor="let motif of artwork?.depicts"
+                  [routerLink]="'/motif/' + motif.id">
+                  <i class="fas fa-image"></i>
+                  {{ motif?.label }}</span>
               </p>
 
               <p *ngIf="artwork?.height && artwork?.width" class="mb-1 notchip">
@@ -120,24 +101,16 @@
 
       <ul class="nav nav-tabs">
         <li class="nav-item" *ngFor="let tab of Object.keys(artworkTabs)">
-          <a
-            class="nav-link"
-            [ngClass]="{ active: artworkTabs[tab].active }"
-            data-toggle="tab"
-            href="#{{ artworkTabs[tab].heading }}_tab"
-          >
+          <a class="nav-link" [ngClass]="{ active: artworkTabs[tab].active }" data-toggle="tab"
+            href="#{{ artworkTabs[tab].heading }}_tab">
             {{ artworkTabs[tab].heading }}
           </a>
         </li>
       </ul>
 
       <div class="tab-content">
-        <div
-          *ngFor="let tab of Object.keys(artworkTabs)"
-          class="tab-pane fade"
-          [ngClass]="{ 'show active': artworkTabs[tab].active }"
-          id="{{ artworkTabs[tab].heading }}_tab"
-        >
+        <div *ngFor="let tab of Object.keys(artworkTabs)" class="tab-pane fade"
+          [ngClass]="{ 'show active': artworkTabs[tab].active }" id="{{ artworkTabs[tab].heading }}_tab">
           <app-slider [items]="artworkTabs[tab].items"> </app-slider>
         </div>
       </div>

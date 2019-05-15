@@ -56,8 +56,10 @@
             <div class="col-md-9 pl-0 info">
               <p *ngIf="artist?.movements?.length" class="mb-2">
                 <span *ngFor="let movement of artist?.movements"
-                  class="badge badge-pill badge-secondary first-letter chip"
-                  [routerLink]="'/movement/' + movement.id">{{ movement.label }}</span>
+                  class="badge badge-pill badge-secondary first-letter chip" [routerLink]="'/movement/' + movement.id">
+                  <i class="fas fa-wind"></i>
+                  {{ movement.label }}
+                </span>
               </p>
             </div>
           </div>
@@ -69,7 +71,9 @@
               <p *ngIf="artist?.influenced_by?.length" class="mb-2">
                 <span *ngFor="let influencer of artist?.influenced_by"
                   class="badge badge-pill badge-secondary first-letter chip" [routerLink]="'/artist/' + influencer.id">
-                  {{ influencer.label }}</span>
+                  <i class="fas fa-user"></i>
+                  {{ influencer.label }}
+                </span>
               </p>
             </div>
           </div>

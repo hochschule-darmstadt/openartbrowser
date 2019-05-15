@@ -14,17 +14,30 @@
   margin-top: 10px;
 }
 
-.search-form .form-group:hover,
+/*.search-form .form-group:hover,
 .search-form .form-group.hover {
+  display: block;
+  width: 400%;
+  border-radius: 4px 25px 25px 4px;
+}*/
+
+#navbarColor03:hover ::ng-deep .form-group {
   display: block;
   width: 400%;
   border-radius: 4px 25px 25px 4px;
 }
 
 @media only screen and (max-width: 1000px) {
-  .search-form .form-group:hover,
+  /*.search-form .form-group:hover,
   .search-form .form-group.hover {
+    width: 500px;
+    border-radius: 4px 25px 25px 4px;
+  }*/
+
+  #navbarColor03:hover ::ng-deep .form-group {
     width: 500px;
     border-radius: 4px 25px 25px 4px;
   }
 }
+
+

@@ -52,3 +52,8 @@ span.form-control-feedback {
   width: 70px;
   text-align: center;
 }
+
+:host ::ng-deep .ngb-highlight {
+  font-weight: 700;
+  color: red;
+}

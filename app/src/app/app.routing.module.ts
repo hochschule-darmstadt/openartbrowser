@@ -6,8 +6,6 @@ import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
 import { HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { SearchComponent } from './shared/components/search/search.component';
-
 
 /** routes to our feature modules.
  * advantage of routing to modules instead of components: lazy loading.
@@ -16,6 +14,10 @@ const routes: Routes = [
   {
     path: '',
     loadChildren: './pages/home/home.routing.module#HomeRoutingModule',
+  },
+  {
+    path: 'about',
+    loadChildren: './pages/impress/impress.routing.module#ImpressRoutingModule',
   },
   {
     path: 'artist/:artistId',
@@ -49,8 +51,14 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, HttpClientModule, CoreModule, SharedModule, RouterModule.forRoot(routes),
-  NgbModule.forRoot()],
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    CoreModule,
+    SharedModule,
+    RouterModule.forRoot(routes),
+    NgbModule.forRoot(),
+  ],
   bootstrap: [AppComponent],
 })
 export class AppRoutingModule {}

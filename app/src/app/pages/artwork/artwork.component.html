@@ -98,7 +98,7 @@
             href="#{{ artworkTabs[tab].heading }}_tab"
             *ngIf="showTab(tab)"
             >
-            <i class="fa fa-{{ artworkTabs[tab].icon }}"></i> {{ artworkTabs[tab].heading }}
+            <i class="mr-1 fa fa-{{ artworkTabs[tab].icon }}"></i> {{ artworkTabs[tab].heading }}
           </a>
         </li>
       </ul>
@@ -106,49 +106,50 @@
       <div class="tab-content">
         <div *ngFor="let tab of Object.keys(artworkTabs)" class="tab-pane fade"
           [ngClass]="{ 'show active': artworkTabs[tab].active }" id="{{ artworkTabs[tab].heading }}_tab">
-          <app-slider [items]="artworkTabs[tab].items"> </app-slider>
+          <app-slider [type]="tab" [artwork]="artwork" [items]="artworkTabs[tab].items"> </app-slider>
 
-          <h3 class="mt-2 more" data-toggle="collapse" href="#collapseTags" (click)="toggleCommonTags()">
-            Common Tag
-            <i *ngIf="collapseDownTags" data-toggle="collapse" href="#collapseTags" class="fas fa-chevron-down"></i>
-            <i *ngIf="!collapseDownTags" data-toggle="collapse" href="#collapseTags" class="fas fa-chevron-up"></i>
+          <h3 class="mt-2 mb-0 more" data-toggle="collapse" href="#collapseTags" (click)="toggleCommonTags()">
+            Common <span *ngIf="tab != 'all'">{{ tab }}</span> tags with artwork <span>"{{ (artwork?.label?.length>35)? (artwork?.label | slice:0:35)+'...':(artwork?.label) }}"</span>
+            <i *ngIf="collapseDownTags" data-toggle="collapse" href="#collapseTags" class="ml-2 fas fa-chevron-down"></i>
+            <i *ngIf="!collapseDownTags" data-toggle="collapse" href="#collapseTags" class="ml-2 fas fa-chevron-up"></i>
           </h3>
 
           <div class="collapse" id="collapseTags">
-            <p *ngIf="artwork?.creators?.length && (tab == 'artist' || tab == 'all')" class="mb-1">
-              <span class="common-tag badge badge-pill badge-secondary" *ngFor="let creator of artwork?.creators"
+            <p class="mb-4 mt-0"><em>(move the mouse over an artwork to display common tags)</em></p>
+            <span *ngIf="artwork?.creators?.length && (tab == 'artist' || tab == 'all')" class="mb-1">
+              <span class="common-tag artist-tag badge badge-pill badge-secondary chip mr-1 mb-1" *ngFor="let creator of artwork?.creators"
                 [routerLink]="'/artist/' + creator.id">
                 {{ creator?.label }}</span>
-            </p>
-            <p *ngIf="artwork?.genres?.length && (tab == 'genre' || tab == 'all')" class="mb-1">
-              <span class="common-tag badge badge-pill badge-secondary" *ngFor="let genre of artwork?.genres"
+            </span>
+            <span *ngIf="artwork?.genres?.length && (tab == 'genre' || tab == 'all')" class="mb-1">
+              <span class="common-tag genre-tag badge badge-pill badge-secondary chip mr-1 mb-1" *ngFor="let genre of artwork?.genres"
                 [routerLink]="'/genre/' + genre.id">
                 {{ genre?.label }}</span>
-            </p>
+            </span>
 
-            <p *ngIf="artwork?.movements?.length && (tab == 'movement' || tab == 'all')" class="mb-1">
-              <span class="common-tag badge badge-pill badge-secondary" *ngFor="let movement of artwork?.movements"
+            <span *ngIf="artwork?.movements?.length && (tab == 'movement' || tab == 'all')" class="mb-1">
+              <span class="common-tag movement-tag badge badge-pill badge-secondary chip mr-1 mb-1" *ngFor="let movement of artwork?.movements"
                 [routerLink]="'/movement/' + movement.id">
                 {{ movement?.label }}</span>
-            </p>
+            </span>
 
-            <p *ngIf="artwork?.materials?.length && (tab == 'material' || tab == 'all')" class="mb-1">
-              <span class="common-tag badge badge-pill badge-secondary" *ngFor="let material of artwork?.materials"
+            <span *ngIf="artwork?.materials?.length && (tab == 'material' || tab == 'all')" class="mb-1">
+              <span class="common-tag material-tag badge badge-pill badge-secondary chip mr-1 mb-1" *ngFor="let material of artwork?.materials"
                 [routerLink]="'/material/' + material.id">
                 {{ material?.label }}</span>
-            </p>
+            </span>
 
-            <p *ngIf="artwork?.locations?.length && (tab == 'location' || tab == 'all')" class=" mb-1">
-              <span class="common-tag badge badge-pill badge-secondary" *ngFor="let location of artwork?.locations"
+            <span *ngIf="artwork?.locations?.length && (tab == 'location' || tab == 'all')" class=" mb-1">
+              <span class="common-tag location-tag badge badge-pill badge-secondary chip mr-1 mb-1" *ngFor="let location of artwork?.locations"
                 [routerLink]="'/location/' + location.id">
                 {{ location?.label }}</span>
-            </p>
+            </span>
 
-            <p *ngIf="artwork?.depicts?.length && (tab == 'motif' || tab == 'all')" class="mb-1">
-              <span class="common-tag badge badge-pill badge-secondary" *ngFor="let motif of artwork?.depicts"
+            <span *ngIf="artwork?.depicts?.length && (tab == 'motif' || tab == 'all')" class="mb-1">
+              <span class="common-tag motif-tag badge badge-pill badge-secondary chip mr-1 mb-1" *ngFor="let motif of artwork?.depicts"
                 [routerLink]="'/motif/' + motif.id">
                 {{ motif?.label }}</span>
-            </p>
+            </span>
           </div>
         </div>
       </div>

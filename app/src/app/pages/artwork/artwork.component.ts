@@ -118,31 +118,25 @@ export class ArtworkComponent implements OnInit, OnDestroy {
         })
       );
 
-      this.selectAllTabItems(4);
+      this.selectAllTabItems(10);
     });
   }
 
-  /** select items for all tab by taking items from every tab and shuffling them together */
   selectAllTabItems(maxAmountFromEachTab: number) {
-    /** use map to filter duplicates */
-    const allTabItems = new Map<string, Entity>();
-    /** loop through artwork tabs  */
-    for (const tab of Object.keys(this.artworkTabs)) {
-      /** shuffle tab items of selected artwork tabs */
-      const shuffledTabItems = this.artworkTabs[tab].items.sort(() => 0.5 - Math.random());
-      /** defines how many items are selected from this tab that should go into all tab */
-      const itemAmountFromThisTab =
-        shuffledTabItems.length > maxAmountFromEachTab ? maxAmountFromEachTab : shuffledTabItems.length;
-      // get that many items from the shuffled items and put them into all tab items
-      const selected = shuffledTabItems.slice(0, itemAmountFromThisTab);
-      for (const item of selected) {
-        allTabItems.set(item.label, item);
+    /** use Set to filter duplicates */
+    let items = new Set();
+    /** loop as many times we want to take artworks from each category */
+    for (let index = 0; index < maxAmountFromEachTab; index++) { 
+      /** loop through artwork tabs */
+      for (let key of Object.keys(this.artworkTabs)) {
+        /** add the artwork to the Set */
+        if (key != 'all' && this.artworkTabs[key].items && this.artworkTabs[key].items[index]) {
+          items.add(this.artworkTabs[key].items[index]);           
+        }
       }
     }
-    let items: Entity[] = Array.from(allTabItems.values());
-    /** shuffle allTabs items once more */
-    items = items.sort(() => 0.5 - Math.random());
-    this.artworkTabs.all.items = items;
+    /** set artwork "all" tabs items to this Set */
+    this.artworkTabs.all.items = Array.from(items);
   }
 
   ngOnDestroy() {

@@ -1,5 +1,5 @@
 import { Component, Input, SimpleChanges, OnChanges } from '@angular/core';
-import { Entity } from '../../models/models';
+import { Entity, Artwork } from '../../models/models';
 
 @Component({
   selector: 'app-slider',
@@ -18,7 +18,13 @@ export class SliderComponent implements OnChanges {
   splicedItems: Array<Entity[]> = [];
 
   @Input()
+  type: string;
+
+  @Input()
   items: Entity[] = [];
+
+  @Input()
+  artwork: Artwork;
 
   @Input()
   heading: string;

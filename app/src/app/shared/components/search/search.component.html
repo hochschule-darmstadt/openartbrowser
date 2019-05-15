@@ -1,9 +1,42 @@
 <ng-template #rt let-r="result" let-t="term">
-  <img [src]="r['image']" class="mr-1" style="width: 75px; padding: 5px;" />
+  <ng-template [ngIf]="r['type'] == 'artwork'">
+    <span class="type-container">
+      <img [src]="r['image']" class="mr-1" style="height: 45px" />
+    </span>
+  </ng-template>
+  <ng-template [ngIf]="r['type'] == 'artist'">
+    <span class="type-container">
+      <i class="fas fa-user"></i>
+    </span>
+  </ng-template>
+  <ng-template [ngIf]="r['type'] == 'movement'">
+    <span class="type-container">
+      <i class="fas fa-wind"></i>
+    </span>
+  </ng-template>
+  <ng-template [ngIf]="r['type'] == 'material'">
+    <span class="type-container">
+      <i class="fas fa-scroll"></i>
+    </span>
+  </ng-template>
+  <ng-template [ngIf]="r['type'] == 'genre'">
+    <span class="type-container">
+      <i class="fas fa-tag"></i>
+    </span>
+  </ng-template>
+  <ng-template [ngIf]="r['type'] == 'location'">
+    <span class="type-container">
+      <i class="fas fa-archway"></i>
+    </span>
+  </ng-template>
+  <ng-template [ngIf]="r['type'] == 'motif'">
+    <span class="type-container">
+      <i class="fas fa-image"></i>
+    </span>
+  </ng-template>
+  <!-- <img [src]="r['image']" class="mr-1" style="width: 75px; padding: 5px;"> -->
+  <span id="search-badge" class="badge badge-secondary">{{ r?.type }}</span>
   <ngb-highlight [result]="r.label" [term]="t" style="padding: 8px;"></ngb-highlight>
-  <span id="search-badge" class="badge badge-secondary"
-    ><i class="'fas '+ {{ r?.chip }}"></i>&nbsp; {{ r?.category }}</span
-  >
 </ng-template>
 <div class="chips chips-placeholder">
   <input

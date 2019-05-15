@@ -16,7 +16,7 @@ export class DataService {
 	public async findEntitiesByLabelText(text: string): Promise<Entity[]> {
 		const options = {
 			"query": {
-				"wildcard": { "label": `*${text}` }
+				"wildcard": { "label": `*${text}*` }
 			},
 			"sort": [
 				{ "relativeRank": { "order": "desc" } }

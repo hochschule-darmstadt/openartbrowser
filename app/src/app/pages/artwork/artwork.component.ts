@@ -31,15 +31,15 @@ export class ArtworkComponent implements OnInit, OnDestroy {
 
   /** tabs with artwork sliders */
   artworkTabs: { [key: string]: SliderTab } = {
-    artist: {
-      heading: 'Artist',
-      items: [],
-      active: false,
-    },
     all: {
       heading: 'All',
       items: [],
       active: true,
+    },
+    artist: {
+      heading: 'Artist',
+      items: [],
+      active: false,
     },
     location: {
       heading: 'Location',
@@ -108,7 +108,32 @@ export class ArtworkComponent implements OnInit, OnDestroy {
           return motif.id;
         })
       );
+
+      this.selectAllTabItems(4);
     });
+  }
+
+  /** select items for all tab by taking up to 5 from every other tab and shuffling them together */
+  selectAllTabItems(maxAmountFromEachTab: number) {
+    /** use map to filter duplicates */
+    const allTabItems = new Map<string, Entity>();
+    /** loop through artwork tabs  */
+    for (const tab of Object.keys(this.artworkTabs)) {
+      /** shuffle tab items of selected artwork tabs */
+      const shuffledTabItems = this.artworkTabs[tab].items.sort(() => 0.5 - Math.random());
+      /** defines how many items are selected from this tab that should go into all tab */
+      const itemAmountFromThisTab =
+        shuffledTabItems.length > maxAmountFromEachTab ? maxAmountFromEachTab : shuffledTabItems.length;
+      // get that many items from the shuffled items and put them into all tab items
+      const selected = shuffledTabItems.slice(0, itemAmountFromThisTab);
+      for (const item of selected) {
+        allTabItems.set(item.label, item);
+      }
+    }
+    let items: Entity[] = Array.from(allTabItems.values());
+    /** shuffle allTabs items once more */
+    items = items.sort(() => 0.5 - Math.random());
+    this.artworkTabs.all.items = items;
   }
 
   ngOnDestroy() {

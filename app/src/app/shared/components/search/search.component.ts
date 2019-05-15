@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Observable} from 'rxjs';
 import { debounceTime, map, takeUntil } from 'rxjs/operators';
 import { Artwork } from '../../models/models';
 import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute } from '@angular/router';
-import { async } from 'q';
 
 @Component({
   selector: 'app-search',

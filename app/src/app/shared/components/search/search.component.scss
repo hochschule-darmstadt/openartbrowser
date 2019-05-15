@@ -65,4 +65,15 @@
     margin: -30px 7px;
     float: right;
   }
-  
+
+  #search-badge{
+    float: right;
+  }
+
+  .type-container{
+    position: relative;
+    display: inline-block;
+    padding-block-end: 20px;
+    width: 70px;
+    text-align: center;
+  }

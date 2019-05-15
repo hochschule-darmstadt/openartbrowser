@@ -1,3 +1,30 @@
 .dropdown-toggle::after {
   display: none;
 }
+
+.search-form .form-group {
+  float: right !important;
+  transition: all 0.35s, border-radius 0s;
+  width: 32px;
+  height: 32px;
+  background-color: #fff;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+  border-radius: 25px;
+  border: 1px solid #ccc;
+  margin-top: 10px;
+}
+
+.search-form .form-group:hover,
+.search-form .form-group.hover {
+  display: block;
+  width: 400%;
+  border-radius: 4px 25px 25px 4px;
+}
+
+@media only screen and (max-width: 1000px) {
+  .search-form .form-group:hover,
+  .search-form .form-group.hover {
+    width: 500px;
+    border-radius: 4px 25px 25px 4px;
+  }
+}

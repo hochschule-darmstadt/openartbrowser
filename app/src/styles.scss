@@ -7,12 +7,12 @@ html {
 }
 
 /* Badge */
-.badge:hover{
+.badge:hover {
   cursor: pointer;
 }
 
 /* Customize carousel  (has no power in slider.compoent.scss)*/
-.carousel-indicators{
+.carousel-indicators {
   visibility: hidden;
 }
 
@@ -30,4 +30,10 @@ html {
   outline: transparent;
 }
 
+.first-letter::first-letter {
+  text-transform: uppercase;
+}
 
+.chip {
+  font-size: 1em;
+}

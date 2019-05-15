@@ -1,28 +1,25 @@
 <div class="container">
-  <div class="row mb-5">
+  <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7">
-      <span class="badge badge-pill badge-secondary"><i class="fas fa-wind"></i> Movement</span>
-      <h2 class="mb-3">{{ movement?.label }}</h2>
+      <span class="badge badge-pill badge-secondary chip"><i class="fas fa-wind"></i> Movement</span>
+      <h2 class="mb-3 first-letter">{{ movement?.label }}</h2>
 
       <div class="row">
-        <div class="col-sm">
+        <div class="col-md-3 pr-0">
           <p *ngIf="movement?.influenced_by?.length" class="mb-1 text-muted">Influenced by:</p>
         </div>
 
-        <div class="col-9">
+        <div class="col-md-9 pl-0 info">
           <p *ngIf="movement?.influenced_by?.length" class="mb-1">
-            <span
-              *ngFor="let influence of movement?.influenced_by"
-              class="badge badge-pill badge-secondary"
-              [routerLink]="influence.type === 'artist' ? '/artist/' + influence.id : '/movement/' + influence.id"
-            >
-              {{ influence.label }}</span
-            >
+            <span *ngFor="let influence of movement?.influenced_by"
+              class="badge badge-pill badge-secondary first-letter chip"
+              [routerLink]="influence.type === 'artist' ? '/artist/' + influence.id : '/movement/' + influence.id">
+              {{ influence.label }}</span>
           </p>
         </div>
       </div>
     </div>
-    <div class="col-sm-5 img">
+    <div class="col-sm-5 img" *ngIf="movement?.image">
       <img class="img-fluid rounded-circle" src="{{ movement?.image }}" alt="{{ movement?.label }}" />
     </div>
   </div>

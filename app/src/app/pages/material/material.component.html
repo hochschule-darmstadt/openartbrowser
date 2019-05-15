@@ -1,14 +1,14 @@
 <div class="container">
-  <div class="row mb-5">
-      <div class="col-sm-7">
-          <span class="badge badge-pill badge-secondary"><i class="fas fa-scroll"></i> Material</span>
-          <h2 class="mb-3">{{material?.label}} &nbsp;&nbsp;</h2> 
-          <div class="mb-3 mt-5">
-          </div>  
+  <div class="row mb-5 border-bottom pb-5">
+    <div class="col-sm-7">
+      <span class="badge badge-pill badge-secondary chip"><i class="fas fa-scroll"></i> Material</span>
+      <h2 class="mb-3 first-letter">{{material?.label}} </h2>
+      <div class="mb-3 mt-5">
       </div>
-      <div class="col-sm-5 img">
-          <img class="img-fluid rounded-circle" src="{{material?.image}}" alt="{{material?.label}}">
-      </div>
+    </div>
+    <div class="col-sm-5 img" *ngIf="material?.image">
+      <img class="img-fluid rounded-circle" src="{{material?.image}}" alt="{{material?.label}}">
+    </div>
   </div>
   <app-slider [items]="sliderItems" heading="Artworks"> </app-slider>
 </div>

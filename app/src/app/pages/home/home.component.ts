@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { SliderCategory } from 'src/app/shared/models/models';
 import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
+import { Slider } from 'src/app/shared/models/slider.model';
 
 @Component({
   selector: 'app-home',
@@ -8,47 +8,53 @@ import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-  /** init Object for iterating in ngbCarousel */
-  Object = Object;
 
-  /** upper categories sliders data */
-  upperCategories: { [key: string]: SliderCategory } = {
+  /**
+   * @description variable of object to be fetch in html.
+   * @type {object}
+   * @memberof HomeComponent
+   */
+  Object: object = Object;
+
+  /**
+   * @description variable of the first 3 categories.
+   * @type {{ [key: string]: Slider }}
+   * @memberof HomeComponent
+   */
+  upperCategories: { [key: string]: Slider } = {
     artwork: {
-      type: 'artwork',
       items: [],
       icon: 'palette',
     },
     artist: {
-      type: 'artist',
       items: [],
       icon: 'user',
     },
     movement: {
-      type: 'movement',
       items: [],
       icon: 'wind',
     },
   };
 
-  /** lower categories sliders data */
-  lowerCategories: { [key: string]: SliderCategory } = {
+  /**
+   * @description variable of the next 4 categories.
+   * @type {{ [key: string]: Slider }}
+   * @memberof HomeComponent
+   */
+  lowerCategories: { [key: string]: Slider } = {
     location: {
-      type: 'location',
       items: [],
       icon: 'archway',
     },
     material: {
-      type: 'Material',
       items: [],
       icon: 'scroll',
     },
     genre: {
-      type: 'genre',
       items: [],
       icon: 'tags',
     },
     motif: {
-      type: 'Motif',
       items: [],
       icon: 'image',
     },
@@ -64,6 +70,10 @@ export class HomeComponent implements OnInit {
     this.initDummyData();
   }
 
+  /**
+   * @description Initialize the items for each category (will be removed later)
+   * @memberof HomeComponent
+   */
   initDummyData = (): void => {
     this.upperCategories.artwork.items = [
       {

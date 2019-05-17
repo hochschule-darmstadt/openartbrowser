@@ -17,8 +17,8 @@
             <div class="container-image" [routerLink]="['/' + key, item?.id]">
               <img class="image" src="{{ item?.image }}" alt="{{ item?.label }}" />
               <div class="overlay">
-                <span class="type badge badge-secondary badge-pill"
-                  ><i class="fas fa-{{ upperCategories[key]?.icon }}"></i> {{ upperCategories[key]?.type }}</span
+                <span class="type badge badge-secondary badge-pill chip"
+                  ><i class="fas fa-{{ upperCategories[key]?.icon }}"></i> {{ key | titlecase }}</span
                 >
                 <span class="label">{{ item?.label }}</span>
               </div>
@@ -37,8 +37,8 @@
             <div class="container-image" [routerLink]="['/' + key, item?.id]">
               <img class="image" src="{{ item?.image }}" alt="{{ item?.label }}" />
               <div class="overlay">
-                <span class="type badge badge-secondary badge-pill"
-                  ><i class="fas fa-{{ lowerCategories[key]?.icon }}"></i> {{ lowerCategories[key]?.type }}</span
+                <span class="type badge badge-secondary badge-pill chip"
+                  ><i class="fas fa-{{ lowerCategories[key]?.icon }}"></i> {{ key | titlecase }}</span
                 >
                 <span class="label">{{ item?.label }}</span>
               </div>

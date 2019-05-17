@@ -59,9 +59,3 @@ export interface Movement extends Entity {
 export interface Motif extends Entity {
   type: 'motif';
 }
-
-export interface SliderCategory {
-  type: string;
-  items: Entity[];
-  icon: string;
-}

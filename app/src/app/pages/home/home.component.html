@@ -11,10 +11,10 @@
 
   <div class="row pt-4">
     <div class="col-lg-4 mb-4 container-category">
-      <ngb-carousel interval="10000">
+      <ngb-carousel>
         <div *ngFor="let item of artworkItems" class="hidden">
           <ng-template ngbSlide>
-            <div class="" [routerLink]="['/artwork', item?.id]">
+            <div class="container-image" [routerLink]="['/artwork', item?.id]">
               <img class="image" src="{{ item?.image }}" alt="{{ item?.label }}" />
               <div class="overlay">
                 <span class="type badge badge-secondary badge-pill"><i class="fas fa-palette"></i> Artwork</span>
@@ -27,10 +27,10 @@
     </div>
 
     <div class="col-lg-4 mb-4 container-category">
-      <ngb-carousel interval="10000">
+      <ngb-carousel>
         <div *ngFor="let item of artistItems" class="hidden">
           <ng-template ngbSlide>
-            <div class="" [routerLink]="['/artist', item?.id]">
+            <div class="container-image" [routerLink]="['/artist', item?.id]">
               <img class="image" src="{{ item?.image }}" alt="{{ item?.label }}" />
               <div class="overlay">
                 <span class="type badge badge-secondary badge-pill"><i class="fa fa-user"></i> Artist</span>
@@ -43,10 +43,10 @@
     </div>
 
     <div class="col-lg-4 mb-4 container-category">
-      <ngb-carousel interval="10000">
+      <ngb-carousel>
         <div *ngFor="let item of movementItems" class="hidden">
           <ng-template ngbSlide>
-            <div class="" [routerLink]="['/movement', item?.id]">
+            <div class="container-image" [routerLink]="['/movement', item?.id]">
               <img class="image" src="{{ item?.image }}" alt="{{ item?.label }}" />
               <div class="overlay">
                 <span class="type badge badge-secondary badge-pill"><i class="fa fa-wind"></i> Movement</span>
@@ -61,10 +61,10 @@
 
   <div class="row pt-4">
     <div class="col-lg-3 mb-4 container-category">
-      <ngb-carousel interval="10000">
+      <ngb-carousel>
         <div *ngFor="let item of locationItems" class="hidden">
           <ng-template ngbSlide>
-            <div class="" [routerLink]="['/location', item?.id]">
+            <div class="container-image" [routerLink]="['/location', item?.id]">
               <img class="image" src="{{ item?.image }}" alt="{{ item?.label }}" />
               <div class="overlay">
                 <span class="type badge badge-secondary badge-pill"><i class="fas fa-archway"></i> Location</span>
@@ -77,10 +77,10 @@
     </div>
 
     <div class="col-lg-3 mb-4 container-category">
-      <ngb-carousel interval="10000">
+      <ngb-carousel>
         <div *ngFor="let item of materialItems" class="hidden">
           <ng-template ngbSlide>
-            <div class="" [routerLink]="['/material', item?.id]">
+            <div class="container-image" [routerLink]="['/material', item?.id]">
               <img class="image" src="{{ item?.image }}" alt="{{ item?.label }}" />
               <div class="overlay">
                 <span class="type badge badge-secondary badge-pill"><i class="fa fa-scroll"></i> Material</span>
@@ -93,10 +93,10 @@
     </div>
 
     <div class="col-lg-3 mb-4 container-category">
-      <ngb-carousel interval="10000">
+      <ngb-carousel>
         <div *ngFor="let item of genreItems" class="hidden">
           <ng-template ngbSlide>
-            <div class="" [routerLink]="['/genre', item?.id]">
+            <div class="container-image" [routerLink]="['/genre', item?.id]">
               <img class="image" src="{{ item?.image }}" alt="{{ item?.label }}" />
               <div class="overlay">
                 <span class="type badge badge-secondary badge-pill"><i class="fa fa-tags"></i> Genre</span>
@@ -109,10 +109,10 @@
     </div>
 
     <div class="col-lg-3 mb-4 container-category">
-      <ngb-carousel interval="10000">
+      <ngb-carousel>
         <div *ngFor="let item of motifItems" class="hidden">
           <ng-template ngbSlide>
-            <div class="" [routerLink]="['/motif', item?.id]">
+            <div class="container-image" [routerLink]="['/motif', item?.id]">
               <img class="image" src="{{ item?.image }}" alt="{{ item?.label }}" />
               <div class="overlay">
                 <span class="type badge badge-secondary badge-pill"><i class="fa fa-image"></i> Motif</span>

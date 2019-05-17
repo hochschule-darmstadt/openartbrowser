@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Entity } from 'src/app/shared/models/models';
+import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-home',
@@ -18,7 +19,11 @@ export class HomeComponent implements OnInit {
   genreItems: Entity[];
   motifItems: Entity[];
 
-  constructor() {}
+  constructor(ngb_config: NgbCarouselConfig) {
+    /** set configuration of ngbCarousel */
+    ngb_config.pauseOnHover = false;
+    ngb_config.interval = 10000;
+  }
 
   ngOnInit() {
     this.initDummyData();

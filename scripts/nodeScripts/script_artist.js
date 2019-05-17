@@ -1,9 +1,9 @@
-const csvFilePath = 'artists.csv'; //file path
-const jsonFilePath = 'artists.json';
-
+const csvFilePath = '/Users/marouanekherrabi/Documents/STUDY/PSE/ArtOntology/ArtOntology/artists.csv';
+const jsonFilePath = '/Users/marouanekherrabi/Documents/STUDY/PSE/ArtOntology/jsonData/artists.json';
 const fs = require('fs');
-const es = require('event-stream');
+const csv = require('fast-csv')
 const _ = require('lodash');
+const stream = fs.createReadStream(csvFilePath)
 
 const type = 'artist';
 let numberOfLines = 0;
@@ -24,44 +24,44 @@ let obj = {
 	type: '',
 }
 let objArr = [];
-let lines = [];
+let ids = [];
 
-fs.createReadStream(csvFilePath)
-	.pipe(es.split())
-	.pipe(es.mapSync(function (line) {
+const csvStream = csv({ delimiter: ';' })
+	.on("data", function (data) {
 		let myObj = _.cloneDeep(obj);
-		if (numberOfLines !== 0 && !_.isEmpty(line) && !_.includes(lines, line)) {
-			let splitedLine = line.split(';');
+		if (numberOfLines !== 0 && !_.isEmpty(data) && !_.includes(ids, data[0])) {
 
-			myObj.id = splitedLine[0];
-			myObj.classes = constructArray(splitedLine[1]);
-			myObj.label = splitedLine[2];
-			myObj.description = splitedLine[3];
-			myObj.image = splitedLine[4];
-			myObj.gender = splitedLine[5];
-			myObj.date_of_birth = splitedLine[6];
-			myObj.date_of_death = splitedLine[7];
-			myObj.place_of_birth = splitedLine[8];
-			myObj.place_of_death = splitedLine[9];
-			myObj.citizenship = splitedLine[10];
-			myObj.movements = constructArray(splitedLine[11]);
-			myObj.influenced_by = constructArray(splitedLine[12]);
+			myObj.id = data[0];
+			myObj.classes = constructArray(data[1]);
+			myObj.label = data[2];
+			myObj.description = data[3];
+			myObj.image = data[4];
+			myObj.gender = data[5];
+			myObj.date_of_birth = data[6];
+			myObj.date_of_death = data[7];
+			myObj.place_of_birth = data[8];
+			myObj.place_of_death = data[9];
+			myObj.citizenship = data[10];
+			myObj.movements = constructArray(data[11]);
+			myObj.influenced_by = constructArray(data[12]);
 			myObj.type = type;
 
 			objArr.push(myObj);
-			lines.push(line);
+			ids.push(myObj.id);
 		}
 		++numberOfLines;
 
-	}).on('error', (err) => console.log(err))
-		.on('end', () => {
-			fs.writeFile(jsonFilePath, JSON.stringify(objArr), 'utf-8', (err) => {
-				if (err)
-					console.log(err);
-				console.log(`${numberOfLines} lines processed.`);
-			});
-		})
-	);
+	}).on('data-invalid', (err) => console.log("data invalid"))
+	.on('end', () => {
+		fs.writeFile(jsonFilePath, JSON.stringify(objArr), 'utf-8', (err) => {
+			if (err)
+				console.log(err);
+			console.log(`${numberOfLines} lines processed.`);
+		});
+	})
+
+stream.pipe(csvStream)
+
 function constructArray(str) {
 	let splittedString = str.split('');
 	splittedString = _.without(splittedString, "'", '[', ']', " ");

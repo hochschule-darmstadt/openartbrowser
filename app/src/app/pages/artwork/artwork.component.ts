@@ -19,19 +19,35 @@ interface SliderTab {
   styleUrls: ['./artwork.component.scss'],
 })
 export class ArtworkComponent implements OnInit, OnDestroy {
-  /** use this to end subscription to url parameter in ngOnDestroy */
-  private ngUnsubscribe = new Subject();
 
-  Object = Object;
-
-  /** The entity this page is about */
+  /**
+   * @description the entity this page is about.
+   * @type {Artwork}
+   * @memberof ArtworkComponent
+   */
   artwork: Artwork = null;
 
-  /** Change collapse icon */
+  /**
+   * @description to toggle details container.
+   * initial as true (close).
+   * @type {boolean}
+   * @memberof ArtworkComponent
+   */
   collapseDown: boolean = true;
+
+  /**
+   * @description to toggle common tags container.
+   * initial as true (close).
+   * @type {boolean}
+   * @memberof ArtworkComponent
+   */
   collapseDownTags: boolean = true;
 
-  /** tabs with artwork sliders */
+  /**
+   * @description for the tabs in slider/carousel.
+   * @type {{ [key: string]: SliderTab }}
+   * @memberof ArtworkComponent
+   */
   artworkTabs: { [key: string]: SliderTab } = {
     all: {
       heading: 'All',
@@ -77,9 +93,26 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     },
   };
 
+  /**
+   * @description use this to end subscription to url parameter in ngOnDestroy
+   * @private
+   * @memberof ArtworkComponent
+   */
+  private ngUnsubscribe = new Subject();
+
+  /**
+   * @description to fetch object in the html.
+   * @type {Object}
+   * @memberof ArtworkComponent
+   */
+  Object: Object = Object;
+
   constructor(private dataService: DataService, private route: ActivatedRoute) {}
 
-  /** hook that is executed at component initialization */
+  /**
+   * @description hook that is executed at component initialization
+   * @memberof ArtworkComponent
+   */
   ngOnInit() {
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
@@ -122,53 +155,77 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     });
   }
 
-  selectAllTabItems(maxAmountFromEachTab: number) {
-    /** use Set to filter duplicates */
-    let items = new Set();
-    /** loop as many times we want to take artworks from each category */
-    for (let index = 0; index < maxAmountFromEachTab; index++) { 
-      /** loop through artwork tabs */
-      for (let key of Object.keys(this.artworkTabs)) {
-        /** add the artwork to the Set */
-        if (key != 'all' && this.artworkTabs[key].items && this.artworkTabs[key].items[index]) {
-          items.add(this.artworkTabs[key].items[index]);           
-        }
-      }
-    }
-    /** set artwork "all" tabs items to this Set */
-    this.artworkTabs.all.items = Array.from(items);
-  }
-
+  /**
+   * @description Hook that is called when a directive, pipe, or service is destroyed.
+   * @memberof ArtworkComponent
+   */
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
   }
 
-  toggleDetails() {
+  /**
+   * @description function to fetch items into 'all' tab from others. 
+   * use Set to filter duplicates
+   * param will determine how many times to loop the tabs
+   * get a single artwork in each tab every time it loops (unless duplicate)
+   * set var artworkTabs.all.items to this Set
+   * @param {number} maxAmountFromEachTab
+   * @memberof ArtworkComponent
+   */
+  selectAllTabItems(maxAmountFromEachTab: number): void {
+    let items = new Set();
+    for (let index = 0; index < maxAmountFromEachTab; index++) { 
+      for (let key of Object.keys(this.artworkTabs)) {
+        if (key != 'all' && this.artworkTabs[key].items && this.artworkTabs[key].items[index]) {
+          items.add(this.artworkTabs[key].items[index]);           
+        }
+      }
+    }
+    this.artworkTabs.all.items = Array.from(items);
+  }
+
+  /**
+   * @description function to toggle details container. 
+   * @memberof ArtworkComponent
+   */
+  toggleDetails(): void {
     this.collapseDown = !this.collapseDown;
   }
 
-  toggleCommonTags() {
+  /**
+   * @description function to toggle common tags container.
+   * @memberof ArtworkComponent
+   */
+  toggleCommonTags(): void {
     this.collapseDownTags = !this.collapseDownTags;
   }
 
-  showTab(key: string) {
+  /**
+   * @description function to determine if a tab is not empty.
+   * @param {string} key
+   * @returns {boolean}
+   * @memberof ArtworkComponent
+   */
+  showTab(key: string): boolean {
     if (this.artwork) {
       switch (key) {
+        case 'all':
+          return true; 
         case 'artist':
-          return this.artwork.creators.length;
+          return this.artwork.creators.length > 0;
         case 'movement':
-          return this.artwork.movements.length;
+          return this.artwork.movements.length > 0;
         case 'genre':
-          return this.artwork.genres.length;
+          return this.artwork.genres.length > 0;
         case 'motif':
-          return this.artwork.depicts.length;
+          return this.artwork.depicts.length > 0;
         case 'location':
-          return this.artwork.locations.length;
+          return this.artwork.locations.length > 0;
         case 'material':
-          return this.artwork.materials.length;
+          return this.artwork.materials.length > 0;
         default:
-          return true;
+          return false;
       }
     }
   }

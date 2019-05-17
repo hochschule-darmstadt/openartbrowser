@@ -11,19 +11,27 @@ export class SliderItemComponent implements OnInit {
 
   ngOnInit() {}
 
-  @Input()
-  type: string;
+  /**
+   * @description Input: the item being passed.
+   * @type {Entity}
+   * @memberof SliderItemComponent
+   */
+  @Input() item: Entity;
 
-  @Input()
-  item: Entity;
-
-  @Input()
-  artwork: Artwork;
+  /**
+   * @description Input: the main artwork being passed.
+   * @type {Artwork}
+   * @memberof SliderItemComponent
+   */
+  @Input() artwork: Artwork;
    
-  /** Highlighting common tags between the slider item and current artwork */
-  highlightCommonTags(){
+  /**
+   * @description Highlighting common tags between the slider item and current artwork
+   * @memberof SliderItemComponent
+   */
+  highlightCommonTags(): void{
     this.resetTags(); //reset tags style to default
-    let fetchTagsClass = this.type == 'all' ? 'common-tag' : this.type + '-tag';
+    let fetchTagsClass = this.item.type == 'all' ? 'common-tag' : this.item.type + '-tag';
     let tags = document.getElementsByClassName(fetchTagsClass);
     /** Loop through all current artwork tags */
     for (let index = 0; index < tags.length; index++) {
@@ -31,7 +39,7 @@ export class SliderItemComponent implements OnInit {
       const text = element.textContent.trim().toLowerCase();
       
       /** Check if current tag has the same tag with the slider item */
-      let attributes = this.item[this.type];
+      let attributes = this.item[this.item.type];
       if (attributes){
         for (let tag of attributes){
           if (text == tag.toLowerCase()) { 
@@ -47,8 +55,11 @@ export class SliderItemComponent implements OnInit {
     }
   }
 
-  /** Reset tags style */
-  resetTags(){
+  /**
+   * @description Reset tags style
+   * @memberof SliderItemComponent
+   */
+  resetTags(): void{
     let tags = document.getElementsByClassName('common-tag');
     for (let index = 0; index < tags.length; index++) {
       const element = tags[index];

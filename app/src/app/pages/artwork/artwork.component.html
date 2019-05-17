@@ -106,7 +106,7 @@
       <div class="tab-content">
         <div *ngFor="let tab of Object.keys(artworkTabs)" class="tab-pane fade"
           [ngClass]="{ 'show active': artworkTabs[tab].active }" id="{{ artworkTabs[tab].heading }}_tab">
-          <app-slider [type]="tab" [artwork]="artwork" [items]="artworkTabs[tab].items"> </app-slider>
+          <app-slider [artwork]="artwork" [items]="artworkTabs[tab].items"> </app-slider>
 
           <h3 class="mt-2 mb-0 more" data-toggle="collapse" href="#collapseTags" (click)="toggleCommonTags()">
             Common <span *ngIf="tab != 'all'">{{ tab }}</span> tags with artwork <span>"{{ (artwork?.label?.length>35)? (artwork?.label | slice:0:35)+'...':(artwork?.label) }}"</span>

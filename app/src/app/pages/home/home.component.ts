@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Entity } from 'src/app/shared/models/models';
+import { SliderCategory } from 'src/app/shared/models/models';
 import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -8,16 +8,51 @@ import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-  iterator: number = 0;
-  maxItems: number = 3;
+  /** init Object for iterating in ngbCarousel */
+  Object = Object;
 
-  artworkItems: Entity[];
-  artistItems: Entity[];
-  movementItems: Entity[];
-  locationItems: Entity[];
-  materialItems: Entity[];
-  genreItems: Entity[];
-  motifItems: Entity[];
+  /** upper categories sliders data */
+  upperCategories: { [key: string]: SliderCategory } = {
+    artwork: {
+      type: 'artwork',
+      items: [],
+      icon: 'palette',
+    },
+    artist: {
+      type: 'artist',
+      items: [],
+      icon: 'user',
+    },
+    movement: {
+      type: 'movement',
+      items: [],
+      icon: 'wind',
+    },
+  };
+
+  /** lower categories sliders data */
+  lowerCategories: { [key: string]: SliderCategory } = {
+    location: {
+      type: 'location',
+      items: [],
+      icon: 'archway',
+    },
+    material: {
+      type: 'Material',
+      items: [],
+      icon: 'scroll',
+    },
+    genre: {
+      type: 'genre',
+      items: [],
+      icon: 'tags',
+    },
+    motif: {
+      type: 'Motif',
+      items: [],
+      icon: 'image',
+    },
+  };
 
   constructor(ngb_config: NgbCarouselConfig) {
     /** set configuration of ngbCarousel */
@@ -27,13 +62,10 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.initDummyData();
-    setInterval(() => {
-      this.iterator = this.iterator == this.maxItems - 1 ? 0 : this.iterator + 1;
-    }, 10000);
   }
 
   initDummyData = (): void => {
-    this.artworkItems = [
+    this.upperCategories.artwork.items = [
       {
         id: 'Q19925319',
         label: 'Prayer before the meal',
@@ -62,7 +94,7 @@ export class HomeComponent implements OnInit {
       },
     ];
 
-    this.artistItems = [
+    this.upperCategories.artist.items = [
       {
         id: 'Q762',
         label: 'Leonardo da Vinci',
@@ -91,7 +123,7 @@ export class HomeComponent implements OnInit {
       },
     ];
 
-    this.movementItems = [
+    this.upperCategories.movement.items = [
       {
         id: 'Q326478',
         label: 'land art',
@@ -119,7 +151,7 @@ export class HomeComponent implements OnInit {
       },
     ];
 
-    this.locationItems = [
+    this.lowerCategories.location.items = [
       {
         id: 'Q1411180',
         label: 'Luxembourg Museum',
@@ -146,7 +178,7 @@ export class HomeComponent implements OnInit {
       },
     ];
 
-    this.materialItems = [
+    this.lowerCategories.material.items = [
       {
         id: 'Q219803',
         label: 'plywood',
@@ -172,7 +204,7 @@ export class HomeComponent implements OnInit {
         relativeRank: 0.9,
       },
     ];
-    this.genreItems = [
+    this.lowerCategories.genre.items = [
       {
         id: 'Q2586345',
         label: 'Cycladic art',
@@ -199,7 +231,7 @@ export class HomeComponent implements OnInit {
         relativeRank: 0.9,
       },
     ];
-    this.motifItems = [
+    this.lowerCategories.motif.items = [
       {
         id: 'Q10737',
         label: 'suicide',

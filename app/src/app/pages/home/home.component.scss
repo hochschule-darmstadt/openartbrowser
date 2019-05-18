@@ -137,3 +137,9 @@ $color1: #00bc8c;
     text-align: center;
   }
 }
+
+@media (min-width: 992px) {
+  .title {
+    font-size: 8rem !important;
+  }
+}

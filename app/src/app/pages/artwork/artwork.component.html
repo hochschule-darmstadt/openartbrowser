@@ -11,10 +11,10 @@
       <h2 class="mb-3 first-letter">{{ artwork?.label }}</h2>
 
       <div class="row">
-        <div class="col-1">
+        <div class="col-md-1">
           <p *ngIf="artwork?.creators?.length" class="mb-1 text-muted">Artist:</p>
         </div>
-        <div class="col-11">
+        <div class="col-md-11">
           <p *ngIf="artwork?.creators?.length" class="mb-1">
             <span class="badge badge-pill badge-secondary first-letter chip" *ngFor="let creator of artwork?.creators"
               [routerLink]="'/artist/' + creator.id">
@@ -24,10 +24,10 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-1">
+        <div class="col-md-1">
           <p *ngIf="artwork?.locations?.length" class="mb-1 text-muted">Location:</p>
         </div>
-        <div class="col-11">
+        <div class="col-md-11">
           <p *ngIf="artwork?.locations?.length" class="mb-1">
             <span class="badge badge-pill badge-secondary first-letter chip" *ngFor="let location of artwork?.locations"
               [routerLink]="'/location/' + location.id">
@@ -37,10 +37,10 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-1">
+        <div class="col-md-1">
           <p *ngIf="artwork?.inception" class="mb-1 text-muted">Inception:</p>
         </div>
-        <div class="col-11">
+        <div class="col-md-11">
 
           <p *ngIf="artwork?.inception" class="mb-1 notchip">{{ artwork?.inception }}</p>
         </div>

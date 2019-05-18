@@ -21,7 +21,8 @@
   border-radius: 4px 25px 25px 4px;
 }
 
-@media only screen and (max-width: 1000px) {
+@media only screen and (max-width: 992px) {
+
   .search-form .form-group:hover,
   .search-form .form-group.hover {
     width: 500px;

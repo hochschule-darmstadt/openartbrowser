@@ -24,30 +24,39 @@ export class SliderItemComponent implements OnInit {
    * @memberof SliderItemComponent
    */
   @Input() artwork: Artwork;
-   
+
   /**
    * @description Highlighting common tags between the slider item and current artwork
    * @memberof SliderItemComponent
    */
-  highlightCommonTags(): void{
+  highlightCommonTags(): void {
     this.resetTags(); //reset tags style to default
-    let fetchTagsClass = this.item.type == 'all' ? 'common-tag' : this.item.type + '-tag';
+    let fetchTagsClass = 'common-tag';
     let tags = document.getElementsByClassName(fetchTagsClass);
+    /** available metadatas to check in artwork item*/
+    let type = ['creators', 'movements', 'locations', 'materials', 'genres', 'motifs'];
     /** Loop through all current artwork tags */
     for (let index = 0; index < tags.length; index++) {
       const element = tags[index];
       const text = element.textContent.trim().toLowerCase();
-      
-      /** Check if current tag has the same tag with the slider item */
-      let attributes = this.item[this.item.type];
-      if (attributes){
-        for (let tag of attributes){
-          if (text == tag.toLowerCase()) { 
-            element.classList.remove('badge-secondary');
-            element.classList.remove('badge-transparent');
-            element.classList.add('badge-light');
-            break; //if found, break the loop
-          } else {
+
+
+      /** Check if current tag has the same tag with the slider item by looping through every available metadata */
+      for (let t of type) {
+        let attributes = this.item[t];
+        if (attributes) {
+          for (let tag of attributes) {
+            if (text == tag.toLowerCase()) {
+              element.classList.remove('badge-secondary');
+              element.classList.remove('badge-transparent');
+              element.classList.add('badge-light');
+              break; //if found, break the loop
+            } else {
+              element.classList.add('badge-transparent');
+            }
+          }
+        } else {
+          if(element.classList.contains('badge-secondary')){
             element.classList.add('badge-transparent');
           }
         }
@@ -59,7 +68,7 @@ export class SliderItemComponent implements OnInit {
    * @description Reset tags style
    * @memberof SliderItemComponent
    */
-  resetTags(): void{
+  resetTags(): void {
     let tags = document.getElementsByClassName('common-tag');
     for (let index = 0; index < tags.length; index++) {
       const element = tags[index];

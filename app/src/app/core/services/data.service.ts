@@ -49,7 +49,7 @@ export class DataService {
   public async findById(id: string, enrich: boolean = true): Promise<Entity> {
     let result;
     try {
-      result = await this.http.get<Entity>('http://localhost:4200/art_data/_search?q=id:' + id).toPromise();
+      result = await this.http.get<Entity>('http://141.100.60.99:9200/api/_search?q=id:' + id).toPromise();
     } catch (error) {
       console.log('Something went wrong during API request');
       return null;

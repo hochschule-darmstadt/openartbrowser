@@ -32,7 +32,7 @@
           <i *ngIf="!collapseDown" data-toggle="collapse" href="#collapseArtist" class="fas fa-chevron-up"> </i>
         </h4>
 
-        <div class="collapse" id="collapseArtist">
+        <div [className]="metaNumber < 3 ? 'collapse show' : 'collapse'" id="collapseArtist">
           <div class="row">
             <div class="col-md-3 pr-0 ">
               <p *ngIf="artist?.gender" class="text-muted mb-2">Gender:</p>

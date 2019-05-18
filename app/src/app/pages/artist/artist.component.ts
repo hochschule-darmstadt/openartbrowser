@@ -4,6 +4,7 @@ import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import * as _ from "lodash";
 
 @Component({
   selector: 'app-artist',
@@ -37,7 +38,27 @@ export class ArtistComponent implements OnInit, OnDestroy {
       /** Use data service to fetch entity from database */
       this.artist = (await this.dataService.findById(artistId)) as Artist;
       this.sliderItems = await this.dataService.findArtworksByArtists([this.artist.id]);
+      this.countMetaData();
+      console.log(`metadata size: ${this.metaNumber}`);
+      if (this.metaNumber < 3)
+        this.collapseDown = false;
     });
+
+
+  }
+
+  metaNumber: number = 0;
+
+
+  countMetaData() {
+    if (!_.isEmpty(this.artist.gender))
+      this.metaNumber++;
+    if (!_.isEmpty(this.artist.influenced_by))
+      this.metaNumber++;
+    if (!_.isEmpty(this.artist.movements))
+      this.metaNumber++;
+    if (!_.isEmpty(this.artist.citizenship))
+      this.metaNumber++;
   }
 
   ngOnDestroy() {

@@ -4,6 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
+import * as _ from "lodash";
 
 /** interface for the tabs */
 interface SliderTab {
@@ -68,7 +69,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     },
   };
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {}
+  constructor(private dataService: DataService, private route: ActivatedRoute) { }
 
   /** hook that is executed at component initialization */
   ngOnInit() {
@@ -77,6 +78,12 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       const artworkId = params.get('artworkId');
       /** Use data service to fetch entity from database */
       this.artwork = (await this.dataService.findById(artworkId)) as Artwork;
+
+      /* Count meta data to show more on load */
+      this.countMetaData();
+      console.log(`metadata size: ${this.metaNumber}`);
+      if (this.metaNumber < 3)
+        this.collapseDown = false;
 
       this.artworkTabs.artist.items = await this.dataService.findArtworksByArtists(
         this.artwork.creators.map((creator) => {
@@ -143,5 +150,20 @@ export class ArtworkComponent implements OnInit, OnDestroy {
 
   toggleDetails() {
     this.collapseDown = !this.collapseDown;
+  }
+
+  metaNumber: number = 0;
+
+  countMetaData() {
+    if (!_.isEmpty(this.artwork.genres))
+      this.metaNumber++;
+    if (!_.isEmpty(this.artwork.materials))
+      this.metaNumber++;
+    if (!_.isEmpty(this.artwork.movements))
+      this.metaNumber++;
+    if (!_.isEmpty(this.artwork.depicts))
+      this.metaNumber++;
+    if ((!_.isEmpty(this.artwork.height)) && (!_.isEmpty(this.artwork.width)))
+      this.metaNumber++;
   }
 }

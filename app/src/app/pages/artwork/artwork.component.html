@@ -57,7 +57,7 @@
           <i *ngIf="!collapseDown" data-toggle="collapse" href="#collapseArtwork" class="fas fa-chevron-up"></i>
         </h4>
 
-        <div class="collapse" id="collapseArtwork">
+        <div [className]="metaNumber < 3 ? 'collapse show' : 'collapse'" id="collapseArtwork">
           <div class="row">
             <div class="col-md-1">
               <p *ngIf="artwork?.genres?.length" class="mb-1 text-muted">Genre:</p>

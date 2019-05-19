@@ -10,11 +10,10 @@ import { Slider } from 'src/app/shared/models/slider.model';
 export class HomeComponent implements OnInit {
 
   /**
-   * @description variable of object to be fetch in html.
-   * @type {object}
+   * @description variable of object to be fetch in html
    * @memberof HomeComponent
    */
-  Object: object = Object;
+  Object = Object;
 
   /**
    * @description variable of the first 3 categories.

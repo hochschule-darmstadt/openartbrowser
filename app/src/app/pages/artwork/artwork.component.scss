@@ -32,10 +32,11 @@
 .badge-light{
     color: #444;
     background-color: #fff;
+    opacity: 1 !important;
 }
 
 .badge-transparent{
-  opacity: .2;
+  opacity: .4;
 }
 
 @media (min-width: 992px) {

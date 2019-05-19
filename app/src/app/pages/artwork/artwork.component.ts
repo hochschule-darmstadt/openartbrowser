@@ -43,20 +43,12 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   collapseDownTags: boolean = true;
 
-
+  /**
+   * @description to save the artwork item that is being hovered.
+   * @type {Artwork}
+   * @memberof ArtworkComponent
+   */
   hoveredArtwork: Artwork = null;
-
-  isContained(obj: Object, id: string): boolean {
-    if (obj && id) {
-      for (let entry of Object.keys(obj)) {
-        if (obj[entry].id == id) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
 
   /**
    * @description for the tabs in slider/carousel.
@@ -213,6 +205,24 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   toggleCommonTags(): void {
     this.collapseDownTags = !this.collapseDownTags;
+  }
+
+  /**
+   * @description check if a tag of the hovered item is common with the artwork.
+   * @param {Object} obj
+   * @param {string} id
+   * @returns {boolean} => will add class 'badge-light'
+   * @memberof ArtworkComponent
+   */
+  isCommonTag(obj: Object, id: string): boolean {
+    if (obj && id) {
+      for (let entry of Object.keys(obj)) {
+        if (obj[entry].id == id) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   /**

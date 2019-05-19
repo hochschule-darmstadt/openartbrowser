@@ -73,7 +73,7 @@ export class DataService {
     }
     // due to some ids being present multiple times in the data store (bug)-> always take the first result
     const rawEntity = result.hits.hits[0]._source;
-    console.log(rawEntity);
+    // console.log(rawEntity);
     if (!enrich) {
       return rawEntity;
     } else {

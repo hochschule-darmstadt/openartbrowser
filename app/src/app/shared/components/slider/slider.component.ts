@@ -8,9 +8,12 @@ import { Entity } from '../../models/models';
 })
 export class SliderComponent implements OnChanges {
 
-  /** emits hovered artwork on hover event */
-  @Output()
-  onHover: EventEmitter<Entity> = new EventEmitter<Entity>();
+  /**
+   * @description emits hovered artwork on hover event.
+   * @type {EventEmitter<Entity>}
+   * @memberof SliderComponent
+   */
+  @Output() onHover: EventEmitter<Entity> = new EventEmitter<Entity>();
 
   constructor() { }
 

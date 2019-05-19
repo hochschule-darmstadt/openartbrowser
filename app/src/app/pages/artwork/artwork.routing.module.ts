@@ -4,6 +4,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { ArtworkComponent } from './artwork.component';
 import { SharedModule } from '../../shared/shared.module';
 
+import { NgxImageZoomModule } from 'ngx-image-zoom';
+
 const artworkRoutes: Routes = [
   {
     path: '',
@@ -13,7 +15,7 @@ const artworkRoutes: Routes = [
 
 @NgModule({
   declarations: [ArtworkComponent],
-  imports: [CommonModule, SharedModule, RouterModule.forChild(artworkRoutes)],
+  imports: [CommonModule, SharedModule, RouterModule.forChild(artworkRoutes), NgxImageZoomModule.forRoot()],
   exports: [ArtworkComponent],
 })
 export class ArtworkRoutingModule {}

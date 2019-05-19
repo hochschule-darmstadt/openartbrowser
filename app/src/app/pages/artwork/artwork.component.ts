@@ -43,6 +43,21 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   collapseDownTags: boolean = true;
 
+
+  hoveredArtwork: Artwork = null;
+
+  isContained(obj: Object, id: string): boolean {
+    if (obj && id) {
+      for (let entry of Object.keys(obj)) {
+        if (obj[entry].id == id) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+
   /**
    * @description for the tabs in slider/carousel.
    * @type {{ [key: string]: SliderTab }}
@@ -102,12 +117,11 @@ export class ArtworkComponent implements OnInit, OnDestroy {
 
   /**
    * @description to fetch object in the html.
-   * @type {Object}
    * @memberof ArtworkComponent
    */
-  Object: Object = Object;
+  Object = Object;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {}
+  constructor(private dataService: DataService, private route: ActivatedRoute) { }
 
   /**
    * @description hook that is executed at component initialization
@@ -175,10 +189,10 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   selectAllTabItems(maxAmountFromEachTab: number): void {
     let items = new Set();
-    for (let index = 0; index < maxAmountFromEachTab; index++) { 
+    for (let index = 0; index < maxAmountFromEachTab; index++) {
       for (let key of Object.keys(this.artworkTabs)) {
         if (key != 'all' && this.artworkTabs[key].items && this.artworkTabs[key].items[index]) {
-          items.add(this.artworkTabs[key].items[index]);           
+          items.add(this.artworkTabs[key].items[index]);
         }
       }
     }
@@ -211,7 +225,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     if (this.artwork) {
       switch (key) {
         case 'all':
-          return true; 
+          return true;
         case 'artist':
           return this.artwork.creators.length > 0;
         case 'movement':

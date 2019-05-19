@@ -4,7 +4,8 @@
     <ng-template ngbSlide>
       <div class="row mx-3 ">
         <div *ngFor="let item of i" class="pb-4 col-sm-3 mt-auto mb-auto">
-          <app-slider-item [artwork]="artwork" [item]="item"></app-slider-item>
+          <app-slider-item (mouseenter)="onHover.emit(item)" (mouseleave)="onHover.emit(null)" [item]="item">
+          </app-slider-item>
         </div>
       </div>
     </ng-template>

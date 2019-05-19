@@ -1,5 +1,5 @@
-import { Component, Input, SimpleChanges, OnChanges } from '@angular/core';
-import { Entity, Artwork } from '../../models/models';
+import { Component, Input, SimpleChanges, OnChanges, EventEmitter, Output } from '@angular/core';
+import { Entity } from '../../models/models';
 
 @Component({
   selector: 'app-slider',
@@ -7,7 +7,12 @@ import { Entity, Artwork } from '../../models/models';
   styleUrls: ['./slider.component.scss'],
 })
 export class SliderComponent implements OnChanges {
-  constructor() {}
+
+  /** emits hovered artwork on hover event */
+  @Output()
+  onHover: EventEmitter<Entity> = new EventEmitter<Entity>();
+
+  constructor() { }
 
   /**
    * @description Hook that is called when any data-bound property of a directive changes.
@@ -33,13 +38,6 @@ export class SliderComponent implements OnChanges {
    * @memberof SliderComponent
    */
   @Input() items: Entity[] = [];
-
-  /**
-   * @description Input: the main artwork being passed.
-   * @type {Artwork}
-   * @memberof SliderComponent
-   */
-  @Input() artwork: Artwork;
 
   @Input() heading: string;
 

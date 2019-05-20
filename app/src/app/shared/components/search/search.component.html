@@ -36,7 +36,7 @@
   </ng-template>
   <!-- <img [src]="r['image']" class="mr-1" style="width: 75px; padding: 5px;"> -->
   <span id="search-badge" class="badge badge-secondary">{{ r?.type }}</span>
-  <ngb-highlight [result]="r.label" [term]="t" style="padding: 8px;"></ngb-highlight>
+  <ngb-highlight [result]="r.label" [term]="t" style="padding: 8px;" (click)="findEntity(r.id)"></ngb-highlight>
 </ng-template>
 <div class="chips chips-placeholder">
   <input

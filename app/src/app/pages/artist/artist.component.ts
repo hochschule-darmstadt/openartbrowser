@@ -39,16 +39,12 @@ export class ArtistComponent implements OnInit, OnDestroy {
       this.artist = (await this.dataService.findById(artistId)) as Artist;
       this.sliderItems = await this.dataService.findArtworksByArtists([this.artist.id]);
       this.countMetaData();
-      console.log(`metadata size: ${this.metaNumber}`);
       if (this.metaNumber < 3)
         this.collapseDown = false;
     });
-
-
   }
 
   metaNumber: number = 0;
-
 
   countMetaData() {
     if (!_.isEmpty(this.artist.gender))

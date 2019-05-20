@@ -81,7 +81,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
 
       /* Count meta data to show more on load */
       this.countMetaData();
-      console.log(`metadata size: ${this.metaNumber}`);
       if (this.metaNumber < 3)
         this.collapseDown = false;
 

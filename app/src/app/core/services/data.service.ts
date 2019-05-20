@@ -15,11 +15,29 @@ export class DataService {
   serverURI = 'http://141.100.60.99:9200/api/_search';
   public async findEntitiesByLabelText(text: string): Promise<Entity[]> {
     const options = {
-      query: {
-        wildcard: { label: `*${text}*` },
-      },
-      sort: [{ relativeRank: { order: 'desc' } }],
-    };
+		"query": {
+			"bool": {
+				"must": {
+					"wildcard": {
+						"label": `*${text}*`
+					}
+				},
+				"must_not": {
+					"term": {
+						"type": "object"
+					}
+				}
+			}
+		},
+		"sort": [
+			{
+				"relativeRank": {
+					"order": "desc"
+				}
+			}
+		],
+		"size": 100
+	};
     const response = await this.http.post<any>(this.serverURI, options).toPromise();
     return this.filterData(response);
   }

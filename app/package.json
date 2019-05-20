@@ -20,6 +20,8 @@
     "@angular/platform-browser-dynamic": "~7.2.0",
     "@angular/router": "~7.2.0",
     "@ng-bootstrap/ng-bootstrap": "^4.1.1",
+    "@types/lodash": "^4.14.129",
+    "@types/qs": "^6.5.3",
     "core-js": "^2.5.4",
     "lodash": "^4.17.11",
     "rxjs": "~6.3.3",

@@ -1,9 +1,9 @@
-const csvFilePath = 'materials.csv'; // file path
-const jsonFilePath = 'materials.json';
-
+const csvFilePath = '/Users/marouanekherrabi/Documents/STUDY/PSE/ArtOntology/ArtOntology/materials.csv';
+const jsonFilePath = '/Users/marouanekherrabi/Documents/STUDY/PSE/ArtOntology/jsonData/materials.json';
+const csv = require('fast-csv')
 const fs = require('fs');
-const es = require('event-stream');
 const _ = require('lodash');
+const stream = fs.createReadStream(csvFilePath)
 
 const type = 'material';
 let numberOfLines = 0;
@@ -16,36 +16,36 @@ let obj = {
 	type: ''
 }
 let objArr = [];
-let lines = [];
+let ids = [];
 
-fs.createReadStream(csvFilePath)
-	.pipe(es.split())
-	.pipe(es.mapSync(function (line) {
+const csvStream = csv({ delimiter: ';' })
+	.on("data", function (data) {
 		let myObj = _.cloneDeep(obj);
-		if (numberOfLines !== 0 && !_.isEmpty(line) && !_.includes(lines, line)) {
-			let splitedLine = line.split(';');
+		if (numberOfLines !== 0 && !_.isEmpty(data) && !_.includes(ids, data[0])) {
 
-			myObj.id = splitedLine[0];
-			myObj.classes = constructArray(splitedLine[1]);
-			myObj.label = splitedLine[2];
-			myObj.description = splitedLine[3];
-			myObj.image = splitedLine[4];
+			myObj.id = data[0];
+			myObj.classes = constructArray(data[1]);
+			myObj.label = data[2];
+			myObj.description = data[3];
+			myObj.image = data[4];
 			myObj.type = type;
 
 			objArr.push(myObj);
-			lines.push(line);
+			ids.push(myObj.id);
 		}
 		++numberOfLines;
 
-	}).on('error', (err) => console.log(err))
-		.on('end', () => {
-			fs.writeFile(jsonFilePath, JSON.stringify(objArr), 'utf-8', (err) => {
-				if (err)
-					console.log(err);
-				console.log(`${numberOfLines} lines processed.`);
-			});
-		})
-	);
+	}).on('data-invalid', (err) => console.log("err"))
+	.on('end', () => {
+		fs.writeFile(jsonFilePath, JSON.stringify(objArr), 'utf-8', (err) => {
+			if (err)
+				console.log(err);
+			console.log(`${numberOfLines} lines processed.`);
+		});
+	})
+
+stream.pipe(csvStream)
+
 function constructArray(str) {
 	let splittedString = str.split('');
 	splittedString = _.without(splittedString, "'", '[', ']', " ");

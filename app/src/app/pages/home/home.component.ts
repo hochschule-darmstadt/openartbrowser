@@ -1,6 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
-import { Slider } from 'src/app/shared/models/slider.model';
+import { Entity } from 'src/app/shared/models/models';
+
+/**
+ * @description Interface for the category sliders.
+ * @export
+ * @interface SliderCategory
+ */
+export interface SliderCategory {
+  items: Entity[];
+  icon: string;
+}
 
 @Component({
   selector: 'app-home',
@@ -17,10 +27,10 @@ export class HomeComponent implements OnInit {
 
   /**
    * @description variable of the first 3 categories.
-   * @type {{ [key: string]: Slider }}
+   * @type {{ [key: string]: SliderCategory }}
    * @memberof HomeComponent
    */
-  upperCategories: { [key: string]: Slider } = {
+  upperCategories: { [key: string]: SliderCategory } = {
     artwork: {
       items: [],
       icon: 'palette',
@@ -37,10 +47,10 @@ export class HomeComponent implements OnInit {
 
   /**
    * @description variable of the next 4 categories.
-   * @type {{ [key: string]: Slider }}
+   * @type {{ [key: string]: SliderCategory }}
    * @memberof HomeComponent
    */
-  lowerCategories: { [key: string]: Slider } = {
+  lowerCategories: { [key: string]: SliderCategory } = {
     location: {
       items: [],
       icon: 'archway',

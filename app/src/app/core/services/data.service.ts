@@ -43,6 +43,54 @@ export class DataService {
 	}
 
 	public async findArtworksByArtists(artistIds: string[]): Promise<Artwork[]> {
+		const response = await this.http.post<any>(this.serverURI, this.constructQuery("creators", artistIds)).toPromise();
+		return this.filterData<Artwork>(response);
+	};
+
+
+	public async findArtworksByMaterials(materialIds: string[]): Promise<Artwork[]> {
+		const response = await this.http.post<any>(this.serverURI, this.constructQuery("materials", materialIds)).toPromise();
+		return this.filterData<Artwork>(response);
+	}
+
+	public async findArtworksByMovements(movementIds: string[]): Promise<Artwork[]> {
+		const response = await this.http.post<any>(this.serverURI, this.constructQuery("movements", movementIds)).toPromise();
+		return this.filterData<Artwork>(response);
+	}
+
+	public async findArtworksByGenres(genreIds: string[]): Promise<Artwork[]> {
+		const response = await this.http.post<any>(this.serverURI, this.constructQuery("genres", genreIds)).toPromise();
+		return this.filterData<Artwork>(response);
+	}
+
+	public async findArtworksByMotifs(motifIds: string[]): Promise<Artwork[]> {
+		const response = await this.http.post<any>(this.serverURI, this.constructQuery("depicts", motifIds)).toPromise();
+		return this.filterData<Artwork>(response);
+	}
+
+	public async findArtworksByLocations(locationIds: string[]): Promise<Artwork[]> {
+		const response = await this.http.post<any>(this.serverURI, this.constructQuery("locations", locationIds)).toPromise();
+		return this.filterData<Artwork>(response);
+	}
+
+	/**
+	 * filters the data that is fetched from the server
+	 * @param data Elasticsearch Data
+	 */
+	filterData<T>(data: any): T[] {
+		let entities: T[] = [];
+		_.each(data.hits.hits, function (val) {
+			entities.push(val._source);
+		});
+		return entities;
+	}
+
+	/**
+	 * Constructs an Elasticsearch query
+	 * @param type the type to search in
+	 * @param ids the ids to search for
+	 */
+	constructQuery(type: string, ids: string[]) {
 		let options = {
 			"query": {
 				"bool": {
@@ -57,45 +105,15 @@ export class DataService {
 				}
 			],
 			"size": 200
-		}
-		_.each(artistIds, function (id) {
+		};
+		_.each(ids, function (id) {
 			options.query.bool.should.push({
 				"match": {
-					"creators": `${id}`
+					[type]: `${id}`
 				}
-			})
-		})
-		const response = await this.http.post<any>(this.serverURI, options).toPromise();
-		return this.filterData<Artwork>(response);
-	};
-
-
-	public async findArtworksByMaterials(materialIds: string[]): Promise<Artwork[]> {
-		return [...this.dummyArtworks] as Artwork[];
-	}
-
-	public async findArtworksByMovements(movementIds: string[]): Promise<Artwork[]> {
-		return [...this.dummyArtworks] as Artwork[];
-	}
-
-	public async findArtworksByGenres(genreIds: string[]): Promise<Artwork[]> {
-		return [...this.dummyArtworks] as Artwork[];
-	}
-
-	public async findArtworksByMotifs(motifIds: string[]): Promise<Artwork[]> {
-		return [...this.dummyArtworks] as Artwork[];
-	}
-
-	public async findArtworksByLocations(locationIds: string[]): Promise<Artwork[]> {
-		return [...this.dummyArtworks] as Artwork[];
-	}
-
-	filterData<T>(data: any): T[] {
-		let entities: T[] = [];
-		_.each(data.hits.hits, function (val) {
-			entities.push(val._source);
+			});
 		});
-		return entities;
+		return options;
 	}
 	/**
 	 * Gets an entity from the server

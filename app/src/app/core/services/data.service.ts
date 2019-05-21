@@ -36,12 +36,36 @@ export class DataService {
 				}
 			}
 		],
-		"size": 100
+		"size": 500
 	};
 
     const response = await this.http.post<any>(this.serverURI, options).toPromise();
     return this.filterData(response);
   }
+
+  public async findArtworkByLabelText(text: string): Promise<Artwork[]> {
+    const options = {
+		"query": {
+			"bool": {
+				"must": {
+          "wildcard": {
+            "label": `*${text}*`,
+					},
+				},
+			},
+		},
+		"sort": [
+			{
+				"relativeRank": {
+					"order": "desc"
+				}
+			}
+		],
+		"size": 20
+  };
+  const response = await this.http.post<any>(this.serverURI, options).toPromise();
+    return this.filterData<Artwork>(response);
+}
 
   public async findArtworksByArtists(artistIds: string[]): Promise<Artwork[]> {
     return [...this.dummyArtworks] as Artwork[];
@@ -67,8 +91,8 @@ export class DataService {
     return [...this.dummyArtworks] as Artwork[];
   }
 
-  filterData(data: any): Entity[] {
-    let entities: Entity[] = [];
+  filterData<T>(data: any): T[] {
+    let entities: T[] = [];
     _.each(data.hits.hits, function (val) {
       entities.push(val._source);
     });

@@ -36,19 +36,23 @@
   </ng-template>
   <!-- <img [src]="r['image']" class="mr-1" style="width: 75px; padding: 5px;"> -->
   <span id="search-badge" class="badge badge-secondary">{{ r?.type }}</span>
-  <ngb-highlight [result]="r.label" [term]="t" style="padding: 8px;" (click)="findEntity(r.id)"></ngb-highlight>
+  <ngb-highlight [result]="r.label" [term]="t" style="padding: 8px;"></ngb-highlight>
 </ng-template>
 <div class="chips chips-placeholder">
   <input
     class="form-control"
     id="search-header"
-    type="text"
+    type="search"
     class="form-control"
+    (selectItem)="itemSelected($event)"
+    [focusFirst]="false"
     name="Artwork"
+    #input
     placeholder="Search for an Artwork ..."
     [ngbTypeahead]="search"
     [resultTemplate]="rt"
     [inputFormatter]="formatter"
+    (keydown.enter)="navigateToSearchText(input.value)"
   />
   <span class="fas fa-search"></span>
 </div>

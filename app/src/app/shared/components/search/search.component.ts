@@ -19,7 +19,7 @@ export class SearchComponent implements OnInit {
 
   formatter = (x: { name: string }) => x.name;
 
-  search = (text$: Observable<string>) =>
+  private search = (text$: Observable<string>) =>
     text$.pipe(
       debounceTime(200),
       switchMap(async (term) => {
@@ -62,7 +62,8 @@ export class SearchComponent implements OnInit {
       })
     )
 
-    private async findEntity(id: string){
+    private async itemSelected($event){
+      let id = ($event.item.id);
       console.log(id);
       let entity = await this.dataService.findById(id);
       console.log(entity);
@@ -71,4 +72,10 @@ export class SearchComponent implements OnInit {
       let url = `/${entityType}/${entityId}`;
       this.router.navigate([url]);
     } 
+
+    private navigateToSearchText(term: string){
+      let url = `/search/${term}`;
+      console.log(url);
+      this.router.navigate([url]);
+    }
 }

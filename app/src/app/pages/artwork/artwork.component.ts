@@ -208,24 +208,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @description check if a tag of the hovered item is common with the artwork.
-   * @param {Object} obj
-   * @param {string} id
-   * @returns {boolean} => will add class 'badge-light'
-   * @memberof ArtworkComponent
-   */
-  isCommonTag(obj: Object, id: string): boolean {
-    if (obj && id) {
-      for (let entry of Object.keys(obj)) {
-        if (obj[entry].id == id) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
-  /**
    * @description function to determine if a tab is not empty.
    * @param {string} key
    * @returns {boolean}

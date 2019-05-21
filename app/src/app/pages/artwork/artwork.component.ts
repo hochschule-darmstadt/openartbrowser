@@ -101,8 +101,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     },
   };
 
-<<<<<<< HEAD
-=======
   /**
    * @description use this to end subscription to url parameter in ngOnDestroy
    * @private
@@ -116,7 +114,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   Object = Object;
 
->>>>>>> master
   constructor(private dataService: DataService, private route: ActivatedRoute) { }
 
   /**
@@ -130,7 +127,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       /** Use data service to fetch entity from database */
       this.artwork = (await this.dataService.findById(artworkId)) as Artwork;
 
-<<<<<<< HEAD
       /* Count meta data to show more on load */
       this.countMetaData();
       if (this.metaNumber < 3)
@@ -141,10 +137,8 @@ export class ArtworkComponent implements OnInit, OnDestroy {
           return creator.id;
         })
       );
-      this.artworkTabs.location.items = await this.dataService.findArtworksByLocations(
-=======
+
       const artworksByLocation = await this.dataService.findArtworksByLocations(
->>>>>>> master
         this.artwork.locations.map((location) => {
           return location.id;
         })
@@ -234,7 +228,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     this.collapseDown = !this.collapseDown;
   }
 
-<<<<<<< HEAD
   metaNumber: number = 0;
 
   countMetaData() {
@@ -248,7 +241,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       this.metaNumber++;
     if ((!_.isEmpty(this.artwork.height)) && (!_.isEmpty(this.artwork.width)))
       this.metaNumber++;
-=======
+  }
   /**
    * @description function to toggle common tags container.
    * @memberof ArtworkComponent
@@ -284,6 +277,5 @@ export class ArtworkComponent implements OnInit, OnDestroy {
           return false;
       }
     }
->>>>>>> master
   }
 }

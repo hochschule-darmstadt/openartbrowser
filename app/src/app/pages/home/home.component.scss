@@ -80,7 +80,7 @@ $color1: #00bc8c;
     border-radius: 15px;
   }
 
-  ngb-carousel{
+  ngb-carousel {
     box-shadow: 0 0 30px 1px black;
     transition: all 0.5s ease;
     border-radius: 15px;
@@ -102,7 +102,7 @@ $color1: #00bc8c;
     }
   }
 
-  .container-image{
+  .container-image {
     height: 15rem;
     width: 100%;
     overflow: hidden;
@@ -141,21 +141,20 @@ $color1: #00bc8c;
   }
 }
 
-<<<<<<< HEAD
 @media (min-width: 992px) {
   .title {
     font-size: 8rem !important;
   }
 }
-=======
+
 /** Style for generated ngbcarousel **/
-/deep/ .carousel-control-prev, /deep/ .carousel-control-next {
+/deep/ .carousel-control-prev,
+/deep/ .carousel-control-next {
   width: 10%;
   padding: 0 2%;
   opacity: 0.4;
 
-  &:hover{
+  &:hover {
     cursor: default;
   }
 }
->>>>>>> master

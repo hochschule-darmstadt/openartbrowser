@@ -53,22 +53,24 @@ export class SearchComponent implements OnInit {
           if (bPos > 0 && b.label.toLowerCase().charAt(bPos - 1).match(/\S/)) {
               rankA *= 0.5;
             }
-            return rankB > rankA ? 1 : rankB < rankA ? -1 : 0;
+          return rankB > rankA ? 1 : rankB < rankA ? -1 : 0;
           })
-          .filter((w, i, arr) =>  ((w.type == 'artwork' || w.type == 'artist') && w.type !== (arr[i - 3] ? arr[i - 3].type : ''))  // if type is artwork or artist, take 3
-          || ((w.type !== 'artwork' && w.type !== 'artist') && w.type !== (arr[i - 2] ? arr[i - 2].type : '')))                     // if type is other type, take 2
+          .filter((w, i, arr) =>  ((w.type === 'artwork' || w.type === 'artist')
+            && w.type !== (arr[i - 3] ? arr[i - 3].type : ''))  // if type is artwork or artist, take 3
+          || ((w.type !== 'artwork' && w.type !== 'artist')
+              && w.type !== (arr[i - 2] ? arr[i - 2].type : ''))) // if type is other type, take 2
           .slice(0, 10);
         return entities;
       })
     )
 
-    private async findEntity(id: string){
+    private async findEntity(id: string) {
       console.log(id);
-      let entity = await this.dataService.findById(id);
+      const entity = await this.dataService.findById(id);
       console.log(entity);
-      let entityId = entity['id'];
-      let entityType = entity['type'];
-      let url = `/${entityType}/${entityId}`;
+      const entityId = entity.id;
+      const entityType = entity.type;
+      const url = `/${entityType}/${entityId}`;
       this.router.navigate([url]);
-    } 
+    }
 }

@@ -159,12 +159,14 @@
                 [ngClass]="{'badge-light': hoveredArtwork?.creators?.includes(creator.id) }"
                 class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
                 [routerLink]="'/artist/' + creator.id">
+                <i class="fas fa-user"></i>
                 {{ creator?.label }}</span>
             </span>
             <span *ngIf="artwork?.genres?.length && (tab == 'genre' || tab == 'all')" class="mb-1">
               <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
                 [ngClass]="{'badge-light': hoveredArtwork?.genres?.includes(genre.id) }"
                 *ngFor="let genre of artwork?.genres" [routerLink]="'/genre/' + genre.id">
+                <i class="fas fa-tag"></i>
                 {{ genre?.label }}</span>
             </span>
 
@@ -172,6 +174,7 @@
               <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
                 [ngClass]="{'badge-light': hoveredArtwork?.movements?.includes(movement.id) }"
                 *ngFor="let movement of artwork?.movements" [routerLink]="'/movement/' + movement.id">
+                <i class="fas fa-wind"></i>
                 {{ movement?.label }}</span>
             </span>
 
@@ -179,6 +182,7 @@
               <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
                 [ngClass]="{'badge-light': hoveredArtwork?.materials?.includes(material.id) }"
                 *ngFor="let material of artwork?.materials" [routerLink]="'/material/' + material.id">
+                <i class="fas fa-scroll"></i>
                 {{ material?.label }}</span>
             </span>
 
@@ -186,6 +190,7 @@
               <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
                 [ngClass]="{'badge-light': hoveredArtwork?.locations?.includes(location.id) }"
                 *ngFor="let location of artwork?.locations" [routerLink]="'/location/' + location.id">
+                <i class="fas fa-archway"></i>
                 {{ location?.label }}</span>
             </span>
 
@@ -193,6 +198,7 @@
               <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
                 [ngClass]="{'badge-light': hoveredArtwork?.depicts?.includes(motif.id) }"
                 *ngFor="let motif of artwork?.depicts" [routerLink]="'/motif/' + motif.id">
+                <i class="fas fa-image"></i>
                 {{ motif?.label }}</span>
             </span>
           </div>

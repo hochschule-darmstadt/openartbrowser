@@ -117,36 +117,36 @@
           <div class="collapse" id="collapseTags">
             <p class="mb-4 mt-0"><em>(move the mouse over an artwork to display common tags)</em></p>
             <span *ngIf="artwork?.creators?.length && (tab == 'artist' || tab == 'all')" class="mb-1">
-              <span *ngFor="let creator of artwork?.creators" [ngClass]="{'badge-light': hoveredArtwork?.creators.includes(creator.id) }"
+              <span *ngFor="let creator of artwork?.creators" [ngClass]="{'badge-light': hoveredArtwork?.creators?.includes(creator.id) }"
                 class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1" [routerLink]="'/artist/' + creator.id">
                 {{ creator?.label }}</span>
             </span>
             <span *ngIf="artwork?.genres?.length && (tab == 'genre' || tab == 'all')" class="mb-1">
-              <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1" [ngClass]="{'badge-light': hoveredArtwork?.genres.includes(genre.id) }"
+              <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1" [ngClass]="{'badge-light': hoveredArtwork?.genres?.includes(genre.id) }"
                 *ngFor="let genre of artwork?.genres" [routerLink]="'/genre/' + genre.id">
                 {{ genre?.label }}</span>
             </span>
 
             <span *ngIf="artwork?.movements?.length && (tab == 'movement' || tab == 'all')" class="mb-1">
-              <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1" [ngClass]="{'badge-light': hoveredArtwork?.movements.includes(movement.id) }"
+              <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1" [ngClass]="{'badge-light': hoveredArtwork?.movements?.includes(movement.id) }"
                 *ngFor="let movement of artwork?.movements" [routerLink]="'/movement/' + movement.id">
                 {{ movement?.label }}</span>
             </span>
 
             <span *ngIf="artwork?.materials?.length && (tab == 'material' || tab == 'all')" class="mb-1">
-              <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1" [ngClass]="{'badge-light': hoveredArtwork?.materials.includes(material.id) }"
+              <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1" [ngClass]="{'badge-light': hoveredArtwork?.materials?.includes(material.id) }"
                 *ngFor="let material of artwork?.materials" [routerLink]="'/material/' + material.id">
                 {{ material?.label }}</span>
             </span>
 
             <span *ngIf="artwork?.locations?.length && (tab == 'location' || tab == 'all')" class=" mb-1">
-              <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1" [ngClass]="{'badge-light': hoveredArtwork?.locations.includes(location.id) }"
+              <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1" [ngClass]="{'badge-light': hoveredArtwork?.locations?.includes(location.id) }"
                 *ngFor="let location of artwork?.locations" [routerLink]="'/location/' + location.id">
                 {{ location?.label }}</span>
             </span>
 
             <span *ngIf="artwork?.depicts?.length && (tab == 'motif' || tab == 'all')" class="mb-1">
-              <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1" [ngClass]="{'badge-light': hoveredArtwork?.depicts.includes(motif.id) }"
+              <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1" [ngClass]="{'badge-light': hoveredArtwork?.depicts?.includes(motif.id) }"
                 *ngFor="let motif of artwork?.depicts" [routerLink]="'/motif/' + motif.id">
                 {{ motif?.label }}</span>
             </span>

@@ -8,7 +8,7 @@ import { Subject } from 'rxjs';
 /** interface for the tabs */
 interface SliderTab {
   heading: string;
-  items: Entity[];
+  items: Artwork[];
   icon: string;
   active: boolean;
 }
@@ -126,37 +126,45 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       /** Use data service to fetch entity from database */
       this.artwork = (await this.dataService.findById(artworkId)) as Artwork;
 
-      this.artworkTabs.artist.items = await this.dataService.findArtworksByArtists(
-        this.artwork.creators.map((creator) => {
-          return creator.id;
-        })
-      );
-      this.artworkTabs.location.items = await this.dataService.findArtworksByLocations(
+      const artworksByLocation = await this.dataService.findArtworksByLocations(
         this.artwork.locations.map((location) => {
           return location.id;
         })
       );
-      this.artworkTabs.genre.items = await this.dataService.findArtworksByGenres(
+      const artworksByGenre = await this.dataService.findArtworksByGenres(
         this.artwork.genres.map((genre) => {
           return genre.id;
         })
       );
-      this.artworkTabs.movement.items = await this.dataService.findArtworksByMovements(
+      const artworksByMovements = await this.dataService.findArtworksByMovements(
         this.artwork.movements.map((movement) => {
           return movement.id;
         })
       );
-      this.artworkTabs.material.items = await this.dataService.findArtworksByMaterials(
+      const artworksByMaterial = await this.dataService.findArtworksByMaterials(
         this.artwork.materials.map((material) => {
           return material.id;
         })
       );
-      this.artworkTabs.motif.items = await this.dataService.findArtworksByMotifs(
+      const artworksByArtists = await this.dataService.findArtworksByArtists(
+        this.artwork.creators.map((artist) => {
+          return artist.id;
+        })
+      );
+      const artworksByMotifs = await this.dataService.findArtworksByMotifs(
         this.artwork.depicts.map((motif) => {
           return motif.id;
         })
       );
 
+      this.artworkTabs.location.items = artworksByLocation;
+      this.artworkTabs.genre.items = artworksByGenre;
+      this.artworkTabs.material.items = artworksByMaterial;
+      this.artworkTabs.motif.items = artworksByMotifs;
+      this.artworkTabs.artist.items = artworksByArtists;
+      this.artworkTabs.movement.items = artworksByMovements;
+
+      this.removeMainArtworkFromTabs();
       this.selectAllTabItems(10);
     });
   }
@@ -171,6 +179,15 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * @description makes sure that the artwork this page is about does not appear in slider 
+   */
+  removeMainArtworkFromTabs() {
+    for (const key of Object.keys(this.artworkTabs)) {
+      this.artworkTabs[key].items = this.artworkTabs[key].items.filter((artwork) => artwork.id !== this.artwork.id);
+    }
+  }
+
+  /**
    * @description function to fetch items into 'all' tab from others. 
    * use Set to filter duplicates
    * param will determine how many times to loop the tabs
@@ -180,15 +197,15 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    * @memberof ArtworkComponent
    */
   selectAllTabItems(maxAmountFromEachTab: number): void {
-    let items = new Set();
+    const items = new Map<string, Artwork>();
     for (let index = 0; index < maxAmountFromEachTab; index++) {
-      for (let key of Object.keys(this.artworkTabs)) {
-        if (key != 'all' && this.artworkTabs[key].items && this.artworkTabs[key].items[index]) {
-          items.add(this.artworkTabs[key].items[index]);
+      for (const key of Object.keys(this.artworkTabs)) {
+        if (key !== 'all' && this.artworkTabs[key].items && this.artworkTabs[key].items[index]) {
+          items.set(this.artworkTabs[key].items[index].id, this.artworkTabs[key].items[index]);
         }
       }
     }
-    this.artworkTabs.all.items = Array.from(items);
+    this.artworkTabs.all.items = Array.from(items, ([key, value]) => value);
   }
 
   /**

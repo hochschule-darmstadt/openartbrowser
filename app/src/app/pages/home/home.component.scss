@@ -80,26 +80,16 @@ $color1: #00bc8c;
     border-radius: 15px;
   }
 
-  .image {
-    border-radius: 15px;
-    width: 100%;
-    height: 100%;
-    position: relative;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
+  ngb-carousel{
     box-shadow: 0 0 30px 1px black;
     transition: all 0.5s ease;
-    -webkit-animation: fade 4s infinite;
-    -moz-animation: fade 4s infinite;
-    -o-animation: fade 4s infinite;
-    animation: fade 4s infinite;
+    border-radius: 15px;
 
     &:hover {
       cursor: pointer;
       transition: all 0.2s ease;
       transform: scale(1.05);
-      box-shadow: 0 0 20px 1px $color1;
+      box-shadow: 0 0 20px 1px black;
     }
 
     &:hover>.overlay {
@@ -107,13 +97,26 @@ $color1: #00bc8c;
       width: 100%;
       height: 100%;
       position: absolute;
-      background-color: black;
-      opacity: 0.8;
+      background-color: rgba(0, 0, 0, 0.8);
       border-radius: 15px;
     }
   }
 
+  .container-image{
+    height: 15rem;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .image {
+    border-radius: 15px;
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+
   .label {
+    border-radius: 15px;
     color: white;
     font-size: 20px;
     position: absolute;
@@ -138,8 +141,21 @@ $color1: #00bc8c;
   }
 }
 
+<<<<<<< HEAD
 @media (min-width: 992px) {
   .title {
     font-size: 8rem !important;
   }
 }
+=======
+/** Style for generated ngbcarousel **/
+/deep/ .carousel-control-prev, /deep/ .carousel-control-next {
+  width: 10%;
+  padding: 0 2%;
+  opacity: 0.4;
+
+  &:hover{
+    cursor: default;
+  }
+}
+>>>>>>> master

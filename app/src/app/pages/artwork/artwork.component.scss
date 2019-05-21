@@ -8,8 +8,35 @@
   text-transform: capitalize;
 }
 
-.more {
-  cursor: pointer;
+.nav-tabs {
+  border-color: #FFFFFF;
+}
+
+.nav-tabs > li > a.active,
+.nav-tabs > li > a.active:focus,
+.nav-tabs > li > a.active:hover,
+.nav > li > a:hover {
+  background-color: #868e96;
+  border-color: #FFFFFF;
+}
+
+.nav-tabs > li > a:hover {
+  background-color: #868e9644;
+  border-color: rgba(255, 255, 255, 0.274);
+}
+
+.more{
+    cursor: pointer;
+}
+
+.badge-light{
+    color: #444;
+    background-color: #fff;
+    opacity: 1 !important;
+}
+
+.badge-transparent{
+  opacity: .4;
 }
 
 /* Makes chip and regular text look good together: adds and removes padding on different screen sizes */

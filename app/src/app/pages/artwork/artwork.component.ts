@@ -9,7 +9,8 @@ import * as _ from "lodash";
 /** interface for the tabs */
 interface SliderTab {
   heading: string;
-  items: Entity[];
+  items: Artwork[];
+  icon: string;
   active: boolean;
 }
 
@@ -19,59 +20,109 @@ interface SliderTab {
   styleUrls: ['./artwork.component.scss'],
 })
 export class ArtworkComponent implements OnInit, OnDestroy {
-  /** use this to end subscription to url parameter in ngOnDestroy */
-  private ngUnsubscribe = new Subject();
 
-  Object = Object;
-
-  /** The entity this page is about */
+  /**
+   * @description the entity this page is about.
+   * @type {Artwork}
+   * @memberof ArtworkComponent
+   */
   artwork: Artwork = null;
 
-  /** Change collapse icon */
+  /**
+   * @description to toggle details container.
+   * initial as true (close).
+   * @type {boolean}
+   * @memberof ArtworkComponent
+   */
   collapseDown: boolean = true;
 
-  /** tabs with artwork sliders */
+  /**
+   * @description to toggle common tags container.
+   * initial as true (close).
+   * @type {boolean}
+   * @memberof ArtworkComponent
+   */
+  collapseDownTags: boolean = true;
+
+  /**
+   * @description to save the artwork item that is being hovered.
+   * @type {Artwork}
+   * @memberof ArtworkComponent
+   */
+  hoveredArtwork: Artwork = null;
+
+  /**
+   * @description for the tabs in slider/carousel.
+   * @type {{ [key: string]: SliderTab }}
+   * @memberof ArtworkComponent
+   */
   artworkTabs: { [key: string]: SliderTab } = {
     all: {
       heading: 'All',
       items: [],
+      icon: 'list-ul',
       active: true,
     },
     artist: {
       heading: 'Artist',
       items: [],
+      icon: 'user',
       active: false,
     },
     location: {
       heading: 'Location',
       items: [],
+      icon: 'archway',
       active: false,
     },
     genre: {
       heading: 'Genre',
       items: [],
+      icon: 'tags',
       active: false,
     },
     movement: {
       heading: 'Movement',
       items: [],
+      icon: 'wind',
       active: false,
     },
     material: {
       heading: 'Material',
       items: [],
+      icon: 'scroll',
       active: false,
     },
     motif: {
       heading: 'Motif',
       items: [],
+      icon: 'image',
       active: false,
     },
   };
 
+<<<<<<< HEAD
+=======
+  /**
+   * @description use this to end subscription to url parameter in ngOnDestroy
+   * @private
+   * @memberof ArtworkComponent
+   */
+  private ngUnsubscribe = new Subject();
+
+  /**
+   * @description to fetch object in the html.
+   * @memberof ArtworkComponent
+   */
+  Object = Object;
+
+>>>>>>> master
   constructor(private dataService: DataService, private route: ActivatedRoute) { }
 
-  /** hook that is executed at component initialization */
+  /**
+   * @description hook that is executed at component initialization
+   * @memberof ArtworkComponent
+   */
   ngOnInit() {
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
@@ -79,6 +130,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       /** Use data service to fetch entity from database */
       this.artwork = (await this.dataService.findById(artworkId)) as Artwork;
 
+<<<<<<< HEAD
       /* Count meta data to show more on load */
       this.countMetaData();
       if (this.metaNumber < 3)
@@ -90,67 +142,99 @@ export class ArtworkComponent implements OnInit, OnDestroy {
         })
       );
       this.artworkTabs.location.items = await this.dataService.findArtworksByLocations(
+=======
+      const artworksByLocation = await this.dataService.findArtworksByLocations(
+>>>>>>> master
         this.artwork.locations.map((location) => {
           return location.id;
         })
       );
-      this.artworkTabs.genre.items = await this.dataService.findArtworksByGenres(
+      const artworksByGenre = await this.dataService.findArtworksByGenres(
         this.artwork.genres.map((genre) => {
           return genre.id;
         })
       );
-      this.artworkTabs.movement.items = await this.dataService.findArtworksByMovements(
+      const artworksByMovements = await this.dataService.findArtworksByMovements(
         this.artwork.movements.map((movement) => {
           return movement.id;
         })
       );
-      this.artworkTabs.material.items = await this.dataService.findArtworksByMaterials(
+      const artworksByMaterial = await this.dataService.findArtworksByMaterials(
         this.artwork.materials.map((material) => {
           return material.id;
         })
       );
-      this.artworkTabs.motif.items = await this.dataService.findArtworksByMotifs(
+      const artworksByArtists = await this.dataService.findArtworksByArtists(
+        this.artwork.creators.map((artist) => {
+          return artist.id;
+        })
+      );
+      const artworksByMotifs = await this.dataService.findArtworksByMotifs(
         this.artwork.depicts.map((motif) => {
           return motif.id;
         })
       );
 
-      this.selectAllTabItems(4);
+      this.artworkTabs.location.items = artworksByLocation;
+      this.artworkTabs.genre.items = artworksByGenre;
+      this.artworkTabs.material.items = artworksByMaterial;
+      this.artworkTabs.motif.items = artworksByMotifs;
+      this.artworkTabs.artist.items = artworksByArtists;
+      this.artworkTabs.movement.items = artworksByMovements;
+
+      this.removeMainArtworkFromTabs();
+      this.selectAllTabItems(10);
     });
   }
 
-  /** select items for all tab by taking items from every tab and shuffling them together */
-  selectAllTabItems(maxAmountFromEachTab: number) {
-    /** use map to filter duplicates */
-    const allTabItems = new Map<string, Entity>();
-    /** loop through artwork tabs  */
-    for (const tab of Object.keys(this.artworkTabs)) {
-      /** shuffle tab items of selected artwork tabs */
-      const shuffledTabItems = this.artworkTabs[tab].items.sort(() => 0.5 - Math.random());
-      /** defines how many items are selected from this tab that should go into all tab */
-      const itemAmountFromThisTab =
-        shuffledTabItems.length > maxAmountFromEachTab ? maxAmountFromEachTab : shuffledTabItems.length;
-      // get that many items from the shuffled items and put them into all tab items
-      const selected = shuffledTabItems.slice(0, itemAmountFromThisTab);
-      for (const item of selected) {
-        allTabItems.set(item.label, item);
-      }
-    }
-    let items: Entity[] = Array.from(allTabItems.values());
-    /** shuffle allTabs items once more */
-    items = items.sort(() => 0.5 - Math.random());
-    this.artworkTabs.all.items = items;
-  }
-
+  /**
+   * @description Hook that is called when a directive, pipe, or service is destroyed.
+   * @memberof ArtworkComponent
+   */
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
   }
 
-  toggleDetails() {
+  /**
+   * @description makes sure that the artwork this page is about does not appear in slider 
+   */
+  removeMainArtworkFromTabs() {
+    for (const key of Object.keys(this.artworkTabs)) {
+      this.artworkTabs[key].items = this.artworkTabs[key].items.filter((artwork) => artwork.id !== this.artwork.id);
+    }
+  }
+
+  /**
+   * @description function to fetch items into 'all' tab from others. 
+   * use Set to filter duplicates
+   * param will determine how many times to loop the tabs
+   * get a single artwork in each tab every time it loops (unless duplicate)
+   * set var artworkTabs.all.items to this Set
+   * @param {number} maxAmountFromEachTab
+   * @memberof ArtworkComponent
+   */
+  selectAllTabItems(maxAmountFromEachTab: number): void {
+    const items = new Map<string, Artwork>();
+    for (let index = 0; index < maxAmountFromEachTab; index++) {
+      for (const key of Object.keys(this.artworkTabs)) {
+        if (key !== 'all' && this.artworkTabs[key].items && this.artworkTabs[key].items[index]) {
+          items.set(this.artworkTabs[key].items[index].id, this.artworkTabs[key].items[index]);
+        }
+      }
+    }
+    this.artworkTabs.all.items = Array.from(items, ([key, value]) => value);
+  }
+
+  /**
+   * @description function to toggle details container. 
+   * @memberof ArtworkComponent
+   */
+  toggleDetails(): void {
     this.collapseDown = !this.collapseDown;
   }
 
+<<<<<<< HEAD
   metaNumber: number = 0;
 
   countMetaData() {
@@ -164,5 +248,42 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       this.metaNumber++;
     if ((!_.isEmpty(this.artwork.height)) && (!_.isEmpty(this.artwork.width)))
       this.metaNumber++;
+=======
+  /**
+   * @description function to toggle common tags container.
+   * @memberof ArtworkComponent
+   */
+  toggleCommonTags(): void {
+    this.collapseDownTags = !this.collapseDownTags;
+  }
+
+  /**
+   * @description function to determine if a tab is not empty.
+   * @param {string} key
+   * @returns {boolean}
+   * @memberof ArtworkComponent
+   */
+  showTab(key: string): boolean {
+    if (this.artwork) {
+      switch (key) {
+        case 'all':
+          return true;
+        case 'artist':
+          return this.artwork.creators.length > 0;
+        case 'movement':
+          return this.artwork.movements.length > 0;
+        case 'genre':
+          return this.artwork.genres.length > 0;
+        case 'motif':
+          return this.artwork.depicts.length > 0;
+        case 'location':
+          return this.artwork.locations.length > 0;
+        case 'material':
+          return this.artwork.materials.length > 0;
+        default:
+          return false;
+      }
+    }
+>>>>>>> master
   }
 }

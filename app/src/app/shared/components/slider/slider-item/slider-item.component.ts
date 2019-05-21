@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Entity } from 'src/app/shared/models/models';
+import { Entity, Artwork } from 'src/app/shared/models/models';
 
 @Component({
   selector: 'app-slider-item',
@@ -7,11 +7,14 @@ import { Entity } from 'src/app/shared/models/models';
   styleUrls: ['./slider-item.component.scss'],
 })
 export class SliderItemComponent implements OnInit {
-  constructor() {}
+  constructor() { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
-  @Input()
-  item: Entity;
-   
+  /**
+   * @description Input: the item being passed.
+   * @type {Entity}
+   * @memberof SliderItemComponent
+   */
+  @Input() item: Entity;
 }

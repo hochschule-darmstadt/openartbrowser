@@ -53,13 +53,15 @@ export class SliderComponent implements OnChanges {
    * @memberof SliderComponent
    */
   buildSliderPages(): void {
+    const newSplicedItems: Array<Entity[]> = [];
     let temporaryArray: Entity[] = [];
     let arrayNumber: number = 0;
     // There are 8 images on each slide.
     arrayNumber = this.items.length / 8;
     for (let i = 0; i < arrayNumber; i++) {
       temporaryArray = this.items.splice(0, 8);
-      this.splicedItems.push(temporaryArray);
+      newSplicedItems.push(temporaryArray);
     }
+    this.splicedItems = newSplicedItems;
   }
 }

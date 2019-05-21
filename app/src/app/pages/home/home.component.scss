@@ -141,7 +141,7 @@ $color1: #00bc8c;
 }
 
 /** Style for generated ngbcarousel **/
-/deep/ .carousel-control-prev, /deep/ .carousel-control-next {
+/deep/ .container-category .carousel-control-prev, /deep/ .container-category .carousel-control-next {
   width: 10%;
   padding: 0 2%;
   opacity: 0.4;

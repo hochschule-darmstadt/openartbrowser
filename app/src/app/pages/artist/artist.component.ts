@@ -38,9 +38,11 @@ export class ArtistComponent implements OnInit, OnDestroy {
       /** Use data service to fetch entity from database */
       this.artist = (await this.dataService.findById(artistId)) as Artist;
       this.sliderItems = await this.dataService.findArtworksByArtists([this.artist.id]);
+      this.collapseDown = true;
       this.countMetaData();
-      if (this.metaNumber < 3)
+      if (this.metaNumber < 3) {
         this.collapseDown = false;
+      }
     });
   }
 

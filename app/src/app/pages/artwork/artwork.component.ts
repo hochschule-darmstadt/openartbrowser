@@ -128,9 +128,11 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       this.artwork = (await this.dataService.findById(artworkId)) as Artwork;
 
       /* Count meta data to show more on load */
+      this.collapseDown = true;
       this.countMetaData();
-      if (this.metaNumber < 3)
+      if (this.metaNumber < 3) {
         this.collapseDown = false;
+      }
 
       this.artworkTabs.artist.items = await this.dataService.findArtworksByArtists(
         this.artwork.creators.map((creator) => {

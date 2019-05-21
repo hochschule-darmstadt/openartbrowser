@@ -1,6 +1,6 @@
 <div class="container">
   <div class="row pb-5 border-bottom">
-    <div class="img-container mx-auto d-block">
+    <div class="img-container mx-auto d-block" (click)="showModal()">
       <img class="img d-block" id="img-main" src="{{ artwork?.image }}" alt="{{ artwork?.label }}" />
       <div class="enlarge">
         <i class="fas fa-expand" (click)="showModal()"></i>
@@ -10,15 +10,29 @@
 
   <div class="modal" id="img-modal">
     <span class="close" (click)="closeModal()">&times;</span>
-    <img class="modal-content" id="image-modal" src="{{ artwork?.image }}">
-    <!-- for the zoom, still not working!!!
-    <div class="modal-content">
-      <ngx-image-zoom [thumbImage]="artwork?.image" [magnification]="1.5" [enableScrollZoom]="true" [enableLens]="true"
-        [lensWidth]="200" [lensHeight]="200">
-      </ngx-image-zoom>
-    </div>
-     -->
+    <div class="container">
+    <div class="modal-content my-auto">
+        <ngx-image-viewer
+          [src]="[artwork?.image]"
+          [config]="{
+            allowFullscreen: false,
+            zoomFactor: 0.1,
+            containerBackgroundColor: '#000',
+            wheelZoom: true,
+            btnShow: {
+              zoomIn: true,
+              zoomOut: true,
+              rotateClockwise: false,
+              rotateCounterClockwise: false,
+              next: false,
+              prev: false
+            }
+          }"
+        ></ngx-image-viewer>
+      </div>  
+      
     <div id="caption">{{ artwork?.label }}</div>
+  </div>
   </div>
 
   <div class="row pt-3 pb-3 border-bottom">

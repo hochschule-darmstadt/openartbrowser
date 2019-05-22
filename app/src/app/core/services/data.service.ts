@@ -49,10 +49,15 @@ export class DataService {
 			"bool": {
 				"must": {
           "wildcard": {
-            "label": `*${text}*`,
-					},
-				},
-			},
+            "label": `*${text}*`
+					}
+        },
+        "must_not": {
+					"term": {
+						"type": "object"
+          }
+        }
+			}
 		},
 		"sort": [
 			{

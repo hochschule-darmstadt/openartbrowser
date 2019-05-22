@@ -53,7 +53,18 @@ span.form-control-feedback {
   text-align: center;
 }
 
-:host ::ng-deep .ngb-highlight {
+::ng-deep .ngb-highlight {
   font-weight: 700;
   color: red;
+}
+
+::ng-deep .dropdown-item{
+  max-width: 700px;
+  overflow: hidden;
+  text-overflow: ellipsis
+}
+
+.mr-1{
+  max-width: 70px;
+  object-fit: contain
 }

@@ -66,9 +66,9 @@ export class SearchComponent implements OnInit {
 
     private async itemSelected($event){
       let id = ($event.item.id);
-      console.log(id);
+      // console.log(id);
       const entity = await this.dataService.findById(id);
-      console.log(entity);
+      // console.log(entity);
       const entityId = entity.id;
       const entityType = entity.type;
       const url = `/${entityType}/${entityId}`;
@@ -77,7 +77,7 @@ export class SearchComponent implements OnInit {
 
     private navigateToSearchText(term: string){
       let url = `/search/${term}`;
-      console.log(url);
+      // console.log(url);
       this.router.navigate([url]);
     }
 }

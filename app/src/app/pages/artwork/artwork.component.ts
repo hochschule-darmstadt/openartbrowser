@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Artwork, Entity } from 'src/app/shared/models/models';
+import { Artwork } from 'src/app/shared/models/models';
 import { takeUntil } from 'rxjs/operators';
 import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute } from '@angular/router';
@@ -35,6 +35,9 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    * @memberof ArtworkComponent
    */
   collapseDown: boolean = true;
+
+  /** score of meta data size */
+  metaNumber: number = 0;
 
   /**
    * @description to toggle common tags container.
@@ -128,11 +131,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       this.artwork = (await this.dataService.findById(artworkId)) as Artwork;
 
       /* Count meta data to show more on load */
-      this.collapseDown = true;
-      this.countMetaData();
-      if (this.metaNumber < 3) {
-        this.collapseDown = false;
-      }
+      this.calculateCollapseState();
 
       this.artworkTabs.artist.items = await this.dataService.findArtworksByArtists(
         this.artwork.creators.map((creator) => {
@@ -230,19 +229,25 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     this.collapseDown = !this.collapseDown;
   }
 
-  metaNumber: number = 0;
-
-  countMetaData() {
+  /** calculates the size of meta data item section
+   * every attribute: +3
+   * if attribute is array and size > 3 -> + arraylength
+   */
+  calculateCollapseState() {
+    this.collapseDown = true;
     if (!_.isEmpty(this.artwork.genres))
-      this.metaNumber++;
+      this.metaNumber += this.artwork.genres.length > 3 ? this.artwork.genres.length : 3;
     if (!_.isEmpty(this.artwork.materials))
-      this.metaNumber++;
+      this.metaNumber += this.artwork.materials.length > 3 ? this.artwork.genres.length : 3;
     if (!_.isEmpty(this.artwork.movements))
-      this.metaNumber++;
+      this.metaNumber += this.artwork.movements.length > 3 ? this.artwork.movements.length : 3;
     if (!_.isEmpty(this.artwork.depicts))
-      this.metaNumber++;
-    if ((!_.isEmpty(this.artwork.height)) && (!_.isEmpty(this.artwork.width)))
-      this.metaNumber++;
+      this.metaNumber += this.artwork.depicts.length > 3 ? this.artwork.depicts.length : 3;
+    if (!this.artwork.height && !this.artwork.width)
+      this.metaNumber += 3;
+    if (this.metaNumber < 10) {
+      this.collapseDown = false;
+    }
   }
   /**
    * @description function to toggle common tags container.

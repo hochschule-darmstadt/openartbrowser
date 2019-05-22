@@ -50,13 +50,13 @@
           artwork?.materials?.length ||
           artwork?.depicts?.length
         ">
-        <h4 class="mt-2 more" data-toggle="collapse" href="#collapseArtwork" (click)="toggleDetails()">
+        <h4 class="mt-2 more" href="#collapseArtwork" (click)="toggleDetails()">
           More
-          <i *ngIf="collapseDown" data-toggle="collapse" href="#collapseArtwork" class="fas fa-chevron-down"></i>
-          <i *ngIf="!collapseDown" data-toggle="collapse" href="#collapseArtwork" class="fas fa-chevron-up"></i>
+          <i *ngIf="collapseDown" href="#collapseArtwork" class="fas fa-chevron-down"></i>
+          <i *ngIf="!collapseDown" href="#collapseArtwork" class="fas fa-chevron-up"></i>
         </h4>
 
-        <div [className]="metaNumber < 3 ? 'collapse show' : 'collapse'" id="collapseArtwork">
+        <div [className]="!collapseDown ? 'collapse show' : 'collapse'" id="collapseArtwork">
           <div class="row">
             <div class="col-md-1">
               <p *ngIf="artwork?.genres?.length" class="mb-1 text-muted">Genre:</p>
@@ -76,8 +76,8 @@
             </div>
             <div class="col-md-11">
               <p *ngIf="artwork?.movements?.length" class="mb-1 add-padding">
-                <span class="badge badge-pill badge-secondary first-letter chip"
-                  *ngFor="let movement of artwork?.movements" [routerLink]="'/movement/' + movement.id">
+                <span class="badge badge-pill badge-secondary first-letter chip" *ngFor="let movement of artwork?.movements"
+                  [routerLink]="'/movement/' + movement.id">
                   <i class="fas fa-wind"></i>
                   {{ movement?.label }}</span>
               </p>
@@ -90,8 +90,8 @@
             <div class="col-md-11">
               <p *ngIf="artwork?.materials?.length" class="mb-1 add-padding">
 
-                <span class="badge badge-pill badge-secondary first-letter chip"
-                  *ngFor="let material of artwork?.materials" [routerLink]="'/material/' + material.id">
+                <span class="badge badge-pill badge-secondary first-letter chip" *ngFor="let material of artwork?.materials"
+                  [routerLink]="'/material/' + material.id">
                   <i class="fas fa-scroll"></i>
                   {{ material?.label }}</span>
               </p>
@@ -131,72 +131,64 @@
 
       <ul class="nav nav-tabs">
         <li class="nav-item" *ngFor="let tab of Object.keys(artworkTabs)">
-          <a class="nav-link" [ngClass]="{ active: artworkTabs[tab].active }" data-toggle="tab"
-            href="#{{ artworkTabs[tab].heading }}_tab" *ngIf="showTab(tab)">
+          <a class="nav-link" [ngClass]="{ active: artworkTabs[tab].active }" data-toggle="tab" href="#{{ artworkTabs[tab].heading }}_tab"
+            *ngIf="showTab(tab)">
             <i class="mr-1 fa fa-{{ artworkTabs[tab].icon }}"></i> {{ artworkTabs[tab].heading }}
           </a>
         </li>
       </ul>
 
       <div class="tab-content">
-        <div *ngFor="let tab of Object.keys(artworkTabs)" class="tab-pane fade"
-          [ngClass]="{ 'show active': artworkTabs[tab].active }" id="{{ artworkTabs[tab].heading }}_tab">
+        <div *ngFor="let tab of Object.keys(artworkTabs)" class="tab-pane fade" [ngClass]="{ 'show active': artworkTabs[tab].active }"
+          id="{{ artworkTabs[tab].heading }}_tab">
           <app-slider (onHover)="this.hoveredArtwork = $event" [items]="artworkTabs[tab].items">
           </app-slider>
 
           <h3 class="mt-2 mb-0 more" data-toggle="collapse" href="#collapseTags" (click)="toggleCommonTags()">
             Common <span *ngIf="tab != 'all'">{{ tab }}</span> tags with artwork <span>"{{ (artwork?.label?.length>35)?
               (artwork?.label | slice:0:35)+'...':(artwork?.label) }}"</span>
-            <i *ngIf="collapseDownTags" data-toggle="collapse" href="#collapseTags"
-              class="ml-2 fas fa-chevron-down"></i>
+            <i *ngIf="collapseDownTags" data-toggle="collapse" href="#collapseTags" class="ml-2 fas fa-chevron-down"></i>
             <i *ngIf="!collapseDownTags" data-toggle="collapse" href="#collapseTags" class="ml-2 fas fa-chevron-up"></i>
           </h3>
 
           <div class="collapse" id="collapseTags">
             <p class="mb-4 mt-0"><em>(move the mouse over an artwork to display common tags)</em></p>
             <span *ngIf="artwork?.creators?.length && (tab == 'artist' || tab == 'all')" class="mb-1">
-              <span *ngFor="let creator of artwork?.creators"
-                [ngClass]="{'badge-light': hoveredArtwork?.creators?.includes(creator.id) }"
-                class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
-                [routerLink]="'/artist/' + creator.id">
+              <span *ngFor="let creator of artwork?.creators" [ngClass]="{'badge-light': hoveredArtwork?.creators?.includes(creator.id) }"
+                class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1" [routerLink]="'/artist/' + creator.id">
                 <i class="fas fa-user"></i>
                 {{ creator?.label }}</span>
             </span>
             <span *ngIf="artwork?.genres?.length && (tab == 'genre' || tab == 'all')" class="mb-1">
-              <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
-                [ngClass]="{'badge-light': hoveredArtwork?.genres?.includes(genre.id) }"
+              <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1" [ngClass]="{'badge-light': hoveredArtwork?.genres?.includes(genre.id) }"
                 *ngFor="let genre of artwork?.genres" [routerLink]="'/genre/' + genre.id">
                 <i class="fas fa-tag"></i>
                 {{ genre?.label }}</span>
             </span>
 
             <span *ngIf="artwork?.movements?.length && (tab == 'movement' || tab == 'all')" class="mb-1">
-              <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
-                [ngClass]="{'badge-light': hoveredArtwork?.movements?.includes(movement.id) }"
+              <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1" [ngClass]="{'badge-light': hoveredArtwork?.movements?.includes(movement.id) }"
                 *ngFor="let movement of artwork?.movements" [routerLink]="'/movement/' + movement.id">
                 <i class="fas fa-wind"></i>
                 {{ movement?.label }}</span>
             </span>
 
             <span *ngIf="artwork?.materials?.length && (tab == 'material' || tab == 'all')" class="mb-1">
-              <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
-                [ngClass]="{'badge-light': hoveredArtwork?.materials?.includes(material.id) }"
+              <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1" [ngClass]="{'badge-light': hoveredArtwork?.materials?.includes(material.id) }"
                 *ngFor="let material of artwork?.materials" [routerLink]="'/material/' + material.id">
                 <i class="fas fa-scroll"></i>
                 {{ material?.label }}</span>
             </span>
 
             <span *ngIf="artwork?.locations?.length && (tab == 'location' || tab == 'all')" class=" mb-1">
-              <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
-                [ngClass]="{'badge-light': hoveredArtwork?.locations?.includes(location.id) }"
+              <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1" [ngClass]="{'badge-light': hoveredArtwork?.locations?.includes(location.id) }"
                 *ngFor="let location of artwork?.locations" [routerLink]="'/location/' + location.id">
                 <i class="fas fa-archway"></i>
                 {{ location?.label }}</span>
             </span>
 
             <span *ngIf="artwork?.depicts?.length && (tab == 'motif' || tab == 'all')" class="mb-1">
-              <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
-                [ngClass]="{'badge-light': hoveredArtwork?.depicts?.includes(motif.id) }"
+              <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1" [ngClass]="{'badge-light': hoveredArtwork?.depicts?.includes(motif.id) }"
                 *ngFor="let motif of artwork?.depicts" [routerLink]="'/motif/' + motif.id">
                 <i class="fas fa-image"></i>
                 {{ motif?.label }}</span>

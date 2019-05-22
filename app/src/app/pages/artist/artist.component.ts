@@ -24,6 +24,9 @@ export class ArtistComponent implements OnInit, OnDestroy {
   /** Change collapse icon */
   collapseDown: boolean = true;
 
+  /** score of meta data size */
+  metaNumber: number = 0;
+
   constructor(private dataService: DataService, private route: ActivatedRoute) { }
 
   toggleDetails() {
@@ -39,25 +42,29 @@ export class ArtistComponent implements OnInit, OnDestroy {
       this.artist = (await this.dataService.findById(artistId)) as Artist;
       this.sliderItems = await this.dataService.findArtworksByArtists([this.artist.id]);
       /* Count meta data to show more on load */
-      this.collapseDown = true;
-      this.countMetaData();
-      if (this.metaNumber < 3) {
-        this.collapseDown = false;
-      }
+
+      this.calculateCollapseState();
+
     });
   }
 
-  metaNumber: number = 0;
-
-  countMetaData() {
-    if (!_.isEmpty(this.artist.gender))
-      this.metaNumber++;
+  /** calculates the size of meta data item section
+ * every attribute: +3
+ * if attribute is array and size > 3 -> + arraylength
+ */
+  calculateCollapseState() {
+    this.collapseDown = true;
+    if (!this.artist.gender)
+      this.metaNumber += 3;
     if (!_.isEmpty(this.artist.influenced_by))
-      this.metaNumber++;
+      this.metaNumber += this.artist.influenced_by.length > 3 ? this.artist.influenced_by.length : 3;
     if (!_.isEmpty(this.artist.movements))
-      this.metaNumber++;
+      this.metaNumber += this.artist.movements.length > 3 ? this.artist.movements.length : 3;
     if (!_.isEmpty(this.artist.citizenship))
-      this.metaNumber++;
+      this.metaNumber += 3;
+    if (this.metaNumber < 10) {
+      this.collapseDown = false;
+    }
   }
 
   ngOnDestroy() {

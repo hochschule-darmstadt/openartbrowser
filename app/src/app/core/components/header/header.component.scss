@@ -41,11 +41,24 @@
   margin-bottom: 6px;
 }
 
+
 @media only screen and (max-width: 1000px) {
 
   /*#navbarColor03:hover .form-group,
   .search-form .form-group:focus-within {
     //width: 500px;
+@media (min-width:993px) and (max-width: 1200px) {
+
+  #navbarColor03:hover ::ng-deep .form-group {
+    width: 500px;
+    border-radius: 4px 25px 25px 4px;
+  }
+}
+
+@media (min-width:769px) and (max-width: 992px) {
+
+  #navbarColor03:hover ::ng-deep .form-group {
+    width: 350px;
     border-radius: 4px 25px 25px 4px;
     flex-grow: 1;
   }
@@ -59,4 +72,10 @@
 
 }
 
+@media screen and (max-width: 768px) {
 
+  #navbarColor03:hover ::ng-deep .form-group {
+    width: 250px;
+    border-radius: 4px 25px 25px 4px;
+  }
+}

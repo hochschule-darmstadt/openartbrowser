@@ -14,19 +14,40 @@
   margin-top: 10px;
 }
 
-#navbarColor03:hover ::ng-deep .form-group,
+/*.search-form ::ng-deep .form-control {
+  height: 32px;
+}*/
+
+
+.navbar-nav {
+  width: 100%;
+}
+
+.search-form ::ng-deep .search-chip {
+  display: none;
+}
+
+#navbarColor03:hover .form-group,
 .search-form .form-group:focus-within {
-  display: block;
-  width: 400%;
+  //display: block;
+  //width: 400%;
   border-radius: 4px 25px 25px 4px;
+  flex-grow: 1;
+}
+
+#navbarColor03:hover ::ng-deep .search-chip,
+.search-form .form-group:focus-within ::ng-deep .search-chip {
+  display: inline-block;
+  margin-bottom: 6px;
 }
 
 @media only screen and (max-width: 1000px) {
 
-  #navbarColor03:hover ::ng-deep .form-group,
+  /*#navbarColor03:hover .form-group,
   .search-form .form-group:focus-within {
-    width: 500px;
+    //width: 500px;
     border-radius: 4px 25px 25px 4px;
+    flex-grow: 1;
   }
 
   ::ng-deep .dropdown-item {
@@ -34,7 +55,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 500px;
-  }
+  }*/
 
 }
 

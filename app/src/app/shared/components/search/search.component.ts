@@ -26,7 +26,7 @@ export class SearchComponent implements OnInit {
         if (term === '') {
           return [];
         }
-        let entities = await this.dataService.findEntitiesByLabelText(term);
+        let entities = await this.dataService.findEntitiesByLabelText(term.toLowerCase());
         entities = entities.filter((v) => v.label.toLowerCase().indexOf(term.toLowerCase()) > -1)
           .sort((a, b): any => {
           let rankA = a.relativeRank;
@@ -65,19 +65,28 @@ export class SearchComponent implements OnInit {
     )
 
     private async itemSelected($event){
-      let id = ($event.item.id);
+      const id = ($event.item.id);
       // console.log(id);
       const entity = await this.dataService.findById(id);
       // console.log(entity);
       const entityId = entity.id;
       const entityType = entity.type;
       const url = `/${entityType}/${entityId}`;
+      this.addtags.push($event.item.label);
       this.router.navigate([url]);
-    } 
+    }
 
-    private navigateToSearchText(term: string){
-      let url = `/search/${term}`;
+    private navigateToSearchText(term: string) {
+      const url = `/search/${term}`;
       // console.log(url);
       this.router.navigate([url]);
     }
+
+    private removeTag(i: string) {
+      const index = this.addtags.indexOf(i);
+      if (index > -1) {
+        this.addtags.splice(index, 1);
+      }
+    }
+
 }

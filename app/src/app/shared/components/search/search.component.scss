@@ -58,13 +58,22 @@ span.form-control-feedback {
   color: red;
 }
 
-::ng-deep .dropdown-item{
+::ng-deep .dropdown-item {
   max-width: 700px;
   overflow: hidden;
-  text-overflow: ellipsis
+  text-overflow: ellipsis;
 }
 
-.mr-1{
+.mr-1 {
   max-width: 70px;
   object-fit: contain
+}
+
+.search-chip {
+  font-size: 1em;
+  margin: 0 1px 0 1px;
+}
+
+.search-chip-x {
+  margin-left: 4px;
 }

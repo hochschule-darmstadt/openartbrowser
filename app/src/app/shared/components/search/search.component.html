@@ -38,11 +38,13 @@
   <span id="search-badge" class="badge badge-secondary">{{ r?.type }}</span>
   <ngb-highlight [result]="r.label" [term]="t" style="padding: 8px;"></ngb-highlight>
 </ng-template>
-<div class="chips chips-placeholder">
+<div class="chips chips-placeholder d-flex align-items-center">
+  <span *ngFor="let i of addtags" class="badge badge-primary search-chip">{{i}}
+    <span (click)="removeTag(i)" class="fas fa-times-circle search-chip-x"></span>
+  </span>
   <input
-    class="form-control"
     id="search-header"
-    class="form-control"
+    class="form-control flex-grow-1"
     (selectItem)="itemSelected($event)"
     [focusFirst]="false"
     type="text"
@@ -54,5 +56,5 @@
     [inputFormatter]="formatter"
     (keydown.enter)="navigateToSearchText(input.value)"
   />
-  <span class="fas fa-search"></span>
 </div>
+<span class="fas fa-search"></span>

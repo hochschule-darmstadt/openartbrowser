@@ -14,25 +14,40 @@
   margin-top: 10px;
 }
 
-/*.search-form .form-group:hover,
-.search-form .form-group.hover {
-  display: block;
-  width: 400%;
-  border-radius: 4px 25px 25px 4px;
+/*.search-form ::ng-deep .form-control {
+  height: 32px;
 }*/
 
-#navbarColor03:hover ::ng-deep .form-group {
-  display: block;
-  width: 400%;
-  border-radius: 4px 25px 25px 4px;
+
+.navbar-nav {
+  width: 100%;
 }
 
+.search-form ::ng-deep .search-chip {
+  display: none;
+}
+
+#navbarColor03:hover .form-group,
+.search-form .form-group:focus-within {
+  //display: block;
+  //width: 400%;
+  border-radius: 4px 25px 25px 4px;
+  flex-grow: 1;
+}
+
+#navbarColor03:hover ::ng-deep .search-chip,
+.search-form .form-group:focus-within ::ng-deep .search-chip {
+  display: inline-block;
+  margin-bottom: 6px;
+}
+
+
 @media only screen and (max-width: 1000px) {
-  /*.search-form .form-group:hover,
-  .search-form .form-group.hover {
-    width: 500px;
-    border-radius: 4px 25px 25px 4px;
-  }*/
+
+  /*#navbarColor03:hover .form-group,
+  .search-form .form-group:focus-within {
+    //width: 500px;
+@media (min-width:993px) and (max-width: 1200px) {
 
   #navbarColor03:hover ::ng-deep .form-group {
     width: 500px;
@@ -40,4 +55,27 @@
   }
 }
 
+@media (min-width:769px) and (max-width: 992px) {
 
+  #navbarColor03:hover ::ng-deep .form-group {
+    width: 350px;
+    border-radius: 4px 25px 25px 4px;
+    flex-grow: 1;
+  }
+
+  ::ng-deep .dropdown-item {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 500px;
+  }*/
+
+}
+
+@media screen and (max-width: 768px) {
+
+  #navbarColor03:hover ::ng-deep .form-group {
+    width: 250px;
+    border-radius: 4px 25px 25px 4px;
+  }
+}

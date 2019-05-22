@@ -97,10 +97,38 @@
   text-transform: capitalize;
 }
 
-.more {
-  cursor: pointer;
+.nav-tabs {
+  border-color: #FFFFFF;
 }
 
+.nav-tabs > li > a.active,
+.nav-tabs > li > a.active:focus,
+.nav-tabs > li > a.active:hover,
+.nav > li > a:hover {
+  background-color: #868e96;
+  border-color: #FFFFFF;
+}
+
+.nav-tabs > li > a:hover {
+  background-color: #868e9644;
+  border-color: rgba(255, 255, 255, 0.274);
+}
+
+.more{
+    cursor: pointer;
+}
+
+.badge-light{
+    color: #444;
+    background-color: #fff;
+    opacity: 1 !important;
+}
+
+.badge-transparent{
+  opacity: .4;
+}
+
+/* Makes chip and regular text look good together: adds and removes padding on different screen sizes */
 @media (min-width: 992px) {
 
   /*pl-1*/
@@ -114,5 +142,35 @@
   /*pl-0*/
   .notchip {
     padding-left: 0;
+  }
+
+}
+
+/* Adds padding when page gets smaller to avoid overflow between information on the left and information on the right 
+ * changes image size
+*/
+@media (min-width: 768px) and (max-width: 992px) {
+
+  .add-padding {
+    padding-left: 2em;
+  }
+
+  #image-main {
+    max-width: 100%;
+    max-height: 50vh;
+  }
+}
+
+@media (max-width: 768px) {
+  #image-main {
+    max-width: 100%;
+    max-height: 45vh;
+  }
+}
+
+@media (max-width: 576px) {
+  #image-main {
+    max-width: 100%;
+    max-height: 30vh;
   }
 }

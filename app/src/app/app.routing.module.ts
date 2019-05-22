@@ -6,6 +6,7 @@ import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
 import { HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { SearchResultComponent } from './pages/search-result/search-result.component';
 
 /** routes to our feature modules.
  * advantage of routing to modules instead of components: lazy loading.
@@ -47,10 +48,14 @@ const routes: Routes = [
     path: 'motif/:motifId',
     loadChildren: './pages/motif/motif.routing.module#MotifRoutingModule',
   },
+  {
+    path: 'search/:term',
+    component: SearchResultComponent
+  }
 ];
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, SearchResultComponent],
   imports: [
     BrowserModule,
     HttpClientModule,

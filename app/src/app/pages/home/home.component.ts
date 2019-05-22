@@ -1,5 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
 import { Entity } from 'src/app/shared/models/models';
+
+/**
+ * @description Interface for the category sliders.
+ * @export
+ * @interface SliderCategory
+ */
+export interface SliderCategory {
+  items: Entity[];
+  icon: string;
+}
 
 @Component({
   selector: 'app-home',
@@ -7,28 +18,73 @@ import { Entity } from 'src/app/shared/models/models';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-  iterator: number = 0;
-  maxItems: number = 3;
 
-  artworkItems: Entity[];
-  artistItems: Entity[];
-  movementItems: Entity[];
-  locationItems: Entity[];
-  materialItems: Entity[];
-  genreItems: Entity[];
-  motifItems: Entity[];
+  /**
+   * @description variable of object to be fetch in html
+   * @memberof HomeComponent
+   */
+  Object = Object;
 
-  constructor() {}
+  /**
+   * @description variable of the first 3 categories.
+   * @type {{ [key: string]: SliderCategory }}
+   * @memberof HomeComponent
+   */
+  upperCategories: { [key: string]: SliderCategory } = {
+    artwork: {
+      items: [],
+      icon: 'palette',
+    },
+    artist: {
+      items: [],
+      icon: 'user',
+    },
+    movement: {
+      items: [],
+      icon: 'wind',
+    },
+  };
+
+  /**
+   * @description variable of the next 4 categories.
+   * @type {{ [key: string]: SliderCategory }}
+   * @memberof HomeComponent
+   */
+  lowerCategories: { [key: string]: SliderCategory } = {
+    location: {
+      items: [],
+      icon: 'archway',
+    },
+    material: {
+      items: [],
+      icon: 'scroll',
+    },
+    genre: {
+      items: [],
+      icon: 'tags',
+    },
+    motif: {
+      items: [],
+      icon: 'image',
+    },
+  };
+
+  constructor(ngb_config: NgbCarouselConfig) {
+    /** set configuration of ngbCarousel */
+    ngb_config.pauseOnHover = false;
+    ngb_config.interval = 10000;
+  }
 
   ngOnInit() {
     this.initDummyData();
-    setInterval(() => {
-      this.iterator = this.iterator == this.maxItems - 1 ? 0 : this.iterator + 1;
-    }, 10000);
   }
 
+  /**
+   * @description Initialize the items for each category (will be removed later)
+   * @memberof HomeComponent
+   */
   initDummyData = (): void => {
-    this.artworkItems = [
+    this.upperCategories.artwork.items = [
       {
         id: 'Q19925319',
         label: 'Prayer before the meal',
@@ -57,7 +113,7 @@ export class HomeComponent implements OnInit {
       },
     ];
 
-    this.artistItems = [
+    this.upperCategories.artist.items = [
       {
         id: 'Q762',
         label: 'Leonardo da Vinci',
@@ -86,7 +142,7 @@ export class HomeComponent implements OnInit {
       },
     ];
 
-    this.movementItems = [
+    this.upperCategories.movement.items = [
       {
         id: 'Q326478',
         label: 'land art',
@@ -114,7 +170,7 @@ export class HomeComponent implements OnInit {
       },
     ];
 
-    this.locationItems = [
+    this.lowerCategories.location.items = [
       {
         id: 'Q1411180',
         label: 'Luxembourg Museum',
@@ -141,7 +197,7 @@ export class HomeComponent implements OnInit {
       },
     ];
 
-    this.materialItems = [
+    this.lowerCategories.material.items = [
       {
         id: 'Q219803',
         label: 'plywood',
@@ -167,7 +223,7 @@ export class HomeComponent implements OnInit {
         relativeRank: 0.9,
       },
     ];
-    this.genreItems = [
+    this.lowerCategories.genre.items = [
       {
         id: 'Q2586345',
         label: 'Cycladic art',
@@ -194,7 +250,7 @@ export class HomeComponent implements OnInit {
         relativeRank: 0.9,
       },
     ];
-    this.motifItems = [
+    this.lowerCategories.motif.items = [
       {
         id: 'Q10737',
         label: 'suicide',

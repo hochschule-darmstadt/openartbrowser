@@ -4,6 +4,7 @@ input.form-control {
   background: transparent;
   box-shadow: none;
   display: block;
+  overflow: hidden;
 }
 input.form-control::-webkit-input-placeholder {
   display: none;
@@ -48,8 +49,8 @@ span.form-control-feedback {
 .type-container {
   position: relative;
   display: inline-block;
-  padding-block-end: 20px;
-  width: 70px;
+  padding: 8px;
+  width: 80px;
   text-align: center;
 }
 
@@ -57,3 +58,31 @@ span.form-control-feedback {
   font-weight: 700;
   color: red;
 }
+
+:host ::ng-deep .dropdown-item {
+  max-width: 700px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 1.3rem;
+}
+
+.mr-1 {
+  max-width: 70px;
+  object-fit: contain;
+}
+
+.search-chip {
+  font-size: 1em;
+  margin: 0 1px 0 1px;
+}
+
+.search-chip-x {
+  margin-left: 4px;
+}
+
+.fa-user{
+  height: 25px !important;
+  width: 25px !important;
+  margin: 8px;
+}
+

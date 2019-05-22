@@ -8,9 +8,9 @@ import * as _ from 'lodash';
  */
 @Injectable()
 export class DataService {
-	/**
-	 * Constructor
-	 */
+  /**
+   * Constructor
+   */
 	constructor(private http: HttpClient) { }
 	serverURI = 'http://141.100.60.99:9200/api/_search';
 	public async findEntitiesByLabelText(text: string): Promise<Entity[]> {
@@ -36,17 +36,49 @@ export class DataService {
 					}
 				}
 			],
-			"size": 100
+			"size": 500
+		};
+
+		const response = await this.http.post<any>(this.serverURI, options).toPromise();
+		return this.filterData(response);
+	}
+
+	public async findArtworkByLabelText(text: string): Promise<Artwork[]> {
+		const options = {
+			"query": {
+				"bool": {
+					"must": [
+						{
+							"wildcard": {
+								"label": `*${text}*`
+							}
+						},
+						{
+							"match": {
+								"type": "artwork"
+							}
+						}
+					]
+				}
+			},
+			"sort": [
+				{
+					"relativeRank": {
+						"order": "desc"
+					}
+				}
+			],
+			"size": 20
+
 		};
 		const response = await this.http.post<any>(this.serverURI, options).toPromise();
-		return this.filterData<Entity>(response);
+		return this.filterData<Artwork>(response);
 	}
 
 	public async findArtworksByArtists(artistIds: string[]): Promise<Artwork[]> {
 		const response = await this.http.post<any>(this.serverURI, this.constructQuery("creators", artistIds)).toPromise();
 		return this.filterData<Artwork>(response);
 	};
-
 
 	public async findArtworksByMaterials(materialIds: string[]): Promise<Artwork[]> {
 		const response = await this.http.post<any>(this.serverURI, this.constructQuery("materials", materialIds)).toPromise();

@@ -48,8 +48,8 @@ span.form-control-feedback {
 .type-container {
   position: relative;
   display: inline-block;
-  padding-block-end: 20px;
-  width: 70px;
+  padding: 8px;
+  width: 80px;
   text-align: center;
 }
 
@@ -62,11 +62,12 @@ span.form-control-feedback {
   max-width: 700px;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: 1.3rem;
 }
 
 .mr-1 {
   max-width: 70px;
-  object-fit: contain
+  object-fit: contain;
 }
 
 .search-chip {
@@ -77,3 +78,10 @@ span.form-control-feedback {
 .search-chip-x {
   margin-left: 4px;
 }
+
+.fa-user{
+  height: 25px !important;
+  width: 25px !important;
+  margin: 8px;
+}
+

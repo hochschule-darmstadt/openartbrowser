@@ -65,13 +65,7 @@ export class SearchComponent implements OnInit {
     )
 
     private async itemSelected($event){
-      const id = ($event.item.id);
-      // console.log(id);
-      const entity = await this.dataService.findById(id);
-      // console.log(entity);
-      const entityId = entity.id;
-      const entityType = entity.type;
-      const url = `/${entityType}/${entityId}`;
+      const url = `/${$event.item.type}/${$event.item.id}`;
       this.addtags.push($event.item.label);
       this.router.navigate([url]);
     }

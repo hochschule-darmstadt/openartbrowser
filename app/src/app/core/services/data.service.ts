@@ -47,11 +47,18 @@ export class DataService {
     const options = {
 		"query": {
 			"bool": {
-				"must": {
+				"must": [
+          {
           "wildcard": {
             "label": `*${text}*`
-					}
+          }
         },
+         { 
+          "match" : {
+            "type" : "artwork"
+          }
+        }
+      ],
         "must_not": {
 					"term": {
 						"type": "object"

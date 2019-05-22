@@ -45,7 +45,6 @@
   <input
     id="search-header"
     class="form-control flex-grow-1"
-    (selectItem)="itemSelected($event)"
     [focusFirst]="false"
     type="text"
     name="Artwork"
@@ -54,6 +53,7 @@
     [ngbTypeahead]="search"
     [resultTemplate]="rt"
     [inputFormatter]="formatter"
+    (selectItem)="itemSelected($event)"
     (keydown.enter)="navigateToSearchText(input.value)"
   />
 </div>

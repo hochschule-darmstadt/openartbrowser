@@ -136,32 +136,22 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     this.artworkTabs.all.items = items;
   }
 
+  /**
+   * @description show popup image zoom.
+   * @memberof ArtworkComponent
+   */
   showModal() {
     var modal = document.getElementById("img-modal");
     modal.style.display = "block";
   }
   
+  /**
+   * @description close popup image zoom.
+   * @memberof ArtworkComponent
+   */
   closeModal() {
     var modal = document.getElementById("img-modal");
     modal.style.display = "none";
-  }
-
-  zoomIn() {
-    var myImg = document.getElementById("image-modal");
-    var currWidth = myImg.clientWidth;
-    if (currWidth == 2500) return false;
-    else {
-      myImg.style.width = (currWidth + 100) + "px";
-    }
-  }
-  
-  zoomOut() {
-    var myImg = document.getElementById("image-modal");
-    var currWidth = myImg.clientWidth;
-    if (currWidth == 100) return false;
-    else {
-      myImg.style.width = (currWidth - 100) + "px";
-    }
   }
 
   ngOnDestroy() {

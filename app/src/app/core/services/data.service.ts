@@ -105,6 +105,11 @@ export class DataService {
 		return this.filterData<Artwork>(response);
 	}
 
+	public async get10CategoryItems<T>(type: string): Promise<T[]> {
+		const response = await this.http.post<any>(this.serverURI, this.categoryQuery(type)).toPromise();
+		return this.filterData<T>(response);
+	}
+
 	/**
 	 * filters the data that is fetched from the server
 	 * @param data Elasticsearch Data
@@ -147,6 +152,34 @@ export class DataService {
 		});
 		return options;
 	}
+
+	/**
+	 * @description construct an elasticsearch query specific for category items
+	 * @param {string} type
+	 * @returns {Object}
+	 * @memberof DataService
+	 */
+	categoryQuery(type: string): Object{
+		return {
+			"query": {
+				"bool": {
+					"must": [ 
+						{ "match": { "type": type	} },
+						{ "prefix": {"image":"http"} }	
+					]
+				}
+			},
+			"sort": [
+				{
+					"relativeRank": {
+						"order": "desc"
+					}
+				}
+			],
+			"size": 10
+		}
+	}
+
 	/**
 	 * Gets an entity from the server
 	 * @param id Id of the entity to retrieve

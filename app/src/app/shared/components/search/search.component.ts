@@ -73,6 +73,7 @@ export class SearchComponent implements OnInit {
     private navigateToSearchText(term: string) {
       const url = `/search/${term}`;
       // console.log(url);
+      this.addtags.push('"' + term + '"');
       this.router.navigate([url]);
     }
 

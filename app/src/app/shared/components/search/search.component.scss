@@ -4,6 +4,7 @@ input.form-control {
   background: transparent;
   box-shadow: none;
   display: block;
+  overflow: hidden;
 }
 input.form-control::-webkit-input-placeholder {
   display: none;
@@ -53,12 +54,12 @@ span.form-control-feedback {
   text-align: center;
 }
 
-::ng-deep .ngb-highlight {
+:host ::ng-deep .ngb-highlight {
   font-weight: 700;
   color: red;
 }
 
-::ng-deep .dropdown-item {
+:host ::ng-deep .dropdown-item {
   max-width: 700px;
   overflow: hidden;
   text-overflow: ellipsis;

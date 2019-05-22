@@ -19,20 +19,6 @@
           <p *ngIf="location?.website"><a href="{{location?.website}}">{{location?.label}}</a></p>
         </div>
       </div>
-      <!--Maps still dummy-->
-      <div *ngIf="location?.lat && location?.lon">
-        <h4 class="mt-2 more" data-toggle="collapse" href="#collapseMaps" (click)="toggleDetails()">Maps
-          <i *ngIf="collapseDown" data-toggle="collapse" href="#collapseMaps" class="fas fa-chevron-down"> </i>
-          <i *ngIf="!collapseDown" data-toggle="collapse" href="#collapseMaps" class="fas fa-chevron-up"> </i>
-        </h4>
-        <!-- Map -->
-        <div class="row mx-3 collapse border-bottom google-maps" id="collapseMaps">
-          <div id="map-container-google-1" class="z-depth-1-half map-container">
-            <iframe src="https://maps.google.com/maps?q=manhatan&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0"
-              style="border:0" allowfullscreen></iframe>
-          </div>
-        </div>
-      </div>
     </div>
     <div class="col-sm-5 img" *ngIf="location?.image">
       <img class="img-fluid rounded-circle" src="{{ location?.image }}" alt="{{ location?.label }}" />

@@ -133,49 +133,81 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       /* Count meta data to show more on load */
       this.calculateCollapseState();
 
-      this.artworkTabs.artist.items = await this.dataService.findArtworksByArtists(
-        this.artwork.creators.map((creator) => {
-          return creator.id;
-        })
-      );
 
-      const artworksByLocation = await this.dataService.findArtworksByLocations(
-        this.artwork.locations.map((location) => {
-          return location.id;
-        })
-      );
-      const artworksByGenre = await this.dataService.findArtworksByGenres(
-        this.artwork.genres.map((genre) => {
-          return genre.id;
-        })
-      );
-      const artworksByMovements = await this.dataService.findArtworksByMovements(
-        this.artwork.movements.map((movement) => {
-          return movement.id;
-        })
-      );
-      const artworksByMaterial = await this.dataService.findArtworksByMaterials(
-        this.artwork.materials.map((material) => {
-          return material.id;
-        })
-      );
-      const artworksByArtists = await this.dataService.findArtworksByArtists(
-        this.artwork.creators.map((artist) => {
-          return artist.id;
-        })
-      );
-      const artworksByMotifs = await this.dataService.findArtworksByMotifs(
-        this.artwork.depicts.map((motif) => {
-          return motif.id;
-        })
-      );
+      /**
+       * for some reason assigning the items attribute of a tab directly like below does NOT work, because
+       * the assignment resets the items of the other tabs! really weird. as soon as the next tab is assigned, 
+       * the items in the previous tab become empty again...
+       * it works fine though, if it is done via a another variable...
+       * 
+       * this works only for the latest tab where the items are assigned:
+       * 
+       * if (this.artwork.genres) { 
+       *  this.artworkTabs.genre.items = await this.dataService.findArtworksByGenres(
+       *   this.artwork.locations.map((location) => { 
+       *     return location.id; 
+       *   })
+       *  );
+       * }
+       */
 
-      this.artworkTabs.location.items = artworksByLocation;
-      this.artworkTabs.genre.items = artworksByGenre;
-      this.artworkTabs.material.items = artworksByMaterial;
+      let artworksByMovements = [];
+      let artworksByArtists = [];
+      let artworksByMotifs = [];
+      let artworksByMaterials = [];
+      let artworksByGenres = [];
+      let artworksByLocations = [];
+
+
+      if (this.artwork.locations) {
+        artworksByLocations = await this.dataService.findArtworksByLocations(
+          this.artwork.locations.map((location) => {
+            return location.id;
+          })
+        );
+      }
+      if (this.artwork.genres) {
+        artworksByGenres = await this.dataService.findArtworksByGenres(
+          this.artwork.genres.map((genre) => {
+            return genre.id;
+          })
+        );
+      }
+      if (this.artwork.movements) {
+        artworksByMovements = await this.dataService.findArtworksByMovements(
+          this.artwork.movements.map((movement) => {
+            return movement.id;
+          })
+        );
+      }
+      if (this.artwork.materials) {
+        artworksByMaterials = await this.dataService.findArtworksByMaterials(
+          this.artwork.materials.map((material) => {
+            return material.id;
+          })
+        );
+      }
+      if (this.artwork.creators) {
+        artworksByArtists = await this.dataService.findArtworksByArtists(
+          this.artwork.creators.map((artist) => {
+            return artist.id;
+          })
+        );
+      }
+      if (this.artwork.depicts) {
+        artworksByMotifs = await this.dataService.findArtworksByMotifs(
+          this.artwork.depicts.map((motif) => {
+            return motif.id;
+          })
+        );
+      }
+
+      this.artworkTabs.genre.items = artworksByGenres;
+      this.artworkTabs.material.items = artworksByMaterials;
       this.artworkTabs.motif.items = artworksByMotifs;
       this.artworkTabs.artist.items = artworksByArtists;
       this.artworkTabs.movement.items = artworksByMovements;
+      this.artworkTabs.location.items = artworksByLocations;
 
       this.removeMainArtworkFromTabs();
       this.selectAllTabItems(10);
@@ -269,17 +301,17 @@ export class ArtworkComponent implements OnInit, OnDestroy {
         case 'all':
           return true;
         case 'artist':
-          return this.artwork.creators.length > 0;
+          return this.artwork.creators && this.artwork.creators.length > 0;
         case 'movement':
-          return this.artwork.movements.length > 0;
+          return this.artwork.movements && this.artwork.movements.length > 0;
         case 'genre':
-          return this.artwork.genres.length > 0;
+          return this.artwork.genres && this.artwork.genres.length > 0;
         case 'motif':
-          return this.artwork.depicts.length > 0;
+          return this.artwork.depicts && this.artwork.depicts.length > 0;
         case 'location':
-          return this.artwork.locations.length > 0;
+          return this.artwork.locations && this.artwork.locations.length > 0;
         case 'material':
-          return this.artwork.materials.length > 0;
+          return this.artwork.materials && this.artwork.materials.length > 0;
         default:
           return false;
       }

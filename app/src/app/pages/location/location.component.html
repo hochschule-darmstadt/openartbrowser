@@ -1,7 +1,7 @@
 <div class="container">
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7">
-      <span class="badge badge-pill badge-secondary"><i class="fas fa-archway"></i> Location</span>
+      <span class="badge badge-pill badge-secondary chip"><i class="fas fa-archway"></i> Location</span>
       <h2 class="mb-3 first-letter">{{ location?.label }}</h2>
       <div *ngIf="location?.country" class="row mt-5">
         <div class="col-md-3 pr-0">
@@ -21,7 +21,7 @@
       </div>
       <!--Maps still dummy-->
       <div *ngIf="location?.lat && location?.lon">
-        <h4 class="mt-5 more" data-toggle="collapse" href="#collapseMaps" (click)="toggleDetails()">Maps
+        <h4 class="mt-2 more" data-toggle="collapse" href="#collapseMaps" (click)="toggleDetails()">Maps
           <i *ngIf="collapseDown" data-toggle="collapse" href="#collapseMaps" class="fas fa-chevron-down"> </i>
           <i *ngIf="!collapseDown" data-toggle="collapse" href="#collapseMaps" class="fas fa-chevron-up"> </i>
         </h4>

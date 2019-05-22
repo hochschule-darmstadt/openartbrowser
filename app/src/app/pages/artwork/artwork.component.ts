@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Artwork, Entity } from 'src/app/shared/models/models';
+import { Artwork } from 'src/app/shared/models/models';
 import { takeUntil } from 'rxjs/operators';
 import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
+import * as _ from "lodash";
 
 /** interface for the tabs */
 interface SliderTab {
@@ -34,6 +35,9 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    * @memberof ArtworkComponent
    */
   collapseDown: boolean = true;
+
+  /** score of meta data size */
+  metaNumber: number = 0;
 
   /**
    * @description to toggle common tags container.
@@ -126,6 +130,10 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       /** Use data service to fetch entity from database */
       this.artwork = (await this.dataService.findById(artworkId)) as Artwork;
 
+      /* Count meta data to show more on load */
+      this.calculateCollapseState();
+
+
       /**
        * for some reason assigning the items attribute of a tab directly like below does NOT work, because
        * the assignment resets the items of the other tabs! really weird. as soon as the next tab is assigned, 
@@ -142,7 +150,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
        *  );
        * }
        */
-
 
       let artworksByMovements = [];
       let artworksByArtists = [];
@@ -254,6 +261,26 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     this.collapseDown = !this.collapseDown;
   }
 
+  /** calculates the size of meta data item section
+   * every attribute: +3
+   * if attribute is array and size > 3 -> + arraylength
+   */
+  calculateCollapseState() {
+    this.collapseDown = true;
+    if (!_.isEmpty(this.artwork.genres))
+      this.metaNumber += this.artwork.genres.length > 3 ? this.artwork.genres.length : 3;
+    if (!_.isEmpty(this.artwork.materials))
+      this.metaNumber += this.artwork.materials.length > 3 ? this.artwork.genres.length : 3;
+    if (!_.isEmpty(this.artwork.movements))
+      this.metaNumber += this.artwork.movements.length > 3 ? this.artwork.movements.length : 3;
+    if (!_.isEmpty(this.artwork.depicts))
+      this.metaNumber += this.artwork.depicts.length > 3 ? this.artwork.depicts.length : 3;
+    if (!this.artwork.height && !this.artwork.width)
+      this.metaNumber += 3;
+    if (this.metaNumber < 10) {
+      this.collapseDown = false;
+    }
+  }
   /**
    * @description function to toggle common tags container.
    * @memberof ArtworkComponent

@@ -27,7 +27,7 @@ $color1: #00bc8c;
 
 /** Styling for the title & search div */
 .container-content {
-  width: 80%;
+  width: 60vw;
   margin-left: auto;
   margin-right: auto;
   margin-top: 0;
@@ -153,7 +153,9 @@ $color1: #00bc8c;
   }
 }
 
-@media (min-width: 0px) and (max-width: 370px) {
+
+
+@media (min-width: 0px) and (max-width: 376px) {
   .container-content {
     width: 100%;
 
@@ -163,15 +165,34 @@ $color1: #00bc8c;
     }
   }
 
+  /* Resize main search size and font */
   :host ::ng-deep .search div input {
     height: 2rem;
     font-size: 0.8rem;
   }
+
+  /* Resize main search result only  */
+  #homeSearch{
+    ::ng-deep .dropdown-menu.show {
+      display: block;
+      width: 67vw;
+  
+      ::ng-deep .dropdown-item {
+        min-height: 2rem;
+        width: 100%;
+        font-size: 0.7rem;
+
+        ::ng-deep ngb-highlight{
+          width: 50%;
+        }
+      }
+  }
+  }
 }
 
-@media (min-width:371px) and (max-width: 576px) {
+@media (min-width:377px) and (max-width: 576px) {
   .container-content {
-    width: 100%;
+    width: 70vw;
 
     .title {
       font-size: 4em;
@@ -179,38 +200,79 @@ $color1: #00bc8c;
     }
   }
 
+  /* Resize main search size and font */
   :host ::ng-deep .search div input {
-    height: 2.5rem;
-    font-size: 1.1rem;
+    height: 2.0rem;
+    font-size: 1.0rem;
+  }
+
+  /* Resize main search result only  */
+  #homeSearch{
+    ::ng-deep .dropdown-menu.show {
+      display: block;
+      width: 65vw;
+
+      /* Resize result item*/
+      ::ng-deep .dropdown-item {
+        width: 100%;
+        font-size: 1.0rem;
+      }
+    }
   }
 }
 
 @media (min-width:577px) and (max-width: 767px) {
   .container-content {
-    width: 90%;
 
     .title {
-      font-size: 5em;
+      font-size: 9vh;
       width: 100%;
       margin-bottom: 4rem;
     }
   }
 
+  /* Resize main search size and font */
   :host ::ng-deep .search div input {
     height: 2.5rem;
     font-size: 1.1rem;
   }
+
+  /* Resize main search result only  */
+  #homeSearch{
+  ::ng-deep .dropdown-menu.show {
+    display: block;
+    width: 55vw;
+
+    /* Resize result item*/
+    ::ng-deep .dropdown-item {
+      width: 100%;
+      font-size: 0.9rem;
+    }
+  }
+}
 }
 
 @media (min-width:768px) and (max-width: 991px) {
   .container-content {
-    width: 90%;
-
     .title {
-      font-size: 8em;
+      font-size: 10vh;
       width: 100%;
     }
   }
+
+  /* Resize main search result only  */
+  #homeSearch{
+  ::ng-deep .dropdown-menu.show {
+    display: block;
+    width: 57vw;
+
+    /* Resize result item*/
+    ::ng-deep .dropdown-item {
+      width: 100%;
+      font-size: 1.0rem;
+    }
+  }
+}
 }
 
 @media (min-width: 992px) {
@@ -219,4 +281,12 @@ $color1: #00bc8c;
       font-size: 8em;
     }
   }
+
+  /* Resize main search result only  */
+  #homeSearch {
+  ::ng-deep .dropdown-menu.show {
+    display: block;
+    width: 57.5vw;
+  }
+}
 }

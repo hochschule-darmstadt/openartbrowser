@@ -6,17 +6,21 @@ input.form-control {
   display: block;
   overflow: hidden;
 }
+
 input.form-control::-webkit-input-placeholder {
   display: none;
 }
+
 input.form-control:-moz-placeholder {
   /* Firefox 18- */
   display: none;
 }
+
 input.form-control::-moz-placeholder {
   /* Firefox 19+ */
   display: none;
 }
+
 input.form-control:-ms-input-placeholder {
   display: none;
 }
@@ -80,9 +84,8 @@ span.form-control-feedback {
   margin-left: 4px;
 }
 
-.fa-user{
+.fa-user {
   height: 25px !important;
   width: 25px !important;
   margin: 8px;
 }
-

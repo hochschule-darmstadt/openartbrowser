@@ -34,7 +34,7 @@ $color1: #00bc8c;
   margin-bottom: 6rem;
 
   .title {
-    font-size: 8vh;
+    font-size: 8rem;
     letter-spacing: 0rem;
     color: $color1;
     width: 100%;
@@ -141,19 +141,82 @@ $color1: #00bc8c;
   }
 }
 
-@media (min-width: 992px) {
-  .title {
-    font-size: 8rem !important;
-  }
-}
-
 /** Style for generated ngbcarousel **/
-/deep/ .container-category .carousel-control-prev, /deep/ .container-category .carousel-control-next {
+::ng-deep .container-category .carousel-control-prev,
+::ng-deep .container-category .carousel-control-next {
   width: 10%;
   padding: 0 2%;
   opacity: 0.4;
 
   &:hover {
     cursor: default;
+  }
+}
+
+@media (min-width: 0px) and (max-width: 370px) {
+  .container-content {
+    width: 100%;
+
+    .title {
+      font-size: 3em;
+      margin-bottom: 1em;
+    }
+  }
+
+  :host ::ng-deep .search div input {
+    height: 2rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (min-width:371px) and (max-width: 576px) {
+  .container-content {
+    width: 100%;
+
+    .title {
+      font-size: 4em;
+      margin-bottom: 0.5em;
+    }
+  }
+
+  :host ::ng-deep .search div input {
+    height: 2.5rem;
+    font-size: 1.1rem;
+  }
+}
+
+@media (min-width:577px) and (max-width: 767px) {
+  .container-content {
+    width: 90%;
+
+    .title {
+      font-size: 5em;
+      width: 100%;
+      margin-bottom: 4rem;
+    }
+  }
+
+  :host ::ng-deep .search div input {
+    height: 2.5rem;
+    font-size: 1.1rem;
+  }
+}
+
+@media (min-width:768px) and (max-width: 991px) {
+  .container-content {
+    width: 90%;
+
+    .title {
+      font-size: 8em;
+      width: 100%;
+    }
+  }
+}
+
+@media (min-width: 992px) {
+  .container-content {
+    .title {
+      font-size: 8em;
+    }
   }
 }

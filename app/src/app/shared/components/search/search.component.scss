@@ -64,7 +64,7 @@ span.form-control-feedback {
 }
 
 :host ::ng-deep .dropdown-item {
-  max-width: 700px;
+  width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 1.3rem;

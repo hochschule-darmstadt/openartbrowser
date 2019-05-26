@@ -8,12 +8,10 @@
     </div>
   </div>
 
-  <div class="modal" id="img-modal">
+  <div class="modal" *ngIf="modalIsVisible" id="img-modal">
     <span class="close" (click)="closeModal()">&times;</span>
     <div class="modal-content my-auto">
-      <ngx-image-viewer
-        [src]="[artwork?.image]"
-        [config]="{
+      <ngx-image-viewer [src]="[artwork?.image]" [config]="{
           allowFullscreen: false,
           zoomFactor: 0.1,
           containerBackgroundColor: '#222',
@@ -26,8 +24,7 @@
             next: false,
             prev: false
           }
-        }"
-      ></ngx-image-viewer>
+        }"></ngx-image-viewer>
     </div>
   </div>
 

@@ -36,6 +36,9 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   collapseDown: boolean = true;
 
+  /** whether artwork image viewer is active or not */
+  modalIsVisible = false;
+
   /** score of meta data size */
   metaNumber: number = 0;
 
@@ -219,19 +222,17 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    * @memberof ArtworkComponent
    */
   showModal() {
-    var modal = document.getElementById("img-modal");
-    modal.style.display = "block";
+    this.modalIsVisible = true;
   }
-  
+
   /**
    * @description close popup image zoom.
    * @memberof ArtworkComponent
    */
   closeModal() {
-    var modal = document.getElementById("img-modal");
-    modal.style.display = "none";
+    this.modalIsVisible = false;
   }
-  
+
   /**
    * @description Hook that is called when a directive, pipe, or service is destroyed.
    * @memberof ArtworkComponent

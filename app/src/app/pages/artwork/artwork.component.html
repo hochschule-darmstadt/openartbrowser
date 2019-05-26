@@ -1,7 +1,33 @@
 <div class="container">
   <div class="row pb-5 border-bottom">
-    <img class="img-fluid mx-auto d-block" id="image-main" src="{{ artwork?.image }}" alt="{{ artwork?.label }}" />
+    <div class="img-container mx-auto d-block" (click)="showModal()">
+      <img class="img-fluid d-block" id="image-main" src="{{ artwork?.image }}" alt="{{ artwork?.label }}" />
+      <div class="enlarge">
+        <i class="fas fa-expand" (click)="showModal()"></i>
+      </div>
+    </div>
   </div>
+
+  <div class="modal" *ngIf="modalIsVisible" id="img-modal">
+    <span class="close" (click)="closeModal()">&times;</span>
+    <div class="modal-content my-auto">
+      <ngx-image-viewer [src]="[artwork?.image]" [config]="{
+          allowFullscreen: false,
+          zoomFactor: 0.1,
+          containerBackgroundColor: '#222',
+          wheelZoom: true,
+          btnShow: {
+            zoomIn: true,
+            zoomOut: true,
+            rotateClockwise: false,
+            rotateCounterClockwise: false,
+            next: false,
+            prev: false
+          }
+        }"></ngx-image-viewer>
+    </div>
+  </div>
+
   <div class="row pt-3 pb-3 border-bottom">
     <div class="col-sm-12">
       <div class="text-muted">

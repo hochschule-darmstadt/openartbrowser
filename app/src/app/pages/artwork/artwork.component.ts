@@ -36,6 +36,9 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   collapseDown: boolean = true;
 
+  /** whether artwork image viewer is active or not */
+  modalIsVisible = false;
+
   /** score of meta data size */
   metaNumber: number = 0;
 
@@ -212,6 +215,22 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       this.removeMainArtworkFromTabs();
       this.selectAllTabItems(10);
     });
+  }
+
+  /**
+   * @description show popup image zoom.
+   * @memberof ArtworkComponent
+   */
+  showModal() {
+    this.modalIsVisible = true;
+  }
+
+  /**
+   * @description close popup image zoom.
+   * @memberof ArtworkComponent
+   */
+  closeModal() {
+    this.modalIsVisible = false;
   }
 
   /**

@@ -29,17 +29,19 @@
       <i class="fas fa-archway"></i>
     </span>
   </ng-template>
-  <ng-template [ngIf]="r['type'] == 'motif'">
+  <ng-template [ngIf]="r['type'] == 'object'">
     <span class="type-container">
       <i class="fas fa-image"></i>
     </span>
   </ng-template>
   <!-- <img [src]="r['image']" class="mr-1" style="width: 75px; padding: 5px;"> -->
-  <span id="search-badge" class="badge badge-secondary">{{ r?.type }}</span>
+  <span id="search-badge" class="badge badge-secondary"><span *ngIf="r['type'] != 'object'; else elseBlock"> {{ r?.type }}</span>
+    <ng-template #elseBlock> motif </ng-template>
+  </span>
   <ngb-highlight [result]="r.label" [term]="t" style="padding: 8px;"></ngb-highlight>
 </ng-template>
 <div class="chips chips-placeholder d-flex align-items-center">
-  <span *ngFor="let i of addtags" class="badge badge-primary search-chip">{{i}}
+  <span *ngFor="let i of addtags" class="badge badge-pill badge-secondary chip">{{i}}
     <span (click)="removeTag(i)" class="fas fa-times-circle search-chip-x"></span>
   </span>
   <input
@@ -54,7 +56,7 @@
     [resultTemplate]="rt"
     [inputFormatter]="formatter"
     (selectItem)="itemSelected($event)"
-    (keydown.enter)="navigateToSearchText(input.value)"
+    (keyup.enter)="navigateToSearchText(input.value)"
   />
 </div>
 <span class="fas fa-search"></span>

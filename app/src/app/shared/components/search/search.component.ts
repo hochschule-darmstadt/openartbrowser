@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { debounceTime, switchMap } from 'rxjs/operators';
+import { Entity } from '../../models/models';
 
 @Component({
   selector: 'app-search',
@@ -65,16 +66,29 @@ export class SearchComponent implements OnInit {
     )
 
     private async itemSelected($event){
-      const url = `/${$event.item.type}/${$event.item.id}`;
-      this.addtags.push($event.item.label);
-      this.router.navigate([url]);
+      if ($event.item.type == 'object') {
+        const url = `/motif/${$event.item.id}`;
+        this.addtags.push($event.item.label);
+        this.router.navigate([url]);
+      } else if ($event.item.type == 'artwork'){
+        const url = `/${$event.item.type}/${$event.item.id}`;
+        // this.addtags.push($event.item.label);
+        this.router.navigate([url]);
+      } else {
+        const url = `/${$event.item.type}/${$event.item.id}`;
+        this.addtags.push($event.item.label);
+        this.router.navigate([url]);
+      }
     }
 
     private navigateToSearchText(term: string) {
-      const url = `/search/${term}`;
-      // console.log(url);
-      this.addtags.push('"' + term + '"');
-      this.router.navigate([url]);
+      if (term == '') {}
+      else {
+        const url = `/search/${term}`;
+        console.log(this.addtags);
+        this.addtags.push('"' + term + '"');
+        this.router.navigate([url]);
+      }
     }
 
     private removeTag(i: string) {

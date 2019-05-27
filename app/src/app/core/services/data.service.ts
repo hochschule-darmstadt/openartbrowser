@@ -21,11 +21,6 @@ export class DataService {
 						"wildcard": {
 							"label": `*${text}*`
 						}
-					},
-					"must_not": {
-						"term": {
-							"type": "object"
-						}
 					}
 				}
 			},

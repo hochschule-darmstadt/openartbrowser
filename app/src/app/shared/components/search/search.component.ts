@@ -19,7 +19,7 @@ export class SearchComponent implements OnInit {
 
   formatter = (x: { name: string }) => x.name;
 
-  private search = (text$: Observable<string>) =>
+  public search = (text$: Observable<string>) =>
     text$.pipe(
       debounceTime(200),
       switchMap(async (term) => {
@@ -64,13 +64,13 @@ export class SearchComponent implements OnInit {
       })
     )
 
-    private async itemSelected($event){
+    public async itemSelected($event){
       const url = `/${$event.item.type}/${$event.item.id}`;
       this.addtags.push($event.item.label);
       this.router.navigate([url]);
     }
 
-    private navigateToSearchText(term: string) {
+    public navigateToSearchText(term: string) {
       const url = `/search/${term}`;
       // console.log(url);
       this.addtags.push('"' + term + '"');

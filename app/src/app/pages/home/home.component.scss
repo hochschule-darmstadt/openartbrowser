@@ -172,21 +172,22 @@ $color1: #00bc8c;
   }
 
   /* Resize main search result only  */
-  #homeSearch{
+  #homeSearch {
     ::ng-deep .dropdown-menu.show {
       display: block;
       width: 67vw;
-  
+
       ::ng-deep .dropdown-item {
         min-height: 2rem;
         width: 100%;
         font-size: 0.7rem;
+        padding: 0.5rem;
 
-        ::ng-deep ngb-highlight{
+        ::ng-deep ngb-highlight {
           width: 50%;
         }
       }
-  }
+    }
   }
 }
 
@@ -207,7 +208,7 @@ $color1: #00bc8c;
   }
 
   /* Resize main search result only  */
-  #homeSearch{
+  #homeSearch {
     ::ng-deep .dropdown-menu.show {
       display: block;
       width: 65vw;
@@ -238,18 +239,18 @@ $color1: #00bc8c;
   }
 
   /* Resize main search result only  */
-  #homeSearch{
-  ::ng-deep .dropdown-menu.show {
-    display: block;
-    width: 55vw;
+  #homeSearch {
+    ::ng-deep .dropdown-menu.show {
+      display: block;
+      width: 55vw;
 
-    /* Resize result item*/
-    ::ng-deep .dropdown-item {
-      width: 100%;
-      font-size: 0.9rem;
+      /* Resize result item*/
+      ::ng-deep .dropdown-item {
+        width: 100%;
+        font-size: 0.9rem;
+      }
     }
   }
-}
 }
 
 @media (min-width:768px) and (max-width: 991px) {
@@ -261,18 +262,18 @@ $color1: #00bc8c;
   }
 
   /* Resize main search result only  */
-  #homeSearch{
-  ::ng-deep .dropdown-menu.show {
-    display: block;
-    width: 57vw;
+  #homeSearch {
+    ::ng-deep .dropdown-menu.show {
+      display: block;
+      width: 57vw;
 
-    /* Resize result item*/
-    ::ng-deep .dropdown-item {
-      width: 100%;
-      font-size: 1.0rem;
+      /* Resize result item*/
+      ::ng-deep .dropdown-item {
+        width: 100%;
+        font-size: 1.0rem;
+      }
     }
   }
-}
 }
 
 @media (min-width: 992px) {
@@ -284,9 +285,9 @@ $color1: #00bc8c;
 
   /* Resize main search result only  */
   #homeSearch {
-  ::ng-deep .dropdown-menu.show {
-    display: block;
-    width: 57.5vw;
+    ::ng-deep .dropdown-menu.show {
+      display: block;
+      width: 57.5vw;
+    }
   }
-}
 }

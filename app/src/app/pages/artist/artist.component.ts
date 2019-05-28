@@ -4,7 +4,7 @@ import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import * as _ from "lodash";
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-artist',
@@ -39,7 +39,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
       const artistId = params.get('artistId');
       /** Use data service to fetch entity from database */
-      this.artist = (await this.dataService.findById(artistId)) as Artist;
+      this.artist = (await this.dataService.findById(artistId, 'artist')) as Artist;
       this.sliderItems = await this.dataService.findArtworksByArtists([this.artist.id]);
       /* Count meta data to show more on load */
 
@@ -49,9 +49,9 @@ export class ArtistComponent implements OnInit, OnDestroy {
   }
 
   /** calculates the size of meta data item section
- * every attribute: +3
- * if attribute is array and size > 3 -> + arraylength
- */
+   * every attribute: +3
+   * if attribute is array and size > 3 -> + arraylength
+   */
   calculateCollapseState() {
     this.collapseDown = true;
     if (!this.artist.gender)

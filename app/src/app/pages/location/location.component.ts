@@ -31,7 +31,7 @@ export class LocationComponent implements OnInit, OnDestroy {
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
       const locationId = params.get('locationId');
       /** Use data service to fetch entity from database */
-      this.location = (await this.dataService.findById(locationId)) as Location;
+      this.location = (await this.dataService.findById(locationId, 'location')) as Location;
       this.sliderItems = await this.dataService.findArtworksByLocations([this.location.id]);
     });
   }

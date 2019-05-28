@@ -80,6 +80,9 @@ $color1: #00bc8c;
           width: 100%;
           font-size: 1rem;
 
+          @media (min-width: 577px) and (max-width: 767px) {
+            font-size: 0.9rem;
+          }
           @media (min-width: 377px) and (max-width: 576px) {
             font-size: 0.9rem;
           }
@@ -104,14 +107,17 @@ $color1: #00bc8c;
 :host ::ng-deep .search div input {
   height: 3.5rem;
   font-size: 1.7rem;
-
-  @media (min-width: 377px) and (max-width: 576px) {
+  @media (min-width: 577px) and (max-width: 767px) {
     height: 2.5rem;
     font-size: 1.1rem;
   }
-  @media (min-width: 0px) and (max-width: 376px) {
+  @media (min-width: 377px) and (max-width: 576px) {
     height: 2rem;
     font-size: 1rem;
+  }
+  @media (min-width: 0px) and (max-width: 376px) {
+    height: 2rem;
+    font-size: 0.8rem;
   }
 
   border-bottom: 1px solid white;

@@ -43,16 +43,13 @@ $color1: #00bc8c;
   }
 
   .contr {
-    width: 100%;
-    margin-left: 2vw;
-    margin-right: 2vw;
+    width: 90%;
+    margin: auto;
 
     #homeSearch {
-      width: 100%;
-
       ::ng-deep .dropdown-menu.show {
         display: block;
-        width: 100%;
+        width: 90%;
       }
     }
   }

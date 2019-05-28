@@ -28,7 +28,7 @@ export class GenreComponent implements OnInit, OnDestroy {
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
       const genreId = params.get('genreId');
       /** Use data service to fetch entity from database */
-      this.genre = (await this.dataService.findById(genreId)) as Genre;
+      this.genre = (await this.dataService.findById(genreId, 'genre')) as Genre;
       this.sliderItems = await this.dataService.findArtworksByGenres([this.genre.id]);
     });
   }

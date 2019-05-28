@@ -8,9 +8,9 @@ import * as _ from 'lodash';
  */
 @Injectable()
 export class DataService {
-  /**
-   * Constructor
-   */
+	/**
+	 * Constructor
+	 */
 	constructor(private http: HttpClient) { }
 	serverURI = 'http://141.100.60.99:9200/api/_search';
 	public async findEntitiesByLabelText(text: string): Promise<Entity[]> {
@@ -113,11 +113,17 @@ export class DataService {
 	/**
 	 * filters the data that is fetched from the server
 	 * @param data Elasticsearch Data
+	 * @param type optional: type of entities that should be filtered
 	 */
-	filterData<T>(data: any): T[] {
+	filterData<T>(
+		data: any,
+		type?: 'artwork' | 'artist' | 'movement' | 'genre' | 'material' | 'object' | 'location'
+	): T[] {
 		let entities: T[] = [];
 		_.each(data.hits.hits, function (val) {
-			entities.push(val._source);
+			if (!type || (type && val._source.type == type)) {
+				entities.push(val._source);
+			}
 		});
 		return entities;
 	}
@@ -159,13 +165,13 @@ export class DataService {
 	 * @returns {Object}
 	 * @memberof DataService
 	 */
-	categoryQuery(type: string): Object{
+	categoryQuery(type: string): Object {
 		return {
 			"query": {
 				"bool": {
-					"must": [ 
-						{ "match": { "type": type	} },
-						{ "prefix": {"image":"http"} }	
+					"must": [
+						{ "match": { "type": type } },
+						{ "prefix": { "image": "http" } }
 					]
 				}
 			},
@@ -183,26 +189,29 @@ export class DataService {
 	/**
 	 * Gets an entity from the server
 	 * @param id Id of the entity to retrieve
+	 * @param type optional type of entity that should be returned
 	 * @param enrich whether related entities should also be loaded
 	 */
-	public async findById(id: string, enrich: boolean = true): Promise<Entity> {
-		let result;
+	public async findById(
+		id: string,
+		type: 'artwork' | 'artist' | 'movement' | 'genre' | 'material' | 'object' | 'location' | null,
+		enrich: boolean = true
+	): Promise<Entity> {
+		let result: any;
 		try {
 			result = await this.http.get<Entity>(this.serverURI + '?q=id:' + id).toPromise();
 		} catch (error) {
 			console.log('Something went wrong during API request');
 			return null;
 		}
-		if (!result || !result.hits || !result.hits.hits[0]) {
+		const rawEntities = this.filterData<Entity>(result, type);
+		if (!rawEntities.length) {
 			return null;
 		}
-		// due to some ids being present multiple times in the data store (bug)-> always take the first result
-		const rawEntity = result.hits.hits[0]._source;
-		// console.log(rawEntity);
 		if (!enrich) {
-			return rawEntity;
+			return rawEntities[0];
 		} else {
-			return await this.enrichEntity(rawEntity);
+			return await this.enrichEntity(rawEntities[0]);
 		}
 	}
 
@@ -219,7 +228,7 @@ export class DataService {
 				/** for every id in the array-> fetch entity and extract values from it  */
 				for (const relatedEntityId of entity[key]) {
 					if (relatedEntityId !== '') {
-						const relatedEntity = await this.findById(relatedEntityId, false);
+						const relatedEntity = await this.findById(relatedEntityId, null, false);
 						if (relatedEntity) {
 							newValues.push({
 								id: relatedEntity.id,

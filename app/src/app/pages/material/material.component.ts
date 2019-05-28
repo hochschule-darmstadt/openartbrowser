@@ -28,7 +28,7 @@ export class MaterialComponent implements OnInit, OnDestroy {
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
       const materialId = params.get('materialId');
       /** Use data service to fetch entity from database */
-      this.material = (await this.dataService.findById(materialId)) as Material;
+      this.material = (await this.dataService.findById(materialId, 'material')) as Material;
       this.sliderItems = await this.dataService.findArtworksByMaterials([this.material.id]);
     });
   }

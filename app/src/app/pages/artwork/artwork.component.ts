@@ -4,7 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
-import * as _ from "lodash";
+import * as _ from 'lodash';
 
 /** interface for the tabs */
 interface SliderTab {
@@ -131,7 +131,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
       const artworkId = params.get('artworkId');
       /** Use data service to fetch entity from database */
-      this.artwork = (await this.dataService.findById(artworkId)) as Artwork;
+      this.artwork = (await this.dataService.findById(artworkId, 'artwork')) as Artwork;
 
       /* Count meta data to show more on load */
       this.calculateCollapseState();
@@ -139,16 +139,16 @@ export class ArtworkComponent implements OnInit, OnDestroy {
 
       /**
        * for some reason assigning the items attribute of a tab directly like below does NOT work, because
-       * the assignment resets the items of the other tabs! really weird. as soon as the next tab is assigned, 
+       * the assignment resets the items of the other tabs! really weird. as soon as the next tab is assigned,
        * the items in the previous tab become empty again...
        * it works fine though, if it is done via a another variable...
-       * 
+       *
        * this works only for the latest tab where the items are assigned:
-       * 
-       * if (this.artwork.genres) { 
+       *
+       * if (this.artwork.genres) {
        *  this.artworkTabs.genre.items = await this.dataService.findArtworksByGenres(
-       *   this.artwork.locations.map((location) => { 
-       *     return location.id; 
+       *   this.artwork.locations.map((location) => {
+       *     return location.id;
        *   })
        *  );
        * }
@@ -243,7 +243,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @description makes sure that the artwork this page is about does not appear in slider 
+   * @description makes sure that the artwork this page is about does not appear in slider
    */
   removeMainArtworkFromTabs() {
     for (const key of Object.keys(this.artworkTabs)) {
@@ -252,7 +252,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @description function to fetch items into 'all' tab from others. 
+   * @description function to fetch items into 'all' tab from others.
    * use Set to filter duplicates
    * param will determine how many times to loop the tabs
    * get a single artwork in each tab every time it loops (unless duplicate)
@@ -273,7 +273,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @description function to toggle details container. 
+   * @description function to toggle details container.
    * @memberof ArtworkComponent
    */
   toggleDetails(): void {

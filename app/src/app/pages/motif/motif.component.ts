@@ -29,7 +29,7 @@ export class MotifComponent implements OnInit, OnDestroy {
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
       const motifId = params.get('motifId');
       /** Use data service to fetch entity from database */
-      this.motif = (await this.dataService.findById(motifId)) as Motif;
+      this.motif = (await this.dataService.findById(motifId, 'object')) as Motif;
       this.sliderItems = await this.dataService.findArtworksByMotifs([this.motif.id]);
     });
   }

@@ -27,7 +27,16 @@ $color1: #00bc8c;
 
 /** Styling for the title & search div */
 .container-content {
-  width: 60vw;
+  width: 80%;
+
+  @media (min-width: 0px) and (max-width: 376px) {
+    width: 100%;
+  }
+
+  @media (min-width:377px) and (max-width: 576px) {
+    width: 70vw;
+  }
+
   margin-left: auto;
   margin-right: auto;
   margin-top: 0;
@@ -40,6 +49,31 @@ $color1: #00bc8c;
     color: $color1;
     width: 100%;
     margin-bottom: 6rem;
+
+    @media (min-width: 0px) and (max-width: 376px) {
+      font-size: 3em;
+      margin-bottom: 1em;
+    }
+
+    @media (min-width:377px) and (max-width: 576px) {
+      font-size: 4em;
+      margin-bottom: 0.5em;
+    }
+
+    @media (min-width:577px) and (max-width: 767px) {
+      font-size: 9vh;
+      width: 100%;
+      margin-bottom: 4rem;
+    }
+
+    @media (min-width:768px) and (max-width: 991px) {
+      font-size: 10vh;
+      width: 100%;
+    }
+
+    @media (min-width: 992px) {
+      font-size: 8em;
+    }
   }
 
   .contr {
@@ -170,14 +204,6 @@ $color1: #00bc8c;
 
 
 @media (min-width: 0px) and (max-width: 376px) {
-  .container-content {
-    width: 100%;
-
-    .title {
-      font-size: 3em;
-      margin-bottom: 1em;
-    }
-  }
 
   /* Resize main search size and font */
   :host ::ng-deep .search div input {
@@ -204,14 +230,6 @@ $color1: #00bc8c;
 }
 
 @media (min-width:377px) and (max-width: 576px) {
-  .container-content {
-    width: 70vw;
-
-    .title {
-      font-size: 4em;
-      margin-bottom: 0.5em;
-    }
-  }
 
   /* Resize main search size and font */
   :host ::ng-deep .search div input {
@@ -233,14 +251,6 @@ $color1: #00bc8c;
 }
 
 @media (min-width:577px) and (max-width: 767px) {
-  .container-content {
-
-    .title {
-      font-size: 9vh;
-      width: 100%;
-      margin-bottom: 4rem;
-    }
-  }
 
   /* Resize main search size and font */
   :host ::ng-deep .search div input {
@@ -262,12 +272,6 @@ $color1: #00bc8c;
 }
 
 @media (min-width:768px) and (max-width: 991px) {
-  .container-content {
-    .title {
-      font-size: 10vh;
-      width: 100%;
-    }
-  }
 
   /* Resize main search result only  */
   #homeSearch {
@@ -278,14 +282,6 @@ $color1: #00bc8c;
         width: 100%;
         font-size: 1.0rem;
       }
-    }
-  }
-}
-
-@media (min-width: 992px) {
-  .container-content {
-    .title {
-      font-size: 8em;
     }
   }
 }

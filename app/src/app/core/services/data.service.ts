@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Entity, Artwork } from 'src/app/shared/models/models';
+import { Entity, Artwork, artSearch } from 'src/app/shared/models/models';
 import * as _ from 'lodash';
 
 /**
@@ -8,9 +8,9 @@ import * as _ from 'lodash';
  */
 @Injectable()
 export class DataService {
-  /**
-   * Constructor
-   */
+	/**
+	 * Constructor
+	 */
 	constructor(private http: HttpClient) { }
 	serverURI = 'http://141.100.60.99:9200/api/_search';
 	public async findEntitiesByLabelText(text: string): Promise<Entity[]> {
@@ -74,7 +74,40 @@ export class DataService {
 		const response = await this.http.post<any>(this.serverURI, options).toPromise();
 		return this.filterData<Artwork>(response);
 	}
-
+	/**
+	 * Returns the artworks that contain all the given arguments.
+	 * @param searchObj the arguments to search for.
+	 * 
+	 */
+	public async findArtworksByCategories(searchObj: artSearch): Promise<Artwork[]> {
+		let options = {
+			"query": {
+				"bool": {
+					"must": []
+				}
+			},
+			"sort": [
+				{
+					"relativeRank": {
+						"order": "desc"
+					}
+				}
+			],
+			"size": 10 // change it if you want more results 
+		};
+		_.each(searchObj, function (arr, key) {
+			if (_.isArray(arr))
+				_.each(arr, function (val) {
+					options.query.bool.must.push({
+						"match": {
+							[key]: val
+						}
+					});
+				});
+		});
+		const reponse = await this.http.post<any>(this.serverURI, options).toPromise();
+		return this.filterData<Artwork>(reponse);
+	}
 	public async findArtworksByArtists(artistIds: string[]): Promise<Artwork[]> {
 		const response = await this.http.post<any>(this.serverURI, this.constructQuery("creators", artistIds)).toPromise();
 		return this.filterData<Artwork>(response);
@@ -159,13 +192,13 @@ export class DataService {
 	 * @returns {Object}
 	 * @memberof DataService
 	 */
-	categoryQuery(type: string): Object{
+	categoryQuery(type: string): Object {
 		return {
 			"query": {
 				"bool": {
-					"must": [ 
-						{ "match": { "type": type	} },
-						{ "prefix": {"image":"http"} }	
+					"must": [
+						{ "match": { "type": type } },
+						{ "prefix": { "image": "http" } }
 					]
 				}
 			},

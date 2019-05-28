@@ -59,3 +59,12 @@ export interface Movement extends Entity {
 export interface Motif extends Entity {
   type: 'motif';
 }
+
+export interface artSearch {
+	depicts?: string[];
+	creators?: string[];
+	movements?: string[];
+	genres?: string[];
+	materials?: string[];
+	locations?: string[];
+}

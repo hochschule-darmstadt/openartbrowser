@@ -32,6 +32,7 @@ $color1: #00bc8c;
   margin-right: auto;
   margin-top: 0;
   margin-bottom: 6rem;
+  position: relative;
 
   .title {
     font-size: 8rem;
@@ -40,6 +41,22 @@ $color1: #00bc8c;
     width: 100%;
     margin-bottom: 6rem;
   }
+
+  .contr {
+    width: 100%;
+    margin-left: 2vw;
+    margin-right: 2vw;
+
+    #homeSearch {
+      width: 100%;
+
+      ::ng-deep .dropdown-menu.show {
+        display: block;
+        width: 100%;
+      }
+    }
+  }
+
 }
 
 /** Styling search component input field */
@@ -174,8 +191,6 @@ $color1: #00bc8c;
   /* Resize main search result only  */
   #homeSearch {
     ::ng-deep .dropdown-menu.show {
-      display: block;
-      width: 67vw;
 
       ::ng-deep .dropdown-item {
         min-height: 2rem;
@@ -210,8 +225,6 @@ $color1: #00bc8c;
   /* Resize main search result only  */
   #homeSearch {
     ::ng-deep .dropdown-menu.show {
-      display: block;
-      width: 65vw;
 
       /* Resize result item*/
       ::ng-deep .dropdown-item {
@@ -241,8 +254,6 @@ $color1: #00bc8c;
   /* Resize main search result only  */
   #homeSearch {
     ::ng-deep .dropdown-menu.show {
-      display: block;
-      width: 55vw;
 
       /* Resize result item*/
       ::ng-deep .dropdown-item {
@@ -264,8 +275,6 @@ $color1: #00bc8c;
   /* Resize main search result only  */
   #homeSearch {
     ::ng-deep .dropdown-menu.show {
-      display: block;
-      width: 57vw;
 
       /* Resize result item*/
       ::ng-deep .dropdown-item {
@@ -280,14 +289,6 @@ $color1: #00bc8c;
   .container-content {
     .title {
       font-size: 8em;
-    }
-  }
-
-  /* Resize main search result only  */
-  #homeSearch {
-    ::ng-deep .dropdown-menu.show {
-      display: block;
-      width: 57.5vw;
     }
   }
 }

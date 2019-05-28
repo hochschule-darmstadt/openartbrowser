@@ -60,7 +60,14 @@ export class SearchComponent implements OnInit {
             && w.type !== (arr[i - 3] ? arr[i - 3].type : ''))  // if type is artwork or artist, take 3
           || ((w.type !== 'artwork' && w.type !== 'artist')
               && w.type !== (arr[i - 2] ? arr[i - 2].type : ''))) // if type is other type, take 2
-          .slice(0, 10);
+              .slice(0, 10)
+            .sort((a,b): any => {
+              let typeA = a.type;
+              let typeB = b.type;
+              if ((typeA == 'artist' || typeA == 'artwork') && (typeB == 'artwork' || typeB == 'artist')) { 
+                if (typeB < typeA) { return -1; } else if (typeA < typeB) { return 1; }
+              }
+            });
         return entities;
       })
     )

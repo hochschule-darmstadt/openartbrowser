@@ -18,8 +18,8 @@ export class DataService {
 			"query": {
 				"bool": {
 					"must": {
-						"wildcard": {
-							"label": `*${text}*`
+						"match": {
+							"label": `${text}`
 						}
 					}
 				}
@@ -44,8 +44,8 @@ export class DataService {
 				"bool": {
 					"must": [
 						{
-							"wildcard": {
-								"label": `*${text}*`
+							"match": {
+								"label": `${text}`
 							}
 						},
 						{

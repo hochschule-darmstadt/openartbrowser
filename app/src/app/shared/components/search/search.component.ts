@@ -89,12 +89,12 @@ export class SearchComponent implements OnInit {
     }
 
     private navigateToSearchText(term: string) {
-      if (term == '') {
         if (this.addtags.length != 0) {
+          this.addtags.push('"' + term + '"');
           const url = `/search/${this.addtags.join(' ').replace(/"/g, "")}`;
+          term = '';
           this.router.navigate([url]);
         }
-      }
       else {
         const url = `/search/${term}`;
         console.log(this.addtags);

@@ -33,8 +33,8 @@ $color1: #00bc8c;
     width: 100%;
   }
 
-  @media (min-width:377px) and (max-width: 576px) {
-    width: 70vw;
+  @media (min-width: 377px) and (max-width: 576px) {
+    width: 90%;
   }
 
   margin-left: auto;
@@ -44,35 +44,26 @@ $color1: #00bc8c;
   position: relative;
 
   .title {
-    font-size: 8rem;
+    font-size: 11vh;
     letter-spacing: 0rem;
     color: $color1;
     width: 100%;
     margin-bottom: 6rem;
 
-    @media (min-width: 0px) and (max-width: 376px) {
-      font-size: 3em;
-      margin-bottom: 1em;
-    }
-
-    @media (min-width:377px) and (max-width: 576px) {
-      font-size: 4em;
-      margin-bottom: 0.5em;
-    }
-
-    @media (min-width:577px) and (max-width: 767px) {
+    @media (min-width: 768px) and (max-width: 991px) {
       font-size: 9vh;
-      width: 100%;
+    }
+    @media (min-width: 577px) and (max-width: 767px) {
+      font-size: 7vh;
       margin-bottom: 4rem;
     }
-
-    @media (min-width:768px) and (max-width: 991px) {
-      font-size: 10vh;
-      width: 100%;
+    @media (min-width: 377px) and (max-width: 576px) {
+      font-size: 5vh;
+      margin-bottom: 1em;
     }
-
-    @media (min-width: 992px) {
-      font-size: 8em;
+    @media (min-width: 0px) and (max-width: 376px) {
+      font-size: 4vh;
+      margin-bottom: 0.5em;
     }
   }
 
@@ -84,16 +75,45 @@ $color1: #00bc8c;
       ::ng-deep .dropdown-menu.show {
         display: block;
         width: 90%;
+        /* Resize result item*/
+        .dropdown-item {
+          width: 100%;
+          font-size: 1rem;
+
+          @media (min-width: 377px) and (max-width: 576px) {
+            font-size: 0.9rem;
+          }
+          @media (min-width: 0px) and (max-width: 376px) {
+            font-size: 0.7rem;
+            min-height: 2rem;
+            padding: 0.5rem;
+          }
+
+          .ngb-highlight {
+            @media (min-width: 0px) and (max-width: 376px) {
+              width: 50%;
+            }
+          }
+        }
       }
     }
   }
-
 }
 
 /** Styling search component input field */
 :host ::ng-deep .search div input {
   height: 3.5rem;
   font-size: 1.7rem;
+
+  @media (min-width: 377px) and (max-width: 576px) {
+    height: 2.5rem;
+    font-size: 1.1rem;
+  }
+  @media (min-width: 0px) and (max-width: 376px) {
+    height: 2rem;
+    font-size: 1rem;
+  }
+
   border-bottom: 1px solid white;
 
   transition: all 0.3s ease;
@@ -140,7 +160,7 @@ $color1: #00bc8c;
       box-shadow: 0 0 20px 1px black;
     }
 
-    &:hover>.overlay {
+    &:hover > .overlay {
       transition: all 0.2s ease;
       width: 100%;
       height: 100%;
@@ -198,90 +218,5 @@ $color1: #00bc8c;
 
   &:hover {
     cursor: default;
-  }
-}
-
-
-
-@media (min-width: 0px) and (max-width: 376px) {
-
-  /* Resize main search size and font */
-  :host ::ng-deep .search div input {
-    height: 2rem;
-    font-size: 0.8rem;
-  }
-
-  /* Resize main search result only  */
-  #homeSearch {
-    ::ng-deep .dropdown-menu.show {
-
-      ::ng-deep .dropdown-item {
-        min-height: 2rem;
-        width: 100%;
-        font-size: 0.7rem;
-        padding: 0.5rem;
-
-        ::ng-deep ngb-highlight {
-          width: 50%;
-        }
-      }
-    }
-  }
-}
-
-@media (min-width:377px) and (max-width: 576px) {
-
-  /* Resize main search size and font */
-  :host ::ng-deep .search div input {
-    height: 2.0rem;
-    font-size: 1.0rem;
-  }
-
-  /* Resize main search result only  */
-  #homeSearch {
-    ::ng-deep .dropdown-menu.show {
-
-      /* Resize result item*/
-      ::ng-deep .dropdown-item {
-        width: 100%;
-        font-size: 1.0rem;
-      }
-    }
-  }
-}
-
-@media (min-width:577px) and (max-width: 767px) {
-
-  /* Resize main search size and font */
-  :host ::ng-deep .search div input {
-    height: 2.5rem;
-    font-size: 1.1rem;
-  }
-
-  /* Resize main search result only  */
-  #homeSearch {
-    ::ng-deep .dropdown-menu.show {
-
-      /* Resize result item*/
-      ::ng-deep .dropdown-item {
-        width: 100%;
-        font-size: 0.9rem;
-      }
-    }
-  }
-}
-
-@media (min-width:768px) and (max-width: 991px) {
-
-  /* Resize main search result only  */
-  #homeSearch {
-    ::ng-deep .dropdown-menu.show {
-
-      /* Resize result item*/
-      ::ng-deep .dropdown-item {
-        width: 100%;
-        font-size: 1.0rem;
-      }
-    }
   }
 }

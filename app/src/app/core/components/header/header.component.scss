@@ -49,28 +49,9 @@
   }
 }
 
-/* Title font size media queries */
-@media (min-width: 0px) and (max-width: 370px) {
-  #headerTitle {
+#headerTitle {
+  font-size: 1.2em;
+  @media (min-width:371px) and (max-width: 576px) {
     font-size: 1em;
-  }
-}
-
-@media (min-width:371px) and (max-width: 576px) {
-  #headerTitle {
-    font-size: 1em;
-  }
-}
-
-@media (min-width:577px) and (max-width: 767px) {
-  #headerTitle {
-    font-size: 1.2em;
-  }
-
-}
-
-@media (min-width:768px) and (max-width: 991px) {
-  #headerTitle {
-    font-size: 1.2em;
   }
 }

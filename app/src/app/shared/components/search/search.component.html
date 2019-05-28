@@ -57,6 +57,7 @@
     [inputFormatter]="formatter"
     (selectItem)="itemSelected($event)"
     (keyup.enter)="navigateToSearchText(input.value)"
+    (keyup.esc)="clearAllTags()"
   />
 </div>
 <span class="fas fa-search"></span>

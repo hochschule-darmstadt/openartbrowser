@@ -3,7 +3,6 @@ import { Observable } from 'rxjs';
 import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { debounceTime, switchMap } from 'rxjs/operators';
-import { Entity } from '../../models/models';
 
 @Component({
   selector: 'app-search',
@@ -56,18 +55,19 @@ export class SearchComponent implements OnInit {
             }
           return rankB > rankA ? 1 : rankB < rankA ? -1 : 0;
           })
-          .filter((w, i, arr) =>  ((w.type === 'artwork' || w.type === 'artist')
-            && w.type !== (arr[i - 3] ? arr[i - 3].type : ''))  // if type is artwork or artist, take 3
-          || ((w.type !== 'artwork' && w.type !== 'artist')
-              && w.type !== (arr[i - 2] ? arr[i - 2].type : ''))) // if type is other type, take 2
-              .slice(0, 10)
-            .sort((a,b): any => {
-              let typeA = a.type;
-              let typeB = b.type;
-              if ((typeA == 'artist' || typeA == 'artwork') && (typeB == 'artwork' || typeB == 'artist')) { 
-                if (typeB < typeA) { return -1; } else if (typeA < typeB) { return 1; }
-              }
-            });
+          .filter((w, i, arr) =>  ((w.type === 'artist')                                  // if type is artwork or artist, take 3
+                                  && w.type !== (arr[i - 3] ? arr[i - 3].type : ''))      
+                              || ((w.type !== 'artwork' && w.type !== 'artist')           // if type is other type, take 2
+                                  && w.type !== (arr[i - 2] ? arr[i - 2].type : ''))
+                              || (w.type === 'artwork') && w.type !== (arr[i - 3] ? arr[i - 3].type : ''))   // To Do: get more suggestion if list does not have enough elements
+          .slice(0, 10)
+          .sort((a,b): any => {
+            let typeA = a.type;
+            let typeB = b.type;
+            if ((typeA == 'artist' || typeA == 'artwork') && (typeB == 'artwork' || typeB == 'artist')) { 
+              if (typeB < typeA) { return -1; } else if (typeA < typeB) { return 1; }
+            }
+          });
         return entities;
       })
     )
@@ -89,7 +89,12 @@ export class SearchComponent implements OnInit {
     }
 
     private navigateToSearchText(term: string) {
-      if (term == '') {}
+      if (term == '') {
+        if (this.addtags.length != 0) {
+          const url = `/search/${this.addtags.join(' ').replace(/"/g, "")}`;
+          this.router.navigate([url]);
+        }
+      }
       else {
         const url = `/search/${term}`;
         console.log(this.addtags);
@@ -103,6 +108,10 @@ export class SearchComponent implements OnInit {
       if (index > -1) {
         this.addtags.splice(index, 1);
       }
+    }
+
+    private clearAllTags(){
+      this.addtags = [];
     }
 
 }

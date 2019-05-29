@@ -248,7 +248,6 @@ export class DataService {
 		enrich: boolean = true
 	): Promise<T> {
 		const response = await this.http.get<T>(this.serverURI + '?q=id:' + id).toPromise();
-		console.log(response);
 		const rawEntities = this.filterData<T>(response, type);
 		if (!rawEntities.length) {
 			return null;

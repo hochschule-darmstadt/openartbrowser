@@ -58,6 +58,9 @@
     (selectItem)="itemSelected($event)"
     (keyup.enter)="navigateToSearchText(input.value)"
     (keyup.esc)="clearAllTags()"
+    (keyup.backspace)="readyToRemove()"
+    (keydown.backspace)="removeNewestTag()"
+    [(ngModel)]="searchInput"
   />
 </div>
 <span class="fas fa-search"></span>

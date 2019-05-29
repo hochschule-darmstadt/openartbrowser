@@ -23,10 +23,14 @@ export class SliderComponent implements OnChanges {
    * @memberof SliderComponent
    */
   ngOnChanges(changes: SimpleChanges) {
+    this.activeIndex = 0;
     if (changes.items) {
       this.buildSliderPages();
     }
   }
+
+  /** index of current slide */
+  activeIndex = 0;
 
   /**
    * @description 8 items for a single slider.
@@ -44,6 +48,14 @@ export class SliderComponent implements OnChanges {
 
   @Input() heading: string;
 
+  /**
+   * called on slide change, sets index of current slide
+   * @param event current slide index
+   */
+  slideChange(event) {
+    this.activeIndex = event.current.substring(event.current.lastIndexOf('-') + 1);
+    console.log(this.activeIndex);
+  }
   /**
    * @description Set the items for the slider.
    * cut array of artworks in multiple arrays each with 8 items
@@ -63,5 +75,6 @@ export class SliderComponent implements OnChanges {
       newSplicedItems.push(temporaryArray);
     }
     this.splicedItems = newSplicedItems;
+    console.log('building slider pages');
   }
 }

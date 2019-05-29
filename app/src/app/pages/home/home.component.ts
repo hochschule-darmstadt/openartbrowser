@@ -70,7 +70,7 @@ export class HomeComponent implements OnInit {
     },
   };
 
-  constructor(private dataService: DataService, ngb_config: NgbCarouselConfig) {
+  constructor(public dataService: DataService, ngb_config: NgbCarouselConfig) {
     /** set configuration of ngbCarousel */
     ngb_config.pauseOnHover = false;
     ngb_config.interval = 10000;
@@ -78,14 +78,14 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.getCategoryItems();
-    
+
   }
 
   /**
    * @description Fetch items for each category using the service.
    * @memberof HomeComponent
    */
-  getCategoryItems = async ():Promise<void> => {
+  getCategoryItems = async (): Promise<void> => {
     this.upperCategories.artwork.items = await this.dataService.get10CategoryItems<Artwork>('artwork');
     this.upperCategories.artist.items = await this.dataService.get10CategoryItems<Artist>('artist');
     this.upperCategories.movement.items = await this.dataService.get10CategoryItems<Movement>('movement');
@@ -93,5 +93,5 @@ export class HomeComponent implements OnInit {
     this.lowerCategories.material.items = await this.dataService.get10CategoryItems<Material>('material');
     this.lowerCategories.genre.items = await this.dataService.get10CategoryItems<Genre>('genre');
     this.lowerCategories.motif.items = await this.dataService.get10CategoryItems<Motif>('object');
-  }
+  };
 }

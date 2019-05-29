@@ -279,4 +279,15 @@ export class DataService {
 		}
 		return entity;
 	}
+
+
+	getThumbnail(imageUrl) {
+		if (imageUrl) {
+		  const prefix = 'https://upload.wikimedia.org/wikipedia/commons/';
+		  return (
+			imageUrl.replace(prefix, prefix + 'thumb/') + '/256px-' + imageUrl.substring(imageUrl.lastIndexOf('/') + 1)
+		  );
+		}
+	  }
+	
 }

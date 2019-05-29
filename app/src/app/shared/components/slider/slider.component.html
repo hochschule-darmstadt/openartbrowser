@@ -1,10 +1,11 @@
-<h4>{{heading}}</h4>
-<ngb-carousel class="border-bottom mb-4 mt-4" data-interval="15000">
-  <div *ngFor="let i of splicedItems">
+<h4>{{ heading }}</h4>
+<ngb-carousel (slide)="slideChange($event)" class="border-bottom mb-4 mt-4" data-interval="15000">
+  <div *ngFor="let i of splicedItems; let currentIndex = index">
     <ng-template ngbSlide>
       <div class="row mx-3">
         <div *ngFor="let item of i" class="pb-4 col-sm-3 mt-auto mb-auto">
-          <app-slider-item (mouseenter)="onHover.emit(item)" (mouseleave)="onHover.emit(null)" [item]="item">
+          <app-slider-item *ngIf="currentIndex == activeIndex" (mouseenter)="onHover.emit(item)" (mouseleave)="onHover.emit(null)"
+            [item]="item">
           </app-slider-item>
         </div>
       </div>

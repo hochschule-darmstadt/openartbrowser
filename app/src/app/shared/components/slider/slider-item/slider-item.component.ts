@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Entity, Artwork } from 'src/app/shared/models/models';
+import { Entity } from 'src/app/shared/models/models';
+import { DataService } from 'src/app/core/services/data.service';
 
 @Component({
   selector: 'app-slider-item',
@@ -7,7 +8,7 @@ import { Entity, Artwork } from 'src/app/shared/models/models';
   styleUrls: ['./slider-item.component.scss'],
 })
 export class SliderItemComponent implements OnInit {
-  constructor() { }
+  constructor(public dataService: DataService) { }
 
   ngOnInit() { }
 

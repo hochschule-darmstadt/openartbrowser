@@ -23,7 +23,7 @@ export class SliderComponent implements OnChanges {
    * @memberof SliderComponent
    */
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.items) {
+    if (changes.items && this.items) {
       this.buildSliderPages();
     }
   }

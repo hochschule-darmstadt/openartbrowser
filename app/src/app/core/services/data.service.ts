@@ -168,9 +168,12 @@ export class DataService {
 	 */
 	addThumbnails(entity: Entity) {
 		const prefix = 'https://upload.wikimedia.org/wikipedia/commons/';
-		if (entity.image) {
+		if (entity.image && !entity.image.endsWith('.tif') && !entity.image.endsWith('.tiff')) {
 			entity.imageSmall = entity.image.replace(prefix, prefix + 'thumb/') + '/256px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1);
 			entity.imageMedium = entity.image.replace(prefix, prefix + 'thumb/') + '/512px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1)
+		} else {
+			entity.imageSmall = entity.image;
+			entity.imageMedium = entity.image;
 		}
 		return entity;
 	}
@@ -245,6 +248,7 @@ export class DataService {
 		enrich: boolean = true
 	): Promise<T> {
 		const response = await this.http.get<T>(this.serverURI + '?q=id:' + id).toPromise();
+		console.log(response);
 		const rawEntities = this.filterData<T>(response, type);
 		if (!rawEntities.length) {
 			return null;

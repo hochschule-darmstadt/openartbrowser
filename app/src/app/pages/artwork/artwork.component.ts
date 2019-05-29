@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Artwork } from 'src/app/shared/models/models';
+import { Artwork, EntityType } from 'src/app/shared/models/models';
 import { takeUntil } from 'rxjs/operators';
 import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute } from '@angular/router';
@@ -131,7 +131,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
       const artworkId = params.get('artworkId');
       /** Use data service to fetch entity from database */
-      this.artwork = (await this.dataService.findById(artworkId, 'artwork')) as Artwork;
+      this.artwork = (await this.dataService.findById<Artwork>(artworkId, EntityType.ARTWORK));
 
       /* Count meta data to show more on load */
       this.calculateCollapseState();

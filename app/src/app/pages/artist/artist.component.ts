@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Artist, Artwork } from 'src/app/shared/models/models';
+import { Artist, Artwork, EntityType } from 'src/app/shared/models/models';
 import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
@@ -39,7 +39,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
       const artistId = params.get('artistId');
       /** Use data service to fetch entity from database */
-      this.artist = (await this.dataService.findById(artistId, 'artist')) as Artist;
+      this.artist = (await this.dataService.findById<Artist>(artistId, EntityType.ARTIST));
       this.sliderItems = await this.dataService.findArtworksByArtists([this.artist.id]);
       /* Count meta data to show more on load */
 

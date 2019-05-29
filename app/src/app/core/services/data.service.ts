@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Entity, Artwork, artSearch } from 'src/app/shared/models/models';
+import { Entity, Artwork, artSearch, EntityType } from 'src/app/shared/models/models';
 import * as _ from 'lodash';
+import { filter } from 'rxjs/operators';
 
 /**
  * Service that handles the requests to the API
@@ -19,15 +20,15 @@ export class DataService {
 				"bool": {
 					"should": [
 						{
-						"wildcard":{
-							"label": `*${text}*`
+							"wildcard": {
+								"label": `*${text}*`
+							}
+						}, {
+							"match": {
+								"label": `${text}`
+							}
 						}
-					},{
-						"match": {
-							"label": `${text}`
-						}
-					}
-				]
+					]
 				}
 			},
 			"sort": [
@@ -151,11 +152,11 @@ export class DataService {
 	 */
 	filterData<T>(
 		data: any,
-		type?: 'artwork' | 'artist' | 'movement' | 'genre' | 'material' | 'object' | 'location'
+		filterBy?: EntityType
 	): T[] {
 		let entities: T[] = [];
 		_.each(data.hits.hits, function (val) {
-			if (!type || (type && val._source.type == type)) {
+			if (!filterBy || (filterBy && val._source.type == filterBy)) {
 				entities.push(val._source);
 			}
 		});
@@ -226,26 +227,26 @@ export class DataService {
 	 * @param type optional type of entity that should be returned
 	 * @param enrich whether related entities should also be loaded
 	 */
-	public async findById(
+	public async findById<T>(
 		id: string,
-		type: 'artwork' | 'artist' | 'movement' | 'genre' | 'material' | 'object' | 'location' | null,
+		type?: EntityType,
 		enrich: boolean = true
-	): Promise<Entity> {
+	): Promise<T> {
 		let result: any;
 		try {
-			result = await this.http.get<Entity>(this.serverURI + '?q=id:' + id).toPromise();
+			result = await this.http.get<T>(this.serverURI + '?q=id:' + id).toPromise();
 		} catch (error) {
 			console.log('Something went wrong during API request');
 			return null;
 		}
-		const rawEntities = this.filterData<Entity>(result, type);
+		const rawEntities = this.filterData<T>(result, type);
 		if (!rawEntities.length) {
 			return null;
 		}
 		if (!enrich) {
 			return rawEntities[0];
 		} else {
-			return await this.enrichEntity(rawEntities[0]);
+			return await this.enrichEntity<T>(rawEntities[0]);
 		}
 	}
 
@@ -253,7 +254,7 @@ export class DataService {
 	 * load the related entities referenced by the ids in the entities attributes
 	 * @param entity the raw entity for which attributes should be loaded
 	 */
-	private async enrichEntity(entity: Entity): Promise<Entity> {
+	private async enrichEntity<T>(entity: T): Promise<T> {
 		/** go though all attributes of entity */
 		for (const key of Object.keys(entity)) {
 			/** check if attribute is an array (only attributes holding relations to other entities are arrays) */
@@ -262,7 +263,7 @@ export class DataService {
 				/** for every id in the array-> fetch entity and extract values from it  */
 				for (const relatedEntityId of entity[key]) {
 					if (relatedEntityId !== '') {
-						const relatedEntity = await this.findById(relatedEntityId, null, false);
+						const relatedEntity = await this.findById<any>(relatedEntityId, null, false);
 						if (relatedEntity) {
 							newValues.push({
 								id: relatedEntity.id,
@@ -284,11 +285,11 @@ export class DataService {
 
 	getThumbnail(imageUrl) {
 		if (imageUrl) {
-		  const prefix = 'https://upload.wikimedia.org/wikipedia/commons/';
-		  return (
-			imageUrl.replace(prefix, prefix + 'thumb/') + '/256px-' + imageUrl.substring(imageUrl.lastIndexOf('/') + 1)
-		  );
+			const prefix = 'https://upload.wikimedia.org/wikipedia/commons/';
+			return (
+				imageUrl.replace(prefix, prefix + 'thumb/') + '/256px-' + imageUrl.substring(imageUrl.lastIndexOf('/') + 1)
+			);
 		}
-	  }
-	
+	}
+
 }

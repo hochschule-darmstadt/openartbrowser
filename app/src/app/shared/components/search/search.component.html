@@ -41,7 +41,7 @@
   <ngb-highlight [result]="r.label" [term]="t" style="padding: 8px;"></ngb-highlight>
 </ng-template>
 <div class="chips chips-placeholder d-flex align-items-center">
-  <span *ngFor="let i of addtags" class="badge badge-pill badge-secondary chip">{{i}}
+  <span *ngFor="let i of addtags" class="badge badge-pill badge-secondary chip search-chip">{{i}}
     <span (click)="removeTag(i)" class="fas fa-times-circle search-chip-x"></span>
   </span>
   <input

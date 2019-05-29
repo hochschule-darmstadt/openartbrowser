@@ -28,7 +28,7 @@ export class MovementComponent implements OnInit, OnDestroy {
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
       const movementId = params.get('movementId');
       /** Use data service to fetch entity from database */
-      this.movement = (await this.dataService.findById(movementId)) as Movement;
+      this.movement = (await this.dataService.findById(movementId, 'movement')) as Movement;
       this.sliderItems = await this.dataService.findArtworksByMovements([this.movement.id]);
     });
   }

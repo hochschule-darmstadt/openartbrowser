@@ -22,7 +22,7 @@ export class SearchComponent implements OnInit {
 
   formatter = (x: { name: string }) => x.name;
 
-  private search = (text$: Observable<string>) =>
+  public search = (text$: Observable<string>) =>
     text$.pipe(
       debounceTime(200),
       switchMap(async (term) => {

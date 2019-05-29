@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { debounceTime, switchMap } from 'rxjs/operators';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-search',
@@ -12,6 +13,8 @@ import { debounceTime, switchMap } from 'rxjs/operators';
 export class SearchComponent implements OnInit {
   hideElement = true;
   addtags: string[] = [];
+  searchInput: string;
+  rmTag: boolean = false;
 
   constructor(private dataService: DataService, private route: ActivatedRoute, private router: Router) {}
 
@@ -27,6 +30,7 @@ export class SearchComponent implements OnInit {
           return [];
         }
         let entities = await this.dataService.findEntitiesByLabelText(term.toLowerCase());
+        console.log(entities);
         entities = entities.filter((v) => v.label.toLowerCase().indexOf(term.toLowerCase()) > -1)
           .sort((a, b): any => {
           let rankA = a.relativeRank;
@@ -55,26 +59,52 @@ export class SearchComponent implements OnInit {
             }
           return rankB > rankA ? 1 : rankB < rankA ? -1 : 0;
           })
-          .filter((w, i, arr) =>  ((w.type === 'artwork' || w.type === 'artist')
-            && w.type !== (arr[i - 3] ? arr[i - 3].type : ''))  // if type is artwork or artist, take 3
-          || ((w.type !== 'artwork' && w.type !== 'artist')
-              && w.type !== (arr[i - 2] ? arr[i - 2].type : ''))) // if type is other type, take 2
-          .slice(0, 10);
-        return entities;
+          .filter((w, i, arr) =>  ((w.type === 'artist')                                  // if type is artwork or artist, take 3
+                                  && w.type !== (arr[i - 3] ? arr[i - 3].type : ''))      
+                              || ((w.type !== 'artwork' && w.type !== 'artist')           // if type is other type, take 2
+                                  && w.type !== (arr[i - 2] ? arr[i - 2].type : ''))
+                              || (w.type === 'artwork') && w.type !== (arr[i - 3] ? arr[i - 3].type : ''))   // To Do: get more suggestion if list does not have enough elements
+          .slice(0, 10)
+          .sort((a,b): any => {
+            let typeA = a.type;
+            let typeB = b.type;
+            if ((typeA == 'artist' || typeA == 'artwork') && (typeB == 'artwork' || typeB == 'artist')) { 
+              if (typeB < typeA) { return -1; } else if (typeA < typeB) { return 1; }
+            }
+          });
+        return this.searchInput ? entities : [];
       })
     )
 
-    public async itemSelected($event){
-      const url = `/${$event.item.type}/${$event.item.id}`;
-      this.addtags.push($event.item.label);
-      this.router.navigate([url]);
+    private async itemSelected($event){
+      if ($event.item.type == 'object') {
+        const url = `/motif/${$event.item.id}`;
+        this.addtags.push($event.item.label);
+        this.router.navigate([url]);
+      } else if ($event.item.type == 'artwork'){
+        const url = `/${$event.item.type}/${$event.item.id}`;
+        // this.addtags.push($event.item.label);
+        this.router.navigate([url]);
+      } else {
+        const url = `/${$event.item.type}/${$event.item.id}`;
+        this.addtags.push($event.item.label);
+        this.router.navigate([url]);
+      }
     }
 
-    public navigateToSearchText(term: string) {
-      const url = `/search/${term}`;
-      // console.log(url);
-      this.addtags.push('"' + term + '"');
-      this.router.navigate([url]);
+    private navigateToSearchText(term: string) {
+      this.searchInput = '';
+      if (term !== '') {
+        this.addtags.push(`"${term}"`);
+        let url = '/search/';
+        if (this.addtags.length > 1) {
+          url += `${this.addtags.join('&').replace(/"/g, '')}`;
+        } else {
+          url += `${term}`;
+          console.log(this.addtags);
+        }
+        this.router.navigate([url]);
+      }
     }
 
     private removeTag(i: string) {
@@ -82,6 +112,23 @@ export class SearchComponent implements OnInit {
       if (index > -1) {
         this.addtags.splice(index, 1);
       }
+    }
+
+    private readyToRemove() {
+      if (this.searchInput === '' && this.addtags.length > 0) {
+        this.rmTag = true;
+      }
+    }
+
+    private removeNewestTag() {
+      if (this.rmTag === true && this.searchInput === '') {
+        this.addtags.splice(this.addtags.length - 1, 1);
+      }
+      this.rmTag = false;
+    }
+
+    private clearAllTags(){
+      this.addtags = [];
     }
 
 }

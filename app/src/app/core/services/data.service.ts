@@ -17,16 +17,17 @@ export class DataService {
 		const options = {
 			"query": {
 				"bool": {
-					"must": {
+					"should": [
+						{
+						"wildcard":{
+							"label": `*${text}*`
+						}
+					},{
 						"match": {
 							"label": `${text}`
 						}
-					},
-					"must_not": {
-						"term": {
-							"type": "object"
-						}
 					}
+				]
 				}
 			},
 			"sort": [
@@ -49,8 +50,8 @@ export class DataService {
 				"bool": {
 					"must": [
 						{
-							"wildcard": {
-								"label": `*${text}*`
+							"match": {
+								"label": `${text}`
 							}
 						},
 						{

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Entity, Artwork, artSearch } from 'src/app/shared/models/models';
+import { Entity, Artwork, artSearch, EntityType } from 'src/app/shared/models/models';
 import * as _ from 'lodash';
 
 /**
@@ -19,15 +19,15 @@ export class DataService {
 				"bool": {
 					"should": [
 						{
-						"wildcard":{
-							"label": `*${text}*`
+							"wildcard": {
+								"label": `*${text}*`
+							}
+						}, {
+							"match": {
+								"label": `${text}`
+							}
 						}
-					},{
-						"match": {
-							"label": `${text}`
-						}
-					}
-				]
+					]
 				}
 			},
 			"sort": [
@@ -151,15 +151,31 @@ export class DataService {
 	 */
 	filterData<T>(
 		data: any,
-		type?: 'artwork' | 'artist' | 'movement' | 'genre' | 'material' | 'object' | 'location'
+		filterBy?: EntityType
 	): T[] {
 		let entities: T[] = [];
 		_.each(data.hits.hits, function (val) {
-			if (!type || (type && val._source.type == type)) {
-				entities.push(val._source);
+			if (!filterBy || (filterBy && val._source.type == filterBy)) {
+				entities.push(this.addThumbnails(val._source));
 			}
-		});
+		}.bind(this));
 		return entities;
+	}
+
+	/**
+	 * filles entity fields imageSmall and imageMedium
+	 * @param entity entity for which thumbnails should be added
+	 */
+	addThumbnails(entity: Entity) {
+		const prefix = 'https://upload.wikimedia.org/wikipedia/commons/';
+		if (entity.image && !entity.image.endsWith('.tif') && !entity.image.endsWith('.tiff')) {
+			entity.imageSmall = entity.image.replace(prefix, prefix + 'thumb/') + '/256px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1);
+			entity.imageMedium = entity.image.replace(prefix, prefix + 'thumb/') + '/512px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1)
+		} else {
+			entity.imageSmall = entity.image;
+			entity.imageMedium = entity.image;
+		}
+		return entity;
 	}
 
 	/**
@@ -226,26 +242,20 @@ export class DataService {
 	 * @param type optional type of entity that should be returned
 	 * @param enrich whether related entities should also be loaded
 	 */
-	public async findById(
+	public async findById<T>(
 		id: string,
-		type: 'artwork' | 'artist' | 'movement' | 'genre' | 'material' | 'object' | 'location' | null,
+		type?: EntityType,
 		enrich: boolean = true
-	): Promise<Entity> {
-		let result: any;
-		try {
-			result = await this.http.get<Entity>(this.serverURI + '?q=id:' + id).toPromise();
-		} catch (error) {
-			console.log('Something went wrong during API request');
-			return null;
-		}
-		const rawEntities = this.filterData<Entity>(result, type);
+	): Promise<T> {
+		const response = await this.http.get<T>(this.serverURI + '?q=id:' + id).toPromise();
+		const rawEntities = this.filterData<T>(response, type);
 		if (!rawEntities.length) {
 			return null;
 		}
 		if (!enrich) {
 			return rawEntities[0];
 		} else {
-			return await this.enrichEntity(rawEntities[0]);
+			return await this.enrichEntity<T>(rawEntities[0]);
 		}
 	}
 
@@ -253,42 +263,25 @@ export class DataService {
 	 * load the related entities referenced by the ids in the entities attributes
 	 * @param entity the raw entity for which attributes should be loaded
 	 */
-	private async enrichEntity(entity: Entity): Promise<Entity> {
+	private async enrichEntity<T>(entity: T): Promise<T> {
 		/** go though all attributes of entity */
 		for (const key of Object.keys(entity)) {
 			/** check if attribute is an array (only attributes holding relations to other entities are arrays) */
 			if (Array.isArray(entity[key]) && key !== 'classes') {
-				const newValues = [];
-				/** for every id in the array-> fetch entity and extract values from it  */
-				for (const relatedEntityId of entity[key]) {
-					if (relatedEntityId !== '') {
-						const relatedEntity = await this.findById(relatedEntityId, null, false);
+				const resolvedEntities = [];
+				entity[key].forEach(async entityId => {
+					if (entityId) {
+						const relatedEntity = await this.findById<any>(entityId, null, false);
 						if (relatedEntity) {
-							newValues.push({
-								id: relatedEntity.id,
-								label: relatedEntity.label,
-								description: relatedEntity.description,
-								image: relatedEntity.image,
-								type: relatedEntity.type,
-							});
+							resolvedEntities.push(relatedEntity);
 						}
 					}
-				}
+				});
 				/** replace the old array holding only the ids with the new array holding the fetched entities */
-				entity[key] = newValues;
+				entity[key] = resolvedEntities;
 			}
 		}
 		return entity;
 	}
 
-
-	getThumbnail(imageUrl) {
-		if (imageUrl) {
-		  const prefix = 'https://upload.wikimedia.org/wikipedia/commons/';
-		  return (
-			imageUrl.replace(prefix, prefix + 'thumb/') + '/256px-' + imageUrl.substring(imageUrl.lastIndexOf('/') + 1)
-		  );
-		}
-	  }
-	
 }

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
-import { Motif, Artwork } from 'src/app/shared/models/models';
+import { Motif, Artwork, EntityType } from 'src/app/shared/models/models';
 import { Subject } from 'rxjs';
 import { async } from '@angular/core/testing';
 
@@ -21,7 +21,7 @@ export class MotifComponent implements OnInit, OnDestroy {
   /** Related artworks */
   sliderItems: Artwork[] = [];
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {}
+  constructor(private dataService: DataService, private route: ActivatedRoute) { }
 
   /** hook that is executed at component initialization */
   ngOnInit() {
@@ -29,7 +29,7 @@ export class MotifComponent implements OnInit, OnDestroy {
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
       const motifId = params.get('motifId');
       /** Use data service to fetch entity from database */
-      this.motif = (await this.dataService.findById(motifId, 'object')) as Motif;
+      this.motif = (await this.dataService.findById<Motif>(motifId, EntityType.MOTIF));
       this.sliderItems = await this.dataService.findArtworksByMotifs([this.motif.id]);
     });
   }

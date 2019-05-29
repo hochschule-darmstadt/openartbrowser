@@ -1,5 +1,5 @@
 <div class="img img_container item" [routerLink]="['/artwork', item?.id]">
-  <img class="img-fluid img_self" src="{{ dataService.getThumbnail(item?.image) }}" alt="{{ item?.label }}" />
+  <img class="img-fluid img_self" src="{{ item?.imageSmall }}" alt="{{ item?.label }}" />
   <div class="overlay_view">
     <span class="img_description">{{ item?.label }}</span>
   </div>

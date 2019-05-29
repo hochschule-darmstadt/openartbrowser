@@ -3,6 +3,8 @@ export interface Entity {
   label?: string;
   description?: string;
   image?: string;
+  imageSmall?: string;
+  imageMedium?: string;
   type: string;
   absoluteRank: number;
   relativeRank: number;
@@ -61,10 +63,20 @@ export interface Motif extends Entity {
 }
 
 export interface artSearch {
-	depicts?: string[];
-	creators?: string[];
-	movements?: string[];
-	genres?: string[];
-	materials?: string[];
-	locations?: string[];
+  depicts?: string[];
+  creators?: string[];
+  movements?: string[];
+  genres?: string[];
+  materials?: string[];
+  locations?: string[];
+}
+
+export enum EntityType {
+  ARTIST = 'artist',
+  ARTWORK = 'artwork',
+  GENRE = 'genre',
+  LOCATION = 'location',
+  MATERIAL = 'material',
+  MOVEMENT = 'movement',
+  MOTIF = 'object'
 }

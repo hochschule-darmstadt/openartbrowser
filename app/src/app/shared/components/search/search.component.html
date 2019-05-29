@@ -1,7 +1,7 @@
 <ng-template #rt let-r="result" let-t="term">
   <ng-template [ngIf]="r['type'] == 'artwork'">
     <span class="type-container">
-      <img [src]="r['image']" class="mr-1" style="height: 45px" />
+      <img [src]="r?.imageSmall" class="mr-1" style="height: 45px" />
     </span>
   </ng-template>
   <ng-template [ngIf]="r['type'] == 'artist'">
@@ -35,7 +35,8 @@
     </span>
   </ng-template>
   <!-- <img [src]="r['image']" class="mr-1" style="width: 75px; padding: 5px;"> -->
-  <span id="search-badge" class="badge badge-secondary"><span *ngIf="r['type'] != 'object'; else elseBlock"> {{ r?.type }}</span>
+  <span id="search-badge" class="badge badge-secondary"><span *ngIf="r['type'] != 'object'; else elseBlock"> {{ r?.type
+      }}</span>
     <ng-template #elseBlock> motif </ng-template>
   </span>
   <ngb-highlight [result]="r.label" [term]="t" style="padding: 8px;"></ngb-highlight>
@@ -44,23 +45,9 @@
   <span *ngFor="let i of addtags" class="badge badge-pill badge-secondary chip search-chip">{{i}}
     <span (click)="removeTag(i)" class="fas fa-times-circle search-chip-x"></span>
   </span>
-  <input
-    id="search-header"
-    class="form-control flex-grow-1"
-    [focusFirst]="false"
-    type="text"
-    name="Artwork"
-    #input
-    placeholder="Search for an Artwork ..."
-    [ngbTypeahead]="search"
-    [resultTemplate]="rt"
-    [inputFormatter]="formatter"
-    (selectItem)="itemSelected($event)"
-    (keyup.enter)="navigateToSearchText(input.value)"
-    (keyup.esc)="clearAllTags()"
-    (keyup.backspace)="readyToRemove()"
-    (keydown.backspace)="removeNewestTag()"
-    [(ngModel)]="searchInput"
-  />
+  <input id="search-header" class="form-control flex-grow-1" [focusFirst]="false" type="text" name="Artwork" #input
+    placeholder="Search for an Artwork ..." [ngbTypeahead]="search" [resultTemplate]="rt" [inputFormatter]="formatter"
+    (selectItem)="itemSelected($event)" (keyup.enter)="navigateToSearchText(input.value)" (keyup.esc)="clearAllTags()"
+    (keyup.backspace)="readyToRemove()" (keydown.backspace)="removeNewestTag()" [(ngModel)]="searchInput" />
 </div>
 <span class="fas fa-search"></span>

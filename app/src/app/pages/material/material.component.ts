@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
-import { Material, Artwork } from 'src/app/shared/models/models';
+import { Material, Artwork, EntityType } from 'src/app/shared/models/models';
 import { Subject } from 'rxjs';
 
 @Component({
@@ -20,7 +20,7 @@ export class MaterialComponent implements OnInit, OnDestroy {
   /** Related artworks */
   sliderItems: Artwork[] = [];
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {}
+  constructor(private dataService: DataService, private route: ActivatedRoute) { }
 
   /** hook that is executed at component initialization */
   ngOnInit() {
@@ -28,7 +28,7 @@ export class MaterialComponent implements OnInit, OnDestroy {
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
       const materialId = params.get('materialId');
       /** Use data service to fetch entity from database */
-      this.material = (await this.dataService.findById(materialId, 'material')) as Material;
+      this.material = (await this.dataService.findById<Material>(materialId, EntityType.MATERIAL));
       this.sliderItems = await this.dataService.findArtworksByMaterials([this.material.id]);
     });
   }

@@ -11,8 +11,7 @@
 
         <div class="col-md-9 pl-0 info">
           <p *ngIf="movement?.influenced_by?.length" class="mb-1">
-            <span *ngFor="let influence of movement?.influenced_by"
-              class="badge badge-pill badge-secondary first-letter chip"
+            <span *ngFor="let influence of movement?.influenced_by" class="badge badge-pill badge-secondary first-letter chip"
               [routerLink]="influence.type === 'artist' ? '/artist/' + influence.id : '/movement/' + influence.id">
               {{ influence.label }}</span>
           </p>
@@ -20,7 +19,7 @@
       </div>
     </div>
     <div class="col-sm-5 img" *ngIf="movement?.image">
-      <img class="img-fluid rounded-circle" src="{{ movement?.image }}" alt="{{ movement?.label }}" />
+      <img class="img-fluid rounded-circle" src="{{ movement?.imageSmall }}" alt="{{ movement?.label }}" />
     </div>
   </div>
   <app-slider [items]="sliderItems" heading="Artworks"> </app-slider>

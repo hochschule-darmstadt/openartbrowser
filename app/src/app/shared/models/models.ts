@@ -3,6 +3,8 @@ export interface Entity {
   label?: string;
   description?: string;
   image?: string;
+  imageSmall?: string;
+  imageMedium?: string;
   type: string;
   absoluteRank: number;
   relativeRank: number;

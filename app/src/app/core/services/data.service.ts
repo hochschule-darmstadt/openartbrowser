@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Entity, Artwork, artSearch, EntityType } from 'src/app/shared/models/models';
 import * as _ from 'lodash';
-import { filter } from 'rxjs/operators';
 
 /**
  * Service that handles the requests to the API
@@ -157,10 +156,23 @@ export class DataService {
 		let entities: T[] = [];
 		_.each(data.hits.hits, function (val) {
 			if (!filterBy || (filterBy && val._source.type == filterBy)) {
-				entities.push(val._source);
+				entities.push(this.addThumbnails(val._source));
 			}
-		});
+		}.bind(this));
 		return entities;
+	}
+
+	/**
+	 * filles entity fields imageSmall and imageMedium
+	 * @param entity entity for which thumbnails should be added
+	 */
+	addThumbnails(entity: Entity) {
+		const prefix = 'https://upload.wikimedia.org/wikipedia/commons/';
+		if (entity.image) {
+			entity.imageSmall = entity.image.replace(prefix, prefix + 'thumb/') + '/256px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1);
+			entity.imageMedium = entity.image.replace(prefix, prefix + 'thumb/') + '/512px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1)
+		}
+		return entity;
 	}
 
 	/**
@@ -232,14 +244,8 @@ export class DataService {
 		type?: EntityType,
 		enrich: boolean = true
 	): Promise<T> {
-		let result: any;
-		try {
-			result = await this.http.get<T>(this.serverURI + '?q=id:' + id).toPromise();
-		} catch (error) {
-			console.log('Something went wrong during API request');
-			return null;
-		}
-		const rawEntities = this.filterData<T>(result, type);
+		const response = await this.http.get<T>(this.serverURI + '?q=id:' + id).toPromise();
+		const rawEntities = this.filterData<T>(response, type);
 		if (!rawEntities.length) {
 			return null;
 		}
@@ -259,37 +265,20 @@ export class DataService {
 		for (const key of Object.keys(entity)) {
 			/** check if attribute is an array (only attributes holding relations to other entities are arrays) */
 			if (Array.isArray(entity[key]) && key !== 'classes') {
-				const newValues = [];
-				/** for every id in the array-> fetch entity and extract values from it  */
-				for (const relatedEntityId of entity[key]) {
-					if (relatedEntityId !== '') {
-						const relatedEntity = await this.findById<any>(relatedEntityId, null, false);
+				const resolvedEntities = [];
+				entity[key].forEach(async entityId => {
+					if (entityId) {
+						const relatedEntity = await this.findById<any>(entityId, null, false);
 						if (relatedEntity) {
-							newValues.push({
-								id: relatedEntity.id,
-								label: relatedEntity.label,
-								description: relatedEntity.description,
-								image: relatedEntity.image,
-								type: relatedEntity.type,
-							});
+							resolvedEntities.push(relatedEntity);
 						}
 					}
-				}
+				});
 				/** replace the old array holding only the ids with the new array holding the fetched entities */
-				entity[key] = newValues;
+				entity[key] = resolvedEntities;
 			}
 		}
 		return entity;
-	}
-
-
-	getThumbnail(imageUrl) {
-		if (imageUrl) {
-			const prefix = 'https://upload.wikimedia.org/wikipedia/commons/';
-			return (
-				imageUrl.replace(prefix, prefix + 'thumb/') + '/256px-' + imageUrl.substring(imageUrl.lastIndexOf('/') + 1)
-			);
-		}
 	}
 
 }

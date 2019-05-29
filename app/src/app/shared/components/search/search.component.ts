@@ -27,6 +27,7 @@ export class SearchComponent implements OnInit {
           return [];
         }
         let entities = await this.dataService.findEntitiesByLabelText(term.toLowerCase());
+        console.log(entities);
         entities = entities.filter((v) => v.label.toLowerCase().indexOf(term.toLowerCase()) > -1)
           .sort((a, b): any => {
           let rankA = a.relativeRank;
@@ -68,6 +69,7 @@ export class SearchComponent implements OnInit {
               if (typeB < typeA) { return -1; } else if (typeA < typeB) { return 1; }
             }
           });
+          console.log(entities);
         return entities;
       })
     )

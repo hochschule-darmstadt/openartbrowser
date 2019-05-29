@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { debounceTime, switchMap } from 'rxjs/operators';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-search',
@@ -12,6 +13,8 @@ import { debounceTime, switchMap } from 'rxjs/operators';
 export class SearchComponent implements OnInit {
   hideElement = true;
   addtags: string[] = [];
+  searchInput: string;
+  rmTag: boolean = false;
 
   constructor(private dataService: DataService, private route: ActivatedRoute, private router: Router) {}
 
@@ -68,7 +71,7 @@ export class SearchComponent implements OnInit {
               if (typeB < typeA) { return -1; } else if (typeA < typeB) { return 1; }
             }
           });
-        return entities;
+        return this.searchInput ? entities : [];
       })
     )
 
@@ -89,16 +92,16 @@ export class SearchComponent implements OnInit {
     }
 
     private navigateToSearchText(term: string) {
-        if (this.addtags.length != 0) {
-          this.addtags.push('"' + term + '"');
-          const url = `/search/${this.addtags.join(' ').replace(/"/g, "")}`;
-          term = '';
-          this.router.navigate([url]);
+      this.searchInput = '';
+      if (term !== '') {
+        this.addtags.push(`"${term}"`);
+        let url = '/search/';
+        if (this.addtags.length > 1) {
+          url += `${this.addtags.join('&').replace(/"/g, '')}`;
+        } else {
+          url += `${term}`;
+          console.log(this.addtags);
         }
-      else {
-        const url = `/search/${term}`;
-        console.log(this.addtags);
-        this.addtags.push('"' + term + '"');
         this.router.navigate([url]);
       }
     }
@@ -108,6 +111,19 @@ export class SearchComponent implements OnInit {
       if (index > -1) {
         this.addtags.splice(index, 1);
       }
+    }
+
+    private readyToRemove() {
+      if (this.searchInput === '' && this.addtags.length > 0) {
+        this.rmTag = true;
+      }
+    }
+
+    private removeNewestTag() {
+      if (this.rmTag === true && this.searchInput === '') {
+        this.addtags.splice(this.addtags.length - 1, 1);
+      }
+      this.rmTag = false;
     }
 
     private clearAllTags(){

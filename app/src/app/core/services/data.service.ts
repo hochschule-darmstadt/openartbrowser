@@ -276,9 +276,11 @@ export class DataService {
 			if (Array.isArray(entity[key]) && key !== 'classes') {
 				const resolvedEntities = [];
 				for (const id of entity[key]) {
-					const relatedEntity = await this.findById<any>(id, null, false);
-					if (relatedEntity) {
-						resolvedEntities.push(relatedEntity);
+					if (id) {
+						const relatedEntity = await this.findById<any>(id, null, false);
+						if (relatedEntity) {
+							resolvedEntities.push(relatedEntity);
+						}
 					}
 				}
 				/** replace the old array holding only the ids with the new array holding the fetched entities */

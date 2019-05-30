@@ -187,7 +187,13 @@ export class DataService {
 		let options = {
 			"query": {
 				"bool": {
-					"should": []
+					"should": [],
+					"minimum_should_match": 1,
+					"must": {
+						"term": {
+							"type": "artwork"
+						}
+					}
 				}
 			},
 			"sort": [
@@ -239,8 +245,8 @@ export class DataService {
 	/**
 	 * Gets an entity from the server
 	 * @param id Id of the entity to retrieve
-	 * @param type optional type of entity that should be returned
-	 * @param enrich whether related entities should also be loaded
+	 * @param type if specified, it is assured that the returned entity has this entityType
+	 * @param enrich whether other entities referenced by this entity should also be loaded
 	 */
 	public async findById<T>(
 		id: string,
@@ -261,7 +267,7 @@ export class DataService {
 
 	/**
 	 * load the related entities referenced by the ids in the entities attributes
-	 * @param entity the raw entity for which attributes should be loaded
+	 * @param entity the raw entity for which attributes should be dereferenced
 	 */
 	private async enrichEntity<T>(entity: T): Promise<T> {
 		/** go though all attributes of entity */
@@ -269,14 +275,12 @@ export class DataService {
 			/** check if attribute is an array (only attributes holding relations to other entities are arrays) */
 			if (Array.isArray(entity[key]) && key !== 'classes') {
 				const resolvedEntities = [];
-				entity[key].forEach(async entityId => {
-					if (entityId) {
-						const relatedEntity = await this.findById<any>(entityId, null, false);
-						if (relatedEntity) {
-							resolvedEntities.push(relatedEntity);
-						}
+				for (const id of entity[key]) {
+					const relatedEntity = await this.findById<any>(id, null, false);
+					if (relatedEntity) {
+						resolvedEntities.push(relatedEntity);
 					}
-				});
+				}
 				/** replace the old array holding only the ids with the new array holding the fetched entities */
 				entity[key] = resolvedEntities;
 			}

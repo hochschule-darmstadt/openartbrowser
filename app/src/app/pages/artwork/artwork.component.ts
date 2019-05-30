@@ -69,6 +69,12 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       icon: 'list-ul',
       active: true,
     },
+    motif: {
+      heading: 'Motif',
+      items: [],
+      icon: 'image',
+      active: false,
+    },
     artist: {
       heading: 'Artist',
       items: [],
@@ -97,12 +103,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       heading: 'Material',
       items: [],
       icon: 'scroll',
-      active: false,
-    },
-    motif: {
-      heading: 'Motif',
-      items: [],
-      icon: 'image',
       active: false,
     },
   };

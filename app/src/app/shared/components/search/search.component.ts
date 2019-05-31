@@ -76,7 +76,7 @@ export class SearchComponent implements OnInit {
       })
     )
 
-    private async itemSelected($event){
+    public async itemSelected($event){
       if ($event.item.type == 'object') {
         const url = `/motif/${$event.item.id}`;
         this.addtags.push($event.item.label);
@@ -92,7 +92,7 @@ export class SearchComponent implements OnInit {
       }
     }
 
-    private navigateToSearchText(term: string) {
+    public navigateToSearchText(term: string) {
       this.searchInput = '';
       if (term !== '') {
         this.addtags.push(`"${term}"`);
@@ -114,20 +114,20 @@ export class SearchComponent implements OnInit {
       }
     }
 
-    private readyToRemove() {
+    public readyToRemove() {
       if (this.searchInput === '' && this.addtags.length > 0) {
         this.rmTag = true;
       }
     }
 
-    private removeNewestTag() {
+    public removeNewestTag() {
       if (this.rmTag === true && this.searchInput === '') {
         this.addtags.splice(this.addtags.length - 1, 1);
       }
       this.rmTag = false;
     }
 
-    private clearAllTags(){
+    public clearAllTags(){
       this.addtags = [];
     }
 

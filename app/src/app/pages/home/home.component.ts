@@ -149,6 +149,6 @@ export class HomeComponent implements OnInit {
       this.lowerCategories['genre'].items,
       this.lowerCategories['motif'].items
     );
-    this.backgroundImageUrl = allItems[Math.floor(Math.random() * (allItems.length + 1))].image;
+    this.backgroundImageUrl = allItems[Math.floor(Math.random() * (allItems.length))].imageMedium;
   };
 }

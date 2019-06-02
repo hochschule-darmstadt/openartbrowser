@@ -2,13 +2,7 @@
 <ngb-carousel class="border-bottom mb-4 mt-4" data-interval="15000">
   <div *ngFor="let i of splicedItems">
     <ng-template ngbSlide>
-      <div class="row mx-3">
-        <div *ngFor="let item of i" class="pb-4 col-sm-3 mt-auto mb-auto">
-          <app-slider-item (mouseenter)="onHover.emit(item)" (mouseleave)="onHover.emit(null)" [item]="item">
-          </app-slider-item>
-        </div>
-      </div>
+      <app-slide [items]="i" (onHover)="onHover.emit($event)"> </app-slide>
     </ng-template>
   </div>
-
 </ngb-carousel>

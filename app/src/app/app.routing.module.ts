@@ -61,9 +61,9 @@ const routes: Routes = [
     HttpClientModule,
     CoreModule,
     SharedModule,
-    RouterModule.forRoot(routes),
-    NgbModule.forRoot(),
+    NgbModule,
+    RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' })
   ],
   bootstrap: [AppComponent],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

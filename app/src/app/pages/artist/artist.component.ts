@@ -39,8 +39,21 @@ export class ArtistComponent implements OnInit, OnDestroy {
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
       const artistId = params.get('artistId');
       /** Use data service to fetch entity from database */
-      this.artist = (await this.dataService.findById<Artist>(artistId, EntityType.ARTIST));
-      this.sliderItems = await this.dataService.findArtworksByArtists([this.artist.id]);
+      this.artist = await this.dataService.findById<Artist>(artistId, EntityType.ARTIST);
+
+      /** load slider items */
+      this.dataService.findArtworksByArtists([this.artist.id]).then((artworks) => {
+        this.sliderItems = artworks;
+      });
+      /** dereference movements  */
+      this.dataService.findMultipleById(this.artist.movements as any).then((movements) => {
+        this.artist.movements = movements;
+      });
+      /** dereference influenced_bys */
+      this.dataService.findMultipleById(this.artist.influenced_by as any).then((influences) => {
+        this.artist.influenced_by = influences;
+      });
+
       /* Count meta data to show more on load */
 
       this.calculateCollapseState();

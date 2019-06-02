@@ -7,60 +7,46 @@ import { Entity } from '../../models/models';
   styleUrls: ['./slider.component.scss'],
 })
 export class SliderComponent implements OnChanges {
+  @Input() heading: string;
+
+  /**
+   * @description Input: the items being passed.
+   */
+  @Input() items: Entity[] = [];
+
+  /**
+   * @description slides of the slider, max 8 items each.
+   */
+  slides: Array<Entity[]> = [];
+
   /**
    * @description emits hovered artwork on hover event.
-   * @type {EventEmitter<Entity>}
-   * @memberof SliderComponent
    */
-  @Output() onHover: EventEmitter<Entity> = new EventEmitter<Entity>();
+  @Output() itemHover: EventEmitter<Entity> = new EventEmitter<Entity>();
 
-  constructor(private ref: ElementRef) {}
+  constructor() {}
 
   /**
    * @description Hook that is called when any data-bound property of a directive changes.
-   * @param {SimpleChanges} changes
-   * @memberof SliderComponent
    */
   ngOnChanges(changes: SimpleChanges) {
+    // rebuild slides if slider items input changed.
     if (changes.items && this.items) {
-      this.buildSliderPages();
+      this.buildSlides();
     }
   }
 
   /**
-   * @description 8 items for a single slider.
-   * @type {Array<Entity[]>}
-   * @memberof SliderComponent
+   * @description Divide the slider items into slides.
    */
-  splicedItems: Array<Entity[]> = [];
-
-  /**
-   * @description Input: the items being passed.
-   * @type {Entity[]}
-   * @memberof SliderComponent
-   */
-  @Input() items: Entity[] = [];
-
-  @Input() heading: string;
-
-  /**
-   * @description Set the items for the slider.
-   * cut array of artworks in multiple arrays each with 8 items
-   * arrayNumber : how many arrays with 8 items
-   * sliderItems: Array<Entity[]> = [];  Is Array of arrays with 8 items each
-   * temporaryArray   one array with 8 items
-   * @memberof SliderComponent
-   */
-  buildSliderPages(): void {
-    const newSplicedItems: Array<Entity[]> = [];
-    let temporaryArray: Entity[] = [];
-    let arrayNumber: number = 0;
+  buildSlides(): void {
+    const slidesBuilt: Array<Entity[]> = [];
     // There are 8 images on each slide.
-    arrayNumber = this.items.length / 8;
-    for (let i = 0; i < arrayNumber; i++) {
-      temporaryArray = this.items.splice(0, 8);
-      newSplicedItems.push(temporaryArray);
+    const numberOfSlides = this.items.length / 8;
+    for (let i = 0; i < numberOfSlides; i++) {
+      const slide: Entity[] = this.items.splice(0, 8);
+      slidesBuilt.push(slide);
     }
-    this.splicedItems = newSplicedItems;
+    this.slides = slidesBuilt;
   }
 }

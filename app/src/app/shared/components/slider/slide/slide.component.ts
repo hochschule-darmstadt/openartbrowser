@@ -8,47 +8,36 @@ import { DataService } from 'src/app/core/services/data.service';
   styleUrls: ['./slide.component.scss'],
 })
 export class SlideComponent implements AfterViewInit {
-  @Input()
-  loadStuff = false;
-
+  /** whether slide images should be loaded */
   public loadContent = false;
 
   /**
-   * @description emits hovered artwork on hover event.
-   * @type {EventEmitter<Entity>}
-   * @memberof SliderComponent
-   */
-  @Output() onHover: EventEmitter<Entity> = new EventEmitter<Entity>();
-
-  constructor(public dataService: DataService, private el: ElementRef) {}
-
-  /**
-   * @description Input: the item being passed.
-   * @type {Entity}
-   * @memberof SliderItemComponent
+   * @description Input: the items being passed.
    */
   @Input() items: Entity[];
 
+  /**
+   * @description emits hovered artwork on item hover event
+   */
+  @Output()
+  itemHover: EventEmitter<Entity> = new EventEmitter<Entity>();
+
+  constructor(public dataService: DataService, private el: ElementRef) {}
+
   ngAfterViewInit() {
-    this.canLazyLoad() ? this.lazyLoad() : this.load();
-  }
-  private canLazyLoad() {
-    return window && 'IntersectionObserver' in window;
-  }
-
-  private lazyLoad() {
-    const obs = new IntersectionObserver((entries) => {
-      entries.forEach(({ isIntersecting }) => {
-        if (isIntersecting) {
-          this.load();
-          obs.unobserve(this.el.nativeElement);
-        }
+    if (window && 'IntersectionObserver' in window) {
+      const obs = new IntersectionObserver((entries) => {
+        /** check whether any element of the slide is currently visible on screen */
+        entries.forEach(({ isIntersecting }) => {
+          if (isIntersecting) {
+            this.loadContent = true;
+            obs.unobserve(this.el.nativeElement);
+          }
+        });
       });
-    });
-    obs.observe(this.el.nativeElement);
-  }
-
-  private load() {
-    this.loadContent = true;
+      obs.observe(this.el.nativeElement);
+    } else {
+      this.loadContent = true;
+    }
   }
 }

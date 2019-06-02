@@ -1,9 +1,5 @@
 @import '../../../variables';
 
-/** test variable for background image (will be removed later) */
-$monalisa: 'https://upload.wikimedia.org/wikipedia/commons/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg';
-$michaelina: 'https://upload.wikimedia.org/wikipedia/commons/1/14/Michaelina_wautier-anunciaci%C3%B3n.jpg';
-
 $color1: #00bc8c;
 
 /** Set background of the home page */
@@ -14,7 +10,6 @@ $color1: #00bc8c;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-image: linear-gradient(rgba(34, 34, 34, 0.5), rgba(34, 34, 34, 0.5)), url($michaelina);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -187,6 +182,7 @@ $color1: #00bc8c;
     width: 100%;
     height: 100%;
     position: relative;
+    object-fit: cover;
   }
 
   .label {

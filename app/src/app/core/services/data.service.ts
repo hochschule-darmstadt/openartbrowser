@@ -139,7 +139,7 @@ export class DataService {
 		return this.filterData<Artwork>(response);
 	}
 
-	public async get10CategoryItems<T>(type: string): Promise<T[]> {
+	public async get20CategoryItems<T>(type: string): Promise<T[]> {
 		const response = await this.http.post<any>(this.serverURI, this.categoryQuery(type)).toPromise();
 		return this.filterData<T>(response);
 	}
@@ -238,7 +238,7 @@ export class DataService {
 					}
 				}
 			],
-			"size": 10
+			"size": 20
 		}
 	}
 

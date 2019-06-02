@@ -23,7 +23,7 @@ export class LocationComponent implements OnInit, OnDestroy {
   /** Change collapse icon */
   collapseDown: boolean = true;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) { }
+  constructor(private dataService: DataService, private route: ActivatedRoute) {}
 
   /** hook that is executed at component initialization */
   ngOnInit() {
@@ -31,8 +31,12 @@ export class LocationComponent implements OnInit, OnDestroy {
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
       const locationId = params.get('locationId');
       /** Use data service to fetch entity from database */
-      this.location = (await this.dataService.findById<Location>(locationId, EntityType.LOCATION));
-      this.sliderItems = await this.dataService.findArtworksByLocations([this.location.id]);
+      this.location = await this.dataService.findById<Location>(locationId, EntityType.LOCATION);
+
+      /** load slider items */
+      this.dataService.findArtworksByLocations([this.location.id]).then((artworks) => {
+        this.sliderItems = artworks;
+      });
     });
   }
 

@@ -20,16 +20,21 @@ export class GenreComponent implements OnInit, OnDestroy {
   /** Related artworks */
   sliderItems: Artwork[] = [];
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) { }
+  constructor(private dataService: DataService, private route: ActivatedRoute) {}
 
   /** hook that is executed at component initialization */
   ngOnInit() {
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
       const genreId = params.get('genreId');
+
       /** Use data service to fetch entity from database */
-      this.genre = (await this.dataService.findById<Genre>(genreId, EntityType.GENRE));
-      this.sliderItems = await this.dataService.findArtworksByGenres([this.genre.id]);
+      this.genre = await this.dataService.findById<Genre>(genreId, EntityType.GENRE);
+
+      /** load slider items */
+      this.dataService.findArtworksByGenres([this.genre.id]).then((artworks) => {
+        this.sliderItems = artworks;
+      });
     });
   }
 

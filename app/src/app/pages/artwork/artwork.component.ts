@@ -131,89 +131,92 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
       const artworkId = params.get('artworkId');
       /** Use data service to fetch entity from database */
-      this.artwork = (await this.dataService.findById<Artwork>(artworkId, EntityType.ARTWORK));
-
+      this.artwork = await this.dataService.findById<Artwork>(artworkId, EntityType.ARTWORK);
       /* Count meta data to show more on load */
       this.calculateCollapseState();
+      this.loadDependencies();
+    });
+  }
 
+  /**
+   * TODO: write this shorter
+   * resolves ids in artwork attributes with actual entities,
+   * loads slider items and initialized slider tabs
+   */
+  loadDependencies() {
+    /** number of sliders that have been loaded to see if all tab is ready to be initialized */
+    let loadCounter = 0;
 
-      /**
-       * for some reason assigning the items attribute of a tab directly like below does NOT work, because
-       * the assignment resets the items of the other tabs! really weird. as soon as the next tab is assigned,
-       * the items in the previous tab become empty again...
-       * it works fine though, if it is done via a another variable...
-       *
-       * this works only for the latest tab where the items are assigned:
-       *
-       * if (this.artwork.genres) {
-       *  this.artworkTabs.genre.items = await this.dataService.findArtworksByGenres(
-       *   this.artwork.locations.map((location) => {
-       *     return location.id;
-       *   })
-       *  );
-       * }
-       */
-
-      let artworksByMovements = [];
-      let artworksByArtists = [];
-      let artworksByMotifs = [];
-      let artworksByMaterials = [];
-      let artworksByGenres = [];
-      let artworksByLocations = [];
-
-
-      if (this.artwork.locations) {
-        artworksByLocations = await this.dataService.findArtworksByLocations(
-          this.artwork.locations.map((location) => {
-            return location.id;
-          })
-        );
+    /** load artist related data */
+    this.dataService.findArtworksByArtists(this.artwork.creators as any).then((artworks) => {
+      this.artworkTabs.artist.items = artworks.filter((artwork) => artwork.id !== this.artwork.id);
+      ++loadCounter;
+      if (loadCounter == 6) {
+        this.selectAllTabItems(10);
       }
-      if (this.artwork.genres) {
-        artworksByGenres = await this.dataService.findArtworksByGenres(
-          this.artwork.genres.map((genre) => {
-            return genre.id;
-          })
-        );
-      }
-      if (this.artwork.movements) {
-        artworksByMovements = await this.dataService.findArtworksByMovements(
-          this.artwork.movements.map((movement) => {
-            return movement.id;
-          })
-        );
-      }
-      if (this.artwork.materials) {
-        artworksByMaterials = await this.dataService.findArtworksByMaterials(
-          this.artwork.materials.map((material) => {
-            return material.id;
-          })
-        );
-      }
-      if (this.artwork.creators) {
-        artworksByArtists = await this.dataService.findArtworksByArtists(
-          this.artwork.creators.map((artist) => {
-            return artist.id;
-          })
-        );
-      }
-      if (this.artwork.depicts) {
-        artworksByMotifs = await this.dataService.findArtworksByMotifs(
-          this.artwork.depicts.map((motif) => {
-            return motif.id;
-          })
-        );
-      }
+    });
+    this.dataService.findMultipleById(this.artwork.creators as any).then((creators) => {
+      this.artwork.creators = creators;
+    });
 
-      this.artworkTabs.genre.items = artworksByGenres;
-      this.artworkTabs.material.items = artworksByMaterials;
-      this.artworkTabs.motif.items = artworksByMotifs;
-      this.artworkTabs.artist.items = artworksByArtists;
-      this.artworkTabs.movement.items = artworksByMovements;
-      this.artworkTabs.location.items = artworksByLocations;
+    /** load movement related data */
+    this.dataService.findArtworksByMovements(this.artwork.movements as any).then((artworks) => {
+      this.artworkTabs.movement.items = artworks.filter((artwork) => artwork.id !== this.artwork.id);
+      ++loadCounter;
+      if (loadCounter == 6) {
+        this.selectAllTabItems(10);
+      }
+    });
+    this.dataService.findMultipleById(this.artwork.movements as any).then((movements) => {
+      this.artwork.movements = movements;
+    });
 
-      this.removeMainArtworkFromTabs();
-      this.selectAllTabItems(10);
+    /** load genre related data */
+    this.dataService.findArtworksByGenres(this.artwork.genres as any).then((artworks) => {
+      this.artworkTabs.genre.items = artworks.filter((artwork) => artwork.id !== this.artwork.id);
+      ++loadCounter;
+      if (loadCounter == 6) {
+        this.selectAllTabItems(10);
+      }
+    });
+    this.dataService.findMultipleById(this.artwork.genres as any).then((genres) => {
+      this.artwork.genres = genres;
+    });
+
+    /** load motif related data */
+    this.dataService.findArtworksByMotifs(this.artwork.depicts as any).then((artworks) => {
+      this.artworkTabs.motif.items = artworks.filter((artwork) => artwork.id !== this.artwork.id);
+      ++loadCounter;
+      if (loadCounter == 6) {
+        this.selectAllTabItems(10);
+      }
+    });
+    this.dataService.findMultipleById(this.artwork.depicts as any).then((motifs) => {
+      this.artwork.depicts = motifs;
+    });
+
+    /** load loaction related data */
+    this.dataService.findArtworksByLocations(this.artwork.locations as any).then((artworks) => {
+      this.artworkTabs.location.items = artworks.filter((artwork) => artwork.id !== this.artwork.id);
+      ++loadCounter;
+      if (loadCounter == 6) {
+        this.selectAllTabItems(10);
+      }
+    });
+    this.dataService.findMultipleById(this.artwork.locations as any).then((locations) => {
+      this.artwork.locations = locations;
+    });
+
+    /** load material related data */
+    this.dataService.findArtworksByMaterials(this.artwork.materials as any).then((artworks) => {
+      this.artworkTabs.material.items = artworks.filter((artwork) => artwork.id !== this.artwork.id);
+      ++loadCounter;
+      if (loadCounter == 6) {
+        this.selectAllTabItems(10);
+      }
+    });
+    this.dataService.findMultipleById(this.artwork.materials as any).then((materials) => {
+      this.artwork.materials = materials;
     });
   }
 
@@ -240,15 +243,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
-  }
-
-  /**
-   * @description makes sure that the artwork this page is about does not appear in slider
-   */
-  removeMainArtworkFromTabs() {
-    for (const key of Object.keys(this.artworkTabs)) {
-      this.artworkTabs[key].items = this.artworkTabs[key].items.filter((artwork) => artwork.id !== this.artwork.id);
-    }
   }
 
   /**

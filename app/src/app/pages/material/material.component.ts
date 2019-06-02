@@ -20,16 +20,21 @@ export class MaterialComponent implements OnInit, OnDestroy {
   /** Related artworks */
   sliderItems: Artwork[] = [];
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) { }
+  constructor(private dataService: DataService, private route: ActivatedRoute) {}
 
   /** hook that is executed at component initialization */
   ngOnInit() {
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
       const materialId = params.get('materialId');
+
       /** Use data service to fetch entity from database */
-      this.material = (await this.dataService.findById<Material>(materialId, EntityType.MATERIAL));
-      this.sliderItems = await this.dataService.findArtworksByMaterials([this.material.id]);
+      this.material = await this.dataService.findById<Material>(materialId, EntityType.MATERIAL);
+
+      /** load slider items */
+      this.dataService.findArtworksByMaterials([this.material.id]).then((artworks) => {
+        this.sliderItems = artworks;
+      });
     });
   }
 

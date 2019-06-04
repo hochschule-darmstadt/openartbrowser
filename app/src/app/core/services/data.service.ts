@@ -78,37 +78,63 @@ export class DataService {
 	/**
 	 * Returns the artworks that contain all the given arguments.
 	 * @param searchObj the arguments to search for.
+	 * @param keywords the list of worlds to search for.
 	 * 
 	 */
-  public async findArtworksByCategories(searchObj: artSearch): Promise<Artwork[]> {
-    let options = {
-      "query": {
-        "bool": {
-          "must": []
-        }
-      },
-      "sort": [
-        {
-          "relativeRank": {
-            "order": "desc"
-          }
-        }
-      ],
-      "size": 10 // change it if you want more results 
-    };
-    _.each(searchObj, function (arr, key) {
-      if (_.isArray(arr))
-        _.each(arr, function (val) {
-          options.query.bool.must.push({
-            "match": {
-              [key]: val
-            }
-          });
-        });
-    });
-    const reponse = await this.http.post<any>(this.serverURI, options).toPromise();
-    return this.filterData<Artwork>(reponse);
-  }
+	public async findArtworksByCategories(searchObj: artSearch, keywords: string[] = []): Promise<Artwork[]> {
+		let options = {
+			"query": {
+				"bool": {
+					"must": []
+				}
+			},
+			"sort": [
+				{
+					"relativeRank": {
+						"order": "desc"
+					}
+				}
+			],
+			"size": 10 // change it if you want more results 
+		};
+		options.query.bool.must.push({
+			"match": {
+				"type": "artwork"
+			}
+		});
+		_.each(searchObj, function (arr, key) {
+			if (_.isArray(arr))
+				_.each(arr, function (val) {
+					options.query.bool.must.push({
+						"match": {
+							[key]: val
+						}
+					});
+				});
+		});
+		if (keywords.length !== 0) {
+			_.each(keywords, function (keyword) {
+				options.query.bool.must.push({
+					"bool":{
+						"should":[
+							{
+								"match":{
+									"label": keyword
+								}
+							},
+							{
+								"match":{
+									"description":keyword
+								}
+							}
+						]
+					}
+				})
+			});
+		}
+		const reponse = await this.http.post<any>(this.serverURI, options).toPromise();
+		return this.filterData<Artwork>(reponse);
+	}
   public async findArtworksByArtists(artistIds: string[]): Promise<Artwork[]> {
     const response = await this.http.post<any>(this.serverURI, this.constructQuery("creators", artistIds)).toPromise();
     return this.filterData<Artwork>(response);

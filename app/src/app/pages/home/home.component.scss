@@ -43,26 +43,70 @@ $color1: #00bc8c;
   margin-bottom: 6rem;
   position: relative;
 
-  .title {
-    font-size: 11vh;
-    letter-spacing: 0rem;
-    color: $color1;
+  .logo {
     width: 100%;
     margin-bottom: 6rem;
 
-    @media (min-width: 768px) and (max-width: 991px) {
-      font-size: 9vh;
+    span {
+      font-size: 4vh;
+      padding-top: 1vh;
+      letter-spacing: 0rem;
+      color: $color1;
+
+
+
+      @media (min-width: 768px) and (max-width: 991px) {
+        font-size: 3vh;
+      }
+
+      @media (min-width: 577px) and (max-width: 767px) {
+        font-size: 3vh;
+        padding-top: 0;
+      }
+
+      @media (min-width: 377px) and (max-width: 576px) {
+        font-size: 1.5vh;
+        padding-top: 0;
+      }
+
+      @media (min-width: 0px) and (max-width: 376px) {
+        font-size: 1.5vh;
+        padding-top: 0;
+      }
     }
+
+    h1 {
+      font-size: 12vh;
+      letter-spacing: 0rem;
+      color: $color1;
+
+
+      @media (min-width: 768px) and (max-width: 991px) {
+        font-size: 9vh;
+      }
+
+      @media (min-width: 577px) and (max-width: 767px) {
+        font-size: 7vh;
+      }
+
+      @media (min-width: 377px) and (max-width: 576px) {
+        font-size: 5vh;
+      }
+
+      @media (min-width: 0px) and (max-width: 376px) {
+        font-size: 3vh;
+      }
+    }
+
     @media (min-width: 577px) and (max-width: 767px) {
-      font-size: 7vh;
       margin-bottom: 4rem;
     }
+
     @media (min-width: 377px) and (max-width: 576px) {
-      font-size: 5vh;
       margin-bottom: 1em;
     }
+
     @media (min-width: 0px) and (max-width: 376px) {
-      font-size: 4vh;
       margin-bottom: 0.5em;
     }
   }
@@ -75,21 +119,27 @@ $color1: #00bc8c;
       ::ng-deep .dropdown-menu.show {
         display: block;
         width: 90%;
+
         /* Resize result item*/
         .dropdown-item {
           width: 100%;
-          font-size: 1rem;
+          font-size: 1.7rem;
+          padding: 0;
+          padding-right: 8px;
 
           @media (min-width: 577px) and (max-width: 767px) {
-            font-size: 0.9rem;
+            font-size: 1.1rem;
+
           }
+
           @media (min-width: 377px) and (max-width: 576px) {
-            font-size: 0.9rem;
+            font-size: 1rem;
+            height: 3rem;
           }
+
           @media (min-width: 0px) and (max-width: 376px) {
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             min-height: 2rem;
-            padding: 0.5rem;
           }
 
           .ngb-highlight {
@@ -107,14 +157,17 @@ $color1: #00bc8c;
 :host ::ng-deep .search div input {
   height: 3.5rem;
   font-size: 1.7rem;
+
   @media (min-width: 577px) and (max-width: 767px) {
     height: 2.5rem;
     font-size: 1.1rem;
   }
+
   @media (min-width: 377px) and (max-width: 576px) {
     height: 2rem;
     font-size: 1rem;
   }
+
   @media (min-width: 0px) and (max-width: 376px) {
     height: 2rem;
     font-size: 0.8rem;
@@ -166,7 +219,7 @@ $color1: #00bc8c;
       box-shadow: 0 0 20px 1px black;
     }
 
-    &:hover > .overlay {
+    &:hover>.overlay {
       transition: all 0.2s ease;
       width: 100%;
       height: 100%;

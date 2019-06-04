@@ -1,6 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MovementComponent } from './movement.component';
+import { SlideComponent } from 'src/app/shared/components/slider/slide/slide.component';
+import { SliderComponent } from 'src/app/shared/components/slider/slider.component';
+import { DataService } from 'src/app/core/services/data.service';
+import { RouterModule } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 describe('MovementComponent', () => {
   let component: MovementComponent;
@@ -8,7 +14,19 @@ describe('MovementComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MovementComponent ]
+      imports: [
+        NgbModule,
+        HttpClientModule,
+        RouterModule.forRoot([])
+      ],
+      declarations: [
+        MovementComponent,
+        SlideComponent,
+        SliderComponent,
+      ],
+      providers: [
+        DataService,
+      ]
     })
     .compileComponents();
   }));

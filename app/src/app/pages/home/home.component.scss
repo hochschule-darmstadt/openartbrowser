@@ -94,7 +94,7 @@ $color1: #00bc8c;
       }
 
       @media (min-width: 0px) and (max-width: 376px) {
-        font-size: 3vh;
+        font-size: 4vh;
       }
     }
 
@@ -102,12 +102,8 @@ $color1: #00bc8c;
       margin-bottom: 4rem;
     }
 
-    @media (min-width: 377px) and (max-width: 576px) {
+    @media (min-width: 0px) and (max-width: 576px) {
       margin-bottom: 1em;
-    }
-
-    @media (min-width: 0px) and (max-width: 376px) {
-      margin-bottom: 0.5em;
     }
   }
 

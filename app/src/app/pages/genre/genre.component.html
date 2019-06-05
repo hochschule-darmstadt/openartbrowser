@@ -2,12 +2,11 @@
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7">
       <span class="badge badge-pill badge-secondary chip"><i class="fas fa-tag"></i> Genre</span>
-      <h2 class="mb-3 first-letter">{{genre?.label}}</h2>
-      <div class="mb-3 mt-5">
-      </div>
+      <h2 class="mb-3 first-letter">{{ genre?.label }}</h2>
+      <div class="mb-3 mt-5"></div>
     </div>
-    <div class="col-sm-5 img">
-      <img class="img-fluid rounded-circle" src="{{genre?.imageSmall}}" alt="{{genre?.label}}">
+    <div class="col-sm-5 img" *ngIf="genre?.imageSmall">
+      <img class="img-fluid rounded-circle" src="{{ genre?.imageSmall }}" alt="{{ genre?.label }}" />
     </div>
   </div>
   <app-slider [items]="sliderItems" heading="Artworks"> </app-slider>

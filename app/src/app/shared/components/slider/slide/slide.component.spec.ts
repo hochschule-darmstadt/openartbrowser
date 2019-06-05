@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SlideComponent } from './slide.component';
+import { RouterModule } from '@angular/router';
+import { DataService } from 'src/app/core/services/data.service';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('SlideComponent', () => {
   let component: SlideComponent;
@@ -8,7 +11,16 @@ describe('SlideComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [SlideComponent],
+      imports: [
+        HttpClientModule,
+        RouterModule.forRoot([])
+      ],
+      declarations: [
+        SlideComponent,
+      ],
+      providers: [
+        DataService,
+      ]
     }).compileComponents();
   }));
 

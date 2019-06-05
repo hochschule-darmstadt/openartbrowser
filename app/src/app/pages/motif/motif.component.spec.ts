@@ -1,6 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MotifComponent } from './motif.component';
+import { SlideComponent } from 'src/app/shared/components/slider/slide/slide.component';
+import { SliderComponent } from 'src/app/shared/components/slider/slider.component';
+import { DataService } from 'src/app/core/services/data.service';
+import { RouterModule } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 describe('MotifComponent', () => {
   let component: MotifComponent;
@@ -8,7 +14,19 @@ describe('MotifComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [MotifComponent],
+      imports: [
+        NgbModule,
+        HttpClientModule,
+        RouterModule.forRoot([])
+      ],
+      declarations: [
+        MotifComponent,
+        SlideComponent,
+        SliderComponent,
+      ],
+      providers: [
+        DataService,
+      ]
     }).compileComponents();
   }));
 

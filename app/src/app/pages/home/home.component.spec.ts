@@ -1,6 +1,15 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HomeComponent } from './home.component';
+import { DataService } from 'src/app/core/services/data.service';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { HttpClientModule } from '@angular/common/http';
+import { SearchComponent } from 'src/app/shared/components/search/search.component';
+import { SearchResultComponent } from '../search-result/search-result.component';
+import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { SliderComponent } from 'src/app/shared/components/slider/slider.component';
+import { SlideComponent } from 'src/app/shared/components/slider/slide/slide.component';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
@@ -8,7 +17,22 @@ describe('HomeComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HomeComponent ]
+      imports: [
+        NgbModule,
+        FormsModule,
+        HttpClientModule,
+        RouterModule.forRoot([])
+      ],
+      declarations: [
+        HomeComponent,
+        SearchComponent,
+        SearchResultComponent,
+        SliderComponent,
+        SlideComponent
+      ],
+      providers: [
+        DataService,
+      ]
     })
     .compileComponents();
   }));

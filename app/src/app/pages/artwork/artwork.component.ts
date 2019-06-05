@@ -148,76 +148,78 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     let loadCounter = 0;
 
     /** load artist related data */
-    this.dataService.findArtworksByArtists(this.artwork.creators as any).then((artworks) => {
-      this.artworkTabs.artist.items = artworks.filter((artwork) => artwork.id !== this.artwork.id);
-      ++loadCounter;
-      if (loadCounter == 6) {
-        this.selectAllTabItems(10);
-      }
-    });
-    this.dataService.findMultipleById(this.artwork.creators as any).then((creators) => {
-      this.artwork.creators = creators;
-    });
+    if (this.artwork) {    
+      this.dataService.findArtworksByArtists(this.artwork.creators as any).then((artworks) => {
+        this.artworkTabs.artist.items = artworks.filter((artwork) => artwork.id !== this.artwork.id);
+        ++loadCounter;
+        if (loadCounter == 6) {
+          this.selectAllTabItems(10);
+        }
+      });
+      this.dataService.findMultipleById(this.artwork.creators as any).then((creators) => {
+        this.artwork.creators = creators;
+      });
 
-    /** load movement related data */
-    this.dataService.findArtworksByMovements(this.artwork.movements as any).then((artworks) => {
-      this.artworkTabs.movement.items = artworks.filter((artwork) => artwork.id !== this.artwork.id);
-      ++loadCounter;
-      if (loadCounter == 6) {
-        this.selectAllTabItems(10);
-      }
-    });
-    this.dataService.findMultipleById(this.artwork.movements as any).then((movements) => {
-      this.artwork.movements = movements;
-    });
+      /** load movement related data */
+      this.dataService.findArtworksByMovements(this.artwork.movements as any).then((artworks) => {
+        this.artworkTabs.movement.items = artworks.filter((artwork) => artwork.id !== this.artwork.id);
+        ++loadCounter;
+        if (loadCounter == 6) {
+          this.selectAllTabItems(10);
+        }
+      });
+      this.dataService.findMultipleById(this.artwork.movements as any).then((movements) => {
+        this.artwork.movements = movements;
+      });
 
-    /** load genre related data */
-    this.dataService.findArtworksByGenres(this.artwork.genres as any).then((artworks) => {
-      this.artworkTabs.genre.items = artworks.filter((artwork) => artwork.id !== this.artwork.id);
-      ++loadCounter;
-      if (loadCounter == 6) {
-        this.selectAllTabItems(10);
-      }
-    });
-    this.dataService.findMultipleById(this.artwork.genres as any).then((genres) => {
-      this.artwork.genres = genres;
-    });
+      /** load genre related data */
+      this.dataService.findArtworksByGenres(this.artwork.genres as any).then((artworks) => {
+        this.artworkTabs.genre.items = artworks.filter((artwork) => artwork.id !== this.artwork.id);
+        ++loadCounter;
+        if (loadCounter == 6) {
+          this.selectAllTabItems(10);
+        }
+      });
+      this.dataService.findMultipleById(this.artwork.genres as any).then((genres) => {
+        this.artwork.genres = genres;
+      });
 
-    /** load motif related data */
-    this.dataService.findArtworksByMotifs(this.artwork.depicts as any).then((artworks) => {
-      this.artworkTabs.motif.items = artworks.filter((artwork) => artwork.id !== this.artwork.id);
-      ++loadCounter;
-      if (loadCounter == 6) {
-        this.selectAllTabItems(10);
-      }
-    });
-    this.dataService.findMultipleById(this.artwork.depicts as any).then((motifs) => {
-      this.artwork.depicts = motifs;
-    });
+      /** load motif related data */
+      this.dataService.findArtworksByMotifs(this.artwork.depicts as any).then((artworks) => {
+        this.artworkTabs.motif.items = artworks.filter((artwork) => artwork.id !== this.artwork.id);
+        ++loadCounter;
+        if (loadCounter == 6) {
+          this.selectAllTabItems(10);
+        }
+      });
+      this.dataService.findMultipleById(this.artwork.depicts as any).then((motifs) => {
+        this.artwork.depicts = motifs;
+      });
 
-    /** load loaction related data */
-    this.dataService.findArtworksByLocations(this.artwork.locations as any).then((artworks) => {
-      this.artworkTabs.location.items = artworks.filter((artwork) => artwork.id !== this.artwork.id);
-      ++loadCounter;
-      if (loadCounter == 6) {
-        this.selectAllTabItems(10);
-      }
-    });
-    this.dataService.findMultipleById(this.artwork.locations as any).then((locations) => {
-      this.artwork.locations = locations;
-    });
+      /** load loaction related data */
+      this.dataService.findArtworksByLocations(this.artwork.locations as any).then((artworks) => {
+        this.artworkTabs.location.items = artworks.filter((artwork) => artwork.id !== this.artwork.id);
+        ++loadCounter;
+        if (loadCounter == 6) {
+          this.selectAllTabItems(10);
+        }
+      });
+      this.dataService.findMultipleById(this.artwork.locations as any).then((locations) => {
+        this.artwork.locations = locations;
+      });
 
-    /** load material related data */
-    this.dataService.findArtworksByMaterials(this.artwork.materials as any).then((artworks) => {
-      this.artworkTabs.material.items = artworks.filter((artwork) => artwork.id !== this.artwork.id);
-      ++loadCounter;
-      if (loadCounter == 6) {
-        this.selectAllTabItems(10);
-      }
-    });
-    this.dataService.findMultipleById(this.artwork.materials as any).then((materials) => {
-      this.artwork.materials = materials;
-    });
+      /** load material related data */
+      this.dataService.findArtworksByMaterials(this.artwork.materials as any).then((artworks) => {
+        this.artworkTabs.material.items = artworks.filter((artwork) => artwork.id !== this.artwork.id);
+        ++loadCounter;
+        if (loadCounter == 6) {
+          this.selectAllTabItems(10);
+        }
+      });
+      this.dataService.findMultipleById(this.artwork.materials as any).then((materials) => {
+        this.artwork.materials = materials;
+      });
+    }
   }
 
   /**
@@ -280,20 +282,22 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   calculateCollapseState() {
     this.collapseDown = true;
-    if (!_.isEmpty(this.artwork.genres))
+    if (this.artwork) { 
+      if (!_.isEmpty(this.artwork.genres))
       this.metaNumber += this.artwork.genres.length > 3 ? this.artwork.genres.length : 3;
-    if (!_.isEmpty(this.artwork.materials))
+      if (!_.isEmpty(this.artwork.materials))
       this.metaNumber += this.artwork.materials.length > 3 ? this.artwork.genres.length : 3;
-    if (!_.isEmpty(this.artwork.movements))
+      if (!_.isEmpty(this.artwork.movements))
       this.metaNumber += this.artwork.movements.length > 3 ? this.artwork.movements.length : 3;
-    if (!_.isEmpty(this.artwork.depicts))
+      if (!_.isEmpty(this.artwork.depicts))
       this.metaNumber += this.artwork.depicts.length > 3 ? this.artwork.depicts.length : 3;
-    if (!this.artwork.height && !this.artwork.width)
+      if (!this.artwork.height && !this.artwork.width)
       this.metaNumber += 3;
-    if (this.metaNumber < 10) {
-      this.collapseDown = false;
     }
-  }
+      if (this.metaNumber < 10) {
+        this.collapseDown = false;
+      }
+    }
   /**
    * @description function to toggle common tags container.
    * @memberof ArtworkComponent

@@ -1,6 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ArtworkComponent } from './artwork.component';
+import { SlideComponent } from 'src/app/shared/components/slider/slide/slide.component';
+import { SliderComponent } from 'src/app/shared/components/slider/slider.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { DataService } from 'src/app/core/services/data.service';
+import { HttpClientModule } from '@angular/common/http';
+import { ImageViewerModule } from 'ngx-image-viewer';
+import { RouterModule } from '@angular/router';
 
 describe('ArtworkComponent', () => {
   let component: ArtworkComponent;
@@ -8,7 +15,20 @@ describe('ArtworkComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ArtworkComponent ]
+      imports: [
+        NgbModule,
+        HttpClientModule,
+        ImageViewerModule.forRoot(),
+        RouterModule.forRoot([])
+      ],
+      declarations: [
+        ArtworkComponent,
+        SlideComponent,
+        SliderComponent,
+      ],
+      providers: [
+        DataService,
+      ]
     })
     .compileComponents();
   }));

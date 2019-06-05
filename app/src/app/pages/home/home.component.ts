@@ -141,7 +141,9 @@ export class HomeComponent implements OnInit {
    * @memberof HomeComponent
    */
   getRandomImage = (): void => {
-    let artworks = this.upperCategories['artwork'].items
-    this.backgroundImageUrl = artworks[Math.floor(Math.random() * (artworks.length))].imageMedium;
+    if (this.upperCategories['artwork'].items.length > 0) {
+      let artworks = this.upperCategories['artwork'].items;
+      this.backgroundImageUrl = artworks[Math.floor(Math.random() * (artworks.length))].imageMedium;
+    }
   };
 }

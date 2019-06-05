@@ -51,7 +51,26 @@
 
 #headerTitle {
   font-size: 1.2em;
-  @media (min-width:371px) and (max-width: 576px) {
+
+  @media (min-width: 0px) and (max-width: 576px) {
     font-size: 1em;
+  }
+
+  @media (min-width:577px) and (max-width: 991px) {
+    font-size: 1.2em;
+  }
+
+}
+
+#h3-span {
+  font-size: 0.7em;
+
+  @media (min-width: 0px) and (max-width: 576px) {
+    font-size: 0.5em;
+    margin-left: 2em;
+  }
+
+  @media (min-width:577px) and (max-width: 991px) {
+    font-size: 0.6em;
   }
 }

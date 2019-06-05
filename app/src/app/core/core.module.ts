@@ -6,11 +6,12 @@ import { DataService } from './services/data.service';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
+import { RouterModule } from '@angular/router';
 
 /** Everything that should be loaded globally and only once goes here */
 @NgModule({
   declarations: [HeaderComponent, FooterComponent],
-  imports: [CommonModule, NgbModule, FormsModule, SharedModule],
+  imports: [CommonModule, NgbModule, FormsModule, SharedModule, RouterModule],
   exports: [HeaderComponent, FooterComponent],
   providers: [DataService],
 })

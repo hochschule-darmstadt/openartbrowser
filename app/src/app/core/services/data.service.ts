@@ -12,7 +12,7 @@ export class DataService {
 	 * Constructor
 	 */
   constructor(private http: HttpClient) { }
-  serverURI = 'http://141.100.60.99:9200/api/_search';
+  serverURI = 'http://openartbrowser.org/api/_search';
   public async findEntitiesByLabelText(text: string): Promise<Entity[]> {
     const options = {
       "query": {

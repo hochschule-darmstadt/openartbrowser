@@ -1,3 +1,5 @@
+# TODO rename the folder pyScripts into something that related to the function (like scripts/Wikidata crawler)
+# TODO add short description about what the function do
 from elasticsearch import Elasticsearch, helpers
 import sys, json
 import ijson

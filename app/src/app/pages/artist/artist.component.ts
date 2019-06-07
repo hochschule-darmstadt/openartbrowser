@@ -67,6 +67,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
    */
   calculateCollapseState() {
     this.collapseDown = true;
+    // TODO it's always good to have IF(){ close bracket }
     if (!this.artist.gender)
       this.metaNumber += 3;
     if (!_.isEmpty(this.artist.influenced_by))

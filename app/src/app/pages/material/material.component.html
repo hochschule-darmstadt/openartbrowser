@@ -1,6 +1,7 @@
 <div class="container">
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7">
+      <!-- TODO make custom css to make cursor NOT pointer for the badge above material name -->
       <span class="badge badge-pill badge-secondary chip"><i class="fas fa-scroll"></i> Material</span>
       <h2 class="mb-3 first-letter">{{material?.label}} </h2>
       <div class="mb-3 mt-5">
@@ -10,5 +11,6 @@
       <img class="img-fluid rounded-circle" src="{{material?.imageSmall}}" alt="{{material?.label}}">
     </div>
   </div>
+  <!-- TODO remove heading and add directly in slider component, because it is all the same "Artworks" -->
   <app-slider [items]="sliderItems" heading="Artworks"> </app-slider>
 </div>

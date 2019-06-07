@@ -282,20 +282,36 @@ export class DataService {
     return rawEntities[0];
   }
 
-  /**
+   /**
    * Fetches multiple entities from the server
    * @param ids ids of entities that should be retrieved
    */
   public async findMultipleById<T>(ids: string[]): Promise<T[]> {
-    const fetchedEntities = [];
-    for (const id of ids) {
-      if (id) {
-        const entity = await this.findById<any>(id, null);
-        if (entity) {
-          fetchedEntities.push(entity);
-        }
-      }
+    const copyids =
+      ids &&
+      ids.filter((id) => {
+        return !!id;
+      });
+    if (!copyids || copyids.length === 0) {
+      return [];
     }
-    return fetchedEntities;
+    let options = {
+      query: {
+        bool: {
+          should: [],
+        },
+      },
+      size: 10000,
+    };
+    _.each(copyids, (id) => {
+      options.query.bool.should.push({
+        match: {
+          id: `${id}`,
+        },
+      });
+    });
+
+    const response = await this.http.post<any>(this.serverURI, options).toPromise();
+    return this.filterData<T>(response);
   }
 }

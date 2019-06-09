@@ -8,8 +8,12 @@
     </div>
   </div>
 
+  <!-- 
+    Modal for page overlay when enlarging image, shown when "modalIsVisible" is set to true 
+  -->
   <div class="modal" *ngIf="modalIsVisible" id="img-modal">
     <span class="close" (click)="closeModal()">&times;</span>
+    <!-- Zoom in and out functionality, see package ngx-image-viewer -->
     <div class="modal-content my-auto">
       <ngx-image-viewer [src]="[artwork?.image]" [config]="{
           allowFullscreen: false,
@@ -41,6 +45,11 @@
         <div class="col-md-1">
           <p *ngIf="artwork?.creators?.length" class="mb-1 text-muted">Artist:</p>
         </div>
+
+        <!-- 
+          Check length of attribute "creators", if not empty create chips 
+          and it's navigation link for every creator 
+        -->
         <div class="col-md-11">
           <p *ngIf="artwork?.creators?.length" class="mb-1 add-padding">
             <span class="badge badge-pill badge-secondary first-letter chip" *ngFor="let creator of artwork?.creators"
@@ -54,6 +63,11 @@
         <div class="col-md-1">
           <p *ngIf="artwork?.locations?.length" class="mb-1 text-muted">Location:</p>
         </div>
+
+        <!-- 
+          Check length of attribute "locations", if not empty create chips
+          and it's navigation link for every location
+        -->
         <div class="col-md-11">
           <p *ngIf="artwork?.locations?.length" class="mb-1 add-padding">
             <span class="badge badge-pill badge-secondary first-letter chip" *ngFor="let location of artwork?.locations"
@@ -67,10 +81,16 @@
         <div class="col-md-1">
           <p *ngIf="artwork?.inception" class="mb-1 text-muted">Inception:</p>
         </div>
+        <!-- Check if attribute "inception" not empty -->
         <div class="col-md-11">
           <p *ngIf="artwork?.inception" class="mb-1 notchip add-padding">{{ artwork?.inception }}</p>
         </div>
       </div>
+
+      <!--
+        Check the length of attributes "genres", "movements", "materials" or "depicts", if one of them not empty
+        show the collapse element
+      -->
       <div *ngIf="
           artwork?.genres?.length ||
           artwork?.movements?.length ||
@@ -88,6 +108,11 @@
             <div class="col-md-1">
               <p *ngIf="artwork?.genres?.length" class="mb-1 text-muted">Genre:</p>
             </div>
+
+            <!-- 
+              Check length of attribute "genres", if not empty create chips and it's navigation
+              link for every genre 
+            -->
             <div class="col-md-11">
               <p *ngIf="artwork?.genres?.length" class="mb-1 add-padding">
                 <span class="badge badge-pill badge-secondary first-letter chip" *ngFor="let genre of artwork?.genres"
@@ -101,6 +126,10 @@
             <div class="col-md-1">
               <p *ngIf="artwork?.movements?.length" class="mb-1 text-muted">Movement:</p>
             </div>
+
+            <!-- 
+              Check length of attribute "movements", if not empty create chips and it's navigation link for every movement 
+            -->
             <div class="col-md-11">
               <p *ngIf="artwork?.movements?.length" class="mb-1 add-padding">
                 <span class="badge badge-pill badge-secondary first-letter chip" *ngFor="let movement of artwork?.movements"
@@ -114,6 +143,10 @@
             <div class="col-md-1">
               <p *ngIf="artwork?.materials?.length" class="mb-1 text-muted">Material:</p>
             </div>
+
+            <!-- 
+              Check length of attribute "materials", if not empty create chips and it's navigation link for every material 
+            -->
             <div class="col-md-11">
               <p *ngIf="artwork?.materials?.length" class="mb-1 add-padding">
 
@@ -128,6 +161,10 @@
             <div class="col-md-1">
               <p *ngIf="artwork?.depicts?.length" class="mb-1 text-muted">Motif:</p>
             </div>
+
+            <!-- 
+              Check length of attribute "depicts", if not empty create chips and it's navigation link for every depict 
+            -->
             <div class="col-md-11">
               <p *ngIf="artwork?.depicts?.length" class="mb-1 add-padding">
                 <span class="badge badge-pill badge-secondary first-letter chip" *ngFor="let motif of artwork?.depicts"
@@ -141,6 +178,8 @@
             <div class="col-md-1">
               <p *ngIf="artwork?.height && artwork?.width" class="mb-1 text-muted">Dimension:</p>
             </div>
+
+            <!-- Check if attribute "height" and "width" not empty -->
             <div class="col-md-11">
               <p *ngIf="artwork?.height && artwork?.width" class="mb-1 notchip add-padding">
                 {{ artwork?.height }} x {{ artwork?.width }}cm
@@ -156,6 +195,9 @@
     <div class="col-sm-12">
       <h3>Related Artworks</h3>
 
+      <!--
+        For each tab of the slider carousel, create a nav-tabs item to switch between the sliders
+      -->
       <ul class="nav nav-tabs">
         <ng-container *ngFor="let tab of Object.keys(artworkTabs)">
           <li class="nav-item" *ngIf="artwork && artworkTabs[tab].items.length > 0">
@@ -166,11 +208,20 @@
         </ng-container>
       </ul>
 
+      <!--
+        For each tab of the slider carousel, create an app-slider. If the attribute "active" of the tab is set to true, 
+        set tab as active
+      -->
       <div class="tab-content">
         <div *ngFor="let tab of Object.keys(artworkTabs)" class="tab-pane fade" [ngClass]="{ 'show active': artworkTabs[tab].active }"
           id="{{ artworkTabs[tab].heading }}_tab">
+
+          <!-- 
+            Listen for an event and assign the attribute "hoveredArtwork" to the hovered artwork.
+          -->
           <app-slider (itemHover)="this.hoveredArtwork = $event" [items]="artworkTabs[tab].items"> </app-slider>
 
+          <!-- Collapse element for common tags -->
           <h3 class="mt-2 mb-0 more" data-toggle="collapse" href="#collapseTags" (click)="toggleCommonTags()">
             Common <span *ngIf="tab != 'all'">{{ tab }}</span> tags with artwork <span>"{{ (artwork?.label?.length>35)?
               (artwork?.label | slice:0:35)+'...':(artwork?.label) }}"</span>
@@ -180,6 +231,14 @@
 
           <div class="collapse show" id="collapseTags">
             <p class="mb-4 mt-0"><em>(move the mouse over an artwork to display common tags)</em></p>
+
+            <!-- 
+              For all attributes of the artwork check if length the attribute is not empty and 
+              the current tab in loop is "all" or the associated tab. If true then create 
+              the chips for each items of the attribute. If the current item is part of the 
+              associated attribute of hoveredArtwork, add the class badge-light to highlight 
+              the chip.
+            -->
             <span *ngIf="artwork?.depicts?.length && (tab == 'motif' || tab == 'all')" class="mb-1">
               <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1" [ngClass]="{'badge-light': motif && hoveredArtwork?.depicts?.includes(motif.id) }"
                 *ngFor="let motif of artwork?.depicts" [routerLink]="'/motif/' + motif.id">

@@ -201,13 +201,13 @@ export class ArtworkComponent implements OnInit, OnDestroy {
 
   /**
    * initializes an artwork tab with items,
-   * filters main artwork out of tab items,
+   * filters and shuffles main artwork out of tab items,
    * triggers all tab item selection after all other tabs are resolved
    * @param tab the tab that should be filled
    * @param items the items the tab should be filled with
    */
   fillArtworkTab(tab: ArtworkTab, items: Artwork[]) {
-    const filtered = items.filter((artwork) => artwork.id !== this.artwork.id);
+    const filtered = this.shuffle(items.filter((artwork) => artwork.id !== this.artwork.id));
     if (filtered.length > 0) {
       tab.items = filtered;
     }
@@ -216,6 +216,18 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       this.selectAllTabItems(10);
     }
   }
+
+  /**
+   * @description shuffle the items' categories.
+   * @memberof ArtworkComponent
+   */
+  shuffle = (a: Artwork[]): Artwork[] => {
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  };
 
   /**
    * @description show popup image zoom.
@@ -240,11 +252,14 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @description function to fetch items into 'all' tab from others.
+   * @description function to fetch items into 'all' tab from others tabs.
    * use Set to filter duplicates
    * param will determine how many times to loop the tabs
    * get a single artwork in each tab every time it loops (unless duplicate)
+   * shuffles the set at the end
    * set var artworkTabs.all.items to this Set
+   * @param {number} maxAmountFromEachTab
+   * @memberof ArtworkComponent
    */
   selectAllTabItems(maxAmountFromEachTab: number): void {
     const items = new Map<string, Artwork>();
@@ -255,7 +270,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
         }
       }
     }
-    this.artworkTabs.all.items = Array.from(items, ([key, value]) => value);
+    this.artworkTabs.all.items = this.shuffle(Array.from(items, ([key, value]) => value));
   }
 
   /**

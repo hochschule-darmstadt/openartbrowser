@@ -1,8 +1,16 @@
 <!-- TODO move style to css -->
 <footer class="page-footer text-center" style="padding: 5rem">
   <div class="container">
-    <!-- TODO copyright name change? -->
-    <p>Copyright &copy; Project System Development SS2019</p>
-    <a [routerLink]="['/about']">Impressum</a>
+
+    <div class="d-flex flex-wrap justify-content-center">
+      <a class="p-3" [routerLink]="['/about']">About</a>
+
+
+      <a class="p-3" [routerLink]="['/impress']">Legal Notice</a>
+
+
+      <a class="p-3" [routerLink]="['/data-protection']">Data protection declaration</a>
+    </div>
+
   </div>
 </footer>

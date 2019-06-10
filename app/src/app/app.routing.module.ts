@@ -17,8 +17,16 @@ const routes: Routes = [
     loadChildren: './pages/home/home.routing.module#HomeRoutingModule',
   },
   {
-    path: 'about',
+    path: 'impress',
     loadChildren: './pages/impress/impress.routing.module#ImpressRoutingModule',
+  },
+  {
+    path: 'data-protection',
+    loadChildren: './pages/data-protection/data-protection.routing.module#DataProtectionRoutingModule',
+  },
+  {
+    path: 'about',
+    loadChildren: './pages/about/about.routing.module#AboutRoutingModule',
   },
   {
     path: 'artist/:artistId',

@@ -7,7 +7,7 @@ import { Subject } from 'rxjs';
 import * as _ from 'lodash';
 
 /** interface for the tabs */
-interface SliderTab {
+interface ArtworkTab {
   heading: string;
   items: Artwork[];
   icon: string;
@@ -20,19 +20,14 @@ interface SliderTab {
   styleUrls: ['./artwork.component.scss'],
 })
 export class ArtworkComponent implements OnInit, OnDestroy {
-
   /**
    * @description the entity this page is about.
-   * @type {Artwork}
-   * @memberof ArtworkComponent
    */
   artwork: Artwork = null;
 
   /**
    * @description to toggle details container.
    * initial as true (close).
-   * @type {boolean}
-   * @memberof ArtworkComponent
    */
   collapseDown: boolean = true;
 
@@ -42,27 +37,24 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   /** score of meta data size */
   metaNumber: number = 0;
 
+  /** number of artworks tabs intialized */
+  artworkTabCounter = 0;
+
   /**
    * @description to toggle common tags container.
    * initial as true (close).
-   * @type {boolean}
-   * @memberof ArtworkComponent
    */
   collapseDownTags: boolean = true;
 
   /**
    * @description to save the artwork item that is being hovered.
-   * @type {Artwork}
-   * @memberof ArtworkComponent
    */
   hoveredArtwork: Artwork = null;
 
   /**
    * @description for the tabs in slider/carousel.
-   * @type {{ [key: string]: SliderTab }}
-   * @memberof ArtworkComponent
    */
-  artworkTabs: { [key: string]: SliderTab } = {
+  artworkTabs: { [key: string]: ArtworkTab } = {
     all: {
       heading: 'All',
       items: [],
@@ -109,122 +101,136 @@ export class ArtworkComponent implements OnInit, OnDestroy {
 
   /**
    * @description use this to end subscription to url parameter in ngOnDestroy
-   * @private
-   * @memberof ArtworkComponent
    */
   private ngUnsubscribe = new Subject();
 
   /**
    * @description to fetch object in the html.
-   * @memberof ArtworkComponent
    */
   Object = Object;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) { }
+  constructor(private dataService: DataService, private route: ActivatedRoute) {}
 
   /**
    * @description hook that is executed at component initialization
-   * @memberof ArtworkComponent
    */
   ngOnInit() {
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
+      this.hoveredArtwork = null;
       const artworkId = params.get('artworkId');
       /** Use data service to fetch entity from database */
       this.artwork = await this.dataService.findById<Artwork>(artworkId, EntityType.ARTWORK);
       /* Count meta data to show more on load */
       this.calculateCollapseState();
+      this.resetArtworkTabs();
       this.loadDependencies();
     });
   }
 
   /**
-   * TODO: write this shorter
+   * clears items of all artwork tabs
+   */
+  resetArtworkTabs() {
+    this.artworkTabs.all.items = [];
+    this.artworkTabs.artist.items = [];
+    this.artworkTabs.movement.items = [];
+    this.artworkTabs.genre.items = [];
+    this.artworkTabs.material.items = [];
+    this.artworkTabs.motif.items = [];
+    this.artworkTabs.location.items = [];
+  }
+
+  /**
    * resolves ids in artwork attributes with actual entities,
-   * loads slider items and initialized slider tabs
+   * loads slider items and initializes slider tabs
    */
   loadDependencies() {
-    /** number of sliders that have been loaded to see if all tab is ready to be initialized */
-    let loadCounter = 0;
-
+    this.artworkTabCounter = 0;
+    this.resetArtworkTabs();
     /** load artist related data */
-    if (this.artwork) {    
+    if (this.artwork) {
       this.dataService.findArtworksByArtists(this.artwork.creators as any).then((artworks) => {
-        this.artworkTabs.artist.items = artworks.filter((artwork) => artwork.id !== this.artwork.id);
-        ++loadCounter;
-        if (loadCounter == 6) {
-          this.selectAllTabItems(10);
-        }
+        this.fillArtworkTab(this.artworkTabs.artist, artworks);
       });
-      this.dataService.findMultipleById(this.artwork.creators as any).then((creators) => {
+      this.dataService.findMultipleById(this.artwork.creators as any, EntityType.ARTIST).then((creators) => {
         this.artwork.creators = creators;
       });
 
       /** load movement related data */
       this.dataService.findArtworksByMovements(this.artwork.movements as any).then((artworks) => {
-        this.artworkTabs.movement.items = artworks.filter((artwork) => artwork.id !== this.artwork.id);
-        ++loadCounter;
-        if (loadCounter == 6) {
-          this.selectAllTabItems(10);
-        }
+        this.fillArtworkTab(this.artworkTabs.movement, artworks);
       });
-      this.dataService.findMultipleById(this.artwork.movements as any).then((movements) => {
+      this.dataService.findMultipleById(this.artwork.movements as any, EntityType.MOVEMENT).then((movements) => {
         this.artwork.movements = movements;
       });
 
       /** load genre related data */
       this.dataService.findArtworksByGenres(this.artwork.genres as any).then((artworks) => {
-        this.artworkTabs.genre.items = artworks.filter((artwork) => artwork.id !== this.artwork.id);
-        ++loadCounter;
-        if (loadCounter == 6) {
-          this.selectAllTabItems(10);
-        }
+        this.fillArtworkTab(this.artworkTabs.genre, artworks);
       });
-      this.dataService.findMultipleById(this.artwork.genres as any).then((genres) => {
+      this.dataService.findMultipleById(this.artwork.genres as any, EntityType.GENRE).then((genres) => {
         this.artwork.genres = genres;
       });
 
       /** load motif related data */
       this.dataService.findArtworksByMotifs(this.artwork.depicts as any).then((artworks) => {
-        this.artworkTabs.motif.items = artworks.filter((artwork) => artwork.id !== this.artwork.id);
-        ++loadCounter;
-        if (loadCounter == 6) {
-          this.selectAllTabItems(10);
-        }
+        this.fillArtworkTab(this.artworkTabs.motif, artworks);
       });
-      this.dataService.findMultipleById(this.artwork.depicts as any).then((motifs) => {
+      this.dataService.findMultipleById(this.artwork.depicts as any, EntityType.MOTIF).then((motifs) => {
         this.artwork.depicts = motifs;
       });
 
       /** load loaction related data */
       this.dataService.findArtworksByLocations(this.artwork.locations as any).then((artworks) => {
-        this.artworkTabs.location.items = artworks.filter((artwork) => artwork.id !== this.artwork.id);
-        ++loadCounter;
-        if (loadCounter == 6) {
-          this.selectAllTabItems(10);
-        }
+        this.fillArtworkTab(this.artworkTabs.location, artworks);
       });
-      this.dataService.findMultipleById(this.artwork.locations as any).then((locations) => {
+      this.dataService.findMultipleById(this.artwork.locations as any, EntityType.LOCATION).then((locations) => {
         this.artwork.locations = locations;
       });
 
       /** load material related data */
       this.dataService.findArtworksByMaterials(this.artwork.materials as any).then((artworks) => {
-        this.artworkTabs.material.items = artworks.filter((artwork) => artwork.id !== this.artwork.id);
-        ++loadCounter;
-        if (loadCounter == 6) {
-          this.selectAllTabItems(10);
-        }
+        this.fillArtworkTab(this.artworkTabs.material, artworks);
       });
-      this.dataService.findMultipleById(this.artwork.materials as any).then((materials) => {
+      this.dataService.findMultipleById(this.artwork.materials as any, EntityType.MATERIAL).then((materials) => {
         this.artwork.materials = materials;
       });
     }
   }
 
   /**
-   * @description show popup image zoom.
+   * initializes an artwork tab with items,
+   * filters and shuffles main artwork out of tab items,
+   * triggers all tab item selection after all other tabs are resolved
+   * @param tab the tab that should be filled
+   * @param items the items the tab should be filled with
+   */
+  fillArtworkTab(tab: ArtworkTab, items: Artwork[]) {
+    const filtered = this.shuffle(items.filter((artwork) => artwork.id !== this.artwork.id));
+    if (filtered.length > 0) {
+      tab.items = filtered;
+    }
+    ++this.artworkTabCounter;
+    if (this.artworkTabCounter === 6) {
+      this.selectAllTabItems(10);
+    }
+  }
+
+  /**
+   * @description shuffle the items' categories.
    * @memberof ArtworkComponent
+   */
+  shuffle = (a: Artwork[]): Artwork[] => {
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  };
+
+  /**
+   * @description show popup image zoom.
    */
   showModal() {
     this.modalIsVisible = true;
@@ -232,7 +238,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
 
   /**
    * @description close popup image zoom.
-   * @memberof ArtworkComponent
    */
   closeModal() {
     this.modalIsVisible = false;
@@ -240,7 +245,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
 
   /**
    * @description Hook that is called when a directive, pipe, or service is destroyed.
-   * @memberof ArtworkComponent
    */
   ngOnDestroy() {
     this.ngUnsubscribe.next();
@@ -248,10 +252,11 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @description function to fetch items into 'all' tab from others.
+   * @description function to fetch items into 'all' tab from others tabs.
    * use Set to filter duplicates
    * param will determine how many times to loop the tabs
    * get a single artwork in each tab every time it loops (unless duplicate)
+   * shuffles the set at the end
    * set var artworkTabs.all.items to this Set
    * @param {number} maxAmountFromEachTab
    * @memberof ArtworkComponent
@@ -265,12 +270,11 @@ export class ArtworkComponent implements OnInit, OnDestroy {
         }
       }
     }
-    this.artworkTabs.all.items = Array.from(items, ([key, value]) => value);
+    this.artworkTabs.all.items = this.shuffle(Array.from(items, ([key, value]) => value));
   }
 
   /**
    * @description function to toggle details container.
-   * @memberof ArtworkComponent
    */
   toggleDetails(): void {
     this.collapseDown = !this.collapseDown;
@@ -282,56 +286,31 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   calculateCollapseState() {
     this.collapseDown = true;
-    if (this.artwork) { 
-      if (!_.isEmpty(this.artwork.genres))
-      this.metaNumber += this.artwork.genres.length > 3 ? this.artwork.genres.length : 3;
-      if (!_.isEmpty(this.artwork.materials))
-      this.metaNumber += this.artwork.materials.length > 3 ? this.artwork.genres.length : 3;
-      if (!_.isEmpty(this.artwork.movements))
-      this.metaNumber += this.artwork.movements.length > 3 ? this.artwork.movements.length : 3;
-      if (!_.isEmpty(this.artwork.depicts))
-      this.metaNumber += this.artwork.depicts.length > 3 ? this.artwork.depicts.length : 3;
-      if (!this.artwork.height && !this.artwork.width)
-      this.metaNumber += 3;
-    }
-      if (this.metaNumber < 10) {
-        this.collapseDown = false;
+    if (this.artwork) {
+      if (!_.isEmpty(this.artwork.genres)) {
+        this.metaNumber += this.artwork.genres.length > 3 ? this.artwork.genres.length : 3;
+      }
+      if (!_.isEmpty(this.artwork.materials)) {
+        this.metaNumber += this.artwork.materials.length > 3 ? this.artwork.genres.length : 3;
+      }
+      if (!_.isEmpty(this.artwork.movements)) {
+        this.metaNumber += this.artwork.movements.length > 3 ? this.artwork.movements.length : 3;
+      }
+      if (!_.isEmpty(this.artwork.depicts)) {
+        this.metaNumber += this.artwork.depicts.length > 3 ? this.artwork.depicts.length : 3;
+      }
+      if (!this.artwork.height && !this.artwork.width) {
+        this.metaNumber += 3;
       }
     }
+    if (this.metaNumber < 10) {
+      this.collapseDown = false;
+    }
+  }
   /**
    * @description function to toggle common tags container.
-   * @memberof ArtworkComponent
    */
   toggleCommonTags(): void {
     this.collapseDownTags = !this.collapseDownTags;
-  }
-
-  /**
-   * @description function to determine if a tab is not empty.
-   * @param {string} key
-   * @returns {boolean}
-   * @memberof ArtworkComponent
-   */
-  showTab(key: string): boolean {
-    if (this.artwork) {
-      switch (key) {
-        case 'all':
-          return true;
-        case 'artist':
-          return this.artwork.creators && this.artwork.creators.length > 0;
-        case 'movement':
-          return this.artwork.movements && this.artwork.movements.length > 0;
-        case 'genre':
-          return this.artwork.genres && this.artwork.genres.length > 0;
-        case 'motif':
-          return this.artwork.depicts && this.artwork.depicts.length > 0;
-        case 'location':
-          return this.artwork.locations && this.artwork.locations.length > 0;
-        case 'material':
-          return this.artwork.materials && this.artwork.materials.length > 0;
-        default:
-          return false;
-      }
-    }
   }
 }

@@ -11,6 +11,7 @@
   }
 }
 
+/* Animate the enlargement of the image */
 .enlarge {
   position: absolute;
   bottom: 1%;
@@ -25,6 +26,7 @@
   cursor: pointer;
 }
 
+/* Animate the "enlarge icon" when the image is hovered */
 .img-container:hover .enlarge {
   -webkit-transform: scale(1.5) translate(-4px,-4px);
   -ms-transform: scale(1.5) translate(-4px,-4px);
@@ -102,6 +104,7 @@
   border-color: #FFFFFF;
 }
 
+/* When the nav-tabs is active */
 .nav-tabs > li > a.active,
 .nav-tabs > li > a.active:focus,
 .nav-tabs > li > a.active:hover,
@@ -110,6 +113,7 @@
   border-color: #FFFFFF;
 }
 
+/* When the nav-tabs is hovered */
 .nav-tabs > li > a:hover {
   background-color: #868e9644;
   border-color: rgba(255, 255, 255, 0.274);
@@ -119,12 +123,14 @@
     cursor: pointer;
 }
 
+/* For highlighted common tags chips */
 .badge-light{
     color: #444;
     background-color: #fff;
     opacity: 1 !important;
 }
 
+/* If not highlighted, set as transparent (opacity .4) */
 .badge-transparent{
   opacity: .4;
 }

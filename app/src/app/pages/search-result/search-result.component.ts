@@ -1,3 +1,4 @@
+// TODO remove unused imports
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Artist, Artwork } from 'src/app/shared/models/models';
 import { DataService } from 'src/app/core/services/data.service';

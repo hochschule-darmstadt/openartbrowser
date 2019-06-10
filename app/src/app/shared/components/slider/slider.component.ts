@@ -44,7 +44,7 @@ export class SliderComponent implements OnChanges {
     // There are 8 images on each slide.
     const numberOfSlides = this.items.length / 8;
     for (let i = 0; i < numberOfSlides; i++) {
-      const slide: Entity[] = this.items.splice(0, 8);
+      const slide: Entity[] = this.items.slice(i * 8, i * 8 + 8);
       slidesBuilt.push(slide);
     }
     this.slides = slidesBuilt;

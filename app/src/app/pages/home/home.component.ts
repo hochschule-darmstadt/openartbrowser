@@ -137,18 +137,13 @@ export class HomeComponent implements OnInit {
   };
 
   /**
-   * @description assign backgroundImageUrl with a random image from one of the items.
+   * @description assign backgroundImageUrl with a random image from one of the artworks.
    * @memberof HomeComponent
    */
   getRandomImage = (): void => {
-    let allItems: Entity[] = this.upperCategories['artwork'].items.concat(
-      this.upperCategories['artist'].items,
-      this.upperCategories['movement'].items,
-      this.lowerCategories['location'].items,
-      this.lowerCategories['material'].items,
-      this.lowerCategories['genre'].items,
-      this.lowerCategories['motif'].items
-    );
-    this.backgroundImageUrl = allItems[Math.floor(Math.random() * (allItems.length))].imageMedium;
+    if (this.upperCategories['artwork'].items.length > 0) {
+      let artworks = this.upperCategories['artwork'].items;
+      this.backgroundImageUrl = artworks[Math.floor(Math.random() * (artworks.length))].imageMedium;
+    }
   };
 }

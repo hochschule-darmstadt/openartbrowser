@@ -26,15 +26,18 @@ export class SlideComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     if (window && 'IntersectionObserver' in window) {
-      const obs = new IntersectionObserver((entries) => {
-        /** check whether any element of the slide is currently visible on screen */
-        entries.forEach(({ isIntersecting }) => {
-          if (isIntersecting) {
-            this.loadContent = true;
-            obs.unobserve(this.el.nativeElement);
-          }
-        });
-      });
+      const obs = new IntersectionObserver(
+        (entries) => {
+          /** check whether any element of the slide is currently visible on screen */
+          entries.forEach(({ isIntersecting }) => {
+            if (isIntersecting) {
+              this.loadContent = true;
+              obs.unobserve(this.el.nativeElement);
+            }
+          });
+        },
+        { rootMargin: '100%' }
+      );
       obs.observe(this.el.nativeElement);
     } else {
       this.loadContent = true;

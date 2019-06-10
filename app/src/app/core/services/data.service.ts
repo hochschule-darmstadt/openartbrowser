@@ -12,7 +12,7 @@ export class DataService {
 	 * Constructor
 	 */
   constructor(private http: HttpClient) { }
-  serverURI = 'http://141.100.60.99:9200/api/_search';
+  serverURI = 'http://openartbrowser.org/api/_search';
   public async findEntitiesByLabelText(text: string): Promise<Entity[]> {
     const options = {
       "query": {
@@ -81,60 +81,60 @@ export class DataService {
 	 * @param keywords the list of worlds to search for.
 	 * 
 	 */
-	public async findArtworksByCategories(searchObj: artSearch, keywords: string[] = []): Promise<Artwork[]> {
-		let options = {
-			"query": {
-				"bool": {
-					"must": []
-				}
-			},
-			"sort": [
-				{
-					"relativeRank": {
-						"order": "desc"
-					}
-				}
-			],
-			"size": 10 // change it if you want more results 
-		};
-		options.query.bool.must.push({
-			"match": {
-				"type": "artwork"
-			}
-		});
-		_.each(searchObj, function (arr, key) {
-			if (_.isArray(arr))
-				_.each(arr, function (val) {
-					options.query.bool.must.push({
-						"match": {
-							[key]: val
-						}
-					});
-				});
-		});
-		if (keywords.length !== 0) {
-			_.each(keywords, function (keyword) {
-				options.query.bool.must.push({
-					"bool":{
-						"should":[
-							{
-								"match":{
-									"label": keyword
-								}
-							},
-							{
-								"match":{
-									"description":keyword
-								}
-							}
-						]
-					}
-				})
-			});
-		}
-		const reponse = await this.http.post<any>(this.serverURI, options).toPromise();
-		return this.filterData<Artwork>(reponse);
-	}
+  public async findArtworksByCategories(searchObj: artSearch, keywords: string[] = []): Promise<Artwork[]> {
+    let options = {
+      "query": {
+        "bool": {
+          "must": []
+        }
+      },
+      "sort": [
+        {
+          "relativeRank": {
+            "order": "desc"
+          }
+        }
+      ],
+      "size": 10 // change it if you want more results 
+    };
+    options.query.bool.must.push({
+      "match": {
+        "type": "artwork"
+      }
+    });
+    _.each(searchObj, function (arr, key) {
+      if (_.isArray(arr))
+        _.each(arr, function (val) {
+          options.query.bool.must.push({
+            "match": {
+              [key]: val
+            }
+          });
+        });
+    });
+    if (keywords.length !== 0) {
+      _.each(keywords, function (keyword) {
+        options.query.bool.must.push({
+          "bool": {
+            "should": [
+              {
+                "match": {
+                  "label": keyword
+                }
+              },
+              {
+                "match": {
+                  "description": keyword
+                }
+              }
+            ]
+          }
+        })
+      });
+    }
+    const reponse = await this.http.post<any>(this.serverURI, options).toPromise();
+    return this.filterData<Artwork>(reponse);
+  }
   public async findArtworksByArtists(artistIds: string[]): Promise<Artwork[]> {
     const response = await this.http.post<any>(this.serverURI, this.constructQuery("creators", artistIds)).toPromise();
     return this.filterData<Artwork>(response);
@@ -285,17 +285,34 @@ export class DataService {
   /**
    * Fetches multiple entities from the server
    * @param ids ids of entities that should be retrieved
+   * @param type if specified, it is assured that the returned entities have this entityType
    */
-  public async findMultipleById<T>(ids: string[]): Promise<T[]> {
-    const fetchedEntities = [];
-    for (const id of ids) {
-      if (id) {
-        const entity = await this.findById<any>(id, null);
-        if (entity) {
-          fetchedEntities.push(entity);
-        }
-      }
+  public async findMultipleById<T>(ids: string[], type?: EntityType): Promise<T[]> {
+    const copyids =
+      ids &&
+      ids.filter((id) => {
+        return !!id;
+      });
+    if (!copyids || copyids.length === 0) {
+      return [];
     }
-    return fetchedEntities;
+    let options = {
+      query: {
+        bool: {
+          should: [],
+        },
+      },
+      size: 10000,
+    };
+    _.each(copyids, (id) => {
+      options.query.bool.should.push({
+        match: {
+          id: `${id}`,
+        },
+      });
+    });
+
+    const response = await this.http.post<any>(this.serverURI, options).toPromise();
+    return this.filterData<T>(response, type);
   }
 }

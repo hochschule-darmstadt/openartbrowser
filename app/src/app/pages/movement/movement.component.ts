@@ -37,7 +37,7 @@ export class MovementComponent implements OnInit, OnDestroy {
       });
 
       /** dereference influenced_bys  */
-      this.dataService.findMultipleById(this.movement.influenced_by as any).then((influences) => {
+      this.dataService.findMultipleById(this.movement.influenced_by as any, EntityType.ARTIST).then((influences) => {
         this.movement.influenced_by = influences;
       });
     });

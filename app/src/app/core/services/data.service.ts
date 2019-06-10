@@ -81,60 +81,60 @@ export class DataService {
 	 * @param keywords the list of worlds to search for.
 	 * 
 	 */
-	public async findArtworksByCategories(searchObj: artSearch, keywords: string[] = []): Promise<Artwork[]> {
-		let options = {
-			"query": {
-				"bool": {
-					"must": []
-				}
-			},
-			"sort": [
-				{
-					"relativeRank": {
-						"order": "desc"
-					}
-				}
-			],
-			"size": 10 // change it if you want more results 
-		};
-		options.query.bool.must.push({
-			"match": {
-				"type": "artwork"
-			}
-		});
-		_.each(searchObj, function (arr, key) {
-			if (_.isArray(arr))
-				_.each(arr, function (val) {
-					options.query.bool.must.push({
-						"match": {
-							[key]: val
-						}
-					});
-				});
-		});
-		if (keywords.length !== 0) {
-			_.each(keywords, function (keyword) {
-				options.query.bool.must.push({
-					"bool":{
-						"should":[
-							{
-								"match":{
-									"label": keyword
-								}
-							},
-							{
-								"match":{
-									"description":keyword
-								}
-							}
-						]
-					}
-				})
-			});
-		}
-		const reponse = await this.http.post<any>(this.serverURI, options).toPromise();
-		return this.filterData<Artwork>(reponse);
-	}
+  public async findArtworksByCategories(searchObj: artSearch, keywords: string[] = []): Promise<Artwork[]> {
+    let options = {
+      "query": {
+        "bool": {
+          "must": []
+        }
+      },
+      "sort": [
+        {
+          "relativeRank": {
+            "order": "desc"
+          }
+        }
+      ],
+      "size": 10 // change it if you want more results 
+    };
+    options.query.bool.must.push({
+      "match": {
+        "type": "artwork"
+      }
+    });
+    _.each(searchObj, function (arr, key) {
+      if (_.isArray(arr))
+        _.each(arr, function (val) {
+          options.query.bool.must.push({
+            "match": {
+              [key]: val
+            }
+          });
+        });
+    });
+    if (keywords.length !== 0) {
+      _.each(keywords, function (keyword) {
+        options.query.bool.must.push({
+          "bool": {
+            "should": [
+              {
+                "match": {
+                  "label": keyword
+                }
+              },
+              {
+                "match": {
+                  "description": keyword
+                }
+              }
+            ]
+          }
+        })
+      });
+    }
+    const reponse = await this.http.post<any>(this.serverURI, options).toPromise();
+    return this.filterData<Artwork>(reponse);
+  }
   public async findArtworksByArtists(artistIds: string[]): Promise<Artwork[]> {
     const response = await this.http.post<any>(this.serverURI, this.constructQuery("creators", artistIds)).toPromise();
     return this.filterData<Artwork>(response);
@@ -282,11 +282,12 @@ export class DataService {
     return rawEntities[0];
   }
 
-   /**
+  /**
    * Fetches multiple entities from the server
    * @param ids ids of entities that should be retrieved
+   * @param type if specified, it is assured that the returned entities have this entityType
    */
-  public async findMultipleById<T>(ids: string[]): Promise<T[]> {
+  public async findMultipleById<T>(ids: string[], type?: EntityType): Promise<T[]> {
     const copyids =
       ids &&
       ids.filter((id) => {
@@ -312,6 +313,6 @@ export class DataService {
     });
 
     const response = await this.http.post<any>(this.serverURI, options).toPromise();
-    return this.filterData<T>(response);
+    return this.filterData<T>(response, type);
   }
 }

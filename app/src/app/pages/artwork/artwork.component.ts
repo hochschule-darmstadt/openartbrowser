@@ -117,6 +117,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   ngOnInit() {
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
+      this.hoveredArtwork = null;
       const artworkId = params.get('artworkId');
       /** Use data service to fetch entity from database */
       this.artwork = await this.dataService.findById<Artwork>(artworkId, EntityType.ARTWORK);
@@ -152,7 +153,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       this.dataService.findArtworksByArtists(this.artwork.creators as any).then((artworks) => {
         this.fillArtworkTab(this.artworkTabs.artist, artworks);
       });
-      this.dataService.findMultipleById(this.artwork.creators as any).then((creators) => {
+      this.dataService.findMultipleById(this.artwork.creators as any, EntityType.ARTIST).then((creators) => {
         this.artwork.creators = creators;
       });
 
@@ -160,7 +161,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       this.dataService.findArtworksByMovements(this.artwork.movements as any).then((artworks) => {
         this.fillArtworkTab(this.artworkTabs.movement, artworks);
       });
-      this.dataService.findMultipleById(this.artwork.movements as any).then((movements) => {
+      this.dataService.findMultipleById(this.artwork.movements as any, EntityType.MOVEMENT).then((movements) => {
         this.artwork.movements = movements;
       });
 
@@ -168,7 +169,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       this.dataService.findArtworksByGenres(this.artwork.genres as any).then((artworks) => {
         this.fillArtworkTab(this.artworkTabs.genre, artworks);
       });
-      this.dataService.findMultipleById(this.artwork.genres as any).then((genres) => {
+      this.dataService.findMultipleById(this.artwork.genres as any, EntityType.GENRE).then((genres) => {
         this.artwork.genres = genres;
       });
 
@@ -176,7 +177,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       this.dataService.findArtworksByMotifs(this.artwork.depicts as any).then((artworks) => {
         this.fillArtworkTab(this.artworkTabs.motif, artworks);
       });
-      this.dataService.findMultipleById(this.artwork.depicts as any).then((motifs) => {
+      this.dataService.findMultipleById(this.artwork.depicts as any, EntityType.MOTIF).then((motifs) => {
         this.artwork.depicts = motifs;
       });
 
@@ -184,7 +185,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       this.dataService.findArtworksByLocations(this.artwork.locations as any).then((artworks) => {
         this.fillArtworkTab(this.artworkTabs.location, artworks);
       });
-      this.dataService.findMultipleById(this.artwork.locations as any).then((locations) => {
+      this.dataService.findMultipleById(this.artwork.locations as any, EntityType.LOCATION).then((locations) => {
         this.artwork.locations = locations;
       });
 
@@ -192,7 +193,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       this.dataService.findArtworksByMaterials(this.artwork.materials as any).then((artworks) => {
         this.fillArtworkTab(this.artworkTabs.material, artworks);
       });
-      this.dataService.findMultipleById(this.artwork.materials as any).then((materials) => {
+      this.dataService.findMultipleById(this.artwork.materials as any, EntityType.MATERIAL).then((materials) => {
         this.artwork.materials = materials;
       });
     }

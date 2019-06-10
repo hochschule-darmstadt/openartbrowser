@@ -46,11 +46,11 @@ export class ArtistComponent implements OnInit, OnDestroy {
         this.sliderItems = artworks;
       });
       /** dereference movements  */
-      this.dataService.findMultipleById(this.artist.movements as any).then((movements) => {
+      this.dataService.findMultipleById(this.artist.movements as any, EntityType.MOVEMENT).then((movements) => {
         this.artist.movements = movements;
       });
       /** dereference influenced_bys */
-      this.dataService.findMultipleById(this.artist.influenced_by as any).then((influences) => {
+      this.dataService.findMultipleById(this.artist.influenced_by as any, EntityType.ARTIST).then((influences) => {
         this.artist.influenced_by = influences;
       });
 

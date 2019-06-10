@@ -7,6 +7,7 @@
   display: block;
   width: 100%;
   max-height: 100%;
+  cursor: pointer;
 }
 
 .overlay_view {
@@ -23,6 +24,7 @@
   transform: scale(0);
   -webkit-transition: 0.3s ease;
   transition: 0.3s ease;
+  cursor: pointer;
 }
 
 .item {
@@ -37,11 +39,6 @@
   -webkit-transform: scale(1);
   -ms-transform: scale(1);
   transform: scale(1);
-  cursor: pointer;
-}
-
-.img_descrition:hover {
-  opacity: 1;
 }
 
 .img_description {
@@ -54,4 +51,8 @@
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
   text-align: center;
+}
+
+.slide {
+  height: 40em;
 }

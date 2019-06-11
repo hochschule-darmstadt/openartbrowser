@@ -1,25 +1,50 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { Observable } from 'rxjs';
 import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { debounceTime, switchMap } from 'rxjs/operators';
-import { FormsModule } from '@angular/forms';
+import { TagItem } from '../../models/models';
 
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
 })
+
 export class SearchComponent implements OnInit {
-  hideElement = true;
-  addtags: string[] = [];
+
+   /**
+   * @description input for search component. 
+   * @type string
+   * @memberof SearchComponent
+   */
   searchInput: string;
+
+   /**
+   * @description simple check to prep tag for removal 
+   * @type boolean
+   * @memberof SearchComponent
+   */
   rmTag: boolean = false;
+  
+   /**
+   * @description Array of all chips. 
+   * @type TagItemp[]
+   * @memberof SearchComponent
+   */
+  searchItems: TagItem[] = [];
 
   constructor(private dataService: DataService, private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit() {}
 
+   /**
+   * @description basic type-ahead function for search bar. 
+   * This function get objects from data service,
+   * sort objects and filter by criteria,
+   * slice to return limited number of objects
+   * @memberof SearchComponent
+   */
   formatter = (x: { name: string }) => x.name;
 
   public search = (text$: Observable<string>) =>
@@ -68,7 +93,7 @@ export class SearchComponent implements OnInit {
           .sort((a,b): any => {
             let typeA = a.type;
             let typeB = b.type;
-            if ((typeA == 'artist' || typeA == 'artwork') && (typeB == 'artwork' || typeB == 'artist')) { 
+            if ((typeA === 'artist' || typeA === 'artwork') && (typeB === 'artwork' || typeB === 'artist')) { // switch place of artist and artwork
               if (typeB < typeA) { return -1; } else if (typeA < typeB) { return 1; }
             }
           });
@@ -76,59 +101,143 @@ export class SearchComponent implements OnInit {
       })
     )
 
+   /**
+   * @description function called when selecting an item in type-ahead suggestions 
+   * based on type of item
+   * @memberof SearchComponent
+   */
     public async itemSelected($event){
-      if ($event.item.type == 'object') {
+      if ($event.item.type === 'object') {
+        let eventItem: TagItem = {
+          label : $event.item.label,
+          type: $event.item.type,
+          id: $event.item.id
+        };
+        this.searchItems.push(eventItem);
         const url = `/motif/${$event.item.id}`;
-        this.addtags.push($event.item.label);
+        this.searchInput = '';
+        $event.preventDefault();
         this.router.navigate([url]);
-      } else if ($event.item.type == 'artwork'){
+      } else if ($event.item.type === 'artwork'){
         const url = `/${$event.item.type}/${$event.item.id}`;
-        // this.addtags.push($event.item.label);
+        this.searchInput = '';
         this.router.navigate([url]);
       } else {
+        let eventItem: TagItem = {
+          label : $event.item.label,
+          type: $event.item.type,
+          id: $event.item.id
+        };
+        this.searchItems.push(eventItem);
         const url = `/${$event.item.type}/${$event.item.id}`;
-        this.addtags.push($event.item.label);
+        this.searchInput = '';
+        $event.preventDefault();
         this.router.navigate([url]);
       }
     }
 
-    public navigateToSearchText(term: string) {
-      this.searchInput = '';
-      if (term !== '') {
-        this.addtags.push(`"${term}"`);
+  /**
+   * @description search for string when no item is selected 
+   * @memberof SearchComponent
+   */
+    public navigateToSearchText(term) {
+      // this.searchInput = '';
+      if (term !== '' && !(term instanceof Object)) {
+        let searchItem : TagItem = {
+          label: term, 
+          type: null,
+          id: null
+        };
+        this.searchItems.push(searchItem);
         let url = '/search/';
-        if (this.addtags.length > 1) {
-          url += `${this.addtags.join('&').replace(/"/g, '')}`;
+        if (this.searchItems.length > 1) {
+          let searchString = this.searchItems.map(item => item.label).join('&').replace(/"/g, '');
+          url += `${searchString}`;
         } else {
           url += `${term}`;
-          console.log(this.addtags);
         }
+        this.dataService.sendTagItems(this.searchItems);
+        this.searchInput = '';
         this.router.navigate([url]);
+      } else if (term === '' && this.searchInput === '' && !(term instanceof Object)) {
+        console.log('search input is: ' + this.searchInput);
+        let url = '/search/';
+        if (this.searchItems.length > 1) {
+          let searchString = this.searchItems.map(item => item.label).join('&').replace(/"/g, '');
+          url += `${searchString}`;
+          this.dataService.sendTagItems(this.searchItems);
+          this.searchInput = '';
+          this.router.navigate([url]);
+        }
       }
     }
 
-    private removeTag(i: string) {
-      const index = this.addtags.indexOf(i);
-      if (index > -1) {
-        this.addtags.splice(index, 1);
-      }
-    }
+     /**
+   * @description search items when there are chips and no input 
+   * @memberof SearchComponent
+   */
+    public searchText() {
+        let term = this.searchInput;
+        this.navigateToSearchText(term); 
+  }
 
+   /**
+   * @description remove chip from search bar 
+   * @memberof SearchComponent
+   */
+  private removeTag(item: TagItem) {
+    this.searchItems = this.searchItems.filter(i => i !== item);
+      }
+
+   /**
+   * @description get chips ready to be removed. 
+   * used to prevent backspace to accidentally delete all chips 
+   * @memberof SearchComponent
+   */
     public readyToRemove() {
-      if (this.searchInput === '' && this.addtags.length > 0) {
+      if (this.searchInput === '' && this.searchItems.length > 0) {
         this.rmTag = true;
       }
     }
-
+   /**
+   * @description remove newest chip 
+   * @memberof SearchComponent
+   */
     public removeNewestTag() {
-      if (this.rmTag === true && this.searchInput === '') {
-        this.addtags.splice(this.addtags.length - 1, 1);
+      if (this.searchInput === '' && this.rmTag === true) {
+        this.searchItems.splice(this.searchItems.length - 1, 1);
       }
       this.rmTag = false;
+
     }
 
-    public clearAllTags(){
-      this.addtags = [];
+       /**
+   * @description remove all chips
+   * @memberof SearchComponent
+   */
+    public clearAllTags() {
+      this.searchItems = [];
     }
+
+       /**
+   * @description truncate input text
+   * @memberof SearchComponent
+   */
+    private truncate(input: string) {
+      if (input.length > 8) {
+   return input.substring(0, 7) + '...';
+      } else {
+        return input;
+      }
+    }
+
+       /**
+   * @description add chip for string
+   * @memberof SearchComponent
+   */
+    public formatNoTypeChip(label: string) {
+      return `"${label}"`;
+    }
+
 
 }

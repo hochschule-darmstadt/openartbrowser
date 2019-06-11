@@ -1,5 +1,6 @@
-const csvFilePath = '/Users/marouanekherrabi/Documents/STUDY/PSE/ArtOntology/ArtOntology/artworks.csv';
-const jsonFilePath = '/Users/marouanekherrabi/Documents/STUDY/PSE/ArtOntology/jsonData/artworks.json';
+// converts csv to json
+const csvFilePath = 'artworks.csv';
+const jsonFilePath = 'artworks.json';
 
 const fs = require('fs');
 const es = require('event-stream');

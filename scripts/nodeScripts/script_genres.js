@@ -1,5 +1,6 @@
-const csvFilePath = '/Users/marouanekherrabi/Documents/STUDY/PSE/ArtOntology/ArtOntology/genres.csv';
-const jsonFilePath = '/Users/marouanekherrabi/Documents/STUDY/PSE/ArtOntology/jsonData/genres.json';
+//converts csv to json
+const csvFilePath = 'genres.csv';
+const jsonFilePath = 'genres.json';
 
 const fs = require('fs');
 const csv = require('fast-csv')

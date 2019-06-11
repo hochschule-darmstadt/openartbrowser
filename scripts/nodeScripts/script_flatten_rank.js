@@ -1,14 +1,15 @@
+// combines all the json files
 const fs = require('fs')
 const _ = require('lodash')
 
-const artists = '/Users/marouanekherrabi/Documents/STUDY/PSE/ArtOntology/jsonData/artists_rank.json'
-const artworks = '/Users/marouanekherrabi/Documents/STUDY/PSE/ArtOntology/jsonData/artworks_rank.json'
-const genres = '/Users/marouanekherrabi/Documents/STUDY/PSE/ArtOntology/jsonData/genres_rank.json'
-const locations = '/Users/marouanekherrabi/Documents/STUDY/PSE/ArtOntology/jsonData/locations_rank.json'
-const materials = '/Users/marouanekherrabi/Documents/STUDY/PSE/ArtOntology/jsonData/materials_rank.json'
-const movements = '/Users/marouanekherrabi/Documents/STUDY/PSE/ArtOntology/jsonData/movements_rank.json'
-const objects = '/Users/marouanekherrabi/Documents/STUDY/PSE/ArtOntology/jsonData/objects_rank.json'
-const master = '/Users/marouanekherrabi/Documents/STUDY/PSE/ArtOntology/jsonData/master_flat_rank.json'
+const artists = 'artists_rank.json'
+const artworks = 'artworks_rank.json'
+const genres = 'genres_rank.json'
+const locations = 'locations_rank.json'
+const materials = 'materials_rank.json'
+const movements = 'movements_rank.json'
+const objects = 'objects_rank.json'
+const master = 'master_flat_rank.json'
 
 const artistStream = fs.createReadStream(artists, { flags: 'r', encoding: 'utf8' })
 const artworksStream = fs.createReadStream(artworks, { flags: 'r', encoding: 'utf8' })

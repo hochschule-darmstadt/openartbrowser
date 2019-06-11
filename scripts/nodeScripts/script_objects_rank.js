@@ -1,6 +1,7 @@
-const objectFilePath = '/Users/marouanekherrabi/Documents/STUDY/PSE/ArtOntology/jsonData/objects.json'
-const artworksFilePath = '/Users/marouanekherrabi/Documents/STUDY/PSE/ArtOntology/jsonData/artworks_rank.json'
-const destObjectFilePath = '/Users/marouanekherrabi/Documents/STUDY/PSE/ArtOntology/jsonData/objects_rank.json'
+// adds ranking
+const objectFilePath = 'objects.json'
+const artworksFilePath = 'artworks_rank.json'
+const destObjectFilePath = 'objects_rank.json'
 
 const fs = require('fs')
 const _ = require('lodash')

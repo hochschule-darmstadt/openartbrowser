@@ -1,8 +1,9 @@
+// adds ranking
 let fs = require('fs')
 let _ = require('lodash')
 
-const filePath = '/Users/marouanekherrabi/Documents/STUDY/PSE/ArtOntology/jsonData/artworks.json'
-const destPath = '/Users/marouanekherrabi/Documents/STUDY/PSE/ArtOntology/jsonData/artworks_rank.json'
+const filePath = 'artworks.json'
+const destPath = 'artworks_rank.json'
 let readStream = fs.createReadStream(filePath, { flags: 'r', encoding: 'UTF-8' })
 
 let buf = ''

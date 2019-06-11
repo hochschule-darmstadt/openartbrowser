@@ -1,5 +1,4 @@
-# TODO rename the folder pyScripts into something that related to the function (like scripts/Wikidata crawler)
-# TODO add short description about what the function do
+# insert json objects from master_flat.json into wiki_data Elasticsearch index
 from elasticsearch import Elasticsearch, helpers
 import sys, json
 import ijson

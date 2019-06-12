@@ -35,6 +35,13 @@
     -ms-transform: scale(1);
     transform: scale(1);
   }
+
+  &-container {
+    height: 20em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
 
 .img_description {

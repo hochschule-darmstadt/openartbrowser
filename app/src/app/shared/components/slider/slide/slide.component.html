@@ -2,7 +2,7 @@
   *ngFor="let item of items"
   (mouseenter)="this.itemHover.emit(item)"
   (mouseleave)="this.itemHover.emit(null)"
-  class="pb-4 col-sm-3 mt-auto mb-auto"
+  class="pb-4 col-sm-3 mt-auto mb-auto item-container"
 >
   <div *ngIf="loadContent" class="img item" [routerLink]="['/artwork', item?.id]">
     <img class="img-fluid img_self" src="{{ item?.imageSmall }}" alt="{{ item?.label }}" />

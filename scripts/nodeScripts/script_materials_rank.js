@@ -13,6 +13,7 @@ let buf = ''
 let materialsCounter = new Map()
 let materialMonsterObj = {}
 
+// TODO Add a short comment
 function openMaterials() {
 	materialReadStream.on('data', function (data) {
 		buf += data
@@ -31,6 +32,7 @@ function openMaterials() {
 	return materialReadStream
 }
 
+// TODO Add a short comment
 function openArtworks() {
 	buf = ''
 	artworksReadStream.on('data', function (data) {
@@ -56,6 +58,7 @@ function openArtworks() {
 	return artworksReadStream;
 }
 
+// TODO Add a short comment
 function writeMaterials() {
 	let rankStep = 1 / _.size(materialMonsterObj)
 	let percentage = 0

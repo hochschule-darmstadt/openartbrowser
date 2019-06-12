@@ -13,6 +13,7 @@ let buf = ''
 let locationsCounter = new Map()
 let locationMonsterObj = {}
 
+// TODO Add a short comment
 function openArtists() {
 	locationReadStream.on('data', function (data) {
 		buf += data
@@ -31,6 +32,7 @@ function openArtists() {
 	return locationReadStream
 }
 
+// TODO Add a short comment
 function openArtworks() {
 	buf = ''
 	artworksReadStream.on('data', function (data) {
@@ -56,6 +58,7 @@ function openArtworks() {
 	return artworksReadStream;
 }
 
+// TODO Add a short comment
 function writeArtists() {
 	let rankStep = 1 / _.size(locationMonsterObj)
 	let percentage = 0

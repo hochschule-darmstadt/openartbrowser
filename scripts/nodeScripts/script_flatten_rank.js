@@ -37,6 +37,7 @@ function constructObjects(stream, obj) {
 	return stream
 }
 
+// TODO Add a short comment
 constructObjects(artistStream, artistObj)
 	.on('close', function () {
 		constructObjects(artworksStream, artworkObj)

@@ -63,6 +63,7 @@ const csvStream = csv({ delimiter: ';' })
 
 stream.pipe(csvStream)
 
+// TODO Add short comment
 function constructArray(str) {
 	let splittedString = str.split('');
 	splittedString = _.without(splittedString, "'", '[', ']', " ");

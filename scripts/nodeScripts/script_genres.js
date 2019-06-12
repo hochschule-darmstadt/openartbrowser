@@ -45,8 +45,10 @@ const csvStream = csv({ delimiter: ';' })
 		});
 	})
 
+// TODO Add a short comment
 stream.pipe(csvStream)
 
+// TODO Add a short comment
 function constructArray(str) {
 	let splittedString = str.split('');
 	splittedString = _.without(splittedString, "'", '[', ']', " ");

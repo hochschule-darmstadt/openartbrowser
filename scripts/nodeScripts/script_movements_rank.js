@@ -13,6 +13,7 @@ let buf = ''
 let movementsCounter = new Map()
 let movementMonsterObj = {}
 
+// TODO Add a short comment
 function openMovements() {
 	movementsReadStream.on('data', function (data) {
 		buf += data
@@ -31,6 +32,7 @@ function openMovements() {
 	return movementsReadStream
 }
 
+// TODO Add a short comment
 function openArtworks() {
 	buf = ''
 	artworksReadStream.on('data', function (data) {
@@ -56,6 +58,7 @@ function openArtworks() {
 	return artworksReadStream;
 }
 
+// TODO Add a short comment
 function writeMovements() {
 	let rankStep = 1 / _.size(movementMonsterObj)
 	let percentage = 0

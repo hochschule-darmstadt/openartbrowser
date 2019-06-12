@@ -13,6 +13,7 @@ let buf = ''
 let artistsCounter = new Map()
 let artistMonsterObj = {}
 
+// TODO Add a short comment
 function openArtists() {
 	artistReadStream.on('data', function (data) {
 		buf += data
@@ -31,6 +32,7 @@ function openArtists() {
 	return artistReadStream
 }
 
+// TODO Add a short comment
 function openArtworks() {
 	buf = ''
 	artworksReadStream.on('data', function (data) {
@@ -55,6 +57,7 @@ function openArtworks() {
 	return artworksReadStream;
 }
 
+// TODO Add a short comment
 function writeArtists() {
 	let rankStep = 1 / _.size(artistMonsterObj)
 	let percentage = 0

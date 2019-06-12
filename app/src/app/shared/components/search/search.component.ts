@@ -114,7 +114,6 @@ export class SearchComponent implements OnInit {
             (a, b): any => {
               let typeA = a.type;
               let typeB = b.type;
-              //TODO: is this if statements really neccessary? would if (typeB < typeA)  not do the same thing already?
               if ((typeA === 'artist' || typeA === 'artwork') && (typeB === 'artwork' || typeB === 'artist')) {
                 // switch place of artist and artwork
                 if (typeB < typeA) {
@@ -211,7 +210,7 @@ export class SearchComponent implements OnInit {
    * @description search items when there are chips and no input
    * @memberof SearchComponent
    */
-  public searfchText() {
+  public searchText() {
     let term = this.searchInput;
     this.navigateToSearchText(term);
   }

@@ -1,13 +1,13 @@
-  <div
-    *ngFor="let item of items"
-    (mouseenter)="this.itemHover.emit(item)"
-    (mouseleave)="this.itemHover.emit(null)"
-    class="pb-4 col-sm-3 mt-auto mb-auto"
-  >
-    <div *ngIf="loadContent" class="img img_container item" [routerLink]="['/artwork', item?.id]">
-      <img class="img-fluid img_self" src="{{ item?.imageSmall }}" alt="{{ item?.label }}" />
-      <div class="overlay_view">
-        <span class="img_description">{{ item?.label }}</span>
-      </div>
+<div
+  *ngFor="let item of items"
+  (mouseenter)="this.itemHover.emit(item)"
+  (mouseleave)="this.itemHover.emit(null)"
+  class="pb-4 col-sm-3 mt-auto mb-auto"
+>
+  <div *ngIf="loadContent" class="img item" [routerLink]="['/artwork', item?.id]">
+    <img class="img-fluid img_self" src="{{ item?.imageSmall }}" alt="{{ item?.label }}" />
+    <div class="overlay_view">
+      <span class="img_description">{{ item?.label }}</span>
     </div>
+  </div>
 </div>

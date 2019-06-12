@@ -1,8 +1,3 @@
-/* Text over image */
-.img_container {
-  position: relative;
-}
-
 .img_self {
   display: block;
   width: 100%;
@@ -28,17 +23,18 @@
 }
 
 .item {
+  position: relative;
   max-height: 20em;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: center;
-}
 
-.img_container:hover .overlay_view {
-  -webkit-transform: scale(1);
-  -ms-transform: scale(1);
-  transform: scale(1);
+  &:hover .overlay_view {
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+  }
 }
 
 .img_description {
@@ -51,8 +47,4 @@
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
   text-align: center;
-}
-
-.slide {
-  height: 40em;
 }

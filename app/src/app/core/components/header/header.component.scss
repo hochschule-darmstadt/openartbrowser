@@ -14,11 +14,6 @@
   margin-top: 10px;
 }
 
-// TODO remove unused comments
-/*.search-form ::ng-deep .form-control {
-  height: 32px;
-}*/
-
 
 .navbar-nav {
   width: 100%;
@@ -30,8 +25,6 @@
 
 #navbarColor03:hover .form-group,
 .search-form .form-group:focus-within {
-  //display: block;
-  //width: 400%;
   border-radius: 4px 25px 25px 4px;
   flex-grow: 1;
 }

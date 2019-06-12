@@ -27,7 +27,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
   /** score of meta data size */
   metaNumber: number = 0;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) { }
+  constructor(private dataService: DataService, private route: ActivatedRoute) {}
 
   toggleDetails() {
     this.collapseDown = !this.collapseDown;
@@ -57,7 +57,6 @@ export class ArtistComponent implements OnInit, OnDestroy {
       /* Count meta data to show more on load */
 
       this.calculateCollapseState();
-
     });
   }
 
@@ -67,15 +66,18 @@ export class ArtistComponent implements OnInit, OnDestroy {
    */
   calculateCollapseState() {
     this.collapseDown = true;
-    // TODO it's always good to have IF(){ close bracket }
-    if (!this.artist.gender)
+    if (!this.artist.gender) {
       this.metaNumber += 3;
-    if (!_.isEmpty(this.artist.influenced_by))
+    }
+    if (!_.isEmpty(this.artist.influenced_by)) {
       this.metaNumber += this.artist.influenced_by.length > 3 ? this.artist.influenced_by.length : 3;
-    if (!_.isEmpty(this.artist.movements))
+    }
+    if (!_.isEmpty(this.artist.movements)) {
       this.metaNumber += this.artist.movements.length > 3 ? this.artist.movements.length : 3;
-    if (!_.isEmpty(this.artist.citizenship))
+    }
+    if (!_.isEmpty(this.artist.citizenship)) {
       this.metaNumber += 3;
+    }
     if (this.metaNumber < 10) {
       this.collapseDown = false;
     }

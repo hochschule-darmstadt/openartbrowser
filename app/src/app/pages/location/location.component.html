@@ -17,7 +17,6 @@
           <p *ngIf="location?.website" class="text-muted">Official page:</p>
         </div>
         <div class="col-md-9 pl-0 info">
-          <!-- TODO add target="_blank" to open location's website in another tab -->
           <p *ngIf="location?.website"><a href="{{location?.website}}" target="_blank">{{location?.label}}</a></p>
         </div>
       </div>

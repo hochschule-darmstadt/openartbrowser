@@ -2,29 +2,6 @@ img {
   max-height: 20em;
 }
 
-// TODO remove unused .more class
-.more {
-  cursor: pointer;
-}
-
-// TODO remove unused .google-maps class
-/* google maps */
-.google-maps {
-  position: relative;
-  padding-bottom: 30%; // This is the aspect ratio
-  height: 0;
-  overflow: hidden;
-
-  iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100% !important;
-    height: 100% !important;
-  }
-
-}
-
 @media (min-width: 992px) {
   .info {
     margin-left: -2em;

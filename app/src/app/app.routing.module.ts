@@ -59,6 +59,10 @@ const routes: Routes = [
   {
     path: 'search/:term',
     component: SearchResultComponent
+  },
+  {
+    path: '**',
+    redirectTo: ''
   }
 ];
 

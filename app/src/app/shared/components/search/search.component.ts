@@ -100,6 +100,7 @@ export class SearchComponent implements OnInit {
             return rankB > rankA ? 1 : rankB < rankA ? -1 : 0;
           }
           )
+          //TODO: i think instead of using .filter we should write an own function for it.
           .filter(
             (w, i, arr) => (w.type === 'artist' && // if type is artwork or artist, take 3
               w.type !== (arr[i - 3] ? arr[i - 3].type : '')) ||
@@ -113,6 +114,7 @@ export class SearchComponent implements OnInit {
             (a, b): any => {
               let typeA = a.type;
               let typeB = b.type;
+              //TODO: is this if statements really neccessary? would if (typeB < typeA)  not do the same thing already?
               if ((typeA === 'artist' || typeA === 'artwork') && (typeB === 'artwork' || typeB === 'artist')) {
                 // switch place of artist and artwork
                 if (typeB < typeA) {

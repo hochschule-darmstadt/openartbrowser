@@ -80,3 +80,9 @@ export enum EntityType {
   MOVEMENT = 'movement',
   MOTIF = 'object'
 }
+
+export interface TagItem{
+  label: string;
+  type?: string;
+  id?: string;
+}

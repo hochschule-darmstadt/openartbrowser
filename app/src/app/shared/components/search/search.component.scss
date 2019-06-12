@@ -40,10 +40,11 @@ span.form-control-feedback {
   font-size: 14px;
 }
 
-.fa-search {
-  color: #38dfa7;
-  margin: -26px 7px;
+#search-button {
+  position: relative;
+  margin: -37px -7px;
   float: right;
+  z-index: 30;
 }
 
 #search-badge {
@@ -86,12 +87,15 @@ span.form-control-feedback {
   margin-left: 4px;
 }
 
-.fa-user {
-  height: 25px !important;
-  width: 25px !important;
-  margin: 8px;
+#search-header {
+  position: relative;
+  margin-top: -3px;
+  z-index: 20;
 }
 
-#search-header {
-  margin-top: -3px;
+.chip-placeholder{
+  position: relative;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  z-index: 10;
 }

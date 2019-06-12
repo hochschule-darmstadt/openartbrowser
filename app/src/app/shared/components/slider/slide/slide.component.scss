@@ -28,7 +28,7 @@
 }
 
 .item {
-  height: 20em;
+  max-height: 20em;
   overflow: hidden;
   display: flex;
   flex-direction: column;

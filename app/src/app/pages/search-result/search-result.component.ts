@@ -12,6 +12,7 @@ import { Subject, Subscription } from 'rxjs';
   styleUrls: ['./search-result.component.scss']
 })
 export class SearchResultComponent implements OnInit {
+  //TODO: ngUnsubscribe not needed since there are no subscriptions that should be canceled
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();
 
@@ -33,6 +34,7 @@ export class SearchResultComponent implements OnInit {
   /** hook that is executed at component initialization */
   async ngOnInit() {
     this.searchItems = this.dataService.getTagItems();
+    //TODO: remove console logs
     console.log("Search item is: ")
     console.log(this.searchItems);
     for (let i = 0; i < this.searchItems.length; i++) {
@@ -60,24 +62,33 @@ export class SearchResultComponent implements OnInit {
           break;
       }
     }
-    console.log("Artist is : " + this.artistArray);
-    console.log("Genre is : " + this.genreArray);
-    console.log("String is : " + this.searchTerms);
-    this.sliderItems = await this.dataService.findArtworksByCategories({ creators: this.artistArray, 
-                                                                          depicts: this.objectArray, 
-                                                                          movements: this.movementArray, 
-                                                                          locations: this.locationArray,
-                                                                          genres: this.genreArray,
-                                                                          materials: this.materialArray }, this.searchTerms);
+    //TODO: remove console logs
+    console.log('Artist is : ' + this.artistArray);
+    console.log('Genre is : ' + this.genreArray);
+    console.log('String is : ' + this.searchTerms);
+    this.sliderItems = await this.dataService.findArtworksByCategories(
+      {
+        creators: this.artistArray,
+        depicts: this.objectArray,
+        movements: this.movementArray,
+        locations: this.locationArray,
+        genres: this.genreArray,
+        materials: this.materialArray,
+      },
+      this.searchTerms
+    );
     console.log(this.sliderItems);
   }
 
+  //TODO: remove unused code
   //  public async getSearchResult(){
   //   this.subscription = this.dataService.getTagItems().subscribe(data => {this.searchItems = data})
   // console.log("Search item is: ")
   // console.log(this.searchItems);
   //  }
-
+  //
+  //TODO: this is not needed, because we dont use subscriptions in this component.
+  //besides, if wanted to use it, we would habe to implement OnDestroy
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

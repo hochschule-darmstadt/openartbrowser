@@ -34,7 +34,6 @@
       <i class="fas fa-image"></i>
     </span>
   </ng-template>
-  <!-- <img [src]="r['image']" class="mr-1" style="width: 75px; padding: 5px;"> -->
   <span id="search-badge" class="badge badge-secondary"><span *ngIf="r['type'] != 'object'; else elseBlock"> {{ r?.type
       }}</span>
     <ng-template #elseBlock> motif </ng-template>
@@ -59,4 +58,4 @@
     (selectItem)="itemSelected($event)" (keyup.enter)="navigateToSearchText(input.value)" (keyup.esc)="clearAllTags()"
     (keyup.backspace)="readyToRemove()" (keydown.backspace)="removeNewestTag()" [(ngModel)]="searchInput" />
 </div>
-<button id="search-button" class="btn btn-link" (click)="searchText()"><i class="fas fa-search" ></i></button>
+<button id="search-button" class="btn btn-link" (click)="searchText()"><i class="fas fa-search"></i></button>

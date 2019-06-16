@@ -1,3 +1,7 @@
+@import '../../../../variables.scss';
+
+$color1: #00bc8c;
+
 input.form-control {
   padding-right: 20px;
   border: 0 none;
@@ -63,7 +67,7 @@ span.form-control-feedback {
 
 :host ::ng-deep .ngb-highlight {
   font-weight: 700;
-  color: red;
+  color: $color1;
 }
 
 :host ::ng-deep .dropdown-item {

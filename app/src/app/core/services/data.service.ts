@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Entity, Artwork, artSearch, EntityType, TagItem } from 'src/app/shared/models/models';
 import * as _ from 'lodash';
-import { Subject, Observable } from 'rxjs';
 
 
 /**
@@ -10,8 +9,6 @@ import { Subject, Observable } from 'rxjs';
  */
 @Injectable()
 export class DataService {
-
-  private searchTerms : TagItem[] = [];
 
 	/**
 	 * Constructor
@@ -100,7 +97,7 @@ export class DataService {
           }
         }
       ],
-      "size": 10 // change it if you want more results 
+      "size": 10000,
     };
     options.query.bool.must.push({
       "match": {
@@ -319,13 +316,5 @@ export class DataService {
 
     const response = await this.http.post<any>(this.serverURI, options).toPromise();
     return this.filterData<T>(response, type);
-  }
-
-  public sendTagItems(tagObj : TagItem[]){
-    this.searchTerms = tagObj;
-  }
-
-  public getTagItems() : TagItem[] {
-    return this.searchTerms;
   }
 }

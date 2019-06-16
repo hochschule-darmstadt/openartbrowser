@@ -127,6 +127,11 @@
   cursor: pointer;
 }
 
+/* Unset cursor: pointer; badge */
+.cursor-unset{
+  cursor: unset;
+}
+
 /* For highlighted common tags chips */
 .badge-light {
   color: #444;

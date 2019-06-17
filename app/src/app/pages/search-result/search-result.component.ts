@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Artwork } from 'src/app/shared/models/models';
+import { Artwork, EntityType, Artist, Location, Movement, Genre, Material, Motif } from 'src/app/shared/models/models';
 import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
@@ -14,12 +14,12 @@ export class SearchResultComponent implements OnInit, OnDestroy {
   /** Related artworks */
   sliderItems: Artwork[] = [];
 
-  motifArray: string[] = [];
-  artistArray: string[] = [];
-  movementArray: string[] = [];
-  locationArray: string[] = [];
-  genreArray: string[] = [];
-  materialArray: string[] = [];
+  motifArray: Motif[] = [];
+  artistArray: Artist[] = [];
+  movementArray: Movement[] = [];
+  locationArray: Location[] = [];
+  genreArray: Genre[] = [];
+  materialArray: Material[] = [];
   searchTerms: string[] = [];
 
   /** use this to end subscription to url parameter in ngOnDestroy */
@@ -32,34 +32,43 @@ export class SearchResultComponent implements OnInit, OnDestroy {
     /** Extract the search params from url query params. */
     this.route.queryParams.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
       this.searchTerms = params.term ? [].concat(params.term) : [];
-      this.artistArray = params.artist ? [].concat(params.artist) : [];
-      this.motifArray = params.motif ? [].concat(params.motif) : [];
-      this.movementArray = params.movement ? [].concat(params.movement) : [];
-      this.locationArray = params.location ? [].concat(params.location) : [];
-      this.genreArray = params.genre ? [].concat(params.genre) : [];
-      this.materialArray = params.material ? [].concat(params.material) : [];
 
+      if (params.artist) {
+        this.artistArray = await this.dataService.findMultipleById([].concat(params.artist), EntityType.ARTIST);
+      }
+      if (params.movement) {
+        this.movementArray = await this.dataService.findMultipleById([].concat(params.movement), EntityType.MOVEMENT);
+      }
+      if (params.genre) {
+        this.genreArray = await this.dataService.findMultipleById([].concat(params.genre), EntityType.GENRE);
+      }
+      if (params.motif) {
+        this.motifArray = await this.dataService.findMultipleById([].concat(params.motif), EntityType.MOTIF);
+      }
+      if (params.location) {
+        this.locationArray = await this.dataService.findMultipleById([].concat(params.location), EntityType.LOCATION);
+      }
+      if (params.material) {
+        this.materialArray = await this.dataService.findMultipleById([].concat(params.material), EntityType.MATERIAL);
+      }
       await this.getSearchResults();
     });
   }
 
   /** fetch search results */
   async getSearchResults() {
-    this.dataService
+    this.sliderItems = await this.dataService
       .findArtworksByCategories(
         {
-          creators: this.artistArray,
-          depicts: this.motifArray,
-          movements: this.movementArray,
-          locations: this.locationArray,
-          genres: this.genreArray,
-          materials: this.materialArray,
+          creators: this.artistArray.map((artist) => artist.id),
+          depicts: this.motifArray.map((motif) => motif.id),
+          movements: this.movementArray.map((movement) => movement.id),
+          locations: this.locationArray.map((loc) => loc.id),
+          genres: this.genreArray.map((genre) => genre.id),
+          materials: this.materialArray.map((material) => material.id)
         },
         this.searchTerms
       )
-      .then((items) => {
-        this.sliderItems = items;
-      });
   }
 
   ngOnDestroy() {

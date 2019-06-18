@@ -14,7 +14,6 @@
   margin-top: 10px;
 }
 
-
 .navbar-nav {
   width: 100%;
 }
@@ -33,6 +32,11 @@
 .search-form .form-group:focus-within ::ng-deep .search-chip {
   display: inline-block;
   margin-bottom: 6px;
+}
+
+#navbarColor03:hover ::ng-deep .form-group {
+  width: 100%;
+  border-radius: 4px 25px 25px 4px;
 }
 
 @media screen and (max-width: 768px) {

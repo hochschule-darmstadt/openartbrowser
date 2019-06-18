@@ -10,9 +10,7 @@ import { TagItem } from '../../models/models';
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
 })
-
 export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
-
   /**
    * @description input for search component
    */
@@ -47,7 +45,12 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
    * @type string[]
    * @memberof SearchComponent
    */
-  placeholderArray: string[] = ['Search for something...', 'Try "Mona Lisa"', 'Try "Vincent van Gogh"', 'Try "Renaissance"'];
+  placeholderArray: string[] = [
+    'Search for something...',
+    'Try "Mona Lisa"',
+    'Try "Vincent van Gogh"',
+    'Try "Renaissance"',
+  ];
 
   /**
    * @description Counter of placeholderArray.
@@ -55,14 +58,14 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   counter = 0;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute, private router: Router) { }
+  constructor(private dataService: DataService, private router: Router) {}
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   ngAfterViewInit() {
     this.placeholderText = this.placeholderArray[0];
-    const inv = interval(4000);
-    this.subscription = inv.subscribe(val => this.changePlaceholdertext());
+    const inv = interval(8000);
+    this.subscription = inv.subscribe((val) => this.changePlaceholdertext());
   }
 
   ngOnDestroy() {
@@ -148,7 +151,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
               (w.type === 'artist' && // if type is artwork or artist, take 3
                 w.type !== (arr[i - 3] ? arr[i - 3].type : '')) ||
               (w.type !== 'artwork' &&
-                w.type !== 'artist' && // if type is other type, take 2
+              w.type !== 'artist' && // if type is other type, take 2
                 w.type !== (arr[i - 2] ? arr[i - 2].type : '')) ||
               (w.type === 'artwork' && w.type !== (arr[i - 3] ? arr[i - 3].type : ''))
           ) // To Do: get more suggestion if list does not have enough elements

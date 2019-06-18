@@ -51,9 +51,16 @@ span.form-control-feedback {
   z-index: 30;
 }
 
-#search-badge {
+#search-badge-artwork {
   float: right;
   margin-left: 15px;
+  margin-top: 18px;
+}
+
+#search-badge-other {
+  float: right;
+  margin-left: 15px;
+  margin-top: 12px;
 }
 
 .type-container {

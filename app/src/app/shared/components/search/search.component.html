@@ -35,10 +35,19 @@
     </span>
   </ng-template>
   <!-- <img [src]="r['image']" class="mr-1" style="width: 75px; padding: 5px;"> -->
-  <span id="search-badge" class="badge badge-secondary"><span *ngIf="r['type'] != 'object'; else elseBlock"> {{ r?.type
-      }}</span>
-    <ng-template #elseBlock> motif </ng-template>
+  <span id="search-badge-artwork" class="badge badge-secondary" *ngIf="r['type'] == 'artwork'; else elseBlock1">
+    artwork
   </span>
+  <ng-template #elseBlock1>
+    <span id="search-badge-other" class="badge badge-secondary" *ngIf="r['type'] != 'depict'; else elseBlock2">
+      {{ r?.type }}
+    </span>
+  </ng-template>
+  <ng-template #elseBlock2>
+    <span id="search-badge-other" class="badge badge-secondary">
+      motif
+    </span>
+  </ng-template>
   <ngb-highlight [result]="r.label" [term]="t" style="padding: 8px;"></ngb-highlight>
 </ng-template>
 <div class="chips chips-placeholder d-flex align-items-center">
@@ -55,8 +64,8 @@
   </ng-template>
 
   <input id="search-header" class="form-control flex-grow-1" [focusFirst]="false" type="text" name="Artwork" #input
-    placeholder="Search for an Artwork ..." [ngbTypeahead]="search" [resultTemplate]="rt" [inputFormatter]="formatter"
+    placeholder="{{ placeholderText }}" [ngbTypeahead]="search" [resultTemplate]="rt" [inputFormatter]="formatter"
     (selectItem)="itemSelected($event)" (keyup.enter)="navigateToSearchText(input.value)" (keyup.esc)="clearAllTags()"
     (keyup.backspace)="readyToRemove()" (keydown.backspace)="removeNewestTag()" [(ngModel)]="searchInput" />
 </div>
-<button id="search-button" class="btn btn-link" (click)="searchText()"><i class="fas fa-search" ></i></button>
+<button id="search-button" class="btn btn-link" (click)="searchText()"><i class="fas fa-search"></i></button>

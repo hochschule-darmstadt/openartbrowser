@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { interval, Subscription, Observable } from 'rxjs';
 import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { debounceTime, switchMap } from 'rxjs/operators';
@@ -11,7 +11,7 @@ import { TagItem } from '../../models/models';
   styleUrls: ['./search.component.scss'],
 })
 
-export class SearchComponent implements OnInit {
+export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /**
    * @description input for search component.
@@ -34,9 +34,58 @@ export class SearchComponent implements OnInit {
    */
   searchItems: TagItem[] = [];
 
+  /**
+   * @description Subscription to subscribe to interval.
+   * @type Subscription
+   * @memberof SearchComponent
+   */
+  subscription: Subscription;
+
+  /**
+   * @description String value binding the placeholder in the searchbar.
+   * @type string
+   * @memberof SearchComponent
+   */
+  placeholderText: string;
+
+  /**
+   * @description Array of all placeholder values.
+   * @type string[]
+   * @memberof SearchComponent
+   */
+  placeholderArray: string[] = ['Search for something...', 'Try "Mona Lisa"', 'Try "Vincent van Gogh"', 'Try "Renaissance"'];
+
+  /**
+   * @description Counter of placeholderArray.
+   * @memberof SearchComponent
+   */
+  counter = 0;
+
   constructor(private dataService: DataService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() { }
+
+  ngAfterViewInit() {
+    this.placeholderText = this.placeholderArray[0];
+    const inv = interval(4000);
+    this.subscription = inv.subscribe(val => this.changePlaceholdertext());
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
+  /**
+   * @description Change the text inside the placeholder.
+   * @memberof SearchComponent
+   */
+  public changePlaceholdertext() {
+    ++this.counter;
+    if (this.counter == this.placeholderArray.length) {
+      this.counter = 0;
+    }
+    this.placeholderText = this.placeholderArray[this.counter];
+  }
 
   /**
    * @description basic type-ahead function for search bar.

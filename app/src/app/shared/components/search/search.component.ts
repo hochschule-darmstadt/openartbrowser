@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { DataService } from 'src/app/core/services/data.service';
 import { Router } from '@angular/router';
@@ -10,9 +10,7 @@ import { TagItem } from '../../models/models';
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
 })
-
 export class SearchComponent implements OnInit {
-
   /**
    * @description input for search component
    */
@@ -23,14 +21,18 @@ export class SearchComponent implements OnInit {
    */
   rmTag: boolean = false;
 
+  /** whether search is header or home page */
+  @Input()
+  isHeaderSearch = false;
+
   /**
    * @description Array of all chips.
    */
   searchItems: TagItem[] = [];
 
-  constructor(private dataService: DataService, private router: Router) { }
+  constructor(private dataService: DataService, private router: Router) {}
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   /**
    * @description basic type-ahead function for search bar.
@@ -99,7 +101,7 @@ export class SearchComponent implements OnInit {
               (w.type === 'artist' && // if type is artwork or artist, take 3
                 w.type !== (arr[i - 3] ? arr[i - 3].type : '')) ||
               (w.type !== 'artwork' &&
-                w.type !== 'artist' && // if type is other type, take 2
+              w.type !== 'artist' && // if type is other type, take 2
                 w.type !== (arr[i - 2] ? arr[i - 2].type : '')) ||
               (w.type === 'artwork' && w.type !== (arr[i - 3] ? arr[i - 3].type : ''))
           ) // To Do: get more suggestion if list does not have enough elements
@@ -243,23 +245,5 @@ export class SearchComponent implements OnInit {
    */
   public clearAllTags() {
     this.searchItems = [];
-  }
-
-  /**
-   * @description truncate input text
-   */
-  private truncate(input: string) {
-    if (input.length > 8) {
-      return input.substring(0, 7) + '...';
-    } else {
-      return input;
-    }
-  }
-
-  /**
-   * @description add chip for string
-   */
-  public formatNoTypeChip(label: string) {
-    return `"${label}"`;
   }
 }

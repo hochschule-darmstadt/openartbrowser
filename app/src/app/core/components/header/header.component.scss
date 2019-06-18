@@ -1,45 +1,59 @@
+.navbar-nav {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
 .dropdown-toggle::after {
   display: none;
 }
 
-.search-form .form-group {
-  float: right !important;
-  transition: all 0.35s, border-radius 0s;
-  width: 32px;
-  height: 32px;
-  background-color: #fff;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
-  border-radius: 25px;
-  border: 1px solid #ccc;
-  margin-top: 10px;
-}
-
-
-.navbar-nav {
+.search-form {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex: 1;
   width: 100%;
+
+  .form-group {
+    width: 32px;
+    margin: 0 1em;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+    transition: all 0.35s ease-out;
+  }
+
+  ::ng-deep .search__header-chips {
+    overflow: hidden;
+    opacity: 0;
+    max-height: 0px;
+    height: 0px;
+    transition: all 0.35s ease-in;
+    padding: 0;
+  }
 }
 
-.search-form ::ng-deep .search-chip {
-  display: none;
+#navbarColor03:hover ::ng-deep .search__header-chips,
+.form-group:focus-within ::ng-deep .search__header-chips {
+  opacity: 1;
+
+  transition: all 0.35s ease-in;
+  max-height: 60px;
+  height: auto;
+  padding: 0.2em;
+  padding-bottom: 0.5em;
 }
 
 #navbarColor03:hover .form-group,
 .search-form .form-group:focus-within {
-  border-radius: 4px 25px 25px 4px;
   flex-grow: 1;
 }
 
-#navbarColor03:hover ::ng-deep .search-chip,
-.search-form .form-group:focus-within ::ng-deep .search-chip {
-  display: inline-block;
-  margin-bottom: 6px;
-}
-
 @media screen and (max-width: 768px) {
-
-  #navbarColor03:hover ::ng-deep .form-group {
+  #navbarColor03:hover .form-group {
     width: 250px;
-    border-radius: 4px 25px 25px 4px;
   }
 }
 
@@ -50,10 +64,9 @@
     font-size: 1em;
   }
 
-  @media (min-width:577px) and (max-width: 991px) {
+  @media (min-width: 577px) and (max-width: 991px) {
     font-size: 1.2em;
   }
-
 }
 
 #h3-span {
@@ -64,7 +77,7 @@
     margin-left: 2em;
   }
 
-  @media (min-width:577px) and (max-width: 991px) {
+  @media (min-width: 577px) and (max-width: 991px) {
     font-size: 0.6em;
   }
 }

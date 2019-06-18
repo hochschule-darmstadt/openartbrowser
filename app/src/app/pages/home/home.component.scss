@@ -48,8 +48,6 @@ $color1: #00bc8c;
       letter-spacing: 0rem;
       color: $color1;
 
-
-
       @media (min-width: 768px) and (max-width: 991px) {
         font-size: 3vh;
       }
@@ -74,7 +72,6 @@ $color1: #00bc8c;
       font-size: 12vh;
       letter-spacing: 0rem;
       color: $color1;
-
 
       @media (min-width: 768px) and (max-width: 991px) {
         font-size: 9vh;
@@ -109,7 +106,6 @@ $color1: #00bc8c;
     #homeSearch {
       ::ng-deep .dropdown-menu.show {
         display: block;
-        width: 90%;
 
         /* Resize result item*/
         .dropdown-item {
@@ -120,7 +116,6 @@ $color1: #00bc8c;
 
           @media (min-width: 577px) and (max-width: 767px) {
             font-size: 1.1rem;
-
           }
 
           @media (min-width: 377px) and (max-width: 576px) {
@@ -148,6 +143,7 @@ $color1: #00bc8c;
 :host ::ng-deep .search div input {
   height: 3.5rem;
   font-size: 1.7rem;
+  width: 100%;
 
   @media (min-width: 577px) and (max-width: 767px) {
     height: 2.5rem;
@@ -210,7 +206,7 @@ $color1: #00bc8c;
       box-shadow: 0 0 20px 1px black;
     }
 
-    &:hover>.overlay {
+    &:hover > .overlay {
       transition: all 0.2s ease;
       width: 100%;
       height: 100%;

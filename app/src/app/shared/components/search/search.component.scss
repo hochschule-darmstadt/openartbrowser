@@ -9,97 +9,126 @@ input.form-control {
   box-shadow: none;
   display: block;
   overflow: hidden;
-}
 
-input.form-control::-webkit-input-placeholder {
-  display: none;
-}
-
-input.form-control:-moz-placeholder {
-  /* Firefox 18- */
-  display: none;
-}
-
-input.form-control::-moz-placeholder {
   /* Firefox 19+ */
-  display: none;
+  &::-moz-placeholder,
+  /* Firefox 18- */
+  &:-moz-placeholder, 
+  &:-ms-input-placeholder,
+  &::-webkit-input-placeholder, {
+    display: none;
+  }
 }
 
-input.form-control:-ms-input-placeholder {
-  display: none;
-}
-
-span.form-control-feedback {
-  position: absolute;
-  top: -1px;
-  right: -2px;
-  z-index: 2;
-  display: block;
-  width: 34px;
-  height: 34px;
-  line-height: 34px;
-  text-align: center;
-  color: #3596e0;
-  left: initial;
-  font-size: 14px;
-}
-
-#search-button {
+.search {
   position: relative;
-  margin: -37px -7px;
-  float: right;
-  z-index: 30;
-}
-
-#search-badge {
-  float: right;
-  margin-left: 15px;
-}
-
-.type-container {
-  position: relative;
-  display: inline-block;
-  padding: 8px;
-  padding-right: 0;
-  width: 74px;
-  text-align: center;
-}
-
-:host ::ng-deep .ngb-highlight {
-  font-weight: 700;
-  color: $color1;
-}
-
-:host ::ng-deep .dropdown-item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
   width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 1.3rem;
+
+  &__header {
+    &-chips {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      padding: 0.2em;
+      background: #f5f5f5;
+      border-radius: 8px;
+      border: 0px solid #ccc;
+      padding-bottom: 0.5em;
+    }
+
+    &-chip {
+      font-size: 1em;
+      margin: 0.2em;
+      display: flex;
+      align-items: center;
+
+      &-label {
+        display: inline-block;
+        max-width: 20em;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+
+        &--entity {
+          margin-left: $SizeTiny;
+        }
+      }
+
+      &-removeButton {
+        margin-left: 4px;
+      }
+    }
+
+    &-input {
+      position: relative;
+      width: 100%;
+      flex-wrap: wrap;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+
+      &-searchButton {
+        position: relative;
+        margin: -37px -7px;
+        margin-top: -34px;
+        float: right;
+        z-index: 30;
+      }
+    }
+  }
+
+  &__result {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    flex-wrap: nowrap;
+
+    &-type {
+      padding: 8px 0;
+      position: relative;
+      display: inline-block;
+      width: 74px;
+      text-align: center;
+
+      &-thumbnail {
+        max-width: 70px;
+        height: 45px;
+        object-fit: contain;
+      }
+    }
+
+    &-label {
+      flex: 1;
+      padding: 8px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    &-chip {
+      margin-left: 15px;
+      flex-shrink: 0;
+      margin-bottom: 0;
+    }
+  }
 }
 
-.mr-1 {
-  max-width: 70px;
-  object-fit: contain;
-}
-
-.search-chip {
-  font-size: 1em;
-  margin: 0 1px 0 1px;
-}
-
-.search-chip-x {
-  margin-left: 4px;
-}
-
-#search-header {
-  position: relative;
-  margin-top: -3px;
-  z-index: 20;
-}
-
-.chip-placeholder{
-  position: relative;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  z-index: 10;
+::ng-deep {
+  .dropdown-item {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 1.3rem;
+    padding: 0.5em;
+  }
+  .ngb-highlight {
+    font-weight: 700;
+    color: $color1;
+  }
+  .dropdown-menu {
+    width: 100%;
+  }
 }

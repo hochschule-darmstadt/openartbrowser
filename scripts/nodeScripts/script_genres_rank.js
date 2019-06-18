@@ -13,7 +13,7 @@ let buf = ''
 let genresCounter = new Map()
 let genreMonsterObj = {}
 
-// TODO Add a short comment
+
 function openGenres() {
 	genreReadStream.on('data', function (data) {
 		buf += data
@@ -32,7 +32,7 @@ function openGenres() {
 	return genreReadStream
 }
 
-// TODO Add a short comment
+
 function openArtworks() {
 	buf = ''
 	artworksReadStream.on('data', function (data) {
@@ -58,7 +58,7 @@ function openArtworks() {
 	return artworksReadStream;
 }
 
-// TODO Add a short comment
+
 function writeGenres() {
 	let rankStep = 1 / _.size(genreMonsterObj)
 	let percentage = 0

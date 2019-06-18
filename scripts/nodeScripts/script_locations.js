@@ -4,6 +4,7 @@ const jsonFilePath = 'locations.json';
 const csv = require('fast-csv')
 const fs = require('fs');
 const _ = require('lodash');
+const helper = require("./helper")
 const stream = fs.createReadStream(csvFilePath)
 
 const type = 'location';
@@ -30,13 +31,13 @@ const csvStream = csv({ delimiter: ';' })
 		if (numberOfLines !== 0 && !_.isEmpty(data) && !_.includes(ids, data[0])) {
 
 			myObj.id = data[0];
-			myObj.classes = constructArray(data[1]);
+			myObj.classes =helper.constructArray(data[1]);
 			myObj.label = data[2];
 			myObj.description = data[3];
 			myObj.image = data[4];
 			myObj.country = data[5];
 			myObj.website = data[6];
-			myObj.part_of = constructArray(data[7]);
+			myObj.part_of =helper.constructArray(data[7]);
 			myObj.lat = parseFloat(data[8]);
 			myObj.lon = parseFloat(data[9]);
 			myObj.type = type;
@@ -56,10 +57,3 @@ const csvStream = csv({ delimiter: ';' })
 	})
 
 stream.pipe(csvStream)
-
-function constructArray(str) {
-	let splittedString = str.split('');
-	splittedString = _.without(splittedString, "'", '[', ']', " ");
-	splittedString = splittedString.join('');
-	return splittedString.split(',');
-}

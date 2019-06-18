@@ -19,13 +19,13 @@ const materialsStream = fs.createReadStream(materials, { flags: 'r', encoding: '
 const movementsStream = fs.createReadStream(movements, { flags: 'r', encoding: 'utf8' })
 const objectStream = fs.createReadStream(objects, { flags: 'r', encoding: 'utf8' })
 
-let artistObj = []
-let artworkObj = []
-let genreObj = []
-let locationObj = []
-let materialObj = []
-let movementObj = []
-let objectObj = []
+let artistArr = []
+let artworkArr = []
+let genreArr = []
+let locationArr = []
+let materialArr = []
+let movementArr = []
+let objectArr = []
 
 function constructObjects(stream, obj) {
 	let buf = ''
@@ -37,20 +37,20 @@ function constructObjects(stream, obj) {
 	return stream
 }
 
-// TODO Add a short comment
-constructObjects(artistStream, artistObj)
+// convert json files to array of objects
+constructObjects(artistStream, artistArr)
 	.on('close', function () {
-		constructObjects(artworksStream, artworkObj)
+		constructObjects(artworksStream, artworkArr)
 			.on('close', function () {
-				constructObjects(genresStream, genreObj)
+				constructObjects(genresStream, genreArr)
 					.on('close', function () {
-						constructObjects(locationsStream, locationObj)
+						constructObjects(locationsStream, locationArr)
 							.on('close', function () {
-								constructObjects(materialsStream, materialObj)
+								constructObjects(materialsStream, materialArr)
 									.on('close', function () {
-										constructObjects(movementsStream, movementObj)
+										constructObjects(movementsStream, movementArr)
 											.on('close', function () {
-												constructObjects(objectStream, objectObj)
+												constructObjects(objectStream, objectArr)
 													.on('close', function () {
 														processData();
 													})
@@ -61,10 +61,13 @@ constructObjects(artistStream, artistObj)
 			})
 	})
 
+/*	after converting all the json files into objects, this function concat these arrays and write 
+	the result into master file as json
+*/
 function processData() {
-	if (!_.isEmpty(artistObj) && !_.isEmpty(objectObj) && !_.isEmpty(artworkObj) && !_.isEmpty(genreObj)
-		&& !_.isEmpty(locationObj) && !_.isEmpty(materialObj) && !_.isEmpty(movementObj)) {
-		let monsterObj = artworkObj.concat(artistObj, objectObj, genreObj, locationObj, materialObj, movementObj)
+	if (!_.isEmpty(artistArr) && !_.isEmpty(objectArr) && !_.isEmpty(artworkArr) && !_.isEmpty(genreArr)
+		&& !_.isEmpty(locationArr) && !_.isEmpty(materialArr) && !_.isEmpty(movementArr)) {
+		let monsterObj = artworkArr.concat(artistArr, objectArr, genreArr, locationArr, materialArr, movementArr)
 		console.log(monsterObj.length)
 		writeData(monsterObj);
 	}

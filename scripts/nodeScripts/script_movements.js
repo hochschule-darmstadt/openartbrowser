@@ -5,6 +5,7 @@ const csv = require('fast-csv')
 const fs = require('fs');
 const es = require('event-stream');
 const _ = require('lodash');
+const helper = require("./helper")
 const stream = fs.createReadStream(csvFilePath)
 const type = 'movement';
 let numberOfLines = 0;
@@ -24,13 +25,13 @@ const csvStream = csv({ delimiter: ';' })
 	.on("data", function (data) {
 		let myObj = _.cloneDeep(obj);
 		if (numberOfLines !== 0 && !_.isEmpty(data) && !_.includes(ids, data[0])) {
-			
+
 			myObj.id = data[0];
-			myObj.classes = constructArray(data[1]);
+			myObj.classes = helper.constructArray(data[1]);
 			myObj.label = data[2];
 			myObj.description = data[3];
 			myObj.image = data[4];
-			myObj.influenced_by = constructArray(data[5]);
+			myObj.influenced_by = helper.constructArray(data[5]);
 			myObj.type = type;
 
 			objArr.push(myObj);
@@ -47,11 +48,4 @@ const csvStream = csv({ delimiter: ';' })
 		});
 	})
 
-	stream.pipe(csvStream)
-
-function constructArray(str) {
-	let splittedString = str.split('');
-	splittedString = _.without(splittedString, "'", '[', ']', " ");
-	splittedString = splittedString.join('');
-	return splittedString.split(',');
-}
+stream.pipe(csvStream)

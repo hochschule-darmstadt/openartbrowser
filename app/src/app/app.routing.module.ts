@@ -57,7 +57,7 @@ const routes: Routes = [
     loadChildren: './pages/motif/motif.routing.module#MotifRoutingModule',
   },
   {
-    path: 'search/:term',
+    path: 'search',
     component: SearchResultComponent
   },
   {

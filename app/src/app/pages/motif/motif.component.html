@@ -1,8 +1,7 @@
 <div class="container">
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7">
-      <!-- TODO make custom css to make cursor NOT pointer for the badge above motif name -->
-      <span class="badge badge-pill badge-secondary chip"><i class="fas fa-image"></i> Motif</span>
+      <span class="badge badge-pill badge-secondary chip cursor-unset"><i class="fas fa-image"></i> Motif</span>
       <h2 class="mb-3 first-letter">{{ motif?.label }}</h2>
       <div class="mb-3 mt-5 pl-2">
         <p *ngIf="motif?.description" class="mb-1 first-letter">
@@ -15,6 +14,5 @@
     </div>
   </div>
 
-  <!-- TODO remove heading and add directly in slider component, because it is all the same "Artworks" -->
   <app-slider [items]="sliderItems" heading="Artworks"> </app-slider>
 </div>

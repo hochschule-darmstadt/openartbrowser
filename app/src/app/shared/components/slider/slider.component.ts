@@ -17,14 +17,14 @@ export class SliderComponent implements OnChanges {
   /**
    * @description slides of the slider, max 8 items each.
    */
-  slides: Array<Entity[]> = [];
+  slides: Array<Entity[]> = [[]];
 
   /**
    * @description emits hovered artwork on hover event.
    */
   @Output() itemHover: EventEmitter<Entity> = new EventEmitter<Entity>();
 
-  constructor() {}
+  constructor() { }
 
   /**
    * @description Hook that is called when any data-bound property of a directive changes.

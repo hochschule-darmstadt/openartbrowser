@@ -1,3 +1,109 @@
 <div class="container">
-    <app-slider [items]="sliderItems" heading="Search result :"> </app-slider>
+
+
+  <div class="row mb-5 border-bottom pb-5">
+    <div class="col-sm-7">
+      <h2 class="mb-3 first-letter">Search result</h2>
+
+      <div class="row">
+
+        <div class="col-md-3 pr-0">
+          <p *ngIf="artistArray?.length" class="mb-1 text-muted">Artist:</p>
+        </div>
+
+        <div class="col-md-9 pl-0 info">
+          <p *ngIf="artistArray?.length" class="mb-1">
+            <span *ngFor="let artist of artistArray" class="badge badge-pill badge-secondary first-letter chip"
+              [routerLink]="'/artist/' + artist">
+              {{ artist.label }}</span>
+          </p>
+        </div>
+
+        <div class="col-md-3 pr-0">
+          <p *ngIf="movementArray?.length" class="mb-1 text-muted">Movement:</p>
+        </div>
+
+        <div class="col-md-9 pl-0 info">
+          <p *ngIf="movementArray?.length" class="mb-1">
+            <span *ngFor="let movement of movementArray" class="badge badge-pill badge-secondary first-letter chip"
+              [routerLink]="'/movement/' + movement">
+              {{ movement.label }}</span>
+          </p>
+        </div>
+
+        <div class="col-md-3 pr-0">
+          <p *ngIf="genreArray?.length" class="mb-1 text-muted">Genre:</p>
+        </div>
+
+        <div class="col-md-9 pl-0 info">
+          <p *ngIf="genreArray?.length" class="mb-1">
+            <span *ngFor="let genre of genreArray" class="badge badge-pill badge-secondary first-letter chip"
+              [routerLink]="'/genre/' + genre">
+              {{ genre.label }}</span>
+          </p>
+        </div>
+
+        <div class="col-md-3 pr-0">
+          <p *ngIf="materialArray?.length" class="mb-1 text-muted">Material:</p>
+        </div>
+
+        <div class="col-md-9 pl-0 info">
+          <p *ngIf="materialArray?.length" class="mb-1">
+            <span *ngFor="let material of materialArray" class="badge badge-pill badge-secondary first-letter chip"
+              [routerLink]="'/material/' + material">
+              {{ material.label }}</span>
+          </p>
+        </div>
+
+        <div class="col-md-3 pr-0">
+          <p *ngIf="locationArray?.length" class="mb-1 text-muted">Location:</p>
+        </div>
+
+        <div class="col-md-9 pl-0 info">
+          <p *ngIf="locationArray?.length" class="mb-1">
+            <span *ngFor="let location of locationArray" class="badge badge-pill badge-secondary first-letter chip"
+              [routerLink]="'/location/' + location">
+              {{ location.label }}</span>
+          </p>
+        </div>
+
+        <div class="col-md-3 pr-0">
+          <p *ngIf="motifArray?.length" class="mb-1 text-muted">Motif:</p>
+        </div>
+
+        <div class="col-md-9 pl-0 info">
+          <p *ngIf="motifArray?.length" class="mb-1">
+            <span *ngFor="let motif of motifArray" class="badge badge-pill badge-secondary first-letter chip"
+              [routerLink]="'/motif/' + motif">
+              {{ motif.label }}</span>
+          </p>
+        </div>
+
+        <div class="col-md-3 pr-0">
+          <p *ngIf="searchTerms?.length" class="mb-1 text-muted">Terms:</p>
+        </div>
+
+        <div class="col-md-9 pl-0 info">
+          <p *ngIf="searchTerms?.length" class="mb-1 ml-2 mr-2">
+            <span *ngFor="let term of searchTerms" class="first-letter">
+              "{{ term }}" </span>
+          </p>
+        </div>
+
+        <div class="col-md-3 pr-0">
+          <p class="mb-1 text-muted">Hits:</p>
+        </div>
+
+        <div class="col-md-9 pl-0 info">
+          <p class="mb-1 ml-2">
+            <span class="first-letter">
+              {{ sliderItems.length }} </span>
+          </p>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+  <app-slider [items]="sliderItems" heading="Artworks"> </app-slider>
 </div>

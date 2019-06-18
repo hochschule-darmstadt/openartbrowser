@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { interval, Subscription, Observable } from 'rxjs';
 import { DataService } from 'src/app/core/services/data.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { debounceTime, switchMap } from 'rxjs/operators';
 import { TagItem } from '../../models/models';
 
@@ -14,23 +14,17 @@ import { TagItem } from '../../models/models';
 export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /**
-   * @description input for search component.
-   * @type string
-   * @memberof SearchComponent
+   * @description input for search component
    */
   searchInput: string;
 
   /**
    * @description simple check to prep tag for removal
-   * @type boolean
-   * @memberof SearchComponent
    */
   rmTag: boolean = false;
 
   /**
    * @description Array of all chips.
-   * @type TagItemp[]
-   * @memberof SearchComponent
    */
   searchItems: TagItem[] = [];
 
@@ -92,7 +86,6 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
    * This function get objects from data service,
    * sort objects and filter by criteria,
    * slice to return limited number of objects
-   * @memberof SearchComponent
    */
   formatter = (x: { name: string }) => x.name;
 
@@ -104,55 +97,56 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
           return [];
         }
         let entities = await this.dataService.findEntitiesByLabelText(term.toLowerCase());
-        //TODO: remove console logs and commented out code
-        console.log(entities);
-        entities = entities.filter((v) => v.label.toLowerCase().indexOf(term.toLowerCase()) > -1)
-          .sort((a, b): any => {
-            let rankA = a.relativeRank;
-            let rankB = b.relativeRank;
-            const typeA = a.type;
-            const typeB = b.type;
-            const aPos = a.label.toLowerCase().indexOf(term.toLowerCase());
-            const bPos = b.label.toLowerCase().indexOf(term.toLowerCase());
+        entities = entities
+          .filter((v) => v.label.toLowerCase().indexOf(term.toLowerCase()) > -1)
+          .sort(
+            (a, b): any => {
+              let rankA = a.relativeRank;
+              let rankB = b.relativeRank;
+              const typeA = a.type;
+              const typeB = b.type;
+              const aPos = a.label.toLowerCase().indexOf(term.toLowerCase());
+              const bPos = b.label.toLowerCase().indexOf(term.toLowerCase());
 
-            if (typeB < typeA) {
-              return 1;
-            } else if (typeA < typeB) {
-              return -1;
+              if (typeB < typeA) {
+                return 1;
+              } else if (typeA < typeB) {
+                return -1;
+              }
+              // factor 2 for initial position
+              if (aPos === 0) {
+                rankA *= 2;
+              }
+              if (bPos === 0) {
+                rankB *= 2;
+              }
+              // factor 0.5 for non-whitespace in front
+              if (
+                aPos > 0 &&
+                a.label
+                  .toLowerCase()
+                  .charAt(aPos - 1)
+                  .match(/\S/)
+              ) {
+                rankA *= 0.5;
+              }
+              if (
+                bPos > 0 &&
+                b.label
+                  .toLowerCase()
+                  .charAt(bPos - 1)
+                  .match(/\S/)
+              ) {
+                rankA *= 0.5;
+              }
+              return rankB > rankA ? 1 : rankB < rankA ? -1 : 0;
             }
-            // factor 2 for initial position
-            if (aPos === 0) {
-              rankA *= 2;
-            }
-            if (bPos === 0) {
-              rankB *= 2;
-            }
-            // factor 0.5 for non-whitespace in front
-            if (
-              aPos > 0 &&
-              a.label
-                .toLowerCase()
-                .charAt(aPos - 1)
-                .match(/\S/)
-            ) {
-              rankA *= 0.5;
-            }
-            if (
-              bPos > 0 &&
-              b.label
-                .toLowerCase()
-                .charAt(bPos - 1)
-                .match(/\S/)
-            ) {
-              rankA *= 0.5;
-            }
-            return rankB > rankA ? 1 : rankB < rankA ? -1 : 0;
-          }
           )
           //TODO: i think instead of using .filter we should write an own function for it.
           .filter(
-            (w, i, arr) => (w.type === 'artist' && // if type is artwork or artist, take 3
-              w.type !== (arr[i - 3] ? arr[i - 3].type : '')) ||
+            (w, i, arr) =>
+              (w.type === 'artist' && // if type is artwork or artist, take 3
+                w.type !== (arr[i - 3] ? arr[i - 3].type : '')) ||
               (w.type !== 'artwork' &&
                 w.type !== 'artist' && // if type is other type, take 2
                 w.type !== (arr[i - 2] ? arr[i - 2].type : '')) ||
@@ -180,102 +174,103 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   /**
    * @description function called when selecting an item in type-ahead suggestions
    * based on type of item
-   * @memberof SearchComponent
    */
   public async itemSelected($event) {
+    this.searchInput = '';
+    let url = `/${$event.item.type}/${$event.item.id}`;
     if ($event.item.type === 'object') {
-      let eventItem: TagItem = {
-        label: $event.item.label,
-        type: $event.item.type,
-        id: $event.item.id,
-      };
-      this.searchItems.push(eventItem);
-      const url = `/motif/${$event.item.id}`;
-      this.searchInput = '';
-      $event.preventDefault();
-      this.router.navigate([url]);
-    } else if ($event.item.type === 'artwork') {
-      const url = `/${$event.item.type}/${$event.item.id}`;
-      this.searchInput = '';
-      this.router.navigate([url]);
-    } else {
-      let eventItem: TagItem = {
-        label: $event.item.label,
-        type: $event.item.type,
-        id: $event.item.id,
-      };
-      this.searchItems.push(eventItem);
-      const url = `/${$event.item.type}/${$event.item.id}`;
-      this.searchInput = '';
-      $event.preventDefault();
-      this.router.navigate([url]);
+      url = `/motif/${$event.item.id}`;
     }
+
+    if ($event.item.type !== 'artwork') {
+      this.searchItems.push({
+        label: $event.item.label,
+        type: $event.item.type,
+        id: $event.item.id,
+      });
+      $event.preventDefault();
+    }
+    this.router.navigate([url]);
+  }
+
+  /** build query params for search result url */
+  buildQueryParams() {
+    let params = {
+      term: [],
+      artist: [],
+      motif: [],
+      movement: [],
+      genre: [],
+      material: [],
+      location: [],
+    };
+    for (const item of this.searchItems) {
+      if (!item.type) {
+        params.term.push(item.label);
+      } else {
+        switch (item.type) {
+          case 'artist': {
+            params.artist.push(item.id);
+            break;
+          }
+          case 'movement': {
+            params.movement.push(item.id);
+            break;
+          }
+          case 'genre': {
+            params.genre.push(item.id);
+            break;
+          }
+          case 'material': {
+            params.material.push(item.id);
+            break;
+          }
+          case 'object': {
+            params.motif.push(item.id);
+            break;
+          }
+          case 'location': {
+            params.location.push(item.id);
+            break;
+          }
+        }
+      }
+    }
+    return params;
   }
 
   /**
    * @description search for string when no item is selected
-   * @memberof SearchComponent
    */
   public navigateToSearchText(term) {
-    // this.searchInput = '';
     if (term !== '' && !(term instanceof Object)) {
-      let searchItem: TagItem = {
+      this.searchItems.push({
         label: term,
         type: null,
         id: null,
-      };
-      this.searchItems.push(searchItem);
-      let url = '/search/';
-      if (this.searchItems.length > 1) {
-        let searchString = this.searchItems
-          .map((item) => item.label)
-          .join('&')
-          .replace(/"/g, '');
-        url += `${searchString}`;
-      } else {
-        url += `${term}`;
-      }
-      //TODO: instead of setting and getting searchItems in data service, query params should be specified in router.navigate
-      this.dataService.sendTagItems(this.searchItems);
-      this.searchInput = '';
-      this.router.navigate([url]);
-    } else if (term === '' && this.searchInput === '' && !(term instanceof Object)) {
-      console.log('search input is: ' + this.searchInput);
-      let url = '/search/';
-      if (this.searchItems.length > 1) {
-        let searchString = this.searchItems
-          .map((item) => item.label)
-          .join('&')
-          .replace(/"/g, '');
-        url += `${searchString}`;
-        this.dataService.sendTagItems(this.searchItems);
-        this.searchInput = '';
-        this.router.navigate([url]);
-      }
+      });
     }
+    this.searchInput = '';
+    this.router.navigate(['/search'], { queryParams: this.buildQueryParams() });
   }
 
   /**
    * @description search items when there are chips and no input
-   * @memberof SearchComponent
    */
   public searchText() {
-    let term = this.searchInput;
-    this.navigateToSearchText(term);
+    this.navigateToSearchText(this.searchInput);
   }
 
   /**
    * @description remove chip from search bar
-   * @memberof SearchComponent
    */
-  private removeTag(item: TagItem) {
+  public removeTag(item: TagItem) {
     this.searchItems = this.searchItems.filter((i) => i !== item);
   }
 
   /**
    * @description get chips ready to be removed.
    * used to prevent backspace to accidentally delete all chips
-   * @memberof SearchComponent
    */
   public readyToRemove() {
     if (this.searchInput === '' && this.searchItems.length > 0) {
@@ -284,7 +279,6 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   /**
    * @description remove newest chip
-   * @memberof SearchComponent
    */
   public removeNewestTag() {
     if (this.searchInput === '' && this.rmTag === true) {
@@ -295,7 +289,6 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /**
    * @description remove all chips
-   * @memberof SearchComponent
    */
   public clearAllTags() {
     this.searchItems = [];
@@ -303,7 +296,6 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /**
    * @description truncate input text
-   * @memberof SearchComponent
    */
   private truncate(input: string) {
     if (input.length > 8) {
@@ -315,7 +307,6 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /**
    * @description add chip for string
-   * @memberof SearchComponent
    */
   public formatNoTypeChip(label: string) {
     return `"${label}"`;

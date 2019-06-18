@@ -1,68 +1,78 @@
-import { Component, OnInit } from '@angular/core';
-import { Artwork, TagItem } from 'src/app/shared/models/models';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Artwork, EntityType, Artist, Location, Movement, Genre, Material, Motif } from 'src/app/shared/models/models';
 import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-search-result',
   templateUrl: './search-result.component.html',
-  styleUrls: ['./search-result.component.scss']
+  styleUrls: ['./search-result.component.scss'],
 })
-export class SearchResultComponent implements OnInit {
-
+export class SearchResultComponent implements OnInit, OnDestroy {
   /** Related artworks */
   sliderItems: Artwork[] = [];
-  //  searchTerm: string;
-  searchItems: TagItem[] = [];
-  objectArray: string[] = [];
-  artistArray: string[] = [];
-  movementArray: string[] = [];
-  locationArray: string[] = [];
-  genreArray: string[] = [];
-  materialArray: string[] = [];
+
+  motifArray: Motif[] = [];
+  artistArray: Artist[] = [];
+  movementArray: Movement[] = [];
+  locationArray: Location[] = [];
+  genreArray: Genre[] = [];
+  materialArray: Material[] = [];
   searchTerms: string[] = [];
+
+  /** use this to end subscription to url parameter in ngOnDestroy */
+  private ngUnsubscribe = new Subject();
 
   constructor(private dataService: DataService, private route: ActivatedRoute) { }
 
-
   /** hook that is executed at component initialization */
-  async ngOnInit() {
-    this.searchItems = this.dataService.getTagItems();
-    for (let i = 0; i < this.searchItems.length; i++) {
-      switch (this.searchItems[i].type) {
-        case null:
-          this.searchTerms.push(this.searchItems[i].label);
-          break;
-        case 'artist':
-          this.artistArray.push(this.searchItems[i].id);
-          break;
-        case 'object':
-          this.objectArray.push(this.searchItems[i].id);
-          break;
-        case 'movement':
-          this.movementArray.push(this.searchItems[i].id);
-          break;
-        case 'location':
-          this.locationArray.push(this.searchItems[i].id);
-          break;
-        case 'genre':
-          this.genreArray.push(this.searchItems[i].id);
-          break;
-        case 'material':
-          this.materialArray.push(this.searchItems[i].id);
-          break;
+  ngOnInit() {
+    /** Extract the search params from url query params. */
+    this.route.queryParams.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
+      this.searchTerms = params.term ? [].concat(params.term) : [];
+
+      if (params.artist) {
+        this.artistArray = await this.dataService.findMultipleById([].concat(params.artist), EntityType.ARTIST);
       }
-    }
-    this.sliderItems = await this.dataService.findArtworksByCategories(
-      {
-        creators: this.artistArray,
-        depicts: this.objectArray,
-        movements: this.movementArray,
-        locations: this.locationArray,
-        genres: this.genreArray,
-        materials: this.materialArray,
-      },
-      this.searchTerms
-    );
+      if (params.movement) {
+        this.movementArray = await this.dataService.findMultipleById([].concat(params.movement), EntityType.MOVEMENT);
+      }
+      if (params.genre) {
+        this.genreArray = await this.dataService.findMultipleById([].concat(params.genre), EntityType.GENRE);
+      }
+      if (params.motif) {
+        this.motifArray = await this.dataService.findMultipleById([].concat(params.motif), EntityType.MOTIF);
+      }
+      if (params.location) {
+        this.locationArray = await this.dataService.findMultipleById([].concat(params.location), EntityType.LOCATION);
+      }
+      if (params.material) {
+        this.materialArray = await this.dataService.findMultipleById([].concat(params.material), EntityType.MATERIAL);
+      }
+      await this.getSearchResults();
+    });
+  }
+
+  /** fetch search results */
+  async getSearchResults() {
+    this.sliderItems = await this.dataService
+      .findArtworksByCategories(
+        {
+          creators: this.artistArray.map((artist) => artist.id),
+          depicts: this.motifArray.map((motif) => motif.id),
+          movements: this.movementArray.map((movement) => movement.id),
+          locations: this.locationArray.map((loc) => loc.id),
+          genres: this.genreArray.map((genre) => genre.id),
+          materials: this.materialArray.map((material) => material.id)
+        },
+        this.searchTerms
+      )
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }

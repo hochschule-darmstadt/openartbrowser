@@ -33,11 +33,10 @@ input.form-control {
       width: 100%;
       display: flex;
       flex-wrap: wrap;
-      padding: 0.2em;
+      padding: 0.1em;
       background: #f5f5f5;
       border-radius: 8px;
       border: 0px solid #ccc;
-      padding-bottom: 0.5em;
     }
 
     &-chip {
@@ -70,6 +69,7 @@ input.form-control {
       z-index: 20;
       display: flex;
       align-items: center;
+      font-size: 1.5rem;
 
       &-searchButton {
         position: relative;

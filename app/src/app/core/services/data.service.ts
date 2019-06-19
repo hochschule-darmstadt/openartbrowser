@@ -107,7 +107,7 @@ export class DataService {
           }
         }
       ],
-      "size": 10000,
+      "size": 400,
     };
     options.query.bool.must.push({
       "match": {

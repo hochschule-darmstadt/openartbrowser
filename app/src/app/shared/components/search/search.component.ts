@@ -1,16 +1,17 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, OnInit, AfterViewInit, OnDestroy, Input } from '@angular/core';
+import { interval, Subscription, Observable, Subject } from 'rxjs';
 import { DataService } from 'src/app/core/services/data.service';
 import { Router } from '@angular/router';
-import { debounceTime, switchMap } from 'rxjs/operators';
-import { TagItem } from '../../models/models';
+import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
+import { TagItem, Entity } from '../../models/models';
+import { by } from 'protractor';
 
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
 })
-export class SearchComponent implements OnInit {
+export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   /**
    * @description input for search component
    */
@@ -30,9 +31,64 @@ export class SearchComponent implements OnInit {
    */
   searchItems: TagItem[] = [];
 
+  /**
+   * @description String value binding the placeholder in the searchbar.
+   * @type string
+   * @memberof SearchComponent
+   */
+  placeholderText: string;
+
+  /**
+   * @description Array of all placeholder values.
+   * @type string[]
+   * @memberof SearchComponent
+   */
+  placeholderArray: string[] = [
+    'Search for something...',
+    'Try "Mona Lisa"',
+    'Try "Vincent van Gogh"',
+    'Try "Renaissance"',
+  ];
+
+  /**
+   * @description Counter of placeholderArray.
+   * @memberof SearchComponent
+   */
+  counter = 0;
+
+  /** use this to end subscription to url parameter in ngOnDestroy */
+  private ngUnsubscribe = new Subject();
+
   constructor(private dataService: DataService, private router: Router) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.dataService.$searchItems.pipe(takeUntil(this.ngUnsubscribe)).subscribe((items) => {
+      this.searchItems = items;
+    });
+  }
+
+  ngAfterViewInit() {
+    this.placeholderText = this.placeholderArray[0];
+    const inv = interval(8000);
+    inv.pipe(takeUntil(this.ngUnsubscribe)).subscribe((val) => this.changePlaceholdertext());
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
+
+  /**
+   * @description Change the text inside the placeholder.
+   * @memberof SearchComponent
+   */
+  public changePlaceholdertext() {
+    ++this.counter;
+    if (this.counter == this.placeholderArray.length) {
+      this.counter = 0;
+    }
+    this.placeholderText = this.placeholderArray[this.counter];
+  }
 
   /**
    * @description basic type-ahead function for search bar.
@@ -94,35 +150,78 @@ export class SearchComponent implements OnInit {
               }
               return rankB > rankA ? 1 : rankB < rankA ? -1 : 0;
             }
-          )
-          //TODO: i think instead of using .filter we should write an own function for it.
-          .filter(
-            (w, i, arr) =>
-              (w.type === 'artist' && // if type is artwork or artist, take 3
-                w.type !== (arr[i - 3] ? arr[i - 3].type : '')) ||
-              (w.type !== 'artwork' &&
-              w.type !== 'artist' && // if type is other type, take 2
-                w.type !== (arr[i - 2] ? arr[i - 2].type : '')) ||
-              (w.type === 'artwork' && w.type !== (arr[i - 3] ? arr[i - 3].type : ''))
-          ) // To Do: get more suggestion if list does not have enough elements
-          .slice(0, 10)
-          .sort(
-            (a, b): any => {
-              let typeA = a.type;
-              let typeB = b.type;
-              if ((typeA === 'artist' || typeA === 'artwork') && (typeB === 'artwork' || typeB === 'artist')) {
-                // switch place of artist and artwork
-                if (typeB < typeA) {
-                  return -1;
-                } else if (typeA < typeB) {
-                  return 1;
-                }
-              }
-            }
           );
+        entities = this.selectSearchResults(entities);
+
+        entities = entities.sort(
+          (a, b): any => {
+            return (a.type === 'artwork' && b.type !== 'artwork') || a.type > b.type;
+          }
+        );
         return this.searchInput ? entities : [];
       })
     );
+
+  selectSearchResults(entities: Entity[]) {
+    let artworks = [];
+    let artists = [];
+    let materials = [];
+    let genre = [];
+    let motifs = [];
+    let movements = [];
+    let locations = [];
+    for (const ent of entities) {
+      switch (ent.type) {
+        case 'artwork': {
+          artworks.push(ent);
+          break;
+        }
+        case 'artist': {
+          artists.push(ent);
+          break;
+        }
+        case 'material': {
+          materials.push(ent);
+          break;
+        }
+        case 'genre': {
+          genre.push(ent);
+          break;
+        }
+        case 'object': {
+          motifs.push(ent);
+          break;
+        }
+        case 'movement': {
+          movements.push(ent);
+          break;
+        }
+        case 'location': {
+          locations.push(ent);
+          break;
+        }
+      }
+    }
+
+    let newEntities = artworks
+      .splice(0, 3)
+      .concat(artists.splice(0, 3))
+      .concat(materials.splice(0, 2))
+      .concat(genre.splice(0, 2))
+      .concat(motifs.splice(0, 2))
+      .concat(movements.splice(0, 2))
+      .concat(locations.splice(0, 2));
+
+    const restItems = artworks
+      .concat(artists)
+      .concat(materials)
+      .concat(genre)
+      .concat(motifs)
+      .concat(movements)
+      .concat(locations);
+
+    return newEntities.concat(restItems).splice(0, 10);
+  }
 
   /**
    * @description function called when selecting an item in type-ahead suggestions
@@ -136,7 +235,7 @@ export class SearchComponent implements OnInit {
     }
 
     if ($event.item.type !== 'artwork') {
-      this.searchItems.push({
+      this.dataService.addSearchTag({
         label: $event.item.label,
         type: $event.item.type,
         id: $event.item.id,
@@ -197,7 +296,7 @@ export class SearchComponent implements OnInit {
    */
   public navigateToSearchText(term) {
     if (term !== '' && !(term instanceof Object)) {
-      this.searchItems.push({
+      this.dataService.addSearchTag({
         label: term,
         type: null,
         id: null,
@@ -218,7 +317,7 @@ export class SearchComponent implements OnInit {
    * @description remove chip from search bar
    */
   public removeTag(item: TagItem) {
-    this.searchItems = this.searchItems.filter((i) => i !== item);
+    this.dataService.removeSearchTag(item);
   }
 
   /**

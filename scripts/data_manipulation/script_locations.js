@@ -1,12 +1,13 @@
-//converts csv to json
-const csvFilePath = 'movements.csv';
-const jsonFilePath = 'movements.json';
+// converts csv to json
+const csvFilePath = 'locations.csv';
+const jsonFilePath = 'locations.json';
 const csv = require('fast-csv')
 const fs = require('fs');
-const es = require('event-stream');
 const _ = require('lodash');
+const helper = require("./helper")
 const stream = fs.createReadStream(csvFilePath)
-const type = 'movement';
+
+const type = 'location';
 let numberOfLines = 0;
 let obj = {
 	id: '',
@@ -14,7 +15,11 @@ let obj = {
 	label: '',
 	description: '',
 	image: '',
-	influenced_by: [],
+	country: '',
+	website: '',
+	part_of: [],
+	lat: 0,
+	lon: 0,
 	type: ''
 }
 let objArr = [];
@@ -24,13 +29,17 @@ const csvStream = csv({ delimiter: ';' })
 	.on("data", function (data) {
 		let myObj = _.cloneDeep(obj);
 		if (numberOfLines !== 0 && !_.isEmpty(data) && !_.includes(ids, data[0])) {
-			
+
 			myObj.id = data[0];
-			myObj.classes = constructArray(data[1]);
+			myObj.classes =helper.constructArray(data[1]);
 			myObj.label = data[2];
 			myObj.description = data[3];
 			myObj.image = data[4];
-			myObj.influenced_by = constructArray(data[5]);
+			myObj.country = data[5];
+			myObj.website = data[6];
+			myObj.part_of =helper.constructArray(data[7]);
+			myObj.lat = parseFloat(data[8]);
+			myObj.lon = parseFloat(data[9]);
 			myObj.type = type;
 
 			objArr.push(myObj);
@@ -47,11 +56,4 @@ const csvStream = csv({ delimiter: ';' })
 		});
 	})
 
-	stream.pipe(csvStream)
-
-function constructArray(str) {
-	let splittedString = str.split('');
-	splittedString = _.without(splittedString, "'", '[', ']', " ");
-	splittedString = splittedString.join('');
-	return splittedString.split(',');
-}
+stream.pipe(csvStream)

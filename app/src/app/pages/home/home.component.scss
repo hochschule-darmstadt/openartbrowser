@@ -106,34 +106,6 @@ $color1: #00bc8c;
     #homeSearch {
       ::ng-deep .dropdown-menu.show {
         display: block;
-
-        /* Resize result item*/
-        .dropdown-item {
-          width: 100%;
-          font-size: 1.7rem;
-          padding: 0;
-          padding-right: 8px;
-
-          @media (min-width: 577px) and (max-width: 767px) {
-            font-size: 1.1rem;
-          }
-
-          @media (min-width: 377px) and (max-width: 576px) {
-            font-size: 1rem;
-            height: 3rem;
-          }
-
-          @media (min-width: 0px) and (max-width: 376px) {
-            font-size: 0.8rem;
-            min-height: 2rem;
-          }
-
-          .ngb-highlight {
-            @media (min-width: 0px) and (max-width: 376px) {
-              width: 50%;
-            }
-          }
-        }
       }
     }
   }
@@ -143,7 +115,6 @@ $color1: #00bc8c;
 :host ::ng-deep .search div input {
   height: 3.5rem;
   font-size: 1.7rem;
-  width: 100%;
 
   @media (min-width: 577px) and (max-width: 767px) {
     height: 2.5rem;

@@ -1,12 +1,13 @@
 //converts csv to json
-const csvFilePath = 'genres.csv';
-const jsonFilePath = 'genres.json';
-
-const fs = require('fs');
+const csvFilePath = 'movements.csv';
+const jsonFilePath = 'movements.json';
 const csv = require('fast-csv')
+const fs = require('fs');
+const es = require('event-stream');
 const _ = require('lodash');
+const helper = require("./helper")
 const stream = fs.createReadStream(csvFilePath)
-const type = 'genre';
+const type = 'movement';
 let numberOfLines = 0;
 let obj = {
 	id: '',
@@ -14,6 +15,7 @@ let obj = {
 	label: '',
 	description: '',
 	image: '',
+	influenced_by: [],
 	type: ''
 }
 let objArr = [];
@@ -25,10 +27,11 @@ const csvStream = csv({ delimiter: ';' })
 		if (numberOfLines !== 0 && !_.isEmpty(data) && !_.includes(ids, data[0])) {
 
 			myObj.id = data[0];
-			myObj.classes = constructArray(data[1]);
+			myObj.classes = helper.constructArray(data[1]);
 			myObj.label = data[2];
 			myObj.description = data[3];
 			myObj.image = data[4];
+			myObj.influenced_by = helper.constructArray(data[5]);
 			myObj.type = type;
 
 			objArr.push(myObj);
@@ -45,13 +48,4 @@ const csvStream = csv({ delimiter: ';' })
 		});
 	})
 
-// TODO Add a short comment
 stream.pipe(csvStream)
-
-// TODO Add a short comment
-function constructArray(str) {
-	let splittedString = str.split('');
-	splittedString = _.without(splittedString, "'", '[', ']', " ");
-	splittedString = splittedString.join('');
-	return splittedString.split(',');
-}

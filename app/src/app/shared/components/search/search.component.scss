@@ -117,12 +117,26 @@ input.form-control {
 }
 
 ::ng-deep {
-  .dropdown-item {
+  .search .dropdown-menu .dropdown-item {
     width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 1.3rem;
-    padding: 0.5em;
+    font-size: 1.7rem;
+    padding: 0em;
+    padding-right: 8px;
+    min-height: 3rem;
+
+    @media (min-width: 577px) and (max-width: 767px) {
+      font-size: 1.4rem;
+    }
+
+    @media (min-width: 377px) and (max-width: 576px) {
+      font-size: 1rem;
+    }
+
+    @media (min-width: 0px) and (max-width: 376px) {
+      font-size: 0.8rem;
+    }
   }
   .ngb-highlight {
     font-weight: 700;

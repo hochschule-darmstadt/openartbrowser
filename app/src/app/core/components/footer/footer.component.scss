@@ -1,10 +1,5 @@
 @import '../../../../variables';
 
-.footer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: $FooterHeight;
-  background: $PrimaryColor;
+footer{
+  padding: 5rem;
 }

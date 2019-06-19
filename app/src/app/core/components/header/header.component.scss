@@ -2,10 +2,15 @@
   display: flex;
   align-items: center;
   width: 100%;
+  flex-wrap: wrap;
 }
 
 .dropdown-toggle::after {
   display: none;
+}
+
+.dropdown-menu {
+  width: auto;
 }
 
 .search-form {
@@ -14,6 +19,7 @@
   align-items: center;
   flex: 1;
   width: 100%;
+  min-width: 400px;
 
   .form-group {
     width: 32px;
@@ -40,7 +46,7 @@
   opacity: 1;
 
   transition: all 0.35s ease-in;
-  max-height: 60px;
+  max-height: 90px;
   height: auto;
   padding: 0.2em;
   padding-bottom: 0.5em;
@@ -51,10 +57,10 @@
   flex-grow: 1;
 }
 
-@media screen and (max-width: 768px) {
-  #navbarColor03:hover .form-group {
-    width: 250px;
-  }
+#navbarColor03:hover ::ng-deep .search-chip,
+.search-form .form-group:focus-within ::ng-deep .search-chip {
+  display: inline-block;
+  margin-bottom: 6px;
 }
 
 #headerTitle {

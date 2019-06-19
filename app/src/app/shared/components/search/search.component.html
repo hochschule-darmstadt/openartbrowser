@@ -13,7 +13,7 @@
     <ngb-highlight class="search__result-label" [result]="r.label" [term]="t"></ngb-highlight>
 
     <p class="badge badge-secondary search__result-chip">
-      <span *ngIf="r['type'] != 'object'; else elseBlock"> {{ r?.type }}</span>
+      <span *ngIf="r?.type !== 'object' && r?.type !== 'depict'; else elseBlock"> {{ r?.type }}</span>
       <ng-template #elseBlock> motif </ng-template>
     </p>
   </div>
@@ -40,7 +40,7 @@
     type="text"
     name="Artwork"
     #input
-    placeholder="Search for an Artwork ..."
+    placeholder="{{ placeholderText }}"
     [ngbTypeahead]="search"
     [resultTemplate]="rt"
     [inputFormatter]="formatter"

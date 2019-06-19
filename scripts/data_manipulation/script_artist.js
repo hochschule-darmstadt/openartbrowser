@@ -5,7 +5,7 @@ const fs = require('fs');
 const csv = require('fast-csv')
 const _ = require('lodash');
 const stream = fs.createReadStream(csvFilePath)
-
+const helper = require("./helper")
 const type = 'artist';
 let numberOfLines = 0;
 let obj = {
@@ -33,7 +33,7 @@ const csvStream = csv({ delimiter: ';' })
 		if (numberOfLines !== 0 && !_.isEmpty(data) && !_.includes(ids, data[0])) {
 
 			myObj.id = data[0];
-			myObj.classes = constructArray(data[1]);
+			myObj.classes = helper.constructArray(data[1]);
 			myObj.label = data[2];
 			myObj.description = data[3];
 			myObj.image = data[4];
@@ -43,8 +43,8 @@ const csvStream = csv({ delimiter: ';' })
 			myObj.place_of_birth = data[8];
 			myObj.place_of_death = data[9];
 			myObj.citizenship = data[10];
-			myObj.movements = constructArray(data[11]);
-			myObj.influenced_by = constructArray(data[12]);
+			myObj.movements = helper.constructArray(data[11]);
+			myObj.influenced_by = helper.constructArray(data[12]);
 			myObj.type = type;
 
 			objArr.push(myObj);
@@ -62,11 +62,3 @@ const csvStream = csv({ delimiter: ';' })
 	})
 
 stream.pipe(csvStream)
-
-// TODO Add short comment
-function constructArray(str) {
-	let splittedString = str.split('');
-	splittedString = _.without(splittedString, "'", '[', ']', " ");
-	splittedString = splittedString.join('');
-	return splittedString.split(',');
-}

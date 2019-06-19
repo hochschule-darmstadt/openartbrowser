@@ -1,12 +1,13 @@
-// converts csv to json
-const csvFilePath = 'materials.csv';
-const jsonFilePath = 'materials.json';
-const csv = require('fast-csv')
+//converts csv to json
+const csvFilePath = 'genres.csv';
+const jsonFilePath = 'genres.json';
+
 const fs = require('fs');
+const csv = require('fast-csv')
 const _ = require('lodash');
 const stream = fs.createReadStream(csvFilePath)
-
-const type = 'material';
+const helper = require("./helper")
+const type = 'genre';
 let numberOfLines = 0;
 let obj = {
 	id: '',
@@ -25,7 +26,7 @@ const csvStream = csv({ delimiter: ';' })
 		if (numberOfLines !== 0 && !_.isEmpty(data) && !_.includes(ids, data[0])) {
 
 			myObj.id = data[0];
-			myObj.classes = constructArray(data[1]);
+			myObj.classes =helper.constructArray(data[1]);
 			myObj.label = data[2];
 			myObj.description = data[3];
 			myObj.image = data[4];
@@ -45,11 +46,5 @@ const csvStream = csv({ delimiter: ';' })
 		});
 	})
 
-stream.pipe(csvStream)
 
-function constructArray(str) {
-	let splittedString = str.split('');
-	splittedString = _.without(splittedString, "'", '[', ']', " ");
-	splittedString = splittedString.join('');
-	return splittedString.split(',');
-}
+stream.pipe(csvStream)

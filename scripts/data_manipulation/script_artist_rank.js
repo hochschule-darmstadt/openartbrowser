@@ -13,7 +13,7 @@ let buf = ''
 let artistsCounter = new Map()
 let artistMonsterObj = {}
 
-// TODO Add a short comment
+// sets the value of each artist id in the artistsCounter Map to 0
 function openArtists() {
 	artistReadStream.on('data', function (data) {
 		buf += data
@@ -32,7 +32,7 @@ function openArtists() {
 	return artistReadStream
 }
 
-// TODO Add a short comment
+// counts the occurrence of each artist id
 function openArtworks() {
 	buf = ''
 	artworksReadStream.on('data', function (data) {
@@ -57,7 +57,11 @@ function openArtworks() {
 	return artworksReadStream;
 }
 
-// TODO Add a short comment
+/*	1-calculate the absolute rank of each artist and add that property to the corresponding object
+	2-sort the artists by absoluteRank
+	3-Calcute the relativeRank
+	4-write the data to the destinationArtistFilePath
+*/
 function writeArtists() {
 	let rankStep = 1 / _.size(artistMonsterObj)
 	let percentage = 0

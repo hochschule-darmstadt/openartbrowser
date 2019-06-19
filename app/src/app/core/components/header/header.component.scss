@@ -13,6 +13,10 @@
   width: auto;
 }
 
+#navbarColor03:hover ::ng-deep .form-group{
+  width: 100%;
+}
+
 .search-form {
   display: flex;
   justify-content: flex-end;

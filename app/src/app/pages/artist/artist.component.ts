@@ -43,7 +43,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
 
       /** load slider items */
       this.dataService.findArtworksByArtists([this.artist.id]).then((artworks) => {
-        this.sliderItems = artworks;
+        this.sliderItems = this.shuffle(artworks);
       });
       /** dereference movements  */
       this.dataService.findMultipleById(this.artist.movements as any, EntityType.MOVEMENT).then((movements) => {
@@ -59,6 +59,18 @@ export class ArtistComponent implements OnInit, OnDestroy {
       this.calculateCollapseState();
     });
   }
+
+  /**
+   * @description shuffle the items' categories.
+   * @memberof ArtworkComponent
+   */
+  shuffle = (a: Artwork[]): Artwork[] => {
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  };
 
   /** calculates the size of meta data item section
    * every attribute: +3

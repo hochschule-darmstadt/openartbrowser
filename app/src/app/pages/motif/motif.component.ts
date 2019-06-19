@@ -33,10 +33,22 @@ export class MotifComponent implements OnInit, OnDestroy {
 
       /** load slider items */
       await this.dataService.findArtworksByMotifs([this.motif.id]).then((artworks) => {
-        this.sliderItems = artworks;
+        this.sliderItems = this.shuffle(artworks);
       });
     });
   }
+
+  /**
+   * @description shuffle the items' categories.
+   * @memberof ArtworkComponent
+   */
+  shuffle = (a: Artwork[]): Artwork[] => {
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  };
 
   ngOnDestroy() {
     this.ngUnsubscribe.next();

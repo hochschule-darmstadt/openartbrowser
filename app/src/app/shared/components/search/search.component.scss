@@ -15,7 +15,7 @@ input.form-control {
   /* Firefox 18- */
   &:-moz-placeholder, 
   &:-ms-input-placeholder,
-  &::-webkit-input-placeholder, {
+  &::-webkit-input-placeholder {
     display: none;
   }
 }

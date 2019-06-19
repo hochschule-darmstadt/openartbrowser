@@ -248,17 +248,16 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     if (this.searchItems.length === 1) {
-          let url = `/${$event.item.type}/${$event.item.id}`;
-        if ($event.item.type === 'object') {
+      let url = `/${$event.item.type}/${$event.item.id}`;
+      if ($event.item.type === 'object') {
         url = `/motif/${$event.item.id}`;
-        this.router.navigate([url]);
       }
-    } else if( $event.item.type === 'artwork') {
+      this.router.navigate([url]);
+    } else if ($event.item.type === 'artwork') {
       this.isSearching = true;
       let url = `/artwork/${$event.item.id}`;
       this.router.navigate([url]);
     } else {
-      console.log('label: ' + $event.item.label);
       this.router.navigate(['/search'], { queryParams: this.buildQueryParams() });
     }
   }
@@ -313,8 +312,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
    * @description search for string when no item is selected
    */
   public navigateToSearchText(term) {
-    if (!this.isSearching){
-      console.log("Navigation fired");
+    if (!this.isSearching) {
       if (term !== '' && !(term instanceof Object)) {
         this.dataService.addSearchTag({
           label: term,

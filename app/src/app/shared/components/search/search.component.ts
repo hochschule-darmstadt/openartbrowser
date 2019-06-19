@@ -1,10 +1,9 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, Input } from '@angular/core';
-import { interval, Subscription, Observable, Subject } from 'rxjs';
+import { interval, Observable, Subject } from 'rxjs';
 import { DataService } from 'src/app/core/services/data.service';
 import { Router } from '@angular/router';
 import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
 import { TagItem, Entity } from '../../models/models';
-import { by } from 'protractor';
 
 @Component({
   selector: 'app-search',
@@ -59,7 +58,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();
 
-  constructor(private dataService: DataService, private router: Router) {}
+  constructor(private dataService: DataService, private router: Router) { }
 
   ngOnInit() {
     this.dataService.$searchItems.pipe(takeUntil(this.ngUnsubscribe)).subscribe((items) => {
@@ -98,6 +97,12 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   formatter = (x: { name: string }) => x.name;
 
+  /**
+   * search for entities with specified search term
+   * sort search results by relativeRank, type, position of the term within the search result.
+   * select 10 out of all results that should be shown
+   * @param text: search term
+   */
   public search = (text$: Observable<string>) =>
     text$.pipe(
       debounceTime(200),
@@ -151,9 +156,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
               return rankB > rankA ? 1 : rankB < rankA ? -1 : 0;
             }
           );
-        entities = this.selectSearchResults(entities);
-
-        entities = entities.sort(
+        entities = this.selectSearchResults(entities).sort(
           (a, b): any => {
             return (a.type === 'artwork' && b.type !== 'artwork') || a.type > b.type;
           }
@@ -162,14 +165,17 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
       })
     );
 
+  /** select up to 10 results from entities, distributes over all categories 
+   * @param entities results out of which should be selected
+  */
   selectSearchResults(entities: Entity[]) {
-    let artworks = [];
-    let artists = [];
-    let materials = [];
-    let genre = [];
-    let motifs = [];
-    let movements = [];
-    let locations = [];
+    const artworks = [];
+    const artists = [];
+    const materials = [];
+    const genre = [];
+    const motifs = [];
+    const movements = [];
+    const locations = [];
     for (const ent of entities) {
       switch (ent.type) {
         case 'artwork': {
@@ -203,7 +209,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }
 
-    let newEntities = artworks
+    const newEntities = artworks
       .splice(0, 3)
       .concat(artists.splice(0, 3))
       .concat(materials.splice(0, 2))
@@ -247,7 +253,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /** build query params for search result url */
   buildQueryParams() {
-    let params = {
+    const params = {
       term: [],
       artist: [],
       motif: [],

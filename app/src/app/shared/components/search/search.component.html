@@ -21,7 +21,7 @@
 
 <div class="search">
   <div *ngIf="searchItems.length > 0 && isHeaderSearch" class="search__header-chips">
-    <span *ngFor="let i of searchItems" class="badge badge-pill badge-secondary chip search__header-chip">
+    <span *ngFor="let i of searchItems" class="badge badge-pill badge-secondary chip search__header-chip" [routerLink]="i?.type !== 'object' ? '/'+i?.type+'/' + i?.id : '/motif/' + i?.id">
       <span *ngIf="i.type === 'artist'" class="fas fa-user"></span>
       <span *ngIf="i.type === 'movement'" class="fas fa-wind"></span>
       <span *ngIf="i.type === 'material'" class="fas fa-scroll"></span>
@@ -34,23 +34,10 @@
     </span>
   </div>
 
-  <input
-    class="form-control search__header-input"
-    [focusFirst]="false"
-    type="text"
-    name="Artwork"
-    #input
-    placeholder="{{ placeholderText }}"
-    [ngbTypeahead]="search"
-    [resultTemplate]="rt"
-    [inputFormatter]="formatter"
-    (selectItem)="itemSelected($event)"
-    (keyup.enter)="navigateToSearchText(input.value)"
-    (keyup.esc)="clearAllTags()"
-    (keyup.backspace)="readyToRemove()"
-    (keydown.backspace)="removeNewestTag()"
-    [(ngModel)]="searchInput"
-  />
+  <input class="form-control search__header-input" [focusFirst]="false" type="text" name="Artwork" #input placeholder="{{ placeholderText }}"
+    [ngbTypeahead]="search" [resultTemplate]="rt" [inputFormatter]="formatter" (selectItem)="itemSelected($event)"
+    (keyup.enter)="navigateToSearchText(input.value)" (keyup.esc)="clearAllTags()" (keyup.backspace)="readyToRemove()"
+    (keydown.backspace)="removeNewestTag()" [(ngModel)]="searchInput" />
 </div>
 
 <button class="btn btn-link search__header-input-searchButton" (click)="searchText()">

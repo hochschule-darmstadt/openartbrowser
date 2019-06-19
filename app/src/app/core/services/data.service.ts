@@ -4,191 +4,176 @@ import { Entity, Artwork, artSearch, EntityType, TagItem } from 'src/app/shared/
 import * as _ from 'lodash';
 import { Subject } from 'rxjs';
 
+
 /**
  * Service that handles the requests to the API
  */
 @Injectable()
 export class DataService {
-  /**
-   * @description Array of all chips.
-   */
-  $searchItems: Subject<TagItem[]> = new Subject();
+
+  /** search chips */
   searchItems: TagItem[] = [];
 
-  /**
-   * Constructor
-   */
-  constructor(private http: HttpClient) {}
+  /** search chips as observable */
+  $searchItems: Subject<TagItem[]> = new Subject();
+
+  /** base url of elasticSearch server */
   serverURI = 'http://openartbrowser.org/api/_search';
+
+	/**
+	 * Constructor
+	 */
+  constructor(private http: HttpClient) { }
+
   public async findEntitiesByLabelText(text: string): Promise<Entity[]> {
     const options = {
-      query: {
-        bool: {
-          should: [
+      "query": {
+        "bool": {
+          "should": [
             {
-              wildcard: {
-                label: `*${text}*`,
-              },
-            },
-            {
-              match: {
-                label: `${text}`,
-              },
-            },
-          ],
-        },
+              "wildcard": {
+                "label": `*${text}*`
+              }
+            }, {
+              "match": {
+                "label": `${text}`
+              }
+            }
+          ]
+        }
       },
-      sort: [
+      "sort": [
         {
-          relativeRank: {
-            order: 'desc',
-          },
-        },
+          "relativeRank": {
+            "order": "desc"
+          }
+        }
       ],
-      size: 500,
+      "size": 500
     };
 
     const response = await this.http.post<any>(this.serverURI, options).toPromise();
     return this.filterData(response);
   }
 
-  public addSearchTag(tag: TagItem) {
-    this.searchItems.push({
-      label: tag.label,
-      type: tag.type,
-      id: tag.id,
-    });
-    this.$searchItems.next(this.searchItems);
-  }
-
-  public removeSearchTag(tag: TagItem) {
-    this.searchItems = this.searchItems.filter((i) => i !== tag);
-    this.$searchItems.next(this.searchItems);
-  }
-
   public async findArtworkByLabelText(text: string): Promise<Artwork[]> {
     const options = {
-      query: {
-        bool: {
-          must: [
+      "query": {
+        "bool": {
+          "must": [
             {
-              match: {
-                label: `${text}`,
-              },
+              "match": {
+                "label": `${text}`
+              }
             },
             {
-              match: {
-                type: 'artwork',
-              },
-            },
-          ],
-        },
+              "match": {
+                "type": "artwork"
+              }
+            }
+          ]
+        }
       },
-      sort: [
+      "sort": [
         {
-          relativeRank: {
-            order: 'desc',
-          },
-        },
+          "relativeRank": {
+            "order": "desc"
+          }
+        }
       ],
-      size: 20,
+      "size": 20
+
     };
     const response = await this.http.post<any>(this.serverURI, options).toPromise();
     return this.filterData<Artwork>(response);
   }
-  /**
-   * Returns the artworks that contain all the given arguments.
-   * @param searchObj the arguments to search for.
-   * @param keywords the list of worlds to search for.
-   *
-   */
+	/**
+	 * Returns the artworks that contain all the given arguments.
+	 * @param searchObj the arguments to search for.
+	 * @param keywords the list of worlds to search for.
+	 * 
+	 */
   public async findArtworksByCategories(searchObj: artSearch, keywords: string[] = []): Promise<Artwork[]> {
     let options = {
-      query: {
-        bool: {
-          must: [],
-        },
+      "query": {
+        "bool": {
+          "must": []
+        }
       },
-      sort: [
+      "sort": [
         {
-          relativeRank: {
-            order: 'desc',
-          },
-        },
+          "relativeRank": {
+            "order": "desc"
+          }
+        }
       ],
-      size: 400,
+      "size": 10000,
     };
     options.query.bool.must.push({
-      match: {
-        type: 'artwork',
-      },
+      "match": {
+        "type": "artwork"
+      }
     });
-    _.each(searchObj, function(arr, key) {
+    _.each(searchObj, function (arr, key) {
       if (_.isArray(arr))
-        _.each(arr, function(val) {
+        _.each(arr, function (val) {
           options.query.bool.must.push({
-            match: {
-              [key]: val,
-            },
+            "match": {
+              [key]: val
+            }
           });
         });
     });
     if (keywords.length !== 0) {
-      _.each(keywords, function(keyword) {
+      _.each(keywords, function (keyword) {
         options.query.bool.must.push({
-          bool: {
-            should: [
+          "bool": {
+            "should": [
               {
-                match: {
-                  label: keyword,
-                },
+                "match": {
+                  "label": keyword
+                }
               },
               {
-                match: {
-                  description: keyword,
-                },
-              },
-            ],
-          },
-        });
+                "match": {
+                  "description": keyword
+                }
+              }
+            ]
+          }
+        })
       });
     }
     const reponse = await this.http.post<any>(this.serverURI, options).toPromise();
     return this.filterData<Artwork>(reponse);
   }
   public async findArtworksByArtists(artistIds: string[]): Promise<Artwork[]> {
-    const response = await this.http.post<any>(this.serverURI, this.constructQuery('creators', artistIds)).toPromise();
+    const response = await this.http.post<any>(this.serverURI, this.constructQuery("creators", artistIds)).toPromise();
     return this.filterData<Artwork>(response);
-  }
+  };
 
   public async findArtworksByMaterials(materialIds: string[]): Promise<Artwork[]> {
-    const response = await this.http
-      .post<any>(this.serverURI, this.constructQuery('materials', materialIds))
-      .toPromise();
+    const response = await this.http.post<any>(this.serverURI, this.constructQuery("materials", materialIds)).toPromise();
     return this.filterData<Artwork>(response);
   }
 
   public async findArtworksByMovements(movementIds: string[]): Promise<Artwork[]> {
-    const response = await this.http
-      .post<any>(this.serverURI, this.constructQuery('movements', movementIds))
-      .toPromise();
+    const response = await this.http.post<any>(this.serverURI, this.constructQuery("movements", movementIds)).toPromise();
     return this.filterData<Artwork>(response);
   }
 
   public async findArtworksByGenres(genreIds: string[]): Promise<Artwork[]> {
-    const response = await this.http.post<any>(this.serverURI, this.constructQuery('genres', genreIds)).toPromise();
+    const response = await this.http.post<any>(this.serverURI, this.constructQuery("genres", genreIds)).toPromise();
     return this.filterData<Artwork>(response);
   }
 
   public async findArtworksByMotifs(motifIds: string[]): Promise<Artwork[]> {
-    const response = await this.http.post<any>(this.serverURI, this.constructQuery('depicts', motifIds)).toPromise();
+    const response = await this.http.post<any>(this.serverURI, this.constructQuery("depicts", motifIds)).toPromise();
     return this.filterData<Artwork>(response);
   }
 
   public async findArtworksByLocations(locationIds: string[]): Promise<Artwork[]> {
-    const response = await this.http
-      .post<any>(this.serverURI, this.constructQuery('locations', locationIds))
-      .toPromise();
+    const response = await this.http.post<any>(this.serverURI, this.constructQuery("locations", locationIds)).toPromise();
     return this.filterData<Artwork>(response);
   }
 
@@ -197,39 +182,33 @@ export class DataService {
     return this.filterData<T>(response);
   }
 
-  /**
-   * filters the data that is fetched from the server
-   * @param data Elasticsearch Data
-   * @param type optional: type of entities that should be filtered
-   */
-  filterData<T>(data: any, filterBy?: EntityType): T[] {
+	/**
+	 * filters the data that is fetched from the server
+	 * @param data Elasticsearch Data
+	 * @param type optional: type of entities that should be filtered
+	 */
+  filterData<T>(
+    data: any,
+    filterBy?: EntityType
+  ): T[] {
     let entities: T[] = [];
-    _.each(
-      data.hits.hits,
-      function(val) {
-        if (!filterBy || (filterBy && val._source.type == filterBy)) {
-          entities.push(this.addThumbnails(val._source));
-        }
-      }.bind(this)
-    );
+    _.each(data.hits.hits, function (val) {
+      if (!filterBy || (filterBy && val._source.type == filterBy)) {
+        entities.push(this.addThumbnails(val._source));
+      }
+    }.bind(this));
     return entities;
   }
 
-  /**
-   * filles entity fields imageSmall and imageMedium
-   * @param entity entity for which thumbnails should be added
-   */
+	/**
+	 * filles entity fields imageSmall and imageMedium
+	 * @param entity entity for which thumbnails should be added
+	 */
   addThumbnails(entity: Entity) {
     const prefix = 'https://upload.wikimedia.org/wikipedia/commons/';
     if (entity.image && !entity.image.endsWith('.tif') && !entity.image.endsWith('.tiff')) {
-      entity.imageSmall =
-        entity.image.replace(prefix, prefix + 'thumb/') +
-        '/256px-' +
-        entity.image.substring(entity.image.lastIndexOf('/') + 1);
-      entity.imageMedium =
-        entity.image.replace(prefix, prefix + 'thumb/') +
-        '/512px-' +
-        entity.image.substring(entity.image.lastIndexOf('/') + 1);
+      entity.imageSmall = entity.image.replace(prefix, prefix + 'thumb/') + '/256px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1);
+      entity.imageMedium = entity.image.replace(prefix, prefix + 'thumb/') + '/512px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1)
     } else {
       entity.imageSmall = entity.image;
       entity.imageMedium = entity.image;
@@ -237,72 +216,75 @@ export class DataService {
     return entity;
   }
 
-  /**
-   * Constructs an Elasticsearch query
-   * @param type the type to search in
-   * @param ids the ids to search for
-   */
+	/**
+	 * Constructs an Elasticsearch query
+	 * @param type the type to search in
+	 * @param ids the ids to search for
+	 */
   constructQuery(type: string, ids: string[]) {
     let options = {
-      query: {
-        bool: {
-          should: [],
-          minimum_should_match: 1,
-          must: {
-            term: {
-              type: 'artwork',
-            },
-          },
-        },
+      "query": {
+        "bool": {
+          "should": [],
+          "minimum_should_match": 1,
+          "must": {
+            "term": {
+              "type": "artwork"
+            }
+          }
+        }
       },
-      sort: [
+      "sort": [
         {
-          relativeRank: {
-            order: 'desc',
-          },
-        },
+          "relativeRank": {
+            "order": "desc"
+          }
+        }
       ],
-      size: 200,
+      "size": 200
     };
-    _.each(ids, function(id) {
+    _.each(ids, function (id) {
       options.query.bool.should.push({
-        match: {
-          [type]: `${id}`,
-        },
+        "match": {
+          [type]: `${id}`
+        }
       });
     });
     return options;
   }
 
-  /**
-   * @description construct an elasticsearch query specific for category items
-   * @param {string} type
-   * @returns {Object}
-   * @memberof DataService
-   */
+	/**
+	 * @description construct an elasticsearch query specific for category items
+	 * @param {string} type
+	 * @returns {Object}
+	 * @memberof DataService
+	 */
   categoryQuery(type: string): Object {
     return {
-      query: {
-        bool: {
-          must: [{ match: { type: type } }, { prefix: { image: 'http' } }],
-        },
+      "query": {
+        "bool": {
+          "must": [
+            { "match": { "type": type } },
+            { "prefix": { "image": "http" } }
+          ]
+        }
       },
-      sort: [
+      "sort": [
         {
-          relativeRank: {
-            order: 'desc',
-          },
-        },
+          "relativeRank": {
+            "order": "desc"
+          }
+        }
       ],
-      size: 20,
-    };
+      "size": 20
+    }
   }
 
   /**
-   * Fetches an entity from the server
-   * @param id Id of the entity to retrieve
-   * @param type if specified, it is assured that the returned entity has this entityType
-   */
+  * Fetches an entity from the server
+  * @param id Id of the entity to retrieve
+  * @param type if specified, it is assured that the returned entity has this entityType
+  */
   public async findById<T>(id: string, type?: EntityType): Promise<T> {
     const response = await this.http.get<T>(this.serverURI + '?q=id:' + id).toPromise();
     const rawEntities = this.filterData<T>(response, type);
@@ -332,7 +314,7 @@ export class DataService {
           should: [],
         },
       },
-      size: 10000,
+      size: 400,
     };
     _.each(copyids, (id) => {
       options.query.bool.should.push({
@@ -345,4 +327,25 @@ export class DataService {
     const response = await this.http.post<any>(this.serverURI, options).toPromise();
     return this.filterData<T>(response, type);
   }
+
+  /** add a new search tag to the search (displayed as chip) 
+   * @param tag TagItem that should be added
+  */
+  public addSearchTag(tag: TagItem) {
+    this.searchItems.push({
+      label: tag.label,
+      type: tag.type,
+      id: tag.id,
+    });
+    this.$searchItems.next(this.searchItems);
+  }
+
+  /** remove a search tag from the search 
+    * @param tag TagItem that should be removed
+    */
+  public removeSearchTag(tag: TagItem) {
+    this.searchItems = this.searchItems.filter((i) => i !== tag);
+    this.$searchItems.next(this.searchItems);
+  }
+
 }

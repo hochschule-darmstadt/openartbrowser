@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Entity, Artwork, artSearch, EntityType, TagItem } from 'src/app/shared/models/models';
 import * as _ from 'lodash';
+import { Subject } from 'rxjs';
 
 
 /**
@@ -10,11 +11,20 @@ import * as _ from 'lodash';
 @Injectable()
 export class DataService {
 
+  /** search chips */
+  searchItems: TagItem[] = [];
+
+  /** search chips as observable */
+  $searchItems: Subject<TagItem[]> = new Subject();
+
+  /** base url of elasticSearch server */
+  serverURI = 'http://openartbrowser.org/api/_search';
+
 	/**
 	 * Constructor
 	 */
   constructor(private http: HttpClient) { }
-  serverURI = 'http://openartbrowser.org/api/_search';
+
   public async findEntitiesByLabelText(text: string): Promise<Entity[]> {
     const options = {
       "query": {
@@ -304,7 +314,7 @@ export class DataService {
           should: [],
         },
       },
-      size: 10000,
+      size: 400,
     };
     _.each(copyids, (id) => {
       options.query.bool.should.push({
@@ -317,4 +327,25 @@ export class DataService {
     const response = await this.http.post<any>(this.serverURI, options).toPromise();
     return this.filterData<T>(response, type);
   }
+
+  /** add a new search tag to the search (displayed as chip) 
+   * @param tag TagItem that should be added
+  */
+  public addSearchTag(tag: TagItem) {
+    this.searchItems.push({
+      label: tag.label,
+      type: tag.type,
+      id: tag.id,
+    });
+    this.$searchItems.next(this.searchItems);
+  }
+
+  /** remove a search tag from the search 
+    * @param tag TagItem that should be removed
+    */
+  public removeSearchTag(tag: TagItem) {
+    this.searchItems = this.searchItems.filter((i) => i !== tag);
+    this.$searchItems.next(this.searchItems);
+  }
+
 }

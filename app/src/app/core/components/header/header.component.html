@@ -1,41 +1,38 @@
-<nav class="navbar navbar-expand-sm mb-3 ">
-  <div class="container border-bottom">
-    <a class="navbar-brand" [routerLink]="['/']">
-      <div class="row mr-1">
-        <span id="h3-span">open</span>
-        <h3 id="headerTitle">ArtBrowser</h3>
-      </div>
-    </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarColor03">
-      <ul class="navbar-nav">
-        <li class="nav-item flex-grow-1">
-          <form action="" class="search-form d-flex justify-content-end">
-            <div class="form-group has-feedback">
-              <app-search></app-search>
-            </div>
-          </form>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
-            aria-expanded="true">
-            <h3><i class="fas fa-bars"></i></h3>
-          </a>
-          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" [routerLink]="['/']">Home</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" [routerLink]="['/about']">About</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" [routerLink]="['/impress']">Legal Notice</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" [routerLink]="['/data-protection']">Data Protection Declaration</a>
+<nav class="container border-bottom navbar navbar-expand-sm mb-3">
+  <div class="navbar-collapse" id="navbarColor03">
+    <ul class="navbar-nav">
+      <li class="nav-item flex-shrink-0">
+        <a class="navbar-brand" [routerLink]="['/']">
+          <div class="row mr-1">
+            <span id="h3-span">open</span>
+            <h3 id="headerTitle">ArtBrowser</h3>
           </div>
-        </li>
-      </ul>
-    </div>
+        </a>
+      </li>
+      <li class="nav-item search-form">
+        <app-search class="form-group has-feedback" [isHeaderSearch]="true"></app-search>
+      </li>
+      <li class="nav-item dropdown flex-shrink-0">
+        <a
+          class="nav-link dropdown-toggle"
+          data-toggle="dropdown"
+          href="#"
+          role="button"
+          aria-haspopup="true"
+          aria-expanded="true"
+        >
+          <h3><i class="fas fa-bars"></i></h3>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" [routerLink]="['/']">Home</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" [routerLink]="['/about']">About</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" [routerLink]="['/impress']">Legal Notice</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" [routerLink]="['/data-protection']">Data Protection Declaration</a>
+        </div>
+      </li>
+    </ul>
   </div>
 </nav>

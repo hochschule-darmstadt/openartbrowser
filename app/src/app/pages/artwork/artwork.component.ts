@@ -26,6 +26,11 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   artwork: Artwork = null;
 
   /**
+   * whether artwork image should be hidden
+   */
+  imageHidden = true;
+
+  /**
    * @description to toggle details container.
    * initial as true (close).
    */
@@ -109,7 +114,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   Object = Object;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {}
+  constructor(private dataService: DataService, private route: ActivatedRoute) { }
 
   /**
    * @description hook that is executed at component initialization
@@ -139,6 +144,13 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     this.artworkTabs.material.items = [];
     this.artworkTabs.motif.items = [];
     this.artworkTabs.location.items = [];
+  }
+
+  /**
+   * hide artwork image
+   */
+  hideImage() {
+    this.imageHidden = true;
   }
 
   /**

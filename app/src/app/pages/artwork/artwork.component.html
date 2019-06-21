@@ -1,7 +1,7 @@
 <div class="container">
-  <div class="row pb-5 border-bottom">
+  <div class="row pb-5 border-bottom" *ngIf="!imageHidden && artwork?.imageMedium">
     <div class="img-container mx-auto d-block" (click)="showModal()">
-      <img class="img-fluid d-block" id="image-main" src="{{ artwork?.imageMedium }}" alt="" />
+      <img class="img-fluid d-block" id="image-main" (error)="hideImage()" src="{{ artwork?.imageMedium }}" alt="" />
       <div class="enlarge">
         <i class="fas fa-expand" (click)="showModal()"></i>
       </div>

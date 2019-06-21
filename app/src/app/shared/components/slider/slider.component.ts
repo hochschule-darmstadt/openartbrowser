@@ -1,12 +1,13 @@
-import { Component, Input, SimpleChanges, OnChanges, EventEmitter, Output, ElementRef } from '@angular/core';
+import { Component, Input, SimpleChanges, OnChanges, EventEmitter, Output, OnInit } from '@angular/core';
 import { Entity } from '../../models/models';
+
 
 @Component({
   selector: 'app-slider',
   templateUrl: './slider.component.html',
   styleUrls: ['./slider.component.scss'],
 })
-export class SliderComponent implements OnChanges {
+export class SliderComponent implements OnInit, OnChanges {
   @Input() heading: string;
 
   /**
@@ -17,7 +18,28 @@ export class SliderComponent implements OnChanges {
   /**
    * @description slides of the slider, max 8 items each.
    */
-  slides: Array<Entity[]> = [[]];
+  //slides: Array<Entity[]> = [[]];
+
+  slides = [];
+
+
+
+  ngOnInit() {
+    // setTimeout(() => {
+    //   this.slides = [];
+    //   for (let i = 0; i < this.itemsAsPointers.length; i += 8) {
+    //     this.slides.push(this.itemsAsPointers.slice(i, i + 8));
+    //   }
+    //   console.log(this.slides[0][0].item);
+    //   setTimeout(() => {
+    //     this.itemsAsPointers[0].item = undefined;
+
+    //     console.log(this.slides[0][0].item);
+    //   }, 4000);
+
+    // }, 2000);
+
+  }
 
   /**
    * @description emits hovered artwork on hover event.

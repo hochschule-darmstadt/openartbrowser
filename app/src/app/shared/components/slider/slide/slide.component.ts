@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, AfterViewInit, ElementRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, AfterViewInit, ElementRef, SimpleChanges, OnChanges } from '@angular/core';
 import { Entity } from 'src/app/shared/models/models';
 import { DataService } from 'src/app/core/services/data.service';
 
@@ -7,7 +7,7 @@ import { DataService } from 'src/app/core/services/data.service';
   templateUrl: './slide.component.html',
   styleUrls: ['./slide.component.scss'],
 })
-export class SlideComponent implements AfterViewInit {
+export class SlideComponent implements AfterViewInit, OnChanges {
   /** whether slide images should be loaded */
   public loadContent = false;
 
@@ -22,7 +22,13 @@ export class SlideComponent implements AfterViewInit {
   @Output()
   itemHover: EventEmitter<Entity> = new EventEmitter<Entity>();
 
-  constructor(public dataService: DataService, private el: ElementRef) {}
+  constructor(public dataService: DataService, private el: ElementRef) { }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.items) {
+      console.log(this.items);
+    }
+  }
 
   ngAfterViewInit() {
     if (window && 'IntersectionObserver' in window) {

@@ -55,6 +55,8 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   counter = 0;
 
+  isSearching = false;
+
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();
 
@@ -235,7 +237,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   public async itemSelected($event) {
     this.searchInput = '';
-
+    this.isSearching = false;
     if ($event.item.type !== 'artwork') {
       this.dataService.addSearchTag({
         label: $event.item.label,
@@ -245,14 +247,17 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
       $event.preventDefault();
     }
 
-    if (this.searchItems.length === 1 || $event.item.type === 'artwork') {
+    if (this.searchItems.length === 1) {
       let url = `/${$event.item.type}/${$event.item.id}`;
       if ($event.item.type === 'object') {
         url = `/motif/${$event.item.id}`;
       }
       this.router.navigate([url]);
+    } else if ($event.item.type === 'artwork') {
+      this.isSearching = true;
+      let url = `/artwork/${$event.item.id}`;
+      this.router.navigate([url]);
     } else {
-      console.log('label: ' + $event.item.label);
       this.router.navigate(['/search'], { queryParams: this.buildQueryParams() });
     }
   }
@@ -307,15 +312,17 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
    * @description search for string when no item is selected
    */
   public navigateToSearchText(term) {
-    if (term !== '' && !(term instanceof Object)) {
-      this.dataService.addSearchTag({
-        label: term,
-        type: null,
-        id: null,
-      });
+    if (!this.isSearching) {
+      if (term !== '' && !(term instanceof Object)) {
+        this.dataService.addSearchTag({
+          label: term,
+          type: null,
+          id: null,
+        });
+      }
+      this.searchInput = '';
+      this.router.navigate(['/search'], { queryParams: this.buildQueryParams() });
     }
-    this.searchInput = '';
-    this.router.navigate(['/search'], { queryParams: this.buildQueryParams() });
   }
 
   /**
@@ -364,6 +371,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
    * @description remove all chips
    */
   public clearAllTags() {
+    this.dataService.searchItems = [];
     this.searchItems = [];
   }
 }

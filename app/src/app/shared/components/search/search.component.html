@@ -34,10 +34,23 @@
     </span>
   </div>
 
-  <input class="form-control search__header-input" [focusFirst]="false" type="text" name="Artwork" #input placeholder="{{ placeholderText }}"
-    [ngbTypeahead]="search" [resultTemplate]="rt" [inputFormatter]="formatter" (selectItem)="itemSelected($event)"
-    (keyup.enter)="navigateToSearchText(input.value)" (keyup.esc)="clearAllTags()" (keyup.backspace)="readyToRemove()"
-    (keydown.backspace)="removeNewestTag()" [(ngModel)]="searchInput" />
+  <input
+    class="form-control search__header-input"
+    [focusFirst]="false"
+    type="text"
+    name="Artwork"
+    #input
+    placeholder="{{ placeholderText }}"
+    [ngbTypeahead]="search"
+    [resultTemplate]="rt"
+    [inputFormatter]="formatter"
+    (selectItem)="itemSelected($event)"
+    (keyup.enter)="searchText()"
+    (keyup.esc)="clearAllTags()"
+    (keyup.backspace)="readyToRemove()"
+    (keydown.backspace)="removeNewestTag()"
+    [(ngModel)]="searchInput"
+  />
 </div>
 
 <button class="btn btn-link search__header-input-searchButton" (click)="searchText()">

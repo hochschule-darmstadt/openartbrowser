@@ -83,7 +83,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   public changePlaceholdertext() {
     ++this.counter;
-    if (this.counter == this.placeholderArray.length) {
+    if (this.counter === this.placeholderArray.length) {
       this.counter = 0;
     }
     this.placeholderText = this.placeholderArray[this.counter];
@@ -235,10 +235,6 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   public async itemSelected($event) {
     this.searchInput = '';
-    let url = `/${$event.item.type}/${$event.item.id}`;
-    if ($event.item.type === 'object') {
-      url = `/motif/${$event.item.id}`;
-    }
 
     if ($event.item.type !== 'artwork') {
       this.dataService.addSearchTag({
@@ -248,7 +244,17 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
       });
       $event.preventDefault();
     }
-    this.router.navigate([url]);
+
+    if (this.searchItems.length === 1 || $event.item.type === 'artwork') {
+      let url = `/${$event.item.type}/${$event.item.id}`;
+      if ($event.item.type === 'object') {
+        url = `/motif/${$event.item.id}`;
+      }
+      this.router.navigate([url]);
+    } else {
+      console.log('label: ' + $event.item.label);
+      this.router.navigate(['/search'], { queryParams: this.buildQueryParams() });
+    }
   }
 
   /** build query params for search result url */
@@ -316,7 +322,16 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
    * @description search items when there are chips and no input
    */
   public searchText() {
-    this.navigateToSearchText(this.searchInput);
+    const sItem = this.dataService.searchItems[0];
+    if (this.searchInput === '' && this.searchItems.length === 1 && sItem.type) {
+      let url = `/${sItem.type}/${sItem.id}`;
+      if (sItem.type === 'object') {
+        url = `/motif/${sItem.id}`;
+      }
+      this.router.navigate([url]);
+    } else {
+      this.navigateToSearchText(this.searchInput);
+    }
   }
 
   /**

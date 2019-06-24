@@ -28,7 +28,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   /**
    * whether artwork image should be hidden
    */
-  imageHidden = true;
+  imageHidden = false;
 
   /**
    * @description to toggle details container.
@@ -114,7 +114,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   Object = Object;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) { }
+  constructor(private dataService: DataService, private route: ActivatedRoute) {}
 
   /**
    * @description hook that is executed at component initialization

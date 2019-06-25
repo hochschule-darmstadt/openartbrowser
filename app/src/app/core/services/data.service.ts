@@ -12,7 +12,7 @@ import { Subject } from 'rxjs';
 export class DataService {
 
   /** search chips */
-  searchItems: TagItem[] = [];
+  private searchItems: TagItem[] = [];
 
   /** search chips as observable */
   $searchItems: Subject<TagItem[]> = new Subject();
@@ -328,23 +328,36 @@ export class DataService {
     return this.filterData<T>(response, type);
   }
 
-  /** add a new search tag to the search (displayed as chip) 
+  /** add a new search tag to the search (displayed as chip)
    * @param tag TagItem that should be added
-  */
+   */
   public addSearchTag(tag: TagItem) {
-    this.searchItems.push({
-      label: tag.label,
-      type: tag.type,
-      id: tag.id,
+    const existingTag = this.searchItems.filter((i) => {
+      return i.id === tag.id && i.type === tag.type && i.label === tag.label;
+    });
+    if (existingTag.length === 0) {
+      this.searchItems.push({
+        label: tag.label,
+        type: tag.type,
+        id: tag.id,
+      });
+      this.$searchItems.next(this.searchItems);
+    }
+  }
+
+  /** remove a search tag from the search
+   * @param tag TagItem that should be removed
+   */
+  public removeSearchTag(tag: TagItem) {
+    this.searchItems = this.searchItems.filter((i) => {
+      return i.id !== tag.id || i.type !== tag.type || i.label !== tag.label;
     });
     this.$searchItems.next(this.searchItems);
   }
 
-  /** remove a search tag from the search 
-    * @param tag TagItem that should be removed
-    */
-  public removeSearchTag(tag: TagItem) {
-    this.searchItems = this.searchItems.filter((i) => i !== tag);
+  /** clear all search tags */
+  public clearSearchTags() {
+    this.searchItems = [];
     this.$searchItems.next(this.searchItems);
   }
 

@@ -11,37 +11,20 @@ import { TagItem, Entity } from '../../models/models';
   styleUrls: ['./search.component.scss'],
 })
 export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
-  /**
-   * @description input for search component
-   */
+  /** input for search component */
   searchInput: string;
 
-  /**
-   * @description simple check to prep tag for removal
-   */
-  rmTag: boolean = false;
+  /** Array of all chips */
+  searchItems: TagItem[] = [];
 
   /** whether search is header or home page */
   @Input()
   isHeaderSearch = false;
 
-  /**
-   * @description Array of all chips.
-   */
-  searchItems: TagItem[] = [];
-
-  /**
-   * @description String value binding the placeholder in the searchbar.
-   * @type string
-   * @memberof SearchComponent
-   */
+  /** String value binding the placeholder in the searchbar */
   placeholderText: string;
 
-  /**
-   * @description Array of all placeholder values.
-   * @type string[]
-   * @memberof SearchComponent
-   */
+  /** Array of all placeholder values */
   placeholderArray: string[] = [
     'Search for something...',
     'Try "Mona Lisa"',
@@ -49,13 +32,20 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     'Try "Renaissance"',
   ];
 
-  /**
-   * @description Counter of placeholderArray.
-   * @memberof SearchComponent
-   */
+  /** Counter of placeholderArray */
   counter = 0;
 
-  isSearching = false;
+  /** simple check to prep tag for removal */
+  rmTag = false;
+
+  /** if set, search is only enabled by selecting from typeahead results */
+  preventSearch = false;
+
+
+
+
+
+
 
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();
@@ -79,10 +69,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     this.ngUnsubscribe.complete();
   }
 
-  /**
-   * @description Change the text inside the placeholder.
-   * @memberof SearchComponent
-   */
+  /** Change the text inside the placeholder */
   public changePlaceholdertext() {
     ++this.counter;
     if (this.counter === this.placeholderArray.length) {
@@ -167,9 +154,9 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
       })
     );
 
-  /** select up to 10 results from entities, distributes over all categories 
+  /** select up to 10 results from entities, distributes over all categories
    * @param entities results out of which should be selected
-  */
+   */
   selectSearchResults(entities: Entity[]) {
     const artworks = [];
     const artists = [];
@@ -231,37 +218,6 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     return newEntities.concat(restItems).splice(0, 10);
   }
 
-  /**
-   * @description function called when selecting an item in type-ahead suggestions
-   * based on type of item
-   */
-  public async itemSelected($event) {
-    this.searchInput = '';
-    this.isSearching = false;
-    if ($event.item.type !== 'artwork') {
-      this.dataService.addSearchTag({
-        label: $event.item.label,
-        type: $event.item.type,
-        id: $event.item.id,
-      });
-      $event.preventDefault();
-    }
-
-    if (this.searchItems.length === 1) {
-      let url = `/${$event.item.type}/${$event.item.id}`;
-      if ($event.item.type === 'object') {
-        url = `/motif/${$event.item.id}`;
-      }
-      this.router.navigate([url]);
-    } else if ($event.item.type === 'artwork') {
-      this.isSearching = true;
-      let url = `/artwork/${$event.item.id}`;
-      this.router.navigate([url]);
-    } else {
-      this.router.navigate(['/search'], { queryParams: this.buildQueryParams() });
-    }
-  }
-
   /** build query params for search result url */
   buildQueryParams() {
     const params = {
@@ -274,34 +230,35 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
       location: [],
     };
     for (const item of this.searchItems) {
-      if (!item.type) {
-        params.term.push(item.label);
-      } else {
-        switch (item.type) {
-          case 'artist': {
-            params.artist.push(item.id);
-            break;
-          }
-          case 'movement': {
-            params.movement.push(item.id);
-            break;
-          }
-          case 'genre': {
-            params.genre.push(item.id);
-            break;
-          }
-          case 'material': {
-            params.material.push(item.id);
-            break;
-          }
-          case 'object': {
-            params.motif.push(item.id);
-            break;
-          }
-          case 'location': {
-            params.location.push(item.id);
-            break;
-          }
+      switch (item.type) {
+        case 'artist': {
+          params.artist.push(item.id);
+          break;
+        }
+        case 'movement': {
+          params.movement.push(item.id);
+          break;
+        }
+        case 'genre': {
+          params.genre.push(item.id);
+          break;
+        }
+        case 'material': {
+          params.material.push(item.id);
+          break;
+        }
+        case 'object': {
+          params.motif.push(item.id);
+          break;
+        }
+        case 'location': {
+          params.location.push(item.id);
+          break;
+        }
+        case null:
+        case undefined: {
+          params.term.push(item.label);
+          break;
         }
       }
     }
@@ -309,41 +266,77 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   /**
-   * @description search for string when no item is selected
+   * @description function called when selecting an item in type-ahead suggestions
+   * if item is an artwork, redirect to artwork page.
+   * else add add the item as chip and perform search.
+   * prevent search via enter press for a duration of 300ms.
+   * @param $event the selected entity from typeahead results
    */
-  public navigateToSearchText(term) {
-    if (!this.isSearching) {
-      if (term !== '' && !(term instanceof Object)) {
-        this.dataService.addSearchTag({
-          label: term,
-          type: null,
-          id: null,
-        });
-      }
-      this.searchInput = '';
-      this.router.navigate(['/search'], { queryParams: this.buildQueryParams() });
+  public async itemSelected($event) {
+    this.preventSearch = true;
+    setTimeout(() => {
+      this.preventSearch = false;
+    }, 300);
+
+    this.searchInput = '';
+    if ($event.item.type === 'artwork') {
+      const url = `/artwork/${$event.item.id}`;
+      $event.preventDefault();
+      this.router.navigate([url]);
+      return;
+    } else {
+      this.dataService.addSearchTag({
+        label: $event.item.label,
+        type: $event.item.type,
+        id: $event.item.id,
+      });
+      $event.preventDefault();
     }
+    this.performSearch();
   }
 
-  /**
-   * @description search items when there are chips and no input
-   */
-  public searchText() {
-    const sItem = this.dataService.searchItems[0];
-    if (this.searchInput === '' && this.searchItems.length === 1 && sItem.type) {
-      let url = `/${sItem.type}/${sItem.id}`;
-      if (sItem.type === 'object') {
-        url = `/motif/${sItem.id}`;
+  /** perform search with the current chips.
+   * if there is exactly one entity chip, redirect to that entity page.
+   * if there is more than 1 chip or the chip is a term, redirect to search result page.
+   **/
+  performSearch() {
+    if (this.searchItems.length === 0) {
+      return;
+    }
+    const item = this.searchItems[0];
+    if (this.searchItems.length === 1 && item.type) {
+      let url = `/${item.type}/${item.id}`;
+      if (item.type === 'object') {
+        url = `/motif/${item.id}`;
       }
       this.router.navigate([url]);
-    } else {
-      this.navigateToSearchText(this.searchInput);
+      return;
     }
+    this.router.navigate(['/search'], { queryParams: this.buildQueryParams() });
+    return;
   }
 
-  /**
-   * @description remove chip from search bar
-   */
+  /** on enter press, if input is not empty add term to chips and
+   * perform search.
+   * If search is prevented due to a select event in the slider, do nothing because
+   * event is already handled in itemSelected
+   **/
+  public searchTriggered() {
+    if (this.preventSearch) {
+      return;
+    }
+    if (this.searchInput) {
+      this.dataService.addSearchTag({
+        label: this.searchInput,
+        type: null,
+        id: null,
+      });
+    }
+    this.performSearch();
+    this.searchInput = '';
+  }
+
+  /** remove chip from search bar */
   public removeTag(item: TagItem) {
     this.dataService.removeSearchTag(item);
   }
@@ -357,21 +350,17 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
       this.rmTag = true;
     }
   }
-  /**
-   * @description remove newest chip
-   */
+
+  /** remove newest chip */
   public removeNewestTag() {
-    if (this.searchInput === '' && this.rmTag === true) {
-      this.searchItems.splice(this.searchItems.length - 1, 1);
+    if (this.searchInput === '' && this.rmTag) {
+      this.dataService.removeSearchTag(this.searchItems[this.searchItems.length - 1]);
     }
     this.rmTag = false;
   }
 
-  /**
-   * @description remove all chips
-   */
+  /** remove all chips */
   public clearAllTags() {
-    this.dataService.searchItems = [];
-    this.searchItems = [];
+    this.dataService.clearSearchTags();
   }
 }

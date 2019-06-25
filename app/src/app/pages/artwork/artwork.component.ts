@@ -243,6 +243,10 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     this.modalIsVisible = false;
   }
 
+  ngAfterViewInit() {
+    setTimeout(() => this.dataService.isSearching = false, 1000);
+  }
+
   /**
    * @description Hook that is called when a directive, pipe, or service is destroyed.
    */

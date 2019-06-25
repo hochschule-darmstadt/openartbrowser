@@ -14,6 +14,9 @@ export class DataService {
   /** search chips */
   searchItems: TagItem[] = [];
 
+  /** check if elastic search is running */
+  isSearching = false;
+
   /** search chips as observable */
   $searchItems: Subject<TagItem[]> = new Subject();
 

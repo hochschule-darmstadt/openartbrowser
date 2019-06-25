@@ -55,8 +55,6 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   counter = 0;
 
-  isSearching = false;
-
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();
 
@@ -237,8 +235,8 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   public async itemSelected($event) {
     this.searchInput = '';
-    this.isSearching = false;
     if ($event.item.type !== 'artwork') {
+      this.dataService.isSearching = false;
       this.dataService.addSearchTag({
         label: $event.item.label,
         type: $event.item.type,
@@ -246,19 +244,26 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
       });
       $event.preventDefault();
     }
-
-    if (this.searchItems.length === 1) {
-      let url = `/${$event.item.type}/${$event.item.id}`;
-      if ($event.item.type === 'object') {
-        url = `/motif/${$event.item.id}`;
+    if (this.searchItems.length <= 1) {
+      if ($event.item.type === 'artwork') {
+        this.dataService.isSearching = true;
+        let url = `/artwork/${$event.item.id}`;
+        this.router.navigate([url]);
+      } else if ($event.item.type !== 'artwork') {
+        let url = `/${$event.item.type}/${$event.item.id}`;
+        if ($event.item.type === 'object') {
+          url = `/motif/${$event.item.id}`;
+        }
+        this.router.navigate([url]);
       }
-      this.router.navigate([url]);
-    } else if ($event.item.type === 'artwork') {
-      this.isSearching = true;
-      let url = `/artwork/${$event.item.id}`;
-      this.router.navigate([url]);
     } else {
-      this.router.navigate(['/search'], { queryParams: this.buildQueryParams() });
+      if ($event.item.type === 'artwork') {
+        this.dataService.isSearching = true;
+        let url = `/artwork/${$event.item.id}`;
+        this.router.navigate([url]);
+      } else {
+        this.router.navigate(['/search'], { queryParams: this.buildQueryParams() });
+      }
     }
   }
 
@@ -312,7 +317,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
    * @description search for string when no item is selected
    */
   public navigateToSearchText(term) {
-    if (!this.isSearching) {
+    if (!this.dataService.isSearching) {
       if (term !== '' && !(term instanceof Object)) {
         this.dataService.addSearchTag({
           label: term,
@@ -373,5 +378,6 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   public clearAllTags() {
     this.dataService.searchItems = [];
     this.searchItems = [];
+    this.dataService.isSearching = false;
   }
 }

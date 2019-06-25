@@ -337,7 +337,6 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /** remove chip from search bar */
   public removeTag(item: TagItem) {
-    console.log('removing tags');
     this.dataService.removeSearchTag(item);
   }
 

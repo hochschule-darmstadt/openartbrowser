@@ -5,6 +5,9 @@
   flex-wrap: wrap;
 }
 
+.dropdown-toggle{
+  padding: 0 0.6em !important;
+}
 .dropdown-toggle::after {
   display: none;
 }
@@ -24,6 +27,7 @@
   flex: 1;
   width: 100%;
   min-width: 400px;
+  padding-left: 0;
 
   @media (min-width: 0px) and (max-width: 576px) {
     min-width: 300px;
@@ -34,7 +38,7 @@
     margin: 0 1em;
     border: 1px solid #ccc;
     border-radius: 8px;
-    background-color: #fff;
+    background-color: #eee;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
     transition: all 0.35s ease-out;
   }
@@ -43,20 +47,37 @@
     overflow: hidden;
     opacity: 0;
     max-height: 0px;
+    background-color: #ddd;
     height: 0px;
     transition: all 0.35s ease-in;
     padding: 0;
   }
+
+  ::ng-deep .form-control {
+    padding: 0 !important;
+    height: 1.4em !important;
+    transition: all 0.35s ease-out;
+    opacity: 0 !important;
+  }
+
 }
 
 #navbarColor03:hover ::ng-deep .search__header-chips,
 .form-group:focus-within ::ng-deep .search__header-chips {
   opacity: 1;
-
-  transition: all 0.35s ease-in;
+  transition: all 0.25s ease-out;
   max-height: 90px;
   height: auto;
   padding: 0.1em;
+}
+
+#navbarColor03:hover ::ng-deep .form-control,
+.form-group:focus-within ::ng-deep .form-control {
+  height: 1.8em !important;
+  padding-left: 0.6em !important;
+  padding-right: 0.6em !important;
+  transition: all 0.35s ease-in;
+  opacity: 1 !important;
 }
 
 #navbarColor03:hover .form-group,

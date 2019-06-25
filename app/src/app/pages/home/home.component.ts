@@ -146,4 +146,15 @@ export class HomeComponent implements OnInit {
       this.backgroundImageUrl = artworks[Math.floor(Math.random() * (artworks.length))].imageMedium;
     }
   };
+
+  /**
+   * removes entity from category suggestions if image of item cannot be loaded
+   * @param category category the item should be removed from
+   * @param item item that should be removed
+   */
+  onLoadingError(category: SliderCategory, item: Entity) {
+    category.items = category.items.filter((i) => {
+      return item.id !== i.id;
+    });
+  }
 }

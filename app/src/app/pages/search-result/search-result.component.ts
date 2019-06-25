@@ -27,10 +27,22 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 
   constructor(private dataService: DataService, private route: ActivatedRoute) { }
 
+  /** resets search results  */
+  resetSearchResults() {
+    this.motifArray = [];
+    this.artistArray = [];
+    this.movementArray = [];
+    this.locationArray = [];
+    this.genreArray = [];
+    this.materialArray = [];
+    this.searchTerms = [];
+  }
+
   /** hook that is executed at component initialization */
   ngOnInit() {
     /** Extract the search params from url query params. */
     this.route.queryParams.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
+      this.resetSearchResults();
       this.searchTerms = params.term ? [].concat(params.term) : [];
 
       if (params.artist) {

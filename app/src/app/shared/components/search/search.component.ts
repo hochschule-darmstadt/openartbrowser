@@ -41,12 +41,6 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   /** if set, search is only enabled by selecting from typeahead results */
   preventSearch = false;
 
-
-
-
-
-
-
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();
 
@@ -262,6 +256,11 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     }
+    for (const key of Object.keys(params)) {
+      if (params[key].length === 0) {
+        delete params[key];
+      }
+    }
     return params;
   }
 
@@ -338,6 +337,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /** remove chip from search bar */
   public removeTag(item: TagItem) {
+    console.log('removing tags');
     this.dataService.removeSearchTag(item);
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, Input, ChangeDetectorRef } from '@angular/core';
 import { interval, Observable, Subject } from 'rxjs';
 import { DataService } from 'src/app/core/services/data.service';
 import { Router } from '@angular/router';
@@ -44,7 +44,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();
 
-  constructor(private dataService: DataService, private router: Router) { }
+  constructor(private dataService: DataService, private router: Router, private cdRef: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.dataService.$searchItems.pipe(takeUntil(this.ngUnsubscribe)).subscribe((items) => {
@@ -56,6 +56,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     this.placeholderText = this.placeholderArray[0];
     const inv = interval(8000);
     inv.pipe(takeUntil(this.ngUnsubscribe)).subscribe((val) => this.changePlaceholdertext());
+    this.cdRef.detectChanges();
   }
 
   ngOnDestroy() {

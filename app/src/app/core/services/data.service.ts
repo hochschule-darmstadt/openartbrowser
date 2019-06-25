@@ -49,7 +49,7 @@ export class DataService {
           }
         }
       ],
-      "size": 500
+      "size": 2000
     };
 
     const response = await this.http.post<any>(this.serverURI, options).toPromise();

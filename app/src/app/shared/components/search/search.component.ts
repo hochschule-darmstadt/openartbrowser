@@ -44,7 +44,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();
 
-  constructor(private dataService: DataService, private router: Router, private cdRef: ChangeDetectorRef) { }
+  constructor(private dataService: DataService, private router: Router, private cdRef: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.dataService.$searchItems.pipe(takeUntil(this.ngUnsubscribe)).subscribe((items) => {
@@ -140,9 +140,20 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
               return rankB > rankA ? 1 : rankB < rankA ? -1 : 0;
             }
           );
-        entities = this.selectSearchResults(entities).sort(
-          (a, b): any => {
-            return (a.type === 'artwork' && b.type !== 'artwork') || a.type > b.type;
+        entities = this.selectSearchResults(entities);
+        entities = entities.sort(
+          (a: Entity, b: Entity): number => {
+            if (a.type === 'artwork') {
+              return b.type === 'artwork' ? 0 : -1;
+            } else if (b.type === 'artwork') {
+              return a.type === 'artwork' ? 0 : 1;
+            } else if (a.type < b.type) {
+              return -1;
+            } else if (a.type === b.type) {
+              return 0;
+            } else if (a.type > b.type) {
+              return 1;
+            }
           }
         );
         return this.searchInput ? entities : [];
@@ -152,7 +163,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   /** select up to 10 results from entities, distributes over all categories
    * @param entities results out of which should be selected
    */
-  selectSearchResults(entities: Entity[]) {
+  selectSearchResults(entities: Entity[]): Entity[] {
     const artworks = [];
     const artists = [];
     const materials = [];
@@ -202,14 +213,17 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
       .concat(movements.splice(0, 2))
       .concat(locations.splice(0, 2));
 
-    const restItems = artworks
-      .concat(artists)
-      .concat(materials)
-      .concat(genre)
-      .concat(motifs)
-      .concat(movements)
-      .concat(locations);
-
+    let restItems = [];
+    for (let i = 0; i < 10; ++i) {
+      restItems = restItems
+        .concat(artworks.splice(0, 1))
+        .concat(artists.splice(0, 1))
+        .concat(materials.splice(0, 1))
+        .concat(genre.splice(0, 1))
+        .concat(motifs.splice(0, 1))
+        .concat(movements.splice(0, 1))
+        .concat(locations.splice(0, 1));
+    }
     return newEntities.concat(restItems).splice(0, 10);
   }
 

@@ -1,5 +1,3 @@
-@import '../../../../variables.scss';
-
 $color1: #00bc8c;
 
 input.form-control {
@@ -53,7 +51,7 @@ input.form-control {
         white-space: nowrap;
 
         &--entity {
-          margin-left: $SizeTiny;
+          margin-left: 0.125rem;
         }
       }
 

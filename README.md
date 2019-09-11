@@ -7,7 +7,7 @@
 
 ## Overview
 
-openArtBrowser invites you to browse through the world of arts, enjoy beautiful artworks and learn interesting things. We provide paintings, drawings and sculptures all over the world and from many periods.
+openArtBrowser <http://openartbrowser.org> invites you to browse through the world of arts, enjoy beautiful artworks and learn interesting things. We provide paintings, drawings and sculptures all over the world and from many periods.
 
 This project contains:
 

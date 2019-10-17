@@ -23,7 +23,7 @@
     "@types/lodash": "^4.14.129",
     "@types/qs": "^6.5.3",
     "core-js": "^2.5.4",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.15",
     "ngx-image-viewer": "^1.0.13",
     "rxjs": "~6.3.3",
     "tslib": "^1.9.0",

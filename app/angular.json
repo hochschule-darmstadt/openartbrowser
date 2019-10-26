@@ -51,6 +51,30 @@
                   "maximumError": "5mb"
                 }
               ]
+            },
+            "en": {
+              "aot": true,
+              "outputPath": "dist/browser/en/",
+              "i18nFile": "src/locale/messages.en.xlf",
+              "i18nFormat": "xlf",
+              "i18nLocale": "en",
+              "i18nMissingTranslation": "error"
+            },
+            "fr": {
+              "aot": true,
+              "outputPath": "dist/browser/fr/",
+              "i18nFile": "src/locale/messages.fr.xlf",
+              "i18nFormat": "xlf",
+              "i18nLocale": "fr",
+              "i18nMissingTranslation": "error"
+            },
+            "de": {
+              "aot": true,
+              "outputPath": "dist/browser/de/",
+              "i18nFile": "src/locale/messages.de.xlf",
+              "i18nFormat": "xlf",
+              "i18nLocale": "de",
+              "i18nMissingTranslation": "error"
             }
           }
         },
@@ -62,6 +86,15 @@
           "configurations": {
             "production": {
               "browserTarget": "art-browser:build:production"
+            }, 
+            "en": {
+              "browserTarget": "AngularInt:build:en"
+            },
+            "fr": {
+              "browserTarget": "AngularInt:build:fr"
+            },
+            "de": {
+              "browserTarget": "AngularInt:build:de"
             }
           }
         },

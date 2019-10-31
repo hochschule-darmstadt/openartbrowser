@@ -39,7 +39,7 @@ def extract_artworks(type_name, wikidata_id):
 
     with open(type_name + ".csv", "w", newline="", encoding='utf-8') as file:
         fields = ["id", "classes", "label", "description", "image", "creators", "locations", "genres", "movements", "inception", "materials", "depicts", "country", "height",
-                  "width"]
+                  "width", "label_es", "description_es", "label_fr", "description_fr", "label_de", "description_de"]
         writer = csv.DictWriter(file, fieldnames=fields, delimiter=';', quotechar='"')
         writer.writeheader()
 
@@ -50,6 +50,8 @@ def extract_artworks(type_name, wikidata_id):
             # mandatory fields
             try:
                 item_dict = item.get()
+                print("item_dict")
+                #print(item_dict)
                 label = item_dict["labels"]["en"]
                 clm_dict = item_dict["claims"]
                 classes = list(map(lambda clm: clm.getTarget().id, clm_dict["P31"]))
@@ -59,9 +61,33 @@ def extract_artworks(type_name, wikidata_id):
                 continue
                 # optional fields
             try:
+                label_es = item_dict["labels"]["es"]
+            except:
+                label_es = label
+            try:
+                label_fr = item_dict["labels"]["fr"]
+            except:
+                label_fr = label
+            try:
+                label_de = item_dict["labels"]["de"]
+            except:
+                label_de = label
+            try:
                 description = item_dict["descriptions"]["en"]
             except:
                 description = ""
+            try:
+                description_es = item_dict["descriptions"]["es"]
+            except:
+                description_es = description
+            try:
+                description_de = item_dict["descriptions"]["de"]
+            except:
+                description_de = description
+            try:
+                description_fr = item_dict["descriptions"]["fr"]
+            except:
+                description_fr = description
             try:
                 locations = list(map(lambda clm: clm.getTarget().id, clm_dict["P276"]))
             except:
@@ -102,8 +128,12 @@ def extract_artworks(type_name, wikidata_id):
             print(str(count) + " ", end='')
             writer.writerow(
                 {"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "creators": creators, "locations": locations, "genres": genres,
-                 "movements": movements, "inception": inception, "materials": materials, "depicts": depicts, "country": country, "height": height, "width": width})
-            # print(classes, item, label, description, image, creators, locations, genres, movements,  inception, materials, depicts,  country, height, width)
+                 "movements": movements, "inception": inception, "materials": materials, "depicts": depicts, "country": country, "height": height, "width": width, "label_es":label_es,
+                 "description_es":description_es, "label_de": label_de, "description_de": description_de, "label_fr":label_fr, "description_fr": description_fr})
+            print(classes, item, label, description, image, creators, locations, genres, movements,  inception, materials, depicts,  country, height, width,
+                  label_es, description_es, label_fr, description_fr, label_de, description_de)
+            #if count == 15:
+                #break
 
     print(datetime.datetime.now(), "Finished with", type_name)
 
@@ -142,7 +172,7 @@ def extract_subjects(subject_type):
     print("Total: ", len(subjects), subject_type)
     count = 0
     with open(subject_type + ".csv", "w", newline="", encoding='utf-8') as file:
-        fields = ["id", "classes", "label", "description", "image"]
+        fields = ["id", "classes", "label", "description", "image", "label_es", "description_es", "label_fr", "description_fr", "label_de", "description_de"]
         if subject_type == "creators":
             fields += ["gender", "date_of_birth", "date_of_death", "place_of_birth", "place_of_death", "citizenship", "movements", "influenced_by"]
         if subject_type == "movements":
@@ -170,9 +200,33 @@ def extract_subjects(subject_type):
             except:
                 label = ""
             try:
+                label_es = item_dict["labels"]["es"]
+            except:
+                label_es = label
+            try:
+                label_fr = item_dict["labels"]["fr"]
+            except:
+                label_fr = label
+            try:
+                label_de = item_dict["labels"]["de"]
+            except:
+                label_de = label
+            try:
                 description = item_dict["descriptions"]["en"]
             except:
                 description = ""
+            try:
+                description_es = item_dict["descriptions"]["es"]
+            except:
+                description_es = description
+            try:
+                description_de = item_dict["descriptions"]["de"]
+            except:
+                description_de = description
+            try:
+                description_fr = item_dict["descriptions"]["fr"]
+            except:
+                description_fr = description
             try:
                 image = clm_dict["P18"][0].getTarget().get_file_url()
             except:
@@ -244,15 +298,18 @@ def extract_subjects(subject_type):
             if subject_type == "creators":
                 writer.writerow({"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "gender": gender, "date_of_birth": date_of_birth,
                                  "date_of_death": date_of_death, "place_of_birth": place_of_birth, "place_of_death": place_of_death, "citizenship": citizenship,
-                                 "movements": movements, "influenced_by": influenced_by})
+                                 "movements": movements, "influenced_by": influenced_by, "label_es": label_es, "description_es": description_es, "label_fr":label_fr,
+                                 "description_fr":description_fr, "label_de": label_de, "description_de":description_de})
             if subject_type == "movements":
-                writer.writerow({"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "influenced_by": influenced_by})
+                writer.writerow({"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "influenced_by": influenced_by, "label_es": label_es, "description_es": description_es
+                                 ,"label_fr":label_fr,"description_fr":description_fr, "label_de": label_de, "description_de":description_de})
             elif subject_type == "locations":
                 writer.writerow(
                     {"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "country": country, "website": website, "part_of": part_of,
-                     "lat": lat, "lon": lon})
+                     "lat": lat, "lon": lon, "label_es": label_es, "description_es": description_es, "label_fr":label_fr,"description_fr":description_fr, "label_de": label_de, "description_de":description_de})
             else:
-                writer.writerow({"id": item.id, "classes": classes, "label": label, "description": description, "image": image})
+                writer.writerow({"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "label_es": label_es, "description_es": description_es, "label_fr":label_fr,
+                                 "description_fr":description_fr, "label_de": label_de, "description_de":description_de})
 
     print()
     print(datetime.datetime.now(), "Finished with", subject_type)
@@ -292,7 +349,7 @@ def extract_classes():
         count += 1
         print(str(count) + " ", end='')
     with open("classes.csv", "w", newline="", encoding='utf-8') as file:
-        fields = ["id", "label", "description", "subclass_of"]
+        fields = ["id", "label", "description", "subclass_of", "label_es", "description_es", "label_fr", "description_fr", "label_de", "description_de"]
         writer = csv.DictWriter(file, fieldnames=fields, delimiter=';', quotechar='"')
         writer.writeheader()
         for cls in class_dict:
@@ -322,14 +379,39 @@ def extract_class(cls, class_dict, repo):
         except:
             label = ""
         try:
+            label_es = item_dict["labels"]["es"]
+        except:
+            label_es = label
+        try:
+            label_fr = item_dict["labels"]["fr"]
+        except:
+            label_fr = label
+        try:
+            label_de = item_dict["labels"]["de"]
+        except:
+            label_de = label
+        try:
             description = item_dict["descriptions"]["en"]
         except:
             description = ""
         try:
+            description_es = item_dict["descriptions"]["es"]
+        except:
+            description_es = description
+        try:
+            description_de = item_dict["descriptions"]["de"]
+        except:
+            description_de = description
+        try:
+            description_fr = item_dict["descriptions"]["fr"]
+        except:
+            description_fr = description
+        try:
             subclass_of = list(map(lambda clm: clm.getTarget().id, clm_dict["P279"]))
         except:
             subclass_of = []
-        class_dict[cls] = {"id": item.id, "label": label, "description": description, "subclass_of": subclass_of}
+        class_dict[cls] = {"id": item.id, "label": label, "description": description, "subclass_of": subclass_of, "label_es": label_es, "description_es": description_es
+            , "label_fr":label_fr, "description_fr":description_fr, "label_de": label_de, "description_de": description_de}
         for superclass in subclass_of:
             extract_class(superclass, class_dict, repo)
 
@@ -345,7 +427,7 @@ def merge_artworks():
 
     with open("artworks.csv", "w", newline="", encoding='utf-8') as output:
         fields = ["id", "classes", "label", "description", "image", "creators", "locations", "genres", "movements", "inception", "materials", "depicts", "country", "height",
-                  "width"]
+                  "width", "label_es", "description_es", "label_fr", "description_fr", "label_de", "description_de"]
         writer = csv.DictWriter(output, fieldnames=fields, delimiter=';', quotechar='"')
         writer.writeheader()
         for file_name in file_names:

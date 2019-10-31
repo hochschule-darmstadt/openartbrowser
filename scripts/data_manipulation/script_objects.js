@@ -6,6 +6,7 @@ const fs = require('fs');
 const es = require('event-stream');
 const _ = require('lodash');
 const helper = require("./helper")
+const addlanguage = require("./addlanguage")
 const stream = fs.createReadStream(csvFilePath)
 const type = 'object';
 let numberOfLines = 0;
@@ -15,7 +16,15 @@ let obj = {
 	label: '',
 	description: '',
 	image: '',
-	type: ''
+	type: '',
+	label_de: '',
+	description_de: '',
+	label_it: '',
+	description_it: '',
+	label_fr: '',
+	description_fr: '',
+	label_es: '',
+	description_es: ''
 }
 let objArr = [];
 let ids = [];
@@ -31,6 +40,9 @@ const csvStream = csv({ delimiter: ';' })
 			myObj.description = data[3];
 			myObj.image = data[4];
 			myObj.type = type;
+
+			//add languages from csv to interal objects
+			myObj = addlanguage.addLanguageColumns(myObj, data, 6);
 
 			objArr.push(myObj);
 			ids.push(myObj.id);

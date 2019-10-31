@@ -7,6 +7,7 @@ const csv = require('fast-csv')
 const _ = require('lodash');
 const stream = fs.createReadStream(csvFilePath)
 const helper = require("./helper")
+const addlanguage = require("./addlanguage")
 const type = 'genre';
 let numberOfLines = 0;
 let obj = {
@@ -15,7 +16,15 @@ let obj = {
 	label: '',
 	description: '',
 	image: '',
-	type: ''
+	type: '',
+	label_de: '',
+	description_de: '',
+	label_it: '',
+	description_it: '',
+	label_fr: '',
+	description_fr: '',
+	label_es: '',
+	description_es: ''
 }
 let objArr = [];
 let ids = [];
@@ -32,6 +41,7 @@ const csvStream = csv({ delimiter: ';' })
 			myObj.image = data[4];
 			myObj.type = type;
 
+			myObj = addlanguage.addLanguageColumns(myObj, data, 6);
 			objArr.push(myObj);
 			ids.push(myObj.id);
 		}

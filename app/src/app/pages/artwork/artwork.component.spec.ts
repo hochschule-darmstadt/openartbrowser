@@ -8,6 +8,7 @@ import { DataService } from 'src/app/core/services/data.service';
 import { HttpClientModule } from '@angular/common/http';
 import { ImageViewerModule } from 'ngx-image-viewer';
 import { RouterModule } from '@angular/router';
+import { VideoComponent} from "../../shared/components/video/video.component";
 
 describe('ArtworkComponent', () => {
   let component: ArtworkComponent;
@@ -25,6 +26,7 @@ describe('ArtworkComponent', () => {
         ArtworkComponent,
         SlideComponent,
         SliderComponent,
+        VideoComponent
       ],
       providers: [
         DataService,

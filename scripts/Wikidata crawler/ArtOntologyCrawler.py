@@ -14,10 +14,28 @@ import pywikibot
 import types
 from pywikibot import pagegenerators as pg
 import csv
+import json
 import datetime
 import ast
 
-
+def generate_csv(name, extract_dicts, fields):
+    with open(name + ".csv_test", "w", newline="", encoding='utf-8') as file:
+        writer = csv.DictWriter(file, fieldnames=fields, delimiter=';', quotechar='"')
+        writer.writeheader()
+        for extract_dict in extract_dicts:
+            writer.writerow(extract_dict)
+    
+def generate_json(name, extract_dicts, fields):
+    with open(name + ".json_test", "w", newline="", encoding='utf-8') as file:
+        print(name[:-1])
+        file.write("[")
+        for extract_dict in extract_dicts[:-1]:
+            extract_dict["type"] = name[:-1]
+            file.write(json.dumps(extract_dict))
+            file.write(",")
+        extract_dicts[-1]["type"] = name[:-1]
+        file.write(json.dumps(extract_dicts[-1]))
+        file.write("]")
 
 def extract_artworks(type_name, wikidata_id):
     """Extracts artworks metadata from Wikidata and stores them in a *.csv file.
@@ -36,6 +54,7 @@ def extract_artworks(type_name, wikidata_id):
     wikidata_site = pywikibot.Site("wikidata", "wikidata")
     items = pg.WikidataSPARQLPageGenerator(QUERY, site=wikidata_site)
     count = 0
+    extract_dicts = []
 
     with open(type_name + ".csv", "w", newline="", encoding='utf-8') as file:
         fields = ["id", "classes", "label", "description", "image", "creators", "locations", "genres", "movements", "inception", "materials", "depicts", "country", "height",
@@ -43,9 +62,12 @@ def extract_artworks(type_name, wikidata_id):
         writer = csv.DictWriter(file, fieldnames=fields, delimiter=';', quotechar='"')
         writer.writeheader()
 
+
         for item in items:
-            #            if count > 50:
-            #                continue
+            if count > 25:
+               continue
+
+        
 
             # mandatory fields
             try:
@@ -103,8 +125,13 @@ def extract_artworks(type_name, wikidata_id):
             writer.writerow(
                 {"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "creators": creators, "locations": locations, "genres": genres,
                  "movements": movements, "inception": inception, "materials": materials, "depicts": depicts, "country": country, "height": height, "width": width})
+            extract_dicts.append(
+                {"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "creators": creators, "locations": locations, "genres": genres,
+                 "movements": movements, "inception": inception, "materials": materials, "depicts": depicts, "country": country, "height": height, "width": width})
             # print(classes, item, label, description, image, creators, locations, genres, movements,  inception, materials, depicts,  country, height, width)
 
+    generate_csv(type_name, extract_dicts, fields)
+    generate_json(type_name, extract_dicts, fields)
     print(datetime.datetime.now(), "Finished with", type_name)
 
 
@@ -141,6 +168,7 @@ def extract_subjects(subject_type):
     repo = site.data_repository()
     print("Total: ", len(subjects), subject_type)
     count = 0
+    extract_dicts = []
     with open(subject_type + ".csv", "w", newline="", encoding='utf-8') as file:
         fields = ["id", "classes", "label", "description", "image"]
         if subject_type == "creators":
@@ -242,18 +270,28 @@ def extract_subjects(subject_type):
             count += 1
             print(str(count) + " ", end='')
             if subject_type == "creators":
+                extract_dicts.append({"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "gender": gender, "date_of_birth": date_of_birth,
+                                 "date_of_death": date_of_death, "place_of_birth": place_of_birth, "place_of_death": place_of_death, "citizenship": citizenship,
+                                 "movements": movements, "influenced_by": influenced_by})
                 writer.writerow({"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "gender": gender, "date_of_birth": date_of_birth,
                                  "date_of_death": date_of_death, "place_of_birth": place_of_birth, "place_of_death": place_of_death, "citizenship": citizenship,
                                  "movements": movements, "influenced_by": influenced_by})
-            if subject_type == "movements":
+            elif subject_type == "movements":
                 writer.writerow({"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "influenced_by": influenced_by})
+                extract_dicts.append({"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "influenced_by": influenced_by})
             elif subject_type == "locations":
                 writer.writerow(
                     {"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "country": country, "website": website, "part_of": part_of,
                      "lat": lat, "lon": lon})
+                extract_dicts.append(
+                    {"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "country": country, "website": website, "part_of": part_of,
+                     "lat": lat, "lon": lon})
             else:
                 writer.writerow({"id": item.id, "classes": classes, "label": label, "description": description, "image": image})
+                extract_dicts.append({"id": item.id, "classes": classes, "label": label, "description": description, "image": image})
 
+    generate_csv(subject_type, extract_dicts, fields)
+    generate_json(subject_type, extract_dicts, fields)
     print()
     print(datetime.datetime.now(), "Finished with", subject_type)
 
@@ -457,7 +495,6 @@ def generate_rdf():
 
     print()
     print(datetime.datetime.now(), "Finished with", "generating rdf")
-
 
 
 

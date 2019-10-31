@@ -19,6 +19,17 @@
           <p *ngIf="location?.website"><a href="{{location?.website}}" target="_blank">{{location?.label}}</a></p>
         </div>
       </div>
+      <div class="row">
+        <div class="col-md-3 pr-0">
+          <p *ngIf="location?.abstract" class="text-muted mb-2">Abstract:</p>
+        </div>
+        <div class="col-md-9 pr-0 pl-0 info">
+          <p *ngIf="location?.abstract" class="mb-2 first-letter notchip">
+              <span>{{ location?.abstract }} More: <a href="{{ location?.wikipediaLink }}"
+                                                    target="_blank">Wikipedia</a></span>
+          </p>
+        </div>
+      </div>
     </div>
     <div class="col-sm-5 img" *ngIf="location?.image">
       <img class="img-fluid rounded-circle" src="{{ location?.imageSmall }}" alt="" />

@@ -33,6 +33,8 @@
         </h4>
 
         <div [className]="!collapseDown ? 'collapse show' : 'collapse'" id="collapseArtist">
+
+
           <div class="row">
             <div class="col-md-3 pr-0 ">
               <p *ngIf="artist?.gender" class="text-muted mb-2">Gender:</p>
@@ -55,11 +57,23 @@
             </div>
             <div class="col-md-9 pl-0 info">
               <p *ngIf="artist?.movements?.length" class="mb-2">
-                <span *ngFor="let movement of artist?.movements" class="badge badge-pill badge-secondary first-letter chip"
-                  [routerLink]="'/movement/' + movement.id">
+                <span *ngFor="let movement of artist?.movements"
+                      class="badge badge-pill badge-secondary first-letter chip"
+                      [routerLink]="'/movement/' + movement.id">
                   <i class="fas fa-wind"></i>
                   {{ movement.label }}
                 </span>
+              </p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3 pr-0">
+              <p *ngIf="artist?.abstract" class="text-muted mb-2">Abstract:</p>
+            </div>
+            <div class="col-md-9 pr-0 pl-0 info">
+              <p *ngIf="artist?.abstract" class="mb-2 first-letter notchip">
+              <span>{{ artist?.abstract }} More: <a href="{{ artist?.wikipediaLink }}"
+                                                    target="_blank">Wikipedia</a></span>
               </p>
             </div>
           </div>
@@ -69,8 +83,9 @@
             </div>
             <div class="col-md-9 pl-0 info">
               <p *ngIf="artist?.influenced_by?.length" class="mb-2">
-                <span *ngFor="let influencer of artist?.influenced_by" class="badge badge-pill badge-secondary first-letter chip"
-                  [routerLink]="'/artist/' + influencer.id">
+                <span *ngFor="let influencer of artist?.influenced_by"
+                      class="badge badge-pill badge-secondary first-letter chip"
+                      [routerLink]="'/artist/' + influencer.id">
                   <i class="fas fa-user"></i>
                   {{ influencer.label }}
                 </span>
@@ -81,8 +96,8 @@
       </div>
     </div>
     <div class="col-sm-5 img" *ngIf="artist?.image">
-      <img class="img-fluid rounded-circle" src="{{ artist?.imageSmall }}" alt="" />
+      <img class="img-fluid rounded-circle" src="{{ artist?.imageSmall }}" alt=""/>
     </div>
   </div>
-  <app-slider [items]="sliderItems" heading="Artworks"> </app-slider>
+  <app-slider [items]="sliderItems" heading="Artworks"></app-slider>
 </div>

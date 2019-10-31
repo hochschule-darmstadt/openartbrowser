@@ -2,6 +2,8 @@ export interface Entity {
   id: string;
   label?: string;
   description?: string;
+  abstract?: string;
+  wikipediaLink?: string;
   image?: string;
   imageSmall?: string;
   imageMedium?: string;
@@ -81,7 +83,7 @@ export enum EntityType {
   MOTIF = 'object'
 }
 
-export interface TagItem{
+export interface TagItem {
   label: string;
   type?: string;
   id?: string;

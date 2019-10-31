@@ -301,6 +301,7 @@ def extract_classes():
     repo = site.data_repository()
     print("Total: ", len(classes), "classes")
     count = 0
+    extract_dicts = []
 
     for cls in classes:
         #        if count > 10:
@@ -308,13 +309,11 @@ def extract_classes():
         extract_class(cls, class_dict, repo)
         count += 1
         print(str(count) + " ", end='')
-    with open("classes.csv", "w", newline="", encoding='utf-8') as file:
-        fields = ["id", "label", "description", "subclass_of"]
-        writer = csv.DictWriter(file, fieldnames=fields, delimiter=';', quotechar='"')
-        writer.writeheader()
-        for cls in class_dict:
-            writer.writerow(class_dict[cls])
+    fields = ["id", "label", "description", "subclass_of"]
+    for cls in class_dict:
+        extract_dicts.append(class_dict[cls])
 
+    generate_csv("classes", extract_dicts, fields)
     print()
     print(datetime.datetime.now(), "Finished with classes")
 
@@ -359,20 +358,19 @@ def merge_artworks():
     print(datetime.datetime.now(), "Starting with", "merging artworks")
     artworks = set()
     file_names = ['paintings.csv', 'drawings.csv', 'sculptures.csv']
+    extract_dicts = []
 
-    with open("artworks.csv", "w", newline="", encoding='utf-8') as output:
-        fields = ["id", "classes", "label", "description", "image", "creators", "locations", "genres", "movements", "inception", "materials", "depicts", "country", "height",
-                  "width"]
-        writer = csv.DictWriter(output, fieldnames=fields, delimiter=';', quotechar='"')
-        writer.writeheader()
-        for file_name in file_names:
-            with open(file_name, newline="", encoding='utf-8') as input:
-                reader = csv.DictReader(input, delimiter=';', quotechar='"')
-                for row in reader:
-                    if not row['id'] in artworks:  # remove duplicates
-                        writer.writerow(row)
-                        artworks.add(row['id'])
+    fields = ["id", "classes", "label", "description", "image", "creators", "locations", "genres", "movements", "inception", "materials", "depicts", "country", "height",
+              "width"]
+    for file_name in file_names:
+        with open(file_name, newline="", encoding='utf-8') as input:
+            reader = csv.DictReader(input, delimiter=';', quotechar='"')
+            for row in reader:
+                if not row['id'] in artworks:  # remove duplicates
+                    extract_dicts.append(row)
+                    artworks.add(row['id'])
 
+    generate_csv("artworks", extract_dicts, fields)
     print()
     print(datetime.datetime.now(), "Finished with", "merging artworks")
 

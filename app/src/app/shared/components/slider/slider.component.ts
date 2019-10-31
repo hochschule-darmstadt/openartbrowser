@@ -18,6 +18,24 @@ export interface Slide {
   id: number;
 }
 
+/**
+ * In order to test the Slide component individually
+ * we need a default slide that can be passed to it
+ * 
+ * @returns {Slide} a default slide
+ */
+export function makeDefaultSlide(id:number = 0, items:Array<Entity> = []): Slide {
+  return {
+    id,
+    items,
+    isFirstSlide: false,
+    isLastSlide: false,
+    nextSlide: null,
+    prevSlide: null,
+    loadContent: null
+  };
+}
+
 @Component({
   selector: 'app-slider',
   templateUrl: './slider.component.html',
@@ -56,15 +74,7 @@ export class SliderComponent implements OnChanges {
       // get next 8 items out of items array
       const items: Entity[] = this.items.slice(i * 8, i * 8 + 8);
 
-      const slide: Slide = {
-        items,
-        prevSlide: null,
-        nextSlide: null,
-        loadContent: false,
-        isFirstSlide: false,
-        isLastSlide: false,
-        id: i,
-      };
+      const slide: Slide = makeDefaultSlide(i, items);
 
       if (i === numberOfSlides - 1) {
         slide.isLastSlide = true;

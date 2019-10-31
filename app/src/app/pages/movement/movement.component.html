@@ -4,23 +4,36 @@
       <span class="badge badge-pill badge-secondary chip cursor-unset"><i class="fas fa-wind"></i> Movement</span>
       <h2 class="mb-3 first-letter">{{ movement?.label }}</h2>
 
+
+      <div class="row">
+        <div class="col-md-3 pr-0">
+          <p *ngIf="movement?.abstract" class="text-muted mb-1">Abstract:</p>
+        </div>
+        <div class="col-md-9 pr-0 info">
+          <p *ngIf="movement?.abstract" class="mb-1 add-padding notchip">
+            {{ movement?.abstract }} More: <a href="{{ movement?.wikipediaLink }}" target="_blank">Wikipedia</a>
+          </p>
+        </div>
+      </div>
+
       <div class="row">
         <div class="col-md-3 pr-0">
           <p *ngIf="movement?.influenced_by?.length" class="mb-1 text-muted">Influenced by:</p>
         </div>
 
-        <div class="col-md-9 pl-0 info">
+        <div class="col-md-9 info">
           <p *ngIf="movement?.influenced_by?.length" class="mb-1">
-            <span *ngFor="let influence of movement?.influenced_by" class="badge badge-pill badge-secondary first-letter chip"
-              [routerLink]="influence.type === 'artist' ? '/artist/' + influence.id : '/movement/' + influence.id">
+            <span *ngFor="let influence of movement?.influenced_by"
+                  class="badge badge-pill badge-secondary first-letter chip"
+                  [routerLink]="influence.type === 'artist' ? '/artist/' + influence.id : '/movement/' + influence.id">
               {{ influence.label }}</span>
           </p>
         </div>
       </div>
     </div>
     <div class="col-sm-5 img" *ngIf="movement?.image">
-      <img class="img-fluid rounded-circle" src="{{ movement?.imageSmall }}" alt="" />
+      <img class="img-fluid rounded-circle" src="{{ movement?.imageSmall }}" alt=""/>
     </div>
   </div>
-  <app-slider [items]="sliderItems" heading="Artworks"> </app-slider>
+  <app-slider [items]="sliderItems" heading="Artworks"></app-slider>
 </div>

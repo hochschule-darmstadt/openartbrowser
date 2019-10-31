@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Entity, Artwork, artSearch, EntityType, TagItem } from 'src/app/shared/models/models';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Entity, Artwork, artSearch, EntityType, TagItem} from 'src/app/shared/models/models';
 import * as _ from 'lodash';
-import { Subject } from 'rxjs';
+import {Subject} from 'rxjs';
 
 
 /**
@@ -20,10 +20,11 @@ export class DataService {
   /** base url of elasticSearch server */
   serverURI = 'http://openartbrowser.org/api/_search';
 
-	/**
-	 * Constructor
-	 */
-  constructor(private http: HttpClient) { }
+  /**
+   * Constructor
+   */
+  constructor(private http: HttpClient) {
+  }
 
   public async findEntitiesByLabelText(text: string): Promise<Entity[]> {
     const options = {
@@ -87,12 +88,13 @@ export class DataService {
     const response = await this.http.post<any>(this.serverURI, options).toPromise();
     return this.filterData<Artwork>(response);
   }
-	/**
-	 * Returns the artworks that contain all the given arguments.
-	 * @param searchObj the arguments to search for.
-	 * @param keywords the list of worlds to search for.
-	 * 
-	 */
+
+  /**
+   * Returns the artworks that contain all the given arguments.
+   * @param searchObj the arguments to search for.
+   * @param keywords the list of worlds to search for.
+   *
+   */
   public async findArtworksByCategories(searchObj: artSearch, keywords: string[] = []): Promise<Artwork[]> {
     let options = {
       "query": {
@@ -147,6 +149,7 @@ export class DataService {
     const reponse = await this.http.post<any>(this.serverURI, options).toPromise();
     return this.filterData<Artwork>(reponse);
   }
+
   public async findArtworksByArtists(artistIds: string[]): Promise<Artwork[]> {
     const response = await this.http.post<any>(this.serverURI, this.constructQuery("creators", artistIds)).toPromise();
     return this.filterData<Artwork>(response);
@@ -182,11 +185,11 @@ export class DataService {
     return this.filterData<T>(response);
   }
 
-	/**
-	 * filters the data that is fetched from the server
-	 * @param data Elasticsearch Data
-	 * @param type optional: type of entities that should be filtered
-	 */
+  /**
+   * filters the data that is fetched from the server
+   * @param data Elasticsearch Data
+   * @param type optional: type of entities that should be filtered
+   */
   filterData<T>(
     data: any,
     filterBy?: EntityType
@@ -200,10 +203,10 @@ export class DataService {
     return entities;
   }
 
-	/**
-	 * filles entity fields imageSmall and imageMedium
-	 * @param entity entity for which thumbnails should be added
-	 */
+  /**
+   * filles entity fields imageSmall and imageMedium
+   * @param entity entity for which thumbnails should be added
+   */
   addThumbnails(entity: Entity) {
     const prefix = 'https://upload.wikimedia.org/wikipedia/commons/';
     if (entity.image && !entity.image.endsWith('.tif') && !entity.image.endsWith('.tiff')) {
@@ -216,11 +219,11 @@ export class DataService {
     return entity;
   }
 
-	/**
-	 * Constructs an Elasticsearch query
-	 * @param type the type to search in
-	 * @param ids the ids to search for
-	 */
+  /**
+   * Constructs an Elasticsearch query
+   * @param type the type to search in
+   * @param ids the ids to search for
+   */
   constructQuery(type: string, ids: string[]) {
     let options = {
       "query": {
@@ -253,19 +256,19 @@ export class DataService {
     return options;
   }
 
-	/**
-	 * @description construct an elasticsearch query specific for category items
-	 * @param {string} type
-	 * @returns {Object}
-	 * @memberof DataService
-	 */
+  /**
+   * @description construct an elasticsearch query specific for category items
+   * @param {string} type
+   * @returns {Object}
+   * @memberof DataService
+   */
   categoryQuery(type: string): Object {
     return {
       "query": {
         "bool": {
           "must": [
-            { "match": { "type": type } },
-            { "prefix": { "image": "http" } }
+            {"match": {"type": type}},
+            {"prefix": {"image": "http"}}
           ]
         }
       },
@@ -281,17 +284,37 @@ export class DataService {
   }
 
   /**
-  * Fetches an entity from the server
-  * @param id Id of the entity to retrieve
-  * @param type if specified, it is assured that the returned entity has this entityType
-  */
+   * Fetches an entity from the server
+   * @param id Id of the entity to retrieve
+   * @param type if specified, it is assured that the returned entity has this entityType
+   */
   public async findById<T>(id: string, type?: EntityType): Promise<T> {
     const response = await this.http.get<T>(this.serverURI + '?q=id:' + id).toPromise();
     const rawEntities = this.filterData<T>(response, type);
     if (!rawEntities.length) {
       return null;
     }
+    rawEntities[0] = this.isEntity(rawEntities[0]);
     return rawEntities[0];
+  }
+
+  private isEntity<T>(obj: any, type?: EntityType): T {
+    // TODO: Remove
+    if (!('abstract' in obj)) {
+      obj.abstract = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor ' +
+        'invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo ' +
+        'duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit ' +
+        'amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ' +
+        'ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores ' +
+        'et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ' +
+        'ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et ' +
+        'dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. ' +
+        'Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.';
+    }
+    if (!('wikipediaLink' in obj)) {
+      obj.wikipediaLink = 'https://en.wikipedia.org/wiki/Mona_Lisa';
+    }
+    return obj;
   }
 
   /**

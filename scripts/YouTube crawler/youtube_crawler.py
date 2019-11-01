@@ -7,7 +7,6 @@ from dateutil import parser
 from googleapiclient.discovery import build
 from math import ceil
 
-DEVELOPER_KEY = open("developer_key.txt", "r").readline()
 
 VIDEO_CATEGORIES = {
     "1": "Film & Animation",
@@ -121,16 +120,15 @@ class YoutubeCrawler:
             part="id",
             channelId=channel_id,
             type="video",  # Has to be specified, otherwise channels and playlists also appear
-            safeSearch="strict",  # This is useful setting to filter out inappropriate videos
-            relevanceLanguage="en",
             maxResults=50
         )
 
+        videos = []
         while request is not None:
             result_page = request.execute()
+            videos += result_page["items"]
             request = search_service.list_next(request, result_page)
 
-        videos = result_page["items"]
         # Now  get the video details
         videos = [YoutubeVideo(video["id"]["videoId"]) for video in videos]
         videos = self.get_video_details(videos)

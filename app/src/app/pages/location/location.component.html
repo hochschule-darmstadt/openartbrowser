@@ -1,11 +1,16 @@
 <div class="container">
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7">
-      <span class="badge badge-pill badge-secondary chip cursor-unset"><i class="fas fa-archway"></i> Location</span>
+      <span class="badge badge-pill badge-secondary chip cursor-unset">
+        <i class="fas fa-archway"></i>
+        <ng-container i18n="Location label@@location">Location</ng-container>
+      </span>
       <h2 class="mb-3 first-letter">{{ location?.label }}</h2>
       <div *ngIf="location?.country" class="row mt-5">
         <div class="col-md-3 pr-0">
-          <p *ngIf="location?.country" class="text-muted">Country:</p>
+          <p *ngIf="location?.country" class="text-muted">
+            <ng-container i18n="Country label@@country">Country</ng-container>:
+          </p>
         </div>
         <div class="col-md-9 pl-0 info">
           <p *ngIf="location?.country" class="first-letter">{{location?.country}}</p>
@@ -13,7 +18,9 @@
       </div>
       <div *ngIf="location?.website" class="row mb-3">
         <div class="col-md-3 pr-0">
-          <p *ngIf="location?.website" class="text-muted">Official page:</p>
+          <p *ngIf="location?.website" class="text-muted">
+            <ng-container i18n="Official page label@@official_page">Official page</ng-container>:
+          </p>
         </div>
         <div class="col-md-9 pl-0 info">
           <p *ngIf="location?.website"><a href="{{location?.website}}" target="_blank">{{location?.label}}</a></p>

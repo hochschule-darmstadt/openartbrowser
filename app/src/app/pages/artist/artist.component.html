@@ -1,12 +1,17 @@
 <div class="container">
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7">
-      <span class="badge badge-pill badge-secondary chip cursor-unset"><i class="fas fa-user"></i> Artist</span>
+      <span class="badge badge-pill badge-secondary chip cursor-unset">
+        <i class="fas fa-user"></i>
+        <ng-container i18n="Artist label@@artist">Artist</ng-container>
+      </span>
       <h2 class="mb-3">{{ artist?.label }}</h2>
 
       <div class="row">
         <div class="col-md-2 pr-0">
-          <p *ngIf="artist?.date_of_birth || artist?.place_of_birth" class="mb-1 text-muted">Born:</p>
+          <p *ngIf="artist?.date_of_birth || artist?.place_of_birth" class="mb-1 text-muted">
+            <ng-container i18n="Born infos label@@born">Born</ng-container>:
+          </p>
         </div>
         <div class="col-md-10 pl-0 info">
           <p *ngIf="artist?.date_of_birth || artist?.place_of_birth" class="mb-1">
@@ -16,7 +21,9 @@
       </div>
       <div class="row">
         <div class="col-md-2 pr-0">
-          <p *ngIf="artist?.date_of_death || artist?.place_of_death" class="mr-4 mb-1 text-muted">Died:</p>
+          <p *ngIf="artist?.date_of_death || artist?.place_of_death" class="mr-4 mb-1 text-muted">
+            <ng-container i18n="Died infos label@@died">Died</ng-container>:
+          </p>
         </div>
         <div class="col-md-10 pl-0 info">
           <p *ngIf="artist?.date_of_death || artist?.place_of_death" class="mb-1">
@@ -27,7 +34,7 @@
 
       <div *ngIf="artist?.gender || artist?.citizenship || artist?.movements?.length || artist?.influenced_by?.length">
         <h4 class="mt-2 more" href="#collapseArtist" (click)="toggleDetails()">
-          More
+          <ng-container i18n="Detail More label@@more">More</ng-container>
           <i *ngIf="collapseDown" href="#collapseArtist" class="fas fa-chevron-down"> </i>
           <i *ngIf="!collapseDown" href="#collapseArtist" class="fas fa-chevron-up"> </i>
         </h4>
@@ -35,7 +42,9 @@
         <div [className]="!collapseDown ? 'collapse show' : 'collapse'" id="collapseArtist">
           <div class="row">
             <div class="col-md-3 pr-0 ">
-              <p *ngIf="artist?.gender" class="text-muted mb-2">Gender:</p>
+              <p *ngIf="artist?.gender" class="text-muted mb-2">
+                <ng-container i18n="Artist gender label@@gender">Gender</ng-container>:
+              </p>
             </div>
             <div class="col-md-9 pl-0 info">
               <p *ngIf="artist?.gender" class="mb-2 first-letter notchip">{{ artist?.gender }}</p>
@@ -43,7 +52,9 @@
           </div>
           <div class="row">
             <div class="col-md-3 pr-0 ">
-              <p *ngIf="artist?.citizenship" class="text-muted mb-2">Citizenship:</p>
+              <p *ngIf="artist?.citizenship" class="text-muted mb-2">
+                <ng-container i18n="Artist citizenship label@@citizenship">Citizenship</ng-container>:
+              </p>
             </div>
             <div class="col-md-9 pl-0 info">
               <p *ngIf="artist?.citizenship" class="mb-2 first-letter notchip">{{ artist?.citizenship }}</p>
@@ -51,12 +62,14 @@
           </div>
           <div class="row">
             <div class="col-md-3 pr-0 ">
-              <p *ngIf="artist?.movements?.length" class="text-muted mb-2">Movement:</p>
+              <p *ngIf="artist?.movements?.length" class="text-muted mb-2">
+                <ng-container i18n="Movement label@@movement">Movement</ng-container>:
+              </p>
             </div>
             <div class="col-md-9 pl-0 info">
               <p *ngIf="artist?.movements?.length" class="mb-2">
-                <span *ngFor="let movement of artist?.movements" class="badge badge-pill badge-secondary first-letter chip"
-                  [routerLink]="'/movement/' + movement.id">
+                <span *ngFor="let movement of artist?.movements"
+                  class="badge badge-pill badge-secondary first-letter chip" [routerLink]="'/movement/' + movement.id">
                   <i class="fas fa-wind"></i>
                   {{ movement.label }}
                 </span>
@@ -65,12 +78,14 @@
           </div>
           <div class="row">
             <div class="col-md-3 pr-0 ">
-              <p *ngIf="artist?.influenced_by?.length" class="text-muted mb-2">Influenced by:</p>
+              <p *ngIf="artist?.influenced_by?.length" class="text-muted mb-2">
+                <ng-container i18n="Influenced by label@@influenced_by">Influenced by</ng-container>:
+              </p>
             </div>
             <div class="col-md-9 pl-0 info">
               <p *ngIf="artist?.influenced_by?.length" class="mb-2">
-                <span *ngFor="let influencer of artist?.influenced_by" class="badge badge-pill badge-secondary first-letter chip"
-                  [routerLink]="'/artist/' + influencer.id">
+                <span *ngFor="let influencer of artist?.influenced_by"
+                  class="badge badge-pill badge-secondary first-letter chip" [routerLink]="'/artist/' + influencer.id">
                   <i class="fas fa-user"></i>
                   {{ influencer.label }}
                 </span>

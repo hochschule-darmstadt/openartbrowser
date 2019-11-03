@@ -1,17 +1,23 @@
 <div class="container">
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7">
-      <span class="badge badge-pill badge-secondary chip cursor-unset"><i class="fas fa-wind"></i> Movement</span>
+      <span class="badge badge-pill badge-secondary chip cursor-unset">
+        <i class="fas fa-wind"></i>
+        <ng-container i18n="Movement label@@movement">Movement</ng-container>
+      </span>
       <h2 class="mb-3 first-letter">{{ movement?.label }}</h2>
 
       <div class="row">
         <div class="col-md-3 pr-0">
-          <p *ngIf="movement?.influenced_by?.length" class="mb-1 text-muted">Influenced by:</p>
+          <p *ngIf="movement?.influenced_by?.length" class="mb-1 text-muted">
+            <ng-container i18n="Influenced by label@@influenced_by">Influenced by</ng-container>:
+          </p>
         </div>
 
         <div class="col-md-9 pl-0 info">
           <p *ngIf="movement?.influenced_by?.length" class="mb-1">
-            <span *ngFor="let influence of movement?.influenced_by" class="badge badge-pill badge-secondary first-letter chip"
+            <span *ngFor="let influence of movement?.influenced_by"
+              class="badge badge-pill badge-secondary first-letter chip"
               [routerLink]="influence.type === 'artist' ? '/artist/' + influence.id : '/movement/' + influence.id">
               {{ influence.label }}</span>
           </p>

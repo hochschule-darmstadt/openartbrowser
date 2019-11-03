@@ -88,13 +88,13 @@
               "browserTarget": "art-browser:build:production"
             }, 
             "en": {
-              "browserTarget": "AngularInt:build:en"
+              "browserTarget": "art-browser:build:en"
             },
             "fr": {
-              "browserTarget": "AngularInt:build:fr"
+              "browserTarget": "art-browser:build:fr"
             },
             "de": {
-              "browserTarget": "AngularInt:build:de"
+              "browserTarget": "art-browser:build:de"
             }
           }
         },

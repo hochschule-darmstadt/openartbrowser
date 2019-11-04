@@ -18,24 +18,6 @@ import json
 import datetime
 import ast
 
-def generate_csv(name, extract_dicts, fields):
-    with open(name + ".csv", "w", newline="", encoding='utf-8') as file:
-        writer = csv.DictWriter(file, fieldnames=fields, delimiter=';', quotechar='"')
-        writer.writeheader()
-        for extract_dict in extract_dicts:
-            writer.writerow(extract_dict)
-    
-def generate_json(name, extract_dicts, fields):
-    with open(name + ".json", "w", newline="", encoding='utf-8') as file:
-        print(name[:-1])
-        file.write("[")
-        for extract_dict in extract_dicts[:-1]:
-            extract_dict["type"] = name[:-1]
-            file.write(json.dumps(extract_dict))
-            file.write(",")
-        extract_dicts[-1]["type"] = name[:-1]
-        file.write(json.dumps(extract_dicts[-1]))
-        file.write("]")
 
 def extract_artworks(type_name, wikidata_id):
     """Extracts artworks metadata from Wikidata and stores them in a *.csv file.
@@ -55,9 +37,6 @@ def extract_artworks(type_name, wikidata_id):
     items = pg.WikidataSPARQLPageGenerator(QUERY, site=wikidata_site)
     count = 0
     extract_dicts = []
-
-    fields = ["id", "classes", "label", "description", "image", "creators", "locations", "genres", "movements", "inception", "materials", "depicts", "country", "height",
-              "width"]
 
     for item in items:
         if count > 25:
@@ -121,11 +100,8 @@ def extract_artworks(type_name, wikidata_id):
              "movements": movements, "inception": inception, "materials": materials, "depicts": depicts, "country": country, "height": height, "width": width})
         # print(classes, item, label, description, image, creators, locations, genres, movements,  inception, materials, depicts,  country, height, width)
 
-    generate_csv(type_name, extract_dicts, fields)
-    generate_json(type_name, extract_dicts, fields)
     print(datetime.datetime.now(), "Finished with", type_name)
-
-
+    return extract_dicts
 
 
 def extract_subjects(subject_type):
@@ -160,14 +136,6 @@ def extract_subjects(subject_type):
     print("Total: ", len(subjects), subject_type)
     count = 0
     extract_dicts = []
-
-    fields = ["id", "classes", "label", "description", "image"]
-    if subject_type == "creators":
-        fields += ["gender", "date_of_birth", "date_of_death", "place_of_birth", "place_of_death", "citizenship", "movements", "influenced_by"]
-    if subject_type == "movements":
-        fields += ["influenced_by"]
-    if subject_type == "locations":
-        fields += ["country", "website", "part_of", "lat", "lon"]
 
     for subject in subjects:
         if count > 25:
@@ -271,10 +239,9 @@ def extract_subjects(subject_type):
         else:
             extract_dicts.append({"id": item.id, "classes": classes, "label": label, "description": description, "image": image})
 
-    generate_csv(subject_type, extract_dicts, fields)
-    generate_json(subject_type, extract_dicts, fields)
     print()
     print(datetime.datetime.now(), "Finished with", subject_type)
+    return extract_dicts
 
 
 def extract_classes():
@@ -309,13 +276,12 @@ def extract_classes():
         extract_class(cls, class_dict, repo)
         count += 1
         print(str(count) + " ", end='')
-    fields = ["id", "label", "description", "subclass_of"]
     for cls in class_dict:
         extract_dicts.append(class_dict[cls])
 
-    generate_csv("classes", extract_dicts, fields)
     print()
     print(datetime.datetime.now(), "Finished with classes")
+    return extract_dicts
 
 
 def extract_class(cls, class_dict, repo):
@@ -350,8 +316,6 @@ def extract_class(cls, class_dict, repo):
             extract_class(superclass, class_dict, repo)
 
 
-
-
 def merge_artworks():
     """Merges artworks from files 'paintings.csv', 'drawings.csv', 'sculptures.csv' (function extract_artworks) and stores them in a new file artworks.csv
     """
@@ -360,8 +324,6 @@ def merge_artworks():
     file_names = ['paintings.csv', 'drawings.csv', 'sculptures.csv']
     extract_dicts = []
 
-    fields = ["id", "classes", "label", "description", "image", "creators", "locations", "genres", "movements", "inception", "materials", "depicts", "country", "height",
-              "width"]
     for file_name in file_names:
         with open(file_name, newline="", encoding='utf-8') as input:
             reader = csv.DictReader(input, delimiter=';', quotechar='"')
@@ -370,11 +332,9 @@ def merge_artworks():
                     extract_dicts.append(row)
                     artworks.add(row['id'])
 
-    generate_csv("artworks", extract_dicts, fields)
     print()
     print(datetime.datetime.now(), "Finished with", "merging artworks")
-
-
+    return extract_dicts
 
 
 def generate_rdf():
@@ -473,26 +433,55 @@ def generate_rdf():
     print()
     print(datetime.datetime.now(), "Finished with", "generating rdf")
 
+def get_fields(type_name):
+    fields = ["id", "classes", "label", "description", "image"]
+    if type_name in ["drawings", "sculptures", "paintings", "artworks"]:
+        fields += ["creators", "locations", "genres", "movements", "inception", "materials", "depicts", "country", "height", "width"]
+    elif type_name == "creators":
+        fields += ["gender", "date_of_birth", "date_of_death", "place_of_birth", "place_of_death", "citizenship", "movements", "influenced_by"]
+    elif type_name == "movements":
+        fields += ["influenced_by"]
+    elif type_name == "locations":
+        fields += ["country", "website", "part_of", "lat", "lon"]
+    elif type_name == "classes":
+        fields = ["id", "label", "description", "subclass_of"]
+    return fields
+
+def generate_csv(name, extract_dicts):
+    with open(name + ".csv", "w", newline="", encoding='utf-8') as file:
+        writer = csv.DictWriter(file, fieldnames=get_fields(name), delimiter=';', quotechar='"')
+        writer.writeheader()
+        for extract_dict in extract_dicts:
+            writer.writerow(extract_dict)
+    
+def generate_json(name, extract_dicts):
+    with open(name + ".json", "w", newline="", encoding='utf-8') as file:
+        print(name[:-1])
+        file.write("[")
+        for extract_dict in extract_dicts[:-1]:
+            extract_dict["type"] = name[:-1]
+            file.write(json.dumps(extract_dict))
+            file.write(",")
+        extract_dicts[-1]["type"] = name[:-1]
+        file.write(json.dumps(extract_dicts[-1]))
+        file.write("]")
 
 
 def extract_art_ontology():
     """Extracts *.csv files and a *.ttl file with metadata for artworks from Wikidata"""
 
-    extract_artworks("drawings", "wd:Q93184")
-    extract_artworks("sculptures", "wd:Q860861")
-    extract_artworks("paintings", "wd:Q3305213")
+    for artwork, wd in [("drawings", "wd:Q93184"), ("sculptures", "wd:Q860861"), ("paintings", "wd:Q3305213")]:
+        extracted_artwork = extract_artworks(artwork, wd)
+        generate_csv(artwork, extracted_artwork)
+        generate_json(artwork, extracted_artwork)
 
-    extract_subjects("genres")
-    extract_subjects("movements")
-    extract_subjects("materials")
-    extract_subjects("depicts")
-    extract_subjects("creators")
-    extract_subjects("locations")
-    extract_classes()
+    for subject in ["genres", "movements", "materials", "depicts", "creators", "locations"]:
+        extracted_subject = extract_subjects(subject)
+        generate_csv(subject, extracted_subject)
+        generate_json(subject, extracted_subject)
 
-    merge_artworks()
+    generate_csv("classes", extract_classes())
+
+    generate_csv("artworks", merge_artworks())
 
     generate_rdf()
-
-
-

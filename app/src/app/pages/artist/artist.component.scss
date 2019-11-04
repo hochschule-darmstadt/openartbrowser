@@ -6,11 +6,8 @@ img {
   cursor: pointer;
 }
 
-@media (min-width: 992px) {
-  .info {
-    margin-left: -2em;
-  }
 
+@media (min-width: 992px) {
   /*pl-1*/
   .notchip {
     padding-left: 0.25rem;

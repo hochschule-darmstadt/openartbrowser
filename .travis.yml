@@ -3,9 +3,20 @@ language: node_js
 node_js:
   - "8"
 
+addons:
+  apt:
+    sources:
+      - google-chrome
+    packages:
+      - google-chrome-stable
+
+cache:
+  directories:
+    - ./node_modules
+
 before_script:
   - cd app
   - npm install
-  
+
 script:
-  - npm test
+  - npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox

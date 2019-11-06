@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, AfterViewInit, ElementRef } from '@angular/core';
 import { Entity } from 'src/app/shared/models/models';
 import { DataService } from 'src/app/core/services/data.service';
-import { Slide } from '../slider.component';
+import { Slide, makeDefaultSlide } from '../slider.component';
 
 /**
  * a slide of the slider.
@@ -15,7 +15,7 @@ import { Slide } from '../slider.component';
 })
 export class SlideComponent implements AfterViewInit {
   /** the slide that should be displayed */
-  @Input() slide: Slide;
+  @Input() slide: Slide = makeDefaultSlide();
 
   /** emits hovered artwork on item hover event */
   @Output()

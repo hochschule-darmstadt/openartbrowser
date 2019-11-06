@@ -10,8 +10,8 @@ import requests
 def create_or_update_index(
     index_name='api', 
     repository_name='openartbrowser_index_backup', 
-    backup_directory='<path_to_backup_folder>', # ToDo: change for server
-    file='<path_to_json_file>'):  # ToDo: change for server
+    backup_directory='/var/lib/elasticsearch/backup',
+    file='~/openartbrowser/scripts/crawler_output/ArtOntology.json'): # The openartbrowser repository has to be located in the users directory
     """
     Creates or updates an index with new documents. 
     If the passed index exists a snapshot for the current index is created.
@@ -21,14 +21,14 @@ def create_or_update_index(
     :arg repository_name: Name for a repository which stores snapshots
                           The openartbrowser repository is 'openartbrowser_index_backup'
     :arg backup_directory: Directory in which the repository is located
-                          The openartbrowser backup directory is <ToDo>
+                          The openartbrowser backup directory is /var/lib/elasticsearch/backup
                           IMPORTANT: 
                           1. The directory has to exist before execution
                           2. This directory is also needed in the elasticsearch.yaml configuration file
                                 - Following entry in elasticsearch.yml required:
                                   path.repo: ["path_to_folder"]
     :arg file: Name of the file which contains the documents to be created or updated
-               The default file is <ToDo>
+               The default file is ArtOntology.json
     """
     # Uses localhost:9200 (elasticsearch default) to create the index with it's documents
     es = Elasticsearch()  
@@ -36,7 +36,6 @@ def create_or_update_index(
     print("Start creating/updating the index \"" + index_name +
         "\" now. Current time: " + str(datetime.datetime.now()))
     start = time.time()
-    # ToDo: Change to *.json file location
     if es.indices.exists(index=index_name): # If exists take a snapshot of current docs
         snapshot_name = index_name + "_snapshot_" + time.strftime("%Y%m%d-%H%M%S")
         try:
@@ -107,7 +106,6 @@ def apply_snapshot_from_repository(
     :arg repository_name: Name of the repository the snapshot is in
     :arg snapshot_name: Name of the snapshot
     """
-    # Uses localhost:9200 (elasticsearch default) to create the index with it's documents
     es = Elasticsearch()
     try:
         es.indices.close(index=index_name)

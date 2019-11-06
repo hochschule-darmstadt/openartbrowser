@@ -460,10 +460,10 @@ def generate_json(name, extract_dicts):
         file.write("[")
         for extract_dict in extract_dicts[:-1]:
             extract_dict["type"] = name[:-1]
-            file.write(json.dumps(extract_dict))
+            file.write(json.dumps(extract_dict, ensure_ascii=False))
             file.write(",")
         extract_dicts[-1]["type"] = name[:-1]
-        file.write(json.dumps(extract_dicts[-1]))
+        file.write(json.dumps(extract_dicts[-1], ensure_ascii=False))
         file.write("]")
 
 

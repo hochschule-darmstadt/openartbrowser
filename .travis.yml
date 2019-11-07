@@ -28,4 +28,4 @@ script:
 
 after_success:
   # deployment (WIP)
-  - sshpass -p ${SFTP_PASS} scp -r ./dist/art-browser ${SFTP_USER}@141.100.60.99:/travis-deployments/art-browser
+  - sshpass -p ${SFTP_PASS} scp -r ./dist/art-browser ${SFTP_USER}@141.100.60.99:/travis-deployments/art-browser -o StrictHostKeyChecking=no

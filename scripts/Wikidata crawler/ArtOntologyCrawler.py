@@ -19,6 +19,15 @@ import ast
 
 
 
+def readLanguageConfigFile(fileName):
+    languageKeys = []
+    with open(fileName, encoding = "utf-8") as file:
+        configReader = csv.reader(file, delimiter=";")
+        for row in configReader:
+            if row[0] != "langkey":
+                languageKeys.append(row[0])
+    return languageKeys
+
 def extract_artworks(type_name, wikidata_id):
     """Extracts artworks metadata from Wikidata and stores them in a *.csv file.
 
@@ -36,10 +45,14 @@ def extract_artworks(type_name, wikidata_id):
     wikidata_site = pywikibot.Site("wikidata", "wikidata")
     items = pg.WikidataSPARQLPageGenerator(QUERY, site=wikidata_site)
     count = 0
+    languageKeys = readLanguageConfigFile("LanguageConfig.csv")
+
+
 
     with open(type_name + ".csv", "w", newline="", encoding='utf-8') as file:
-        fields = ["id", "classes", "label", "description", "image", "creators", "locations", "genres", "movements", "inception", "materials", "depicts", "country", "height",
-                  "width", "label_es", "description_es", "label_fr", "description_fr", "label_de", "description_de"]
+        fields = ["id", "classes", "image", "creators", "locations", "genres", "movements", "inception", "materials", "depicts", "country", "height","width"]
+        for langkey in languageKeys:
+            fields += ["label_"+ langkey, "description_" + langkey]
         writer = csv.DictWriter(file, fieldnames=fields, delimiter=';', quotechar='"')
         writer.writeheader()
 
@@ -48,92 +61,78 @@ def extract_artworks(type_name, wikidata_id):
             #                continue
 
             # mandatory fields
-            try:
-                item_dict = item.get()
-                print("item_dict")
-                #print(item_dict)
-                label = item_dict["labels"]["en"]
-                clm_dict = item_dict["claims"]
-                classes = list(map(lambda clm: clm.getTarget().id, clm_dict["P31"]))
-                image = clm_dict["P18"][0].getTarget().get_file_url()
-                creators = list(map(lambda clm: clm.getTarget().id, clm_dict["P170"]))
-            except:
-                continue
+            for langkey in languageKeys:
+                try:
+                    item_dict = item.get()
+                    print("item_dict")
+                    print(item_dict)
+                    if langkey == "en":
+                        label = item_dict["labels"]["en"]
+                    clm_dict = item_dict["claims"]
+                    classes = list(map(lambda clm: clm.getTarget().id, clm_dict["P31"]))
+                    image = clm_dict["P18"][0].getTarget().get_file_url()
+                    creators = list(map(lambda clm: clm.getTarget().id, clm_dict["P170"]))
+                except:
+                    continue
                 # optional fields
-            try:
-                label_es = item_dict["labels"]["es"]
-            except:
-                label_es = label
-            try:
-                label_fr = item_dict["labels"]["fr"]
-            except:
-                label_fr = label
-            try:
-                label_de = item_dict["labels"]["de"]
-            except:
-                label_de = label
-            try:
-                description = item_dict["descriptions"]["en"]
-            except:
-                description = ""
-            try:
-                description_es = item_dict["descriptions"]["es"]
-            except:
-                description_es = description
-            try:
-                description_de = item_dict["descriptions"]["de"]
-            except:
-                description_de = description
-            try:
-                description_fr = item_dict["descriptions"]["fr"]
-            except:
-                description_fr = description
-            try:
-                locations = list(map(lambda clm: clm.getTarget().id, clm_dict["P276"]))
-            except:
-                locations = []
-            try:
-                genres = list(map(lambda clm: clm.getTarget().id, clm_dict["P136"]))
-            except:
-                genres = []
-            try:
-                movements = list(map(lambda clm: clm.getTarget().id, clm_dict["P135"]))
-            except:
-                movements = []
-            try:
-                inception = clm_dict["P571"][0].getTarget().year
-            except:
-                inception = ""
-            try:
-                materials = list(map(lambda clm: clm.getTarget().id, clm_dict["P186"]))
-            except:
-                materials = []
-            try:
-                depicts = list(map(lambda clm: clm.getTarget().id, clm_dict["P180"]))
-            except:
-                depicts = []
-            try:
-                country = clm_dict["P17"][0].getTarget().get()["labels"]["en"]
-            except:
-                country = ""
-            try:
-                height = str(clm_dict["P2048"][0].getTarget().amount)
-            except:
-                height = ""
-            try:
-                width = str(clm_dict["P2049"][0].getTarget().amount)
-            except:
-                width = ""
+                if langkey != "en":
+                    try:
+                        label = item_dict["labels"][langkey]
+                    except:
+                        label = item_dict["labels"]["en"]
+                if langkey =="en":
+                    try:
+                        description = item_dict["descriptions"][langkey]
+                    except:
+                        description = ""
+                else:
+                    description = item_dict["descriptions"][languageKeys[0]]
+                try:
+                    locations = list(map(lambda clm: clm.getTarget().id, clm_dict["P276"]))
+                except:
+                    locations = []
+                try:
+                    genres = list(map(lambda clm: clm.getTarget().id, clm_dict["P136"]))
+                except:
+                    genres = []
+                try:
+                    movements = list(map(lambda clm: clm.getTarget().id, clm_dict["P135"]))
+                except:
+                    movements = []
+                try:
+                    inception = clm_dict["P571"][0].getTarget().year
+                except:
+                    inception = ""
+                try:
+                    materials = list(map(lambda clm: clm.getTarget().id, clm_dict["P186"]))
+                except:
+                    materials = []
+                try:
+                    depicts = list(map(lambda clm: clm.getTarget().id, clm_dict["P180"]))
+                except:
+                    depicts = []
+                try:
+                    country = clm_dict["P17"][0].getTarget().get()["labels"]["en"]
+                except:
+                    country = ""
+                try:
+                    height = str(clm_dict["P2048"][0].getTarget().amount)
+                except:
+                    height = ""
+                try:
+                    width = str(clm_dict["P2049"][0].getTarget().amount)
+                except:
+                    width = ""
+                print(str(count) + " ", end='')
+                writer.writerow(
+                    {"id": item.id, "classes": classes, "image": image, "creators": creators, "locations": locations, "genres": genres,
+                     "movements": movements, "inception": inception, "materials": materials, "depicts": depicts, "country": country, "height": height, "width": width, "label_"+ langkey:label,
+                     "description_"+langkey:description})
+                print(classes, item, label, description, image, creators, locations, genres, movements,  inception, materials, depicts,  country, height, width,
+                  label, description)
             count += 1
-            print(str(count) + " ", end='')
-            writer.writerow(
-                {"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "creators": creators, "locations": locations, "genres": genres,
-                 "movements": movements, "inception": inception, "materials": materials, "depicts": depicts, "country": country, "height": height, "width": width, "label_es":label_es,
-                 "description_es":description_es, "label_de": label_de, "description_de": description_de, "label_fr":label_fr, "description_fr": description_fr})
-            print(classes, item, label, description, image, creators, locations, genres, movements,  inception, materials, depicts,  country, height, width,
-                  label_es, description_es, label_fr, description_fr, label_de, description_de)
-            #if count == 15:
-                #break
+            if count == 2:
+                break
 
     print(datetime.datetime.now(), "Finished with", type_name)
 
@@ -550,17 +549,17 @@ def extract_art_ontology():
     extract_artworks("sculptures", "wd:Q860861")
     extract_artworks("paintings", "wd:Q3305213")
 
-    extract_subjects("genres")
-    extract_subjects("movements")
-    extract_subjects("materials")
-    extract_subjects("depicts")
-    extract_subjects("creators")
-    extract_subjects("locations")
-    extract_classes()
+    #extract_subjects("genres")
+    #extract_subjects("movements")
+    #extract_subjects("materials")
+    #extract_subjects("depicts")
+    #extract_subjects("creators")
+    #extract_subjects("locations")
+    #extract_classes()
 
-    merge_artworks()
+    #merge_artworks()
 
-    generate_rdf()
+    #generate_rdf()
 
 
 

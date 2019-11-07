@@ -19,11 +19,13 @@ before_script:
   - npm install
 
 script:
+  # frontend tests
   - npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
   - npm run build
 
+  # TODO: we might want to add backend tests as well
+
 after_success:
-  - curl --ftp-create-dirs
-    -T ./dist/art-browser
-    sftp://${SFTP_USER}:${SFTP_PASS}@141.100.60.99:22/travis-deployments/art-browser
+  # deployment (WIP)
+  - sshpass -p "$SFTP_PASS" scp -r ./dist/art-browser $SFTP_USER@141.100.60.99:/travis-deployments/art-browser
 

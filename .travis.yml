@@ -9,6 +9,7 @@ addons:
       - google-chrome
     packages:
       - google-chrome-stable
+      - sshpass
 
 cache:
   directories:

@@ -484,6 +484,21 @@
         </context-group>
         <note priority="1" from="description">Related Artworks label</note>
       </trans-unit>
+      <trans-unit id="artwork_tabs" datatype="html">
+        <source><x id="ICU" equiv-text="{artworkTabs[tab].heading, select, all {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/> </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
+          <context context-type="linenumber">225</context>
+        </context-group>
+        <note priority="1" from="description">Artwork Related Artworks Tabs</note>
+      </trans-unit>
+      <trans-unit id="eb21ca9d04421e780f0b35ae6f4aa5f23f8aeaea" datatype="html">
+        <source>{VAR_SELECT, select, all {All} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material} }</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
+          <context context-type="linenumber">225</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="related_artworks_headline_prev" datatype="html">
         <source>Common</source>
         <context-group purpose="location">

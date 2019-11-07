@@ -61,43 +61,43 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   artworkTabs: { [key: string]: ArtworkTab } = {
     all: {
-      heading: 'All',
+      heading: 'all',
       items: [],
       icon: 'list-ul',
       active: true,
     },
     motif: {
-      heading: 'Motif',
+      heading: 'motif',
       items: [],
       icon: 'image',
       active: false,
     },
     artist: {
-      heading: 'Artist',
+      heading: 'artist',
       items: [],
       icon: 'user',
       active: false,
     },
     location: {
-      heading: 'Location',
+      heading: 'location',
       items: [],
       icon: 'archway',
       active: false,
     },
     genre: {
-      heading: 'Genre',
+      heading: 'genre',
       items: [],
       icon: 'tags',
       active: false,
     },
     movement: {
-      heading: 'Movement',
+      heading: 'movement',
       items: [],
       icon: 'wind',
       active: false,
     },
     material: {
-      heading: 'Material',
+      heading: 'material',
       items: [],
       icon: 'scroll',
       active: false,

@@ -19,7 +19,8 @@ import ast
 
 
 
-def readLanguageConfigFile(fileName):
+def readLanguageConfigFile():
+    fileName = "LanguageConfig.csv"
     languageKeys = []
     with open(fileName, encoding = "utf-8") as file:
         configReader = csv.reader(file, delimiter=";")
@@ -45,7 +46,7 @@ def extract_artworks(type_name, wikidata_id):
     wikidata_site = pywikibot.Site("wikidata", "wikidata")
     items = pg.WikidataSPARQLPageGenerator(QUERY, site=wikidata_site)
     count = 0
-    languageKeys = readLanguageConfigFile("LanguageConfig.csv")
+    languageKeys = readLanguageConfigFile()
 
 
 

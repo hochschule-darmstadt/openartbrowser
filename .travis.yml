@@ -28,4 +28,5 @@ script:
 
 after_success:
   # deployment (WIP)
-  - sshpass -p ${SFTP_PASS} sftp -r -o StrictHostKeyChecking=no ./dist/art-browser ${SFTP_USER}@141.100.60.99:/travis-deployments/art-browser
+  rsync -rltDvz --rsh="sshpass -p ${SFTP_PASS} -o StrictHostKeyChecking=no ssh -l ${SFTP_USER}" ./dist/art-browser ${SFTP_USER}@141.100.60.99:/travis-deployments/art-browser
+  

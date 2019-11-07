@@ -245,7 +245,7 @@ def extract_subjects(subject_type):
                 writer.writerow({"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "gender": gender, "date_of_birth": date_of_birth,
                                  "date_of_death": date_of_death, "place_of_birth": place_of_birth, "place_of_death": place_of_death, "citizenship": citizenship,
                                  "movements": movements, "influenced_by": influenced_by})
-            if subject_type == "movements":
+            elif subject_type == "movements":
                 writer.writerow({"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "influenced_by": influenced_by})
             elif subject_type == "locations":
                 writer.writerow(

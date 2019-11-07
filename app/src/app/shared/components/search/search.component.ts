@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, Input, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { interval, Observable, Subject } from 'rxjs';
 import { DataService } from 'src/app/core/services/data.service';
 import { Router } from '@angular/router';
@@ -11,6 +11,9 @@ import { TagItem, Entity } from '../../models/models';
   styleUrls: ['./search.component.scss'],
 })
 export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
+
+  @ViewChild('input') input: ElementRef;
+
   /** input for search component */
   searchInput: string;
 
@@ -21,31 +24,50 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input()
   isHeaderSearch = false;
 
-  /** simple check to prep tag for removal */
-  rmTag = false;
-
-  /** if set, search is only enabled by selecting from typeahead results */
-  preventSearch = false;
-
-  /** use this to end subscription to url parameter in ngOnDestroy */
-  private ngUnsubscribe = new Subject();
-
-  constructor(private dataService: DataService, private router: Router, private cdRef: ChangeDetectorRef) {}
-
-  ngOnInit() {
-    this.dataService.$searchItems.pipe(takeUntil(this.ngUnsubscribe)).subscribe((items) => {
-      this.searchItems = items;
-    });
-  }
-
-  ngAfterViewInit() {
-    this.cdRef.detectChanges();
-  }
-
-  ngOnDestroy() {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
+   /** Array of all placeholder values */
+   placeholderArray: string[] = [
+     '"Mona Lisa"',
+     '"Vincent van Gogh"',
+     '"Renaissance"',
+   ];
+ 
+   /** Counter of placeholderArray */
+   counter = 0;
+ 
+   /** simple check to prep tag for removal */
+   rmTag = false;
+ 
+   /** if set, search is only enabled by selecting from typeahead results */
+   preventSearch = false;
+ 
+   /** use this to end subscription to url parameter in ngOnDestroy */
+   private ngUnsubscribe = new Subject();
+ 
+   constructor(private dataService: DataService, private router: Router, private cdRef: ChangeDetectorRef) {}
+ 
+   ngOnInit() {
+     this.dataService.$searchItems.pipe(takeUntil(this.ngUnsubscribe)).subscribe((items) => {
+       this.searchItems = items;
+     });
+   }
+ 
+   ngAfterViewInit() {
+     this.placeholderArray.unshift(this.input.nativeElement.placeholder);
+     const inv = interval(8000);
+     inv.pipe(takeUntil(this.ngUnsubscribe)).subscribe((val) => this.changePlaceholdertext());
+     this.cdRef.detectChanges();
+   }
+ 
+   ngOnDestroy() {
+     this.ngUnsubscribe.next();
+     this.ngUnsubscribe.complete();
+   }
+ 
+   /** Change the text inside the placeholder */
+   public changePlaceholdertext() {
+     this.counter = ++this.counter % this.placeholderArray.length;
+     this.input.nativeElement.placeholder = this.placeholderArray[this.counter];
+   }
 
   /**
    * @description basic type-ahead function for search bar.

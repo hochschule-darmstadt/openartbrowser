@@ -21,20 +21,6 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input()
   isHeaderSearch = false;
 
-  /** String value binding the placeholder in the searchbar */
-  placeholderText: string;
-
-  /** Array of all placeholder values */
-  placeholderArray: string[] = [
-    'Search for something...',
-    'Try "Mona Lisa"',
-    'Try "Vincent van Gogh"',
-    'Try "Renaissance"',
-  ];
-
-  /** Counter of placeholderArray */
-  counter = 0;
-
   /** simple check to prep tag for removal */
   rmTag = false;
 
@@ -53,24 +39,12 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.placeholderText = this.placeholderArray[0];
-    const inv = interval(8000);
-    inv.pipe(takeUntil(this.ngUnsubscribe)).subscribe((val) => this.changePlaceholdertext());
     this.cdRef.detectChanges();
   }
 
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
-  }
-
-  /** Change the text inside the placeholder */
-  public changePlaceholdertext() {
-    ++this.counter;
-    if (this.counter === this.placeholderArray.length) {
-      this.counter = 0;
-    }
-    this.placeholderText = this.placeholderArray[this.counter];
   }
 
   /**

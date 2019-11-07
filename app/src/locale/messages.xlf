@@ -46,6 +46,14 @@
         </context-group>
         <note priority="1" from="description">Menu Data Protection Declaration item label</note>
       </trans-unit>
+      <trans-unit id="search_placeholder" datatype="html">
+        <source>Search for something...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/shared/components/search/search.component.html</context>
+          <context context-type="linenumber">48</context>
+        </context-group>
+        <note priority="1" from="description">Searchbar Placeholder</note>
+      </trans-unit>
       <trans-unit id="ngb.alert.close" datatype="html">
         <source>Close</source>
         <context-group purpose="location">
@@ -466,7 +474,7 @@
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
           <context context-type="linenumber">196</context>
         </context-group>
-        <note priority="1" from="description">Dimension label</note>
+        <note priority="1" from="description">Artwork Dimension label</note>
       </trans-unit>
       <trans-unit id="related_artworks" datatype="html">
         <source>Related Artworks</source>
@@ -498,7 +506,7 @@
       </trans-unit>
       <trans-unit id="related_artworks_hint" datatype="html">
         <source>
-                  (move the mouse over an artwork to display common tags)
+                  move the mouse over an artwork to display common tags
                 </source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>

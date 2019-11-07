@@ -44,7 +44,8 @@
     type="text"
     name="Artwork"
     #input
-    placeholder="{{ placeholderText }}"
+    i18n-placeholder="Searchbar Placeholder@@search_placeholder"
+    placeholder="Search for something..."
     [ngbTypeahead]="search"
     [resultTemplate]="rt"
     [inputFormatter]="formatter"

@@ -15,17 +15,26 @@ cache:
   directories:
     - ./node_modules
 
-before_script:
-  - cd app
-  - npm install
-
-script:
-  # frontend tests
-  - npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
-  - npm run build
-
-  # TODO: we might want to add backend tests as well
-
-after_success:
-  # deployment (WIP)
-  rsync -rltDvz --rsh="sshpass -p ${SFTP_PASS} ssh -o StrictHostKeyChecking=no -l ${SFTP_USER}" ./dist/art-browser ${SFTP_USER}@141.100.60.99:/var/sftp/travis-deployments/art-browser
+jobs:
+  include:
+    - stage: frontend-tests
+      before_script:
+        - cd app
+        - npm install
+      script: 
+        - npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
+    - stage: backend-tests
+      script: 
+        - echo "no backend / crawler / other tests specified"
+    - stage: deploy-to-staging
+      if: branch = staging
+      script: 
+        - npm run build # include the staging flag
+      after_success:
+        - rsync -rltDvz --rsh="sshpass -p ${SFTP_PASS} ssh -o StrictHostKeyChecking=no -l ${SFTP_USER}" ./dist/art-browser ${SFTP_USER}@141.100.60.99:/var/sftp/travis-deployments/art-browser
+    - stage: deploy-to-production
+      if: branch = master
+      script: 
+        - npm run build # include the production flag
+      after_success:
+        - rsync -rltDvz --rsh="sshpass -p ${SFTP_PASS} ssh -o StrictHostKeyChecking=no -l ${SFTP_USER}" ./dist/art-browser ${SFTP_USER}@141.100.60.99:/var/sftp/travis-deployments/art-browser

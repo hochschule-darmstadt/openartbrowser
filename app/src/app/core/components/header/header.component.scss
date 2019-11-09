@@ -20,6 +20,10 @@
   width: 100%;
 }
 
+.dropdown .disable{
+  pointer-events: none;
+}
+
 .search-form {
   display: flex;
   justify-content: flex-end;

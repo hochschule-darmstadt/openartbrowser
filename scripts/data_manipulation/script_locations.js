@@ -5,7 +5,6 @@ const csv = require('fast-csv')
 const fs = require('fs');
 const _ = require('lodash');
 const helper = require("./helper")
-const addlanguage = require("./addlanguage")
 const stream = fs.createReadStream(csvFilePath)
 
 const type = 'location';
@@ -21,15 +20,7 @@ let obj = {
 	part_of: [],
 	lat: 0,
 	lon: 0,
-	type: '',
-	label_de: '',
-	description_de: '',
-	label_it: '',
-	description_it: '',
-	label_fr: '',
-	description_fr: '',
-	label_es: '',
-	description_es: ''
+	type: ''
 }
 let objArr = [];
 let ids = [];
@@ -50,7 +41,6 @@ const csvStream = csv({ delimiter: ';' })
 			myObj.lat = parseFloat(data[8]);
 			myObj.lon = parseFloat(data[9]);
 			myObj.type = type;
-			myObj = addlanguage.addLanguageColumns(myObj, data, 11);
 
 			objArr.push(myObj);
 			ids.push(myObj.id);

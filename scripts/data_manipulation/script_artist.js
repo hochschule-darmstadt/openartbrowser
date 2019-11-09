@@ -6,7 +6,6 @@ const csv = require('fast-csv')
 const _ = require('lodash');
 const stream = fs.createReadStream(csvFilePath)
 const helper = require("./helper")
-const addlanguage = require("./addlanguage")
 const type = 'artist';
 let numberOfLines = 0;
 let obj = {
@@ -24,14 +23,6 @@ let obj = {
 	movements: [],
 	influenced_by: [],
 	type: '',
-	label_de: '',
-	description_de: '',
-	label_it: '',
-	description_it: '',
-	label_fr: '',
-	description_fr: '',
-	label_es: '',
-	description_es: ''
 }
 let objArr = [];
 let ids = [];
@@ -55,9 +46,6 @@ const csvStream = csv({ delimiter: ';' })
 			myObj.movements = helper.constructArray(data[11]);
 			myObj.influenced_by = helper.constructArray(data[12]);
 			myObj.type = type;
-			
-			//add languages from csv to interal objects
-			myObj = addlanguage.addLanguageColumns(myObj, data, 14);
 
 			objArr.push(myObj);
 			ids.push(myObj.id);

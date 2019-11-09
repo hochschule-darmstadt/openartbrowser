@@ -13,21 +13,22 @@ This may take several hours.
 import pywikibot
 import types
 from pywikibot import pagegenerators as pg
+from language_helper import readLanguageConfigFile as conf
 import csv
 import datetime
 import ast
 
 
 
-def readLanguageConfigFile():
-    fileName = "LanguageConfig.csv"
-    languageKeys = []
-    with open(fileName, encoding = "utf-8") as file:
-        configReader = csv.reader(file, delimiter=";")
-        for row in configReader:
-            if row[0] != "langkey":
-                languageKeys.append(row[0])
-    return languageKeys
+# def readLanguageConfigFile():
+#     fileName = "LanguageConfig.csv"
+#     languageKeys = []
+#     with open(fileName, encoding = "utf-8") as file:
+#         configReader = csv.reader(file, delimiter=";")
+#         for row in configReader:
+#             if row[0] != "langkey":
+#                 languageKeys.append(row[0])
+#     return languageKeys
 
 def extract_artworks(type_name, wikidata_id):
     """Extracts artworks metadata from Wikidata and stores them in a *.csv file.
@@ -46,7 +47,7 @@ def extract_artworks(type_name, wikidata_id):
     wikidata_site = pywikibot.Site("wikidata", "wikidata")
     items = pg.WikidataSPARQLPageGenerator(QUERY, site=wikidata_site)
     count = 0
-    languageKeys = readLanguageConfigFile()
+    languageKeys = conf()
 
 
 
@@ -172,7 +173,7 @@ def extract_subjects(subject_type):
     repo = site.data_repository()
     print("Total: ", len(subjects), subject_type)
     count = 0
-    languageKeys = readLanguageConfigFile()
+    languageKeys = conf()
 
     with open(subject_type + ".csv", "w", newline="", encoding='utf-8') as file:
         fields = ["id", "classes", "label", "description", "image"]
@@ -347,7 +348,7 @@ def extract_classes():
     Metadata for classes referenced in theses files will be stored.
     """
     print(datetime.datetime.now(), "Starting with classes")
-    languageKeys = readLanguageConfigFile()
+    languageKeys = conf()
     classes = set()
     class_dict = dict()
     file_names = ['paintings.csv', 'drawings.csv', 'sculptures.csv', 'genres.csv', 'movements.csv', 'materials.csv', 'depicts.csv', 'creators.csv', 'locations.csv']
@@ -391,7 +392,7 @@ def extract_class(cls, class_dict, repo):
     class_dict -- dictionary with Wikidata ID as key and a dict of class attributes as value; will be updated
     repo -- Wikidata repository as accessed using pywikibot
     """
-    languageKeys = readLanguageConfigFile()
+    languageKeys = conf()
     if not cls in class_dict:
         try:
             item = pywikibot.ItemPage(repo, cls)
@@ -437,7 +438,7 @@ def merge_artworks():
     print(datetime.datetime.now(), "Starting with", "merging artworks")
     artworks = set()
     file_names = ['paintings.csv', 'drawings.csv', 'sculptures.csv']
-    languageKeys = readLanguageConfigFile()
+    languageKeys = conf()
     with open("artworks.csv", "w", newline="", encoding='utf-8') as output:
         fields = ["id", "classes", "label", "description", "image", "creators", "locations", "genres", "movements", "inception", "materials", "depicts", "country", "height",
                   "width"]

@@ -51,7 +51,7 @@ def extract_artworks(type_name, wikidata_id):
 
 
     with open(type_name + ".csv", "w", newline="", encoding='utf-8') as file:
-        fields = ["id", "classes", "image", "creators", "locations", "genres", "movements", "inception", "materials", "depicts", "country", "height","width"]
+        fields = ["id", "label", "description","classes", "image", "creators", "locations", "genres", "movements", "inception", "materials", "depicts", "country", "height","width"]
         for langkey in languageKeys:
             fields += ["label_"+ langkey, "description_" + langkey]
         writer = csv.DictWriter(file, fieldnames=fields, delimiter=';', quotechar='"')
@@ -62,78 +62,79 @@ def extract_artworks(type_name, wikidata_id):
             #                continue
 
             # mandatory fields
+
+            try:
+                item_dict = item.get()
+                print("item_dict")
+                print(item_dict)
+                label = item_dict["labels"]["en"]
+                clm_dict = item_dict["claims"]
+                classes = list(map(lambda clm: clm.getTarget().id, clm_dict["P31"]))
+                image = clm_dict["P18"][0].getTarget().get_file_url()
+                creators = list(map(lambda clm: clm.getTarget().id, clm_dict["P170"]))
+            except:
+                continue
+                # optional fields
+            try:
+                description = item_dict["descriptions"]["en"]
+            except:
+                description = ""
+            try:
+                locations = list(map(lambda clm: clm.getTarget().id, clm_dict["P276"]))
+            except:
+                locations = []
+            try:
+                genres = list(map(lambda clm: clm.getTarget().id, clm_dict["P136"]))
+            except:
+                genres = []
+            try:
+                movements = list(map(lambda clm: clm.getTarget().id, clm_dict["P135"]))
+            except:
+                movements = []
+            try:
+                inception = clm_dict["P571"][0].getTarget().year
+            except:
+                inception = ""
+            try:
+                materials = list(map(lambda clm: clm.getTarget().id, clm_dict["P186"]))
+            except:
+                materials = []
+            try:
+                depicts = list(map(lambda clm: clm.getTarget().id, clm_dict["P180"]))
+            except:
+                depicts = []
+            try:
+                country = clm_dict["P17"][0].getTarget().get()["labels"]["en"]
+            except:
+                country = ""
+            try:
+                height = str(clm_dict["P2048"][0].getTarget().amount)
+            except:
+                height = ""
+            try:
+                width = str(clm_dict["P2049"][0].getTarget().amount)
+            except:
+                width = ""
+            print(str(count) + " ", end='')
+
+            dict = {"id": item.id, "label": label, "description": description, "classes": classes, "image": image, "creators": creators, "locations": locations, "genres": genres,
+                        "movements": movements, "inception": inception, "materials": materials, "depicts": depicts, "country": country, "height": height, "width": width}
             for langkey in languageKeys:
                 try:
-                    item_dict = item.get()
-                    print("item_dict")
-                    print(item_dict)
-                    if langkey == "en":
-                        label = item_dict["labels"]["en"]
-                    clm_dict = item_dict["claims"]
-                    classes = list(map(lambda clm: clm.getTarget().id, clm_dict["P31"]))
-                    image = clm_dict["P18"][0].getTarget().get_file_url()
-                    creators = list(map(lambda clm: clm.getTarget().id, clm_dict["P170"]))
+                    labellang = item_dict["labels"][langkey]
                 except:
-                    continue
-                # optional fields
-                if langkey != "en":
-                    try:
-                        label = item_dict["labels"][langkey]
-                    except:
-                        label = item_dict["labels"]["en"]
-                if langkey =="en":
-                    try:
-                        description = item_dict["descriptions"][langkey]
-                    except:
-                        description = ""
-                else:
-                    description = item_dict["descriptions"][languageKeys[0]]
+                    labellang = label +" (english)"
                 try:
-                    locations = list(map(lambda clm: clm.getTarget().id, clm_dict["P276"]))
+                    descriptionlang = item_dict["descriptions"][langkey]
                 except:
-                    locations = []
-                try:
-                    genres = list(map(lambda clm: clm.getTarget().id, clm_dict["P136"]))
-                except:
-                    genres = []
-                try:
-                    movements = list(map(lambda clm: clm.getTarget().id, clm_dict["P135"]))
-                except:
-                    movements = []
-                try:
-                    inception = clm_dict["P571"][0].getTarget().year
-                except:
-                    inception = ""
-                try:
-                    materials = list(map(lambda clm: clm.getTarget().id, clm_dict["P186"]))
-                except:
-                    materials = []
-                try:
-                    depicts = list(map(lambda clm: clm.getTarget().id, clm_dict["P180"]))
-                except:
-                    depicts = []
-                try:
-                    country = clm_dict["P17"][0].getTarget().get()["labels"]["en"]
-                except:
-                    country = ""
-                try:
-                    height = str(clm_dict["P2048"][0].getTarget().amount)
-                except:
-                    height = ""
-                try:
-                    width = str(clm_dict["P2049"][0].getTarget().amount)
-                except:
-                    width = ""
-                print(str(count) + " ", end='')
-                writer.writerow(
-                    {"id": item.id, "classes": classes, "image": image, "creators": creators, "locations": locations, "genres": genres,
-                     "movements": movements, "inception": inception, "materials": materials, "depicts": depicts, "country": country, "height": height, "width": width, "label_"+ langkey:label,
-                     "description_"+langkey:description})
-                print(classes, item, label, description, image, creators, locations, genres, movements,  inception, materials, depicts,  country, height, width,
-                  label, description)
-            count += 1
-            if count == 2:
-                break
+                    descriptionlang =  description + " (english)"
+                dict.update({"label_"+langkey: labellang, "description_"+langkey: descriptionlang})
+
+            writer.writerow(dict)
+            print(classes, item, image, creators, locations, genres, movements,  inception, materials, depicts,  country, height, width)
+            #count += 1
+            #if count == 15:
+                #break
 
     print(datetime.datetime.now(), "Finished with", type_name)
 
@@ -171,14 +172,18 @@ def extract_subjects(subject_type):
     repo = site.data_repository()
     print("Total: ", len(subjects), subject_type)
     count = 0
+    languageKeys = readLanguageConfigFile()
+
     with open(subject_type + ".csv", "w", newline="", encoding='utf-8') as file:
-        fields = ["id", "classes", "label", "description", "image", "label_es", "description_es", "label_fr", "description_fr", "label_de", "description_de"]
+        fields = ["id", "classes", "label", "description", "image"]
         if subject_type == "creators":
             fields += ["gender", "date_of_birth", "date_of_death", "place_of_birth", "place_of_death", "citizenship", "movements", "influenced_by"]
         if subject_type == "movements":
             fields += ["influenced_by"]
         if subject_type == "locations":
             fields += ["country", "website", "part_of", "lat", "lon"]
+        for langkey in languageKeys:
+            fields += ["label_"+langkey, "description_"+langkey]
         writer = csv.DictWriter(file, fieldnames=fields, delimiter=';', quotechar='"')
         writer.writeheader()
 
@@ -199,34 +204,11 @@ def extract_subjects(subject_type):
                 label = item_dict["labels"]["en"]
             except:
                 label = ""
-            try:
-                label_es = item_dict["labels"]["es"]
-            except:
-                label_es = label
-            try:
-                label_fr = item_dict["labels"]["fr"]
-            except:
-                label_fr = label
-            try:
-                label_de = item_dict["labels"]["de"]
-            except:
-                label_de = label
+
             try:
                 description = item_dict["descriptions"]["en"]
             except:
                 description = ""
-            try:
-                description_es = item_dict["descriptions"]["es"]
-            except:
-                description_es = description
-            try:
-                description_de = item_dict["descriptions"]["de"]
-            except:
-                description_de = description
-            try:
-                description_fr = item_dict["descriptions"]["fr"]
-            except:
-                description_fr = description
             try:
                 image = clm_dict["P18"][0].getTarget().get_file_url()
             except:
@@ -296,22 +278,62 @@ def extract_subjects(subject_type):
             count += 1
             print(str(count) + " ", end='')
             if subject_type == "creators":
-                writer.writerow({"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "gender": gender, "date_of_birth": date_of_birth,
-                                 "date_of_death": date_of_death, "place_of_birth": place_of_birth, "place_of_death": place_of_death, "citizenship": citizenship,
-                                 "movements": movements, "influenced_by": influenced_by, "label_es": label_es, "description_es": description_es, "label_fr":label_fr,
-                                 "description_fr":description_fr, "label_de": label_de, "description_de":description_de})
+                dict =  {"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "gender": gender, "date_of_birth": date_of_birth,
+                 "date_of_death": date_of_death, "place_of_birth": place_of_birth, "place_of_death": place_of_death, "citizenship": citizenship,
+                 "movements": movements, "influenced_by": influenced_by}
+                for langkey in languageKeys:
+                    try:
+                        labellang = item_dict["labels"][langkey]
+                    except:
+                        labellang = label + " (english)"
+                    try:
+                        descriptionlang = item_dict["descriptions"][langkey]
+                    except:
+                        descriptionlang = description +" (english)"
+                    dict.update({"label_"+langkey: labellang, "description_"+langkey: descriptionlang})
+                writer.writerow(dict)
             if subject_type == "movements":
-                writer.writerow({"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "influenced_by": influenced_by, "label_es": label_es, "description_es": description_es
-                                 ,"label_fr":label_fr,"description_fr":description_fr, "label_de": label_de, "description_de":description_de})
+                dict = {"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "influenced_by": influenced_by}
+                for langkey in languageKeys:
+                    try:
+                        labellang = item_dict["labels"][langkey]
+                    except:
+                        labellang = label + " (english)"
+                    try:
+                        descriptionlang = item_dict["descriptions"][langkey]
+                    except:
+                        descriptionlang = description +" (english)"
+                    dict.update({"label_"+langkey: labellang, "description_"+langkey: descriptionlang})
+                writer.writerow(dict)
             elif subject_type == "locations":
-                writer.writerow(
-                    {"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "country": country, "website": website, "part_of": part_of,
-                     "lat": lat, "lon": lon, "label_es": label_es, "description_es": description_es, "label_fr":label_fr,"description_fr":description_fr, "label_de": label_de, "description_de":description_de})
-            else:
-                writer.writerow({"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "label_es": label_es, "description_es": description_es, "label_fr":label_fr,
-                                 "description_fr":description_fr, "label_de": label_de, "description_de":description_de})
+                dict = {"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "country": country, "website": website, "part_of": part_of,
+                 "lat": lat, "lon": lon}
+                for langkey in languageKeys:
+                    try:
+                        labellang = item_dict["labels"][langkey]
+                    except:
+                        labellang = label + " (english)"
+                    try:
+                        descriptionlang = item_dict["descriptions"][langkey]
+                    except:
+                        descriptionlang = description +" (english)"
+                    dict.update({"label_"+langkey: labellang, "description_"+langkey: descriptionlang})
 
-    print()
+                writer.writerow(dict)
+            else:
+                dict = {"id": item.id, "classes": classes, "label": label, "description": description, "image": image}
+                for langkey in languageKeys:
+                    try:
+                        labellang = item_dict["labels"][langkey]
+                    except:
+                        labellang = label + " (english)"
+                    try:
+                        descriptionlang = item_dict["descriptions"][langkey]
+                    except:
+                        descriptionlang = description +" (english)"
+                    dict.update({"label_"+langkey: labellang, "description_"+langkey: descriptionlang})
+
+                writer.writerow(dict)
     print(datetime.datetime.now(), "Finished with", subject_type)
 
 
@@ -325,6 +347,7 @@ def extract_classes():
     Metadata for classes referenced in theses files will be stored.
     """
     print(datetime.datetime.now(), "Starting with classes")
+    languageKeys = readLanguageConfigFile()
     classes = set()
     class_dict = dict()
     file_names = ['paintings.csv', 'drawings.csv', 'sculptures.csv', 'genres.csv', 'movements.csv', 'materials.csv', 'depicts.csv', 'creators.csv', 'locations.csv']
@@ -349,7 +372,9 @@ def extract_classes():
         count += 1
         print(str(count) + " ", end='')
     with open("classes.csv", "w", newline="", encoding='utf-8') as file:
-        fields = ["id", "label", "description", "subclass_of", "label_es", "description_es", "label_fr", "description_fr", "label_de", "description_de"]
+        fields = ["id", "label", "description", "subclass_of"]
+        for langkey in languageKeys:
+            fields += ["label_"+langkey, "description_"+langkey]
         writer = csv.DictWriter(file, fieldnames=fields, delimiter=';', quotechar='"')
         writer.writeheader()
         for cls in class_dict:
@@ -366,6 +391,7 @@ def extract_class(cls, class_dict, repo):
     class_dict -- dictionary with Wikidata ID as key and a dict of class attributes as value; will be updated
     repo -- Wikidata repository as accessed using pywikibot
     """
+    languageKeys = readLanguageConfigFile()
     if not cls in class_dict:
         try:
             item = pywikibot.ItemPage(repo, cls)
@@ -378,40 +404,27 @@ def extract_class(cls, class_dict, repo):
             label = item_dict["labels"]["en"]
         except:
             label = ""
-        try:
-            label_es = item_dict["labels"]["es"]
-        except:
-            label_es = label
-        try:
-            label_fr = item_dict["labels"]["fr"]
-        except:
-            label_fr = label
-        try:
-            label_de = item_dict["labels"]["de"]
-        except:
-            label_de = label
+
         try:
             description = item_dict["descriptions"]["en"]
         except:
             description = ""
-        try:
-            description_es = item_dict["descriptions"]["es"]
-        except:
-            description_es = description
-        try:
-            description_de = item_dict["descriptions"]["de"]
-        except:
-            description_de = description
-        try:
-            description_fr = item_dict["descriptions"]["fr"]
-        except:
-            description_fr = description
+
         try:
             subclass_of = list(map(lambda clm: clm.getTarget().id, clm_dict["P279"]))
         except:
             subclass_of = []
-        class_dict[cls] = {"id": item.id, "label": label, "description": description, "subclass_of": subclass_of, "label_es": label_es, "description_es": description_es
-            , "label_fr":label_fr, "description_fr":description_fr, "label_de": label_de, "description_de": description_de}
+        class_dict[cls] = {"id": item.id, "label": label, "description": description, "subclass_of": subclass_of}
+        for langkey in languageKeys:
+            try:
+                labellang = item_dict["labels"][langkey]
+            except:
+                labellang = label + " (english)"
+            try:
+                descriptionlang = item_dict["descriptions"][langkey]
+            except:
+                descriptionlang = description +" (english)"
+            class_dict[cls].update({"label_"+langkey: labellang, "description_"+langkey: descriptionlang})
         for superclass in subclass_of:
             extract_class(superclass, class_dict, repo)
 
@@ -424,10 +437,14 @@ def merge_artworks():
     print(datetime.datetime.now(), "Starting with", "merging artworks")
     artworks = set()
     file_names = ['paintings.csv', 'drawings.csv', 'sculptures.csv']
-
+    languageKeys = readLanguageConfigFile()
     with open("artworks.csv", "w", newline="", encoding='utf-8') as output:
         fields = ["id", "classes", "label", "description", "image", "creators", "locations", "genres", "movements", "inception", "materials", "depicts", "country", "height",
-                  "width", "label_es", "description_es", "label_fr", "description_fr", "label_de", "description_de"]
+                  "width"]
+        for langkey in languageKeys:
+            fields += ["label_"+langkey, "description_"+langkey]
+
+
         writer = csv.DictWriter(output, fieldnames=fields, delimiter=';', quotechar='"')
         writer.writeheader()
         for file_name in file_names:
@@ -550,15 +567,15 @@ def extract_art_ontology():
     extract_artworks("sculptures", "wd:Q860861")
     extract_artworks("paintings", "wd:Q3305213")
 
-    #extract_subjects("genres")
-    #extract_subjects("movements")
-    #extract_subjects("materials")
-    #extract_subjects("depicts")
-    #extract_subjects("creators")
-    #extract_subjects("locations")
-    #extract_classes()
+    extract_subjects("genres")
+    extract_subjects("movements")
+    extract_subjects("materials")
+    extract_subjects("depicts")
+    extract_subjects("creators")
+    extract_subjects("locations")
+    extract_classes()
 
-    #merge_artworks()
+    merge_artworks()
 
     #generate_rdf()
 

@@ -7,6 +7,5 @@ es = Elasticsearch()
 filename = "/home/mkherrabi/jsonData/master_flat.json"
 for item in ijson.items(open(filename, 'r'), 'item'):
     es.create(index='wiki_data', doc_type='data', body=item, id=myid)
-    # Add additional create statements with indexname/id here
     myid +=1
 

@@ -477,7 +477,7 @@
         <note priority="1" from="description">Dimension label</note>
       </trans-unit>
       <trans-unit id="related_artworks" datatype="html">
-        <source>Related Artworks</source><target state="final">Vewandte Kunstwerke</target>
+        <source>Related Artworks</source><target state="final">Verwandte Kunstwerke</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
           <context context-type="linenumber">214</context>

@@ -39,8 +39,8 @@ def extract_artworks(type_name, wikidata_id):
     extract_dicts = []
 
     for item in items:
-        if count > 25:
-           continue
+        # if count > 25:
+           # continue
 
         # mandatory fields
         try:
@@ -138,8 +138,8 @@ def extract_subjects(subject_type):
     extract_dicts = []
 
     for subject in subjects:
-        if count > 25:
-            continue
+        # if count > 25:
+            # continue
         try:
             item = pywikibot.ItemPage(repo, subject)
             item_dict = item.get()

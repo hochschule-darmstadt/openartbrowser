@@ -9,7 +9,9 @@ python3 -c "import sys; sys.path.insert(1, '..'); import ArtOntologyCrawler; Art
 for f in *.json; do mv "$f" "$(echo "$f" | sed s/json/json_feature/)"; done
 
 mv creators.csv artists.csv
+mv creators.json_feature artists.json_feature
 mv depicts.csv objects.csv
+mv depicts.json_feature objects.json_feature
 
 node ../../data_manipulation/script_genres.js
 node ../../data_manipulation/script_artist.js

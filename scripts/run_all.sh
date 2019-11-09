@@ -7,6 +7,12 @@ node ../data_manipulation/script_artworks.js
 mv creators.json artists.json
 mv depicts.json objects.json
 
+for f in *.json
+do
+	sed -i 's/"creator"/"artist"/g' $f
+	sed -i 's/"depicts"/"objects"/g' $f
+done
+
 node ../data_manipulation/script_artworks_rank.js
 
 node ../data_manipulation/script_genres_rank.js

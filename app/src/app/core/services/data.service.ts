@@ -18,7 +18,7 @@ export class DataService {
   $searchItems: Subject<TagItem[]> = new Subject();
 
   /** base url of elasticSearch server */
-  serverURI = 'http://openartbrowser.org/api/_search';
+  serverURI = '//openartbrowser.org/api/_search';
 
 	/**
 	 * Constructor

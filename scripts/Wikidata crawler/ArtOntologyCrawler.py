@@ -226,6 +226,7 @@ def extract_subjects(subject_type):
 
         count += 1
         print(str(count) + " ", end='')
+        
         if subject_type == "creators":
             extract_dicts.append({"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "gender": gender, "date_of_birth": date_of_birth,
                              "date_of_death": date_of_death, "place_of_birth": place_of_birth, "place_of_death": place_of_death, "citizenship": citizenship,

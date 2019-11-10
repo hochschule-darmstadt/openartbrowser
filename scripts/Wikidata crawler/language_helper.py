@@ -1,6 +1,6 @@
-
 import csv
 import os
+from array import array
 
 
 def readLanguageConfigFile():
@@ -12,3 +12,7 @@ def readLanguageConfigFile():
             if row[0] != "langkey":
                 languageKeys.append(row[0])
     return languageKeys
+
+def generate_langdict_arrays():
+    dictlist = [[] for x in range(len(readLanguageConfigFile()))]
+    return dictlist

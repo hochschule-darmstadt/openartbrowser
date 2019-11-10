@@ -5,8 +5,8 @@ import ijson
 #from ArtOntologyCrawler import readLanguageConfigFile
 from language_helper import generate_langdict_arrays as confdicts
 from language_helper import readLanguageConfigFile as confkeys
+
 filename = "/home/mkherrabi/jsonData/master_flat.json"
-#filename = "C:/Users/bach/Desktop/Git/studentgit/openartbrowser/scripts/upload_to_elasticsearch/master_flat_rankmin.json"
 
 #load languageconfig file with keys / language dicts
 langconfig_array = confdicts()

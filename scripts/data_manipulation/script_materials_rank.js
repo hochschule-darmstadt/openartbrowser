@@ -67,7 +67,7 @@ function writeMaterials() {
 		obj.relativeRank = percentage
 		percentage += rankStep
 	})
-	fs.writeFile(destMaterialFilePath, JSON.stringify(materialMonsterObj), function (err) {
+	fs.writeFile(destMaterialFilePath, JSON.stringify(materialMonsterObj), 'utf-8',  function (err) {
 		if (err) throw err
 		console.log('the file has been saved')
 	})

@@ -65,8 +65,8 @@ constructObjects(artistStream, artistArr)
 	the result into master file as json
 */
 function processData() {
-	if (!_.isEmpty(artistArr) && !_.isEmpty(objectArr) && !_.isEmpty(artworkArr) && !_.isEmpty(genreArr)
-		&& !_.isEmpty(locationArr) && !_.isEmpty(materialArr) && !_.isEmpty(movementArr)) {
+	if (!_.isEmpty(artistArr) || !_.isEmpty(objectArr) || !_.isEmpty(artworkArr) || !_.isEmpty(genreArr)
+		|| !_.isEmpty(locationArr) || !_.isEmpty(materialArr) || !_.isEmpty(movementArr)) {
 		let monsterObj = artworkArr.concat(artistArr, objectArr, genreArr, locationArr, materialArr, movementArr)
 		console.log(monsterObj.length)
 		writeData(monsterObj);
@@ -74,7 +74,7 @@ function processData() {
 }
 
 function writeData(obj) {
-	fs.writeFile(master, JSON.stringify(obj), function (err) {
+	fs.writeFile(master, JSON.stringify(obj), 'utf-8', function (err) {
 		if (err) {
 			console.log(err)
 			return false

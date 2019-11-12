@@ -16,9 +16,12 @@ from pywikibot import pagegenerators as pg
 import csv
 import datetime
 import ast
+import sys
 import requests
 import json
 
+DEV = False
+DEV_LIMIT = 5
 
 def get_abstract(page_id, language_code="en"):
     """Extracts the abstract for a given page_id and language
@@ -54,8 +57,8 @@ def extract_artworks(type_name, wikidata_id):
     extract_dicts = []
 
     for item in items:
-        #if count > 50:
-        #   continue
+        if DEV and count > DEV_LIMIT:
+            break
 
         # mandatory fields
         try:
@@ -163,8 +166,8 @@ def extract_subjects(subject_type):
     extract_dicts = []
 
     for subject in subjects:
-        #if count > 50:
-        #    continue
+        if DEV and count > DEV_LIMIT:
+            break
         try:
             item = pywikibot.ItemPage(repo, subject)
             item_dict = item.get()
@@ -306,8 +309,8 @@ def extract_classes():
     extract_dicts = []
 
     for cls in classes:
-        #        if count > 10:
-        #            continue
+        if DEV and count > 10:
+            break
         extract_class(cls, class_dict, repo)
         count += 1
         #print(str(count) + " ", end='')
@@ -518,3 +521,12 @@ def extract_art_ontology():
     generate_csv("artworks", merge_artworks())
 
     generate_rdf()
+
+
+if __name__ == "__main__":
+    if sys.argv[1] == "-d":
+        print("DEV MODE: on, DEV_LIM={}".format(DEV_LIMIT))
+        DEV = True
+
+    print("Extracting Art Ontology")
+    extract_art_ontology()

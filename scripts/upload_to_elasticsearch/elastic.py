@@ -4,8 +4,8 @@ import sys, json
 import ijson
 myid = 1
 es = Elasticsearch()
-filename = "/home/mkherrabi/jsonData/master_flat.json"
-for item in ijson.items(open(filename, 'r'), 'item'):
+filename = "./master_flat.json"
+for item in ijson.items(open(filename, 'r', encoding="utf-8"), 'item'):
     es.create(index='wiki_data', doc_type='data', body=item, id=myid)
     myid +=1
 

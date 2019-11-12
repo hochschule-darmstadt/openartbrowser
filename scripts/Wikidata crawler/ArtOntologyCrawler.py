@@ -16,8 +16,10 @@ from pywikibot import pagegenerators as pg
 import csv
 import datetime
 import ast
+import sys
 
-
+DEV = False
+DEV_LIMIT = 5
 
 def extract_artworks(type_name, wikidata_id):
     """Extracts artworks metadata from Wikidata and stores them in a *.csv file.
@@ -42,10 +44,12 @@ def extract_artworks(type_name, wikidata_id):
                   "width"]
         writer = csv.DictWriter(file, fieldnames=fields, delimiter=';', quotechar='"')
         writer.writeheader()
-
+          
+        print("artworks")
         for item in items:
-            #            if count > 50:
-            #                continue
+            print(count)
+            if DEV and count > DEV_LIMIT:
+                break
 
             # mandatory fields
             try:
@@ -151,10 +155,12 @@ def extract_subjects(subject_type):
             fields += ["country", "website", "part_of", "lat", "lon"]
         writer = csv.DictWriter(file, fieldnames=fields, delimiter=';', quotechar='"')
         writer.writeheader()
-
+        
+        print("subjects")
         for subject in subjects:
-            #            if count > 50:
-            #                continue
+            print(count)
+            if DEV and count > DEV_LIMIT:
+                break
             try:
                 item = pywikibot.ItemPage(repo, subject)
                 item_dict = item.get()
@@ -286,8 +292,8 @@ def extract_classes():
     count = 0
 
     for cls in classes:
-        #        if count > 10:
-        #            continue
+        if DEV and count > 10:
+            break
         extract_class(cls, class_dict, repo)
         count += 1
         print(str(count) + " ", end='')
@@ -478,7 +484,13 @@ def extract_art_ontology():
 
     merge_artworks()
 
-    generate_rdf()
+    #generate_rdf()
 
 
+if __name__ == "__main__":
+    if sys.argv[1] == "-d":
+        print("DEV MODE: on, DEV_LIM={}".format(DEV_LIMIT))
+        DEV = True
 
+    print("Extracting Art Ontology")
+    extract_art_ontology()

@@ -10,8 +10,8 @@ echo "waiting until elasticsearch is up"
 elastic_up=""
 while [ -z "$elastic_up" ]
 do
-	elastic_up=$(curl -sI localhost:9200)
-    sleep 2
+	elastic_up=$(curl -sI localhost:9200 | grep "200 OK")
+  sleep 2
 done
 
 # run elastic.py script inside the container

@@ -51,6 +51,30 @@
                   "maximumError": "5mb"
                 }
               ]
+            },
+            "e_local": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment_elastic.ts",
+                  "with": "src/environments/environment_elastic.local.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
             }
           }
         },
@@ -62,6 +86,9 @@
           "configurations": {
             "production": {
               "browserTarget": "art-browser:build:production"
+            },
+            "e_local": {
+              "browserTarget": "art-browser:build:e_local"
             }
           }
         },
@@ -106,6 +133,9 @@
           "configurations": {
             "production": {
               "devServerTarget": "art-browser:serve:production"
+            },
+            "e_local": {
+              "devServerTarget": "art-browser:serve:e_local"
             }
           }
         },

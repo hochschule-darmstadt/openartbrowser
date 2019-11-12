@@ -32,6 +32,13 @@ Frontend configuration:
 
 - default elasticSearch url is 'http://openartbrowser.org/api/_search'
 
-- to call a locally running elasticsearch docker container, run `ng build --configuration=e_local`
+- to call a locally running elasticsearch docker container, run `npm run start_elocal` or `ng build --configuration=e_local`
 
 - To change elasticSearch url to another server, change the above url in ‚app/src/app/core/services/data.service.ts‘
+
+## Local Elasticsearch
+
+To build and run the elasticsearch docker container for local development, run the docker_elastic.sh script in the scripts
+directory. The building might take some time because of the included wiki crawling. For the docker container
+the wiki crawling is limited to a specific amount of objects per category. This amount is represented by the **DEV_LIMIT**
+variable in the **ArtAntologyCrawler.py** script and thus can be adjusted there. 

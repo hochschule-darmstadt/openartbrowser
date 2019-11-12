@@ -67,7 +67,7 @@ function writeObjects() {
 		obj.relativeRank = percentage
 		percentage += rankStep
 	})
-	fs.writeFile(destObjectFilePath, JSON.stringify(objectMonsterObj), function (err) {
+	fs.writeFile(destObjectFilePath, JSON.stringify(objectMonsterObj), 'utf-8', function (err) {
 		if (err) throw err
 		console.log('the file has been saved')
 	})

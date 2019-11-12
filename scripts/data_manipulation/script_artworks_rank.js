@@ -42,7 +42,7 @@ function sortByRank(data) {
 }
 
 function writeFileWithData(data) {
-	fs.writeFile(destPath, JSON.stringify(data), function (err) {
+	fs.writeFile(destPath, JSON.stringify(data), 'utf-8', function (err) {
 		if (err)
 			console.log('error occurred!')
 	})

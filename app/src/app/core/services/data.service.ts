@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {enableProdMode, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Entity, Artwork, artSearch, EntityType, TagItem} from 'src/app/shared/models/models';
 import * as _ from 'lodash';

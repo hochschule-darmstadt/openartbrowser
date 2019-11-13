@@ -1,9 +1,11 @@
 {
+  "task": "match",
   "developer_key": "",
   "to_crawl": [
     {
       "clear_name": "smarthistoryvideos",
       "channel_id": "UC3R-xanNgtoa8b7gpVexVlA"
     }
-  ]
+  ],
+  "to_match": "video_data"
 }

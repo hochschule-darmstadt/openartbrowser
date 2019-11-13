@@ -1,0 +1,13 @@
+## Requirements
+
+To install the required python packages for the crawler script use following command in this directory:
+> pip3 install -r requirements.txt
+
+This will install pywikibot and requests (see requirements.txt)
+
+## Execution
+
+To execute the complete data extraction:
+> python3 -c "import ArtOntologyCrawler; ArtOntologyCrawler.extract_art_ontology()"
+
+If you want a specific file to be extracted take a look inside the extract_art_ontology() function. This is the place where all files are generated.

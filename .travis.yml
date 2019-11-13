@@ -30,6 +30,9 @@ jobs:
 
     - stage: deploy-to-staging
       if: branch = staging # note: this also counts as base:staging in PRs
+      before_script:
+        - cd app
+        - npm install
       script:
         - npm run build # include the staging flag
       after_success:
@@ -37,6 +40,9 @@ jobs:
 
     - stage: deploy-to-production
       if: branch = master # note: this also counts as base:master in PRs
+      before_script:
+        - cd app
+        - npm install
       script:
         - npm run build # include the production flag
       after_success:

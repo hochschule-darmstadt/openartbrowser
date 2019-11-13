@@ -21,20 +21,23 @@ jobs:
       before_script:
         - cd app
         - npm install
-      script: 
+      script:
         - npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
+
     - stage: backend-tests
-      script: 
+      script:
         - echo "no backend / crawler / other tests specified"
+
     - stage: deploy-to-staging
-      if: branch = staging
-      script: 
+      if: branch = staging # note: this also counts as base:staging in PRs
+      script:
         - npm run build # include the staging flag
       after_success:
-        - rsync -rltDvz --rsh="sshpass -p ${SFTP_PASS} ssh -o StrictHostKeyChecking=no -l ${SFTP_USER}" ./dist/art-browser ${SFTP_USER}@141.100.60.99:/var/sftp/travis-deployments/art-browser
+        - rsync -rltDvz --rsh="sshpass -p ${SFTP_PASS_STAGE} ssh -o StrictHostKeyChecking=no -l ${SFTP_USER_STAGE}" ./dist/art-browser ${SFTP_USER_STAGE}@141.100.60.99:${SFTP_PATH_STAGE}
+
     - stage: deploy-to-production
-      if: branch = master
-      script: 
+      if: branch = master # note: this also counts as base:master in PRs
+      script:
         - npm run build # include the production flag
       after_success:
-        - rsync -rltDvz --rsh="sshpass -p ${SFTP_PASS} ssh -o StrictHostKeyChecking=no -l ${SFTP_USER}" ./dist/art-browser ${SFTP_USER}@141.100.60.99:/var/sftp/travis-deployments/art-browser
+        - rsync -rltDvz --rsh="sshpass -p ${SFTP_PASS_PROD} ssh -o StrictHostKeyChecking=no -l ${SFTP_USER_PROD}" ./dist/art-browser ${SFTP_USER_PROD}@141.100.60.99:${SFTP_PATH_PROD}

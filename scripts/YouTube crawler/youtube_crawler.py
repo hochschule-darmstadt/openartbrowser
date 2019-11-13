@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
 """Classes for the YT crawler"""
 from datetime import datetime
-from typing import List
 
 from dateutil import parser
 from googleapiclient.discovery import build
-from math import ceil
-
 
 VIDEO_CATEGORIES = {
     "1": "Film & Animation",
@@ -80,38 +77,38 @@ class YoutubeCrawler:
         # Build the connection object
         self.yt_service = build('youtube', 'v3', developerKey=developer_key)
 
-    def search_videos(self, search_term, no_of_results) -> List[YoutubeVideo]:
-        """Finds youtube videos by a search term and returns the result as a list of YTVideo Objects."""
-
-        # The search returns at least 5 results
-        no_of_results = max(no_of_results, 50)
-        # Figure out how many pages we pages of the response we have to open.
-        # There are always 5 results on one page.
-        result_pages_to_open = ceil(no_of_results / 50)
-        # Build the request
-        search_service = self.yt_service.search()
-        request = search_service.list(
-            part="id",
-            q=search_term,
-            type="video",  # Has to be specified, otherwise channels and playlists also appear
-            safeSearch="strict",  # This is useful setting to filter out inappropriate videos
-            relevanceLanguage="en",
-            maxResults=50
-        )
-        # Get the first page
-        result_page = request.execute()
-        videos = result_page["items"]
-        result_pages_to_open -= 1
-        # if there are more pages to open
-        while result_pages_to_open > 0:
-            request = search_service.list_next(request, result_page)
-            videos = result_page["items"]
-            result_pages_to_open -= 1
-
-        # Now  get the video details
-        videos = [YoutubeVideo(video["id"]["videoId"]) for video in videos]
-        videos = self.get_video_details(videos)
-        return videos
+    # def search_videos(self, search_term, no_of_results) -> List[YoutubeVideo]:
+    #     """Finds youtube videos by a search term and returns the result as a list of YTVideo Objects."""
+    #
+    #     # The search returns at least 5 results
+    #     no_of_results = max(no_of_results, 50)
+    #     # Figure out how many pages we pages of the response we have to open.
+    #     # There are always 5 results on one page.
+    #     result_pages_to_open = ceil(no_of_results / 50)
+    #     # Build the request
+    #     search_service = self.yt_service.search()
+    #     request = search_service.list(
+    #         part="id",
+    #         q=search_term,
+    #         type="video",  # Has to be specified, otherwise channels and playlists also appear
+    #         safeSearch="strict",  # This is useful setting to filter out inappropriate videos
+    #         relevanceLanguage="en",
+    #         maxResults=50
+    #     )
+    #     # Get the first page
+    #     result_page = request.execute()
+    #     videos = result_page["items"]
+    #     result_pages_to_open -= 1
+    #     # if there are more pages to open
+    #     while result_pages_to_open > 0:
+    #         request = search_service.list_next(request, result_page)
+    #         videos = result_page["items"]
+    #         result_pages_to_open -= 1
+    #
+    #     # Now  get the video details
+    #     videos = [YoutubeVideo(video["id"]["videoId"]) for video in videos]
+    #     videos = self.get_video_details(videos)
+    #     return videos
 
     def get_all_videos_of_channel(self, channel_id):
         """Finds all videos including metadata for a channel by its ID."""
@@ -130,18 +127,35 @@ class YoutubeCrawler:
             request = search_service.list_next(request, result_page)
 
         # Now  get the video details
-        videos = [YoutubeVideo(video["id"]["videoId"]) for video in videos]
-        videos = self.get_video_details(videos)
+        video_ids = [video["id"]["videoId"] for video in videos]
+        videos = self.get_video_details(video_ids)
         return videos
 
-    def get_video_details(self, videos) -> List[YoutubeVideo]:
+    def get_video_details(self, video_ids):
         """Load the details, that the search method did not include"""
         video_service = self.yt_service.videos()
-        for video in videos:
+        videos = []
+        for videoId in video_ids:
             request = video_service.list(
                 part="statistics, snippet",
-                id=video.id
+                id=videoId
             )
             video_details = request.execute()["items"][0]
-            video.parse_video_details(video_details)
+            video = {}
+            # order the information
+            snippet = video_details["snippet"]
+            video["title"] = snippet["title"]
+            video["description"] = snippet["description"]
+            video["channel_id"] = snippet["channelId"]
+            video["channel_name"] = snippet["channelTitle"]
+            video["upload_date"] = parser.parse(snippet["publishedAt"])
+            video["tags"] = snippet.get("tags", [])
+            video["category"] = VIDEO_CATEGORIES.get(snippet["categoryId"], [])
+            stats = video_details["statistics"]
+            video["views"] = stats.get("viewCount", 0)
+            video["likes"] = stats.get("likeCount", 0)
+            video["dislikes"] = stats.get("dislikeCount", 0)
+
+            videos.append(video)
+
         return videos

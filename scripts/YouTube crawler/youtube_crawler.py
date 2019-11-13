@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """Classes for the YT crawler"""
-from datetime import datetime
 
 from dateutil import parser
 from googleapiclient.discovery import build
@@ -39,30 +38,6 @@ VIDEO_CATEGORIES = {
     "43": "Shows",
     "44": "Trailers"
 }
-
-
-class YoutubeVideo(object):
-    """A formatted form of YouTube video metadata."""
-
-    def __init__(self, id):
-        self.id = id
-
-    def parse_video_details(self, video_details):
-        """Parse snippet & statistics data from a video request."""
-        snippet = video_details["snippet"]
-        self.title = snippet["title"]
-        self.description = snippet["description"]
-        self.channel_id = snippet["channelId"]
-        self.channel_name = snippet["channelTitle"]
-        upload_date = parser.parse(snippet["publishedAt"])
-        time_delta = datetime.now().date() - upload_date.date()
-        self.days_since_upload = time_delta.days
-        self.tags = snippet.get("tags", [])
-        self.category = VIDEO_CATEGORIES.get(snippet["categoryId"], [])
-        stats = video_details["statistics"]
-        self.views = stats.get("viewCount", 0)
-        self.likes = stats.get("likeCount", 0)
-        self.dislikes = stats.get("dislikeCount", 0)
 
 
 class YoutubeCrawler:

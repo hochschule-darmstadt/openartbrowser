@@ -36,7 +36,7 @@ jobs:
       script:
         - npm run build # include the staging flag
       after_success:
-        - rsync -rltDvz --rsh="sshpass -p ${SFTP_PASS_STAGE} ssh -o StrictHostKeyChecking=no -l ${SFTP_USER_STAGE}" ./dist/art-browser ${SFTP_USER_STAGE}@141.100.60.99:${SFTP_PATH_STAGE}
+        - rsync -rltDvz --rsh="sshpass -p ${SFTP_PASS_STAGE} ssh -o StrictHostKeyChecking=no -l ${SFTP_USER_STAGE}" ./dist/art-browser ${SFTP_USER_STAGE}@${STAGE_ADDR}:${SFTP_PATH_STAGE}
 
     - stage: deploy-to-production
       if: branch = master # note: this also counts as base:master in PRs
@@ -46,4 +46,4 @@ jobs:
       script:
         - npm run build # include the production flag
       after_success:
-        - rsync -rltDvz --rsh="sshpass -p ${SFTP_PASS_PROD} ssh -o StrictHostKeyChecking=no -l ${SFTP_USER_PROD}" ./dist/art-browser ${SFTP_USER_PROD}@141.100.60.99:${SFTP_PATH_PROD}
+        - rsync -rltDvz --rsh="sshpass -p ${SFTP_PASS_PROD} ssh -o StrictHostKeyChecking=no -l ${SFTP_USER_PROD}" ./dist/art-browser ${SFTP_USER_PROD}@${PROD_ADDR}:${SFTP_PATH_PROD}

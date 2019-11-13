@@ -47,7 +47,7 @@
         <note priority="1" from="description">Menu Data Protection Declaration item label</note>
       </trans-unit>
        <trans-unit id="search_placeholder" datatype="html">
-        <source>Search for something...</source><target>Suche nach etwas...</target>
+        <source>Search for something...</source><target state="final">Suche nach etwas...</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/components/search/search.component.html</context>
           <context context-type="linenumber">48</context>
@@ -396,6 +396,38 @@
         </context-group>
         <note priority="1" from="description">Search Hits label</note>
       </trans-unit>
+      <trans-unit id="artworks" datatype="html">
+        <source>Artworks</source><target state="final">Kunstwerke</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/search-result/search-result.component.html</context>
+          <context context-type="linenumber">126</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artist/artist.component.html</context>
+          <context context-type="linenumber">102</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/genre/genre.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/location/location.component.html</context>
+          <context context-type="linenumber">34</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/material/material.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/motif/motif.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/movement/movement.component.html</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+        <note priority="1" from="description">Artworks label</note>
+      </trans-unit>
       <trans-unit id="born" datatype="html">
         <source>Born</source><target state="final">Geboren</target>
         <context-group purpose="location">
@@ -441,7 +473,7 @@
         <note priority="1" from="description">Artist citizenship label</note>
       </trans-unit>
       <trans-unit id="influenced_by" datatype="html">
-        <source>Influenced by</source><target state="final">Beeinflusst bei</target>
+        <source>Influenced by</source><target state="final">Beeinflusst von</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artist/artist.component.html</context>
           <context context-type="linenumber">82</context>

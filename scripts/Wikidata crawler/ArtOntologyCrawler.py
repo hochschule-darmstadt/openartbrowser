@@ -117,7 +117,7 @@ def extract_artworks(type_name, wikidata_id):
                 sitelinks = item_dict["sitelinks"]
                 wikpedia_page = pywikibot.Page(sitelinks["enwiki"])
 
-                abstract = get_abstract(wikpedia_page.id)
+                abstract = get_abstract(wikpedia_page.pageid)
                 wikipedia_link = wikpedia_page.full_url()
             except:
                 abstract = ""
@@ -168,7 +168,7 @@ def extract_subjects(subject_type):
     print("Total: ", len(subjects), subject_type)
     count = 0
     with open(subject_type + ".csv", "w", newline="", encoding='utf-8') as file:
-        fields = ["id", "classes", "label", "description", "image"]
+        fields = ["id", "classes", "label", "description", "image", "abstract", "wikipediaLink"]
         if subject_type == "creators":
             fields += ["gender", "date_of_birth", "date_of_death", "place_of_birth", "place_of_death", "citizenship", "movements", "influenced_by"]
         if subject_type == "movements":
@@ -207,9 +207,9 @@ def extract_subjects(subject_type):
                 sitelinks = item_dict["sitelinks"]
                 wikpedia_page = pywikibot.Page(sitelinks["enwiki"])
 
-                abstract = get_abstract(wikpedia_page.page_id)
+                abstract = get_abstract(wikpedia_page.pageid)
                 wikipedia_link = wikpedia_page.full_url()
-             except:
+            except:
                 abstract = ""
                 wikipedia_link = ""
 
@@ -383,7 +383,7 @@ def merge_artworks():
 
     with open("artworks.csv", "w", newline="", encoding='utf-8') as output:
         fields = ["id", "classes", "label", "description", "image", "creators", "locations", "genres", "movements", "inception", "materials", "depicts", "country", "height",
-                  "width"]
+                  "width", "abstract", "wikipediaLink"]
         writer = csv.DictWriter(output, fieldnames=fields, delimiter=';', quotechar='"')
         writer.writeheader()
         for file_name in file_names:

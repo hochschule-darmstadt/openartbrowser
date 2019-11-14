@@ -13,22 +13,12 @@ This may take several hours.
 import pywikibot
 import types
 from pywikibot import pagegenerators as pg
-from language_helper import readLanguageConfigFile as conf
+from language_helper import read_language_config as conf
 import csv
 import datetime
 import ast
 
 
-
-# def readLanguageConfigFile():
-#     fileName = "LanguageConfig.csv"
-#     languageKeys = []
-#     with open(fileName, encoding = "utf-8") as file:
-#         configReader = csv.reader(file, delimiter=";")
-#         for row in configReader:
-#             if row[0] != "langkey":
-#                 languageKeys.append(row[0])
-#     return languageKeys
 
 def extract_artworks(type_name, wikidata_id):
     """Extracts artworks metadata from Wikidata and stores them in a *.csv file.

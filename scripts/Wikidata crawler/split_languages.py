@@ -4,7 +4,7 @@ import simplejson as json
 import ijson
 #from ArtOntologyCrawler import readLanguageConfigFile
 from language_helper import generate_langdict_arrays as confdicts
-from language_helper import readLanguageConfigFile as confkeys
+from language_helper import read_language_config as confkeys
 
 filename = "/home/mkherrabi/jsonData/master_flat.json"
 

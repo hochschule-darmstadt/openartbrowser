@@ -3,7 +3,7 @@ import os
 from array import array
 
 
-def readLanguageConfigFile():
+def read_language_config():
     fileName = os.path.dirname(os.path.abspath(__file__)) + "/languageconfig.csv"
     languageKeys = []
     with open(fileName, encoding = "utf-8") as file:
@@ -14,5 +14,5 @@ def readLanguageConfigFile():
     return languageKeys
 
 def generate_langdict_arrays():
-    dictlist = [[] for x in range(len(readLanguageConfigFile()))]
+    dictlist = [[] for x in range(len(read_language_config()))]
     return dictlist

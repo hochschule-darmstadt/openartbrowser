@@ -8,9 +8,21 @@ from language_helper import read_language_config as confkeys
 
 filename = "/home/mkherrabi/jsonData/master_flat.json"
 
-#modifies lang dictionary data by manipulating key values or deleting keys
-#mostly used to get rid of additional language keys
+
 def modify_langdict(langdict, jsonobject, langkey):
+    """[modifies lang dictionary data by manipulating key values or deleting keys 
+                mostly used to get rid of additional language keys]
+    
+    Arguments:
+        langdict {[array[dict]]} -- [internal language container for the language specified
+                in langkey]
+        jsonobject {[dict]} -- [json object from master file that is passed to our
+                internal dictionaries]
+        langkey {[str]} -- [language key used for modification]
+    
+    Returns:
+        [array[dict]] -- [modified language container]
+    """
     tempjson = jsonobject.copy()
     try:
         tempjson["label"] = tempjson["label_" + langkey]
@@ -37,8 +49,14 @@ def modify_langdict(langdict, jsonobject, langkey):
 
 #writes temporary language specific data to language files 
 def generate_langjson(name, extract_dicts):
-     with open(name + ".json", "w", newline="", encoding='utf-8') as file:
-         file.write(json.dumps(extract_dicts))
+    """[writes temporary language specific data to language files]
+    
+    Arguments:
+        name {[str]} -- [Name of the generated json language file]
+        extract_dicts {[dict]} -- [dictionary that is written into the output file]
+    """
+    with open(name + ".json", "w", newline="", encoding='utf-8') as file:
+        file.write(json.dumps(extract_dicts))
         
 #load languageconfig file with keys / language dicts
 langconfig_array = confdicts()

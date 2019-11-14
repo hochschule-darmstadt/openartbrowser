@@ -34,7 +34,12 @@
 
         <div [className]="!collapseDown ? 'collapse show' : 'collapse'" id="collapseArtist">
 
-
+          <div class="row">
+            <div *ngIf="artist?.abstract" class="col-md pr-0">
+              <span>{{ artist?.abstract }} More: <a href="{{ artist?.wikipediaLink }}"
+                                                    target="_blank">Wikipedia</a></span>
+            </div>
+          </div>
           <div class="row">
             <div class="col-md-3 pr-0 ">
               <p *ngIf="artist?.gender" class="text-muted mb-2">Gender:</p>
@@ -63,17 +68,6 @@
                   <i class="fas fa-wind"></i>
                   {{ movement.label }}
                 </span>
-              </p>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-3 pr-0">
-              <p *ngIf="artist?.abstract" class="text-muted mb-2">Abstract:</p>
-            </div>
-            <div class="col-md-9 pr-0 pl-0 info">
-              <p *ngIf="artist?.abstract" class="mb-2 first-letter notchip">
-              <span>{{ artist?.abstract }} More: <a href="{{ artist?.wikipediaLink }}"
-                                                    target="_blank">Wikipedia</a></span>
               </p>
             </div>
           </div>

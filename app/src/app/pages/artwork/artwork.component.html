@@ -105,18 +105,10 @@
 
         <div [className]="!collapseDown ? 'collapse show' : 'collapse'" id="collapseArtwork">
           <div class="row">
-            <div class="col-md-1">
-              <p *ngIf="artwork?.abstract" class="mb-1 text-muted">Abstract:</p>
-            </div>
-
-            <!--
-              Check length of attribute "genres", if not empty create chips and it's navigation
-              link for every genre
-            -->
-            <div class="col-md-11 pr-0">
-              <p *ngIf="artwork?.abstract" class="mb-1 notchip add-padding">
+            <div *ngIf="artwork?.abstract" class="col-md pr-0">
+              <span>
                 {{ artwork?.abstract }} More: <a href="{{ artwork?.wikipediaLink }}" target="_blank">Wikipedia</a>
-              </p>
+              </span>
             </div>
           </div>
 

@@ -299,6 +299,9 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   calculateCollapseState() {
     this.collapseDown = true;
     if (this.artwork) {
+      if (!this.artwork.abstract) {
+        this.metaNumber += 3;
+      }
       if (!_.isEmpty(this.artwork.genres)) {
         this.metaNumber += this.artwork.genres.length > 3 ? this.artwork.genres.length : 3;
       }

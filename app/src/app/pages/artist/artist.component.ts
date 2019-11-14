@@ -78,6 +78,9 @@ export class ArtistComponent implements OnInit, OnDestroy {
    */
   calculateCollapseState() {
     this.collapseDown = true;
+    if (!this.artist.abstract) {
+      this.metaNumber += 3;
+    }
     if (!this.artist.gender) {
       this.metaNumber += 3;
     }

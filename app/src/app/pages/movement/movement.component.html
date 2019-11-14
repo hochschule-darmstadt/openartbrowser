@@ -6,13 +6,10 @@
 
 
       <div class="row">
-        <div class="col-md-3 pr-0">
-          <p *ngIf="movement?.abstract" class="text-muted mb-1">Abstract:</p>
-        </div>
-        <div class="col-md-9 pr-0 info">
-          <p *ngIf="movement?.abstract" class="mb-1 add-padding notchip">
+        <div *ngIf="movement?.abstract" class="col-md pr-0">
+          <span>
             {{ movement?.abstract }} More: <a href="{{ movement?.wikipediaLink }}" target="_blank">Wikipedia</a>
-          </p>
+          </span>
         </div>
       </div>
 

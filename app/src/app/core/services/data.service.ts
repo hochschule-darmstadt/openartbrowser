@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {Entity, Artwork, artSearch, EntityType, TagItem} from 'src/app/shared/models/models';
 import * as _ from 'lodash';
 import {Subject} from 'rxjs';
+import {elasticEnvironment} from 'src/environments/environment';
 
 
 /**
@@ -18,7 +19,7 @@ export class DataService {
   $searchItems: Subject<TagItem[]> = new Subject();
 
   /** base url of elasticSearch server */
-  serverURI = '/api/_search';
+  serverURI = elasticEnvironment.serverURI;
 
   /**
    * Constructor

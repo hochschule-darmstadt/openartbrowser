@@ -99,11 +99,11 @@
         ">
         <h4 class="mt-2 more" href="#collapseArtwork" (click)="toggleDetails()">
           More
-          <i *ngIf="collapseDown" href="#collapseArtwork" class="fas fa-chevron-down"></i>
-          <i *ngIf="!collapseDown" href="#collapseArtwork" class="fas fa-chevron-up"></i>
+          <i *ngIf="collapse" href="#collapseArtwork" class="fas fa-chevron-down"></i>
+          <i *ngIf="!collapse" href="#collapseArtwork" class="fas fa-chevron-up"></i>
         </h4>
 
-        <div [className]="!collapseDown ? 'collapse show' : 'collapse'" id="collapseArtwork">
+        <div [className]="collapse ? 'collapse' : 'collapse show'" id="collapseArtwork">
           <div class="row">
             <div *ngIf="artwork?.abstract" class="col-md pr-0">
               <span>{{ artwork?.abstract }}</span>

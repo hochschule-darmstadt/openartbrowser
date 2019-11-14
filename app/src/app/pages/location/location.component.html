@@ -19,10 +19,19 @@
           <p *ngIf="location?.website"><a href="{{location?.website}}" target="_blank">{{location?.label}}</a></p>
         </div>
       </div>
-      <div *ngIf="location?.abstract" class="row">
-        <div class="col-md pr-0">
-          <span>{{ location?.abstract }} </span>
-          <p class="wiki-link">More: <a href="{{ location?.wikipediaLink }}" target="_blank">Wikipedia</a></p>
+      <div *ngIf="location?.abstract">
+        <h4 class="mt-2 more" href="#collapseArtist" (click)="toggleDetails()">
+          More
+          <i *ngIf="collapse" href="#collapseArtist" class="fas fa-chevron-down"> </i>
+          <i *ngIf="!collapse" href="#collapseArtist" class="fas fa-chevron-up"> </i>
+        </h4>
+        <div [className]="collapse ? 'collapse' : 'collapse show'" id="collapseArtist">
+          <div *ngIf="location?.abstract" class="row">
+            <div class="col-md pr-0">
+              <span>{{ location?.abstract }} </span>
+              <p class="wiki-link">More: <a href="{{ location?.wikipediaLink }}" target="_blank">Wikipedia</a></p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

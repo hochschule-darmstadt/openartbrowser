@@ -25,14 +25,15 @@
         </div>
       </div>
 
-      <div *ngIf="artist?.gender || artist?.citizenship || artist?.movements?.length || artist?.influenced_by?.length">
+      <div *ngIf="artist?.gender || artist?.citizenship || artist?.movements?.length ||
+       artist?.influenced_by?.length || artist?.abstract">
         <h4 class="mt-2 more" href="#collapseArtist" (click)="toggleDetails()">
           More
-          <i *ngIf="collapseDown" href="#collapseArtist" class="fas fa-chevron-down"> </i>
-          <i *ngIf="!collapseDown" href="#collapseArtist" class="fas fa-chevron-up"> </i>
+          <i *ngIf="collapse" href="#collapseArtist" class="fas fa-chevron-down"> </i>
+          <i *ngIf="!collapse" href="#collapseArtist" class="fas fa-chevron-up"> </i>
         </h4>
 
-        <div [className]="!collapseDown ? 'collapse show' : 'collapse'" id="collapseArtist">
+        <div [className]="collapse ? 'collapse' : 'collapse show'" id="collapseArtist">
 
           <div class="row">
             <div *ngIf="artist?.abstract" class="col-md pr-0">

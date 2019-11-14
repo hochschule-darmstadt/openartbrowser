@@ -162,11 +162,11 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     this.resetArtworkTabs();
     /** load artist related data */
     if (this.artwork) {
-      this.dataService.findArtworksByArtists(this.artwork.creators as any).then((artworks) => {
+      this.dataService.findArtworksByArtists(this.artwork.artists as any).then((artworks) => {
         this.fillArtworkTab(this.artworkTabs.artist, artworks);
       });
-      this.dataService.findMultipleById(this.artwork.creators as any, EntityType.ARTIST).then((creators) => {
-        this.artwork.creators = creators;
+      this.dataService.findMultipleById(this.artwork.artists as any, EntityType.ARTIST).then((artists) => {
+        this.artwork.artists = artists;
       });
 
       /** load movement related data */
@@ -186,11 +186,11 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       });
 
       /** load motif related data */
-      this.dataService.findArtworksByMotifs(this.artwork.depicts as any).then((artworks) => {
+      this.dataService.findArtworksByMotifs(this.artwork.motifs as any).then((artworks) => {
         this.fillArtworkTab(this.artworkTabs.motif, artworks);
       });
-      this.dataService.findMultipleById(this.artwork.depicts as any, EntityType.MOTIF).then((motifs) => {
-        this.artwork.depicts = motifs;
+      this.dataService.findMultipleById(this.artwork.motifs as any, EntityType.MOTIF).then((motifs) => {
+        this.artwork.motifs = motifs;
       });
 
       /** load loaction related data */
@@ -308,8 +308,8 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       if (!_.isEmpty(this.artwork.movements)) {
         this.metaNumber += this.artwork.movements.length > 3 ? this.artwork.movements.length : 3;
       }
-      if (!_.isEmpty(this.artwork.depicts)) {
-        this.metaNumber += this.artwork.depicts.length > 3 ? this.artwork.depicts.length : 3;
+      if (!_.isEmpty(this.artwork.motifs)) {
+        this.metaNumber += this.artwork.motifs.length > 3 ? this.artwork.motifs.length : 3;
       }
       if (!this.artwork.height && !this.artwork.width) {
         this.metaNumber += 3;

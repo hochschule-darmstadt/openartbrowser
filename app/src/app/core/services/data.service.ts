@@ -148,7 +148,7 @@ export class DataService {
     return this.filterData<Artwork>(reponse);
   }
   public async findArtworksByArtists(artistIds: string[]): Promise<Artwork[]> {
-    const response = await this.http.post<any>(this.serverURI, this.constructQuery("creators", artistIds)).toPromise();
+    const response = await this.http.post<any>(this.serverURI, this.constructQuery("artists", artistIds)).toPromise();
     return this.filterData<Artwork>(response);
   };
 
@@ -168,7 +168,7 @@ export class DataService {
   }
 
   public async findArtworksByMotifs(motifIds: string[]): Promise<Artwork[]> {
-    const response = await this.http.post<any>(this.serverURI, this.constructQuery("depicts", motifIds)).toPromise();
+    const response = await this.http.post<any>(this.serverURI, this.constructQuery("motifs", motifIds)).toPromise();
     return this.filterData<Artwork>(response);
   }
 

@@ -42,19 +42,19 @@
 
       <div class="row">
         <div class="col-md-1">
-          <p *ngIf="artwork?.creators?.length" class="mb-1 text-muted">Artist:</p>
+          <p *ngIf="artwork?.artists?.length" class="mb-1 text-muted">Artist:</p>
         </div>
 
         <!-- 
-          Check length of attribute "creators", if not empty create chips 
-          and it's navigation link for every creator 
+          Check length of attribute "artists", if not empty create chips 
+          and it's navigation link for every artist 
         -->
         <div class="col-md-11">
-          <p *ngIf="artwork?.creators?.length" class="mb-1 add-padding">
-            <span class="badge badge-pill badge-secondary first-letter chip" *ngFor="let creator of artwork?.creators"
-              [routerLink]="'/artist/' + creator.id">
+          <p *ngIf="artwork?.artists?.length" class="mb-1 add-padding">
+            <span class="badge badge-pill badge-secondary first-letter chip" *ngFor="let artist of artwork?.artists"
+              [routerLink]="'/artist/' + artist.id">
               <i class="fas fa-user"></i>
-              {{ creator?.label }}</span>
+              {{ artist?.label }}</span>
           </p>
         </div>
       </div>
@@ -87,14 +87,14 @@
       </div>
 
       <!--
-        Check the length of attributes "genres", "movements", "materials" or "depicts", if one of them not empty
+        Check the length of attributes "genres", "movements", "materials" or "motifs", if one of them not empty
         show the collapse element
       -->
       <div *ngIf="
           artwork?.genres?.length ||
           artwork?.movements?.length ||
           artwork?.materials?.length ||
-          artwork?.depicts?.length
+          artwork?.motifs?.length
         ">
         <h4 class="mt-2 more" href="#collapseArtwork" (click)="toggleDetails()">
           More
@@ -158,15 +158,15 @@
           </div>
           <div class="row">
             <div class="col-md-1">
-              <p *ngIf="artwork?.depicts?.length" class="mb-1 text-muted">Motif:</p>
+              <p *ngIf="artwork?.motifs?.length" class="mb-1 text-muted">Motif:</p>
             </div>
 
             <!-- 
-              Check length of attribute "depicts", if not empty create chips and it's navigation link for every depict 
+              Check length of attribute "motifs", if not empty create chips and it's navigation link for every motif 
             -->
             <div class="col-md-11">
-              <p *ngIf="artwork?.depicts?.length" class="mb-1 add-padding">
-                <span class="badge badge-pill badge-secondary first-letter chip" *ngFor="let motif of artwork?.depicts"
+              <p *ngIf="artwork?.motifs?.length" class="mb-1 add-padding">
+                <span class="badge badge-pill badge-secondary first-letter chip" *ngFor="let motif of artwork?.motifs"
                   [routerLink]="'/motif/' + motif.id">
                   <i class="fas fa-image"></i>
                   {{ motif?.label }}</span>
@@ -238,18 +238,18 @@
               associated attribute of hoveredArtwork, add the class badge-light to highlight 
               the chip.
             -->
-            <span *ngIf="artwork?.depicts?.length && (tab == 'motif' || tab == 'all')" class="mb-1">
-              <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1" [ngClass]="{'badge-light': motif && hoveredArtwork?.depicts?.includes(motif.id) }"
-                *ngFor="let motif of artwork?.depicts" [routerLink]="'/motif/' + motif.id">
+            <span *ngIf="artwork?.motifs?.length && (tab == 'motif' || tab == 'all')" class="mb-1">
+              <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1" [ngClass]="{'badge-light': motif && hoveredArtwork?.motifs?.includes(motif.id) }"
+                *ngFor="let motif of artwork?.motifs" [routerLink]="'/motif/' + motif.id">
                 <i class="fas fa-image"></i>
                 {{ motif?.label }}</span>
             </span>
 
-            <span *ngIf="artwork?.creators?.length && (tab == 'artist' || tab == 'all')" class="mb-1">
-              <span *ngFor="let creator of artwork?.creators" [ngClass]="{'badge-light': creator && hoveredArtwork?.creators?.includes(creator.id) }"
-                class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1" [routerLink]="'/artist/' + creator.id">
+            <span *ngIf="artwork?.artists?.length && (tab == 'artist' || tab == 'all')" class="mb-1">
+              <span *ngFor="let artist of artwork?.artists" [ngClass]="{'badge-light': artist && hoveredArtwork?.artists?.includes(artist.id) }"
+                class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1" [routerLink]="'/artist/' + artist.id">
                 <i class="fas fa-user"></i>
-                {{ creator?.label }}</span>
+                {{ artist?.label }}</span>
             </span>
 
             <span *ngIf="artwork?.genres?.length && (tab == 'genre' || tab == 'all')" class="mb-1">

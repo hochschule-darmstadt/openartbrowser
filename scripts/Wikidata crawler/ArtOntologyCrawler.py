@@ -14,9 +14,9 @@ import pywikibot
 import types
 from pywikibot import pagegenerators as pg
 import csv
+import json
 import datetime
 import ast
-
 
 
 def extract_artworks(type_name, wikidata_id):
@@ -36,78 +36,72 @@ def extract_artworks(type_name, wikidata_id):
     wikidata_site = pywikibot.Site("wikidata", "wikidata")
     items = pg.WikidataSPARQLPageGenerator(QUERY, site=wikidata_site)
     count = 0
+    extract_dicts = []
 
-    with open(type_name + ".csv", "w", newline="", encoding='utf-8') as file:
-        fields = ["id", "classes", "label", "description", "image", "creators", "locations", "genres", "movements", "inception", "materials", "depicts", "country", "height",
-                  "width"]
-        writer = csv.DictWriter(file, fieldnames=fields, delimiter=';', quotechar='"')
-        writer.writeheader()
+    for item in items:
+        # if count > 25:
+           # continue
 
-        for item in items:
-            #            if count > 50:
-            #                continue
-
-            # mandatory fields
-            try:
-                item_dict = item.get()
-                label = item_dict["labels"]["en"]
-                clm_dict = item_dict["claims"]
-                classes = list(map(lambda clm: clm.getTarget().id, clm_dict["P31"]))
-                image = clm_dict["P18"][0].getTarget().get_file_url()
-                creators = list(map(lambda clm: clm.getTarget().id, clm_dict["P170"]))
-            except:
-                continue
-                # optional fields
-            try:
-                description = item_dict["descriptions"]["en"]
-            except:
-                description = ""
-            try:
-                locations = list(map(lambda clm: clm.getTarget().id, clm_dict["P276"]))
-            except:
-                locations = []
-            try:
-                genres = list(map(lambda clm: clm.getTarget().id, clm_dict["P136"]))
-            except:
-                genres = []
-            try:
-                movements = list(map(lambda clm: clm.getTarget().id, clm_dict["P135"]))
-            except:
-                movements = []
-            try:
-                inception = clm_dict["P571"][0].getTarget().year
-            except:
-                inception = ""
-            try:
-                materials = list(map(lambda clm: clm.getTarget().id, clm_dict["P186"]))
-            except:
-                materials = []
-            try:
-                depicts = list(map(lambda clm: clm.getTarget().id, clm_dict["P180"]))
-            except:
-                depicts = []
-            try:
-                country = clm_dict["P17"][0].getTarget().get()["labels"]["en"]
-            except:
-                country = ""
-            try:
-                height = str(clm_dict["P2048"][0].getTarget().amount)
-            except:
-                height = ""
-            try:
-                width = str(clm_dict["P2049"][0].getTarget().amount)
-            except:
-                width = ""
-            count += 1
-            print(str(count) + " ", end='')
-            writer.writerow(
-                {"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "creators": creators, "locations": locations, "genres": genres,
-                 "movements": movements, "inception": inception, "materials": materials, "depicts": depicts, "country": country, "height": height, "width": width})
-            # print(classes, item, label, description, image, creators, locations, genres, movements,  inception, materials, depicts,  country, height, width)
+        # mandatory fields
+        try:
+            item_dict = item.get()
+            label = item_dict["labels"]["en"]
+            clm_dict = item_dict["claims"]
+            classes = list(map(lambda clm: clm.getTarget().id, clm_dict["P31"]))
+            image = clm_dict["P18"][0].getTarget().get_file_url()
+            creators = list(map(lambda clm: clm.getTarget().id, clm_dict["P170"]))
+        except:
+            continue
+            # optional fields
+        try:
+            description = item_dict["descriptions"]["en"]
+        except:
+            description = ""
+        try:
+            locations = list(map(lambda clm: clm.getTarget().id, clm_dict["P276"]))
+        except:
+            locations = []
+        try:
+            genres = list(map(lambda clm: clm.getTarget().id, clm_dict["P136"]))
+        except:
+            genres = []
+        try:
+            movements = list(map(lambda clm: clm.getTarget().id, clm_dict["P135"]))
+        except:
+            movements = []
+        try:
+            inception = clm_dict["P571"][0].getTarget().year
+        except:
+            inception = ""
+        try:
+            materials = list(map(lambda clm: clm.getTarget().id, clm_dict["P186"]))
+        except:
+            materials = []
+        try:
+            depicts = list(map(lambda clm: clm.getTarget().id, clm_dict["P180"]))
+        except:
+            depicts = []
+        try:
+            country = clm_dict["P17"][0].getTarget().get()["labels"]["en"]
+        except:
+            country = ""
+        try:
+            height = str(clm_dict["P2048"][0].getTarget().amount)
+        except:
+            height = ""
+        try:
+            width = str(clm_dict["P2049"][0].getTarget().amount)
+        except:
+            width = ""
+        count += 1
+        print(str(count) + " ", end='')
+        extract_dicts.append(
+            {"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "creators": creators, "locations": locations, "genres": genres,
+             "movements": movements, "inception": inception, "materials": materials, "depicts": depicts, "country": country, "height": height, "width": width})
+        # print(classes, item, label, description, image, creators, locations, genres, movements,  inception, materials, depicts,  country, height, width)
 
     print(datetime.datetime.now(), "Finished with", type_name)
-
-
+    return extract_dicts
 
 
 def extract_subjects(subject_type):
@@ -141,123 +135,114 @@ def extract_subjects(subject_type):
     repo = site.data_repository()
     print("Total: ", len(subjects), subject_type)
     count = 0
-    with open(subject_type + ".csv", "w", newline="", encoding='utf-8') as file:
-        fields = ["id", "classes", "label", "description", "image"]
+    extract_dicts = []
+
+    for subject in subjects:
+        # if count > 25:
+            # continue
+        try:
+            item = pywikibot.ItemPage(repo, subject)
+            item_dict = item.get()
+            clm_dict = item_dict["claims"]
+        except:
+            continue
+        try:
+            classes = list(map(lambda clm: clm.getTarget().id, clm_dict["P31"]))
+        except:
+            classes = []
+        try:
+            label = item_dict["labels"]["en"]
+        except:
+            label = ""
+        try:
+            description = item_dict["descriptions"]["en"]
+        except:
+            description = ""
+        try:
+            image = clm_dict["P18"][0].getTarget().get_file_url()
+        except:
+            image = ""
+
         if subject_type == "creators":
-            fields += ["gender", "date_of_birth", "date_of_death", "place_of_birth", "place_of_death", "citizenship", "movements", "influenced_by"]
+            try:
+                gender = clm_dict["P21"][0].getTarget().get()["labels"]["en"]
+            except:
+                gender = ""
+            try:
+                date_of_birth = clm_dict["P569"][0].getTarget().year
+            except:
+                date_of_birth = ""
+            try:
+                date_of_death = clm_dict["P570"][0].getTarget().year
+            except:
+                date_of_death = ""
+            try:
+                place_of_birth = clm_dict["P19"][0].getTarget().get()["labels"]["en"]
+            except:
+                place_of_birth = ""
+            try:
+                place_of_death = clm_dict["P20"][0].getTarget().get()["labels"]["en"]
+            except:
+                place_of_death = ""
+            try:
+                citizenship = clm_dict["P27"][0].getTarget().get()["labels"]["en"]
+            except:
+                citizenship = ""
+            try:
+                movements = list(map(lambda clm: clm.getTarget().id, clm_dict["P135"]))
+            except:
+                movements = []
+            try:
+                influenced_by = list(map(lambda clm: clm.getTarget().id, clm_dict["P737"]))
+            except:
+                influenced_by = []
+
         if subject_type == "movements":
-            fields += ["influenced_by"]
+            try:
+                influenced_by = list(map(lambda clm: clm.getTarget().id, clm_dict["P737"]))
+            except:
+                influenced_by = []
+
         if subject_type == "locations":
-            fields += ["country", "website", "part_of", "lat", "lon"]
-        writer = csv.DictWriter(file, fieldnames=fields, delimiter=';', quotechar='"')
-        writer.writeheader()
-
-        for subject in subjects:
-            #            if count > 50:
-            #                continue
             try:
-                item = pywikibot.ItemPage(repo, subject)
-                item_dict = item.get()
-                clm_dict = item_dict["claims"]
+                country = clm_dict["P17"][0].getTarget().get()["labels"]["en"]
             except:
-                continue
+                country = ""
             try:
-                classes = list(map(lambda clm: clm.getTarget().id, clm_dict["P31"]))
+                website = clm_dict["P856"][0].getTarget()
             except:
-                classes = []
+                website = ""
             try:
-                label = item_dict["labels"]["en"]
+                part_of = list(map(lambda clm: clm.getTarget().id, clm_dict["P361"]))
             except:
-                label = ""
+                part_of = []
             try:
-                description = item_dict["descriptions"]["en"]
+                coordinate = clm_dict["P625"][0].getTarget()
+                lat = coordinate.lat
+                lon = coordinate.lon
             except:
-                description = ""
-            try:
-                image = clm_dict["P18"][0].getTarget().get_file_url()
-            except:
-                image = ""
+                lat = ""
+                lon = ""
 
-            if subject_type == "creators":
-                try:
-                    gender = clm_dict["P21"][0].getTarget().get()["labels"]["en"]
-                except:
-                    gender = ""
-                try:
-                    date_of_birth = clm_dict["P569"][0].getTarget().year
-                except:
-                    date_of_birth = ""
-                try:
-                    date_of_death = clm_dict["P570"][0].getTarget().year
-                except:
-                    date_of_death = ""
-                try:
-                    place_of_birth = clm_dict["P19"][0].getTarget().get()["labels"]["en"]
-                except:
-                    place_of_birth = ""
-                try:
-                    place_of_death = clm_dict["P20"][0].getTarget().get()["labels"]["en"]
-                except:
-                    place_of_death = ""
-                try:
-                    citizenship = clm_dict["P27"][0].getTarget().get()["labels"]["en"]
-                except:
-                    citizenship = ""
-                try:
-                    movements = list(map(lambda clm: clm.getTarget().id, clm_dict["P135"]))
-                except:
-                    movements = []
-                try:
-                    influenced_by = list(map(lambda clm: clm.getTarget().id, clm_dict["P737"]))
-                except:
-                    influenced_by = []
-
-            if subject_type == "movements":
-                try:
-                    influenced_by = list(map(lambda clm: clm.getTarget().id, clm_dict["P737"]))
-                except:
-                    influenced_by = []
-
-            if subject_type == "locations":
-                try:
-                    country = clm_dict["P17"][0].getTarget().get()["labels"]["en"]
-                except:
-                    country = ""
-                try:
-                    website = clm_dict["P856"][0].getTarget()
-                except:
-                    website = ""
-                try:
-                    part_of = list(map(lambda clm: clm.getTarget().id, clm_dict["P361"]))
-                except:
-                    part_of = []
-                try:
-                    coordinate = clm_dict["P625"][0].getTarget()
-                    lat = coordinate.lat
-                    lon = coordinate.lon
-                except:
-                    lat = ""
-                    lon = ""
-
-            count += 1
-            print(str(count) + " ", end='')
-            if subject_type == "creators":
-                writer.writerow({"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "gender": gender, "date_of_birth": date_of_birth,
-                                 "date_of_death": date_of_death, "place_of_birth": place_of_birth, "place_of_death": place_of_death, "citizenship": citizenship,
-                                 "movements": movements, "influenced_by": influenced_by})
-            if subject_type == "movements":
-                writer.writerow({"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "influenced_by": influenced_by})
-            elif subject_type == "locations":
-                writer.writerow(
-                    {"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "country": country, "website": website, "part_of": part_of,
-                     "lat": lat, "lon": lon})
-            else:
-                writer.writerow({"id": item.id, "classes": classes, "label": label, "description": description, "image": image})
+        count += 1
+        print(str(count) + " ", end='')
+        
+        if subject_type == "creators":
+            extract_dicts.append({"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "gender": gender, "date_of_birth": date_of_birth,
+                             "date_of_death": date_of_death, "place_of_birth": place_of_birth, "place_of_death": place_of_death, "citizenship": citizenship,
+                             "movements": movements, "influenced_by": influenced_by})
+        elif subject_type == "movements":
+            extract_dicts.append({"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "influenced_by": influenced_by})
+        elif subject_type == "locations":
+            extract_dicts.append(
+                {"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "country": country, "website": website, "part_of": part_of,
+                 "lat": lat, "lon": lon})
+        else:
+            extract_dicts.append({"id": item.id, "classes": classes, "label": label, "description": description, "image": image})
 
     print()
     print(datetime.datetime.now(), "Finished with", subject_type)
-
-
+    return extract_dicts
 
 
 def extract_classes():
@@ -284,6 +269,7 @@ def extract_classes():
     repo = site.data_repository()
     print("Total: ", len(classes), "classes")
     count = 0
+    extract_dicts = []
 
     for cls in classes:
         #        if count > 10:
@@ -291,15 +277,12 @@ def extract_classes():
         extract_class(cls, class_dict, repo)
         count += 1
         print(str(count) + " ", end='')
-    with open("classes.csv", "w", newline="", encoding='utf-8') as file:
-        fields = ["id", "label", "description", "subclass_of"]
-        writer = csv.DictWriter(file, fieldnames=fields, delimiter=';', quotechar='"')
-        writer.writeheader()
-        for cls in class_dict:
-            writer.writerow(class_dict[cls])
+    for cls in class_dict:
+        extract_dicts.append(class_dict[cls])
 
     print()
     print(datetime.datetime.now(), "Finished with classes")
+    return extract_dicts
 
 
 def extract_class(cls, class_dict, repo):
@@ -334,32 +317,25 @@ def extract_class(cls, class_dict, repo):
             extract_class(superclass, class_dict, repo)
 
 
-
-
 def merge_artworks():
     """Merges artworks from files 'paintings.csv', 'drawings.csv', 'sculptures.csv' (function extract_artworks) and stores them in a new file artworks.csv
     """
     print(datetime.datetime.now(), "Starting with", "merging artworks")
     artworks = set()
     file_names = ['paintings.csv', 'drawings.csv', 'sculptures.csv']
+    extract_dicts = []
 
-    with open("artworks.csv", "w", newline="", encoding='utf-8') as output:
-        fields = ["id", "classes", "label", "description", "image", "creators", "locations", "genres", "movements", "inception", "materials", "depicts", "country", "height",
-                  "width"]
-        writer = csv.DictWriter(output, fieldnames=fields, delimiter=';', quotechar='"')
-        writer.writeheader()
-        for file_name in file_names:
-            with open(file_name, newline="", encoding='utf-8') as input:
-                reader = csv.DictReader(input, delimiter=';', quotechar='"')
-                for row in reader:
-                    if not row['id'] in artworks:  # remove duplicates
-                        writer.writerow(row)
-                        artworks.add(row['id'])
+    for file_name in file_names:
+        with open(file_name, newline="", encoding='utf-8') as input:
+            reader = csv.DictReader(input, delimiter=';', quotechar='"')
+            for row in reader:
+                if not row['id'] in artworks:  # remove duplicates
+                    extract_dicts.append(row)
+                    artworks.add(row['id'])
 
     print()
     print(datetime.datetime.now(), "Finished with", "merging artworks")
-
-
+    return extract_dicts
 
 
 def generate_rdf():
@@ -458,27 +434,55 @@ def generate_rdf():
     print()
     print(datetime.datetime.now(), "Finished with", "generating rdf")
 
+def get_fields(type_name):
+    fields = ["id", "classes", "label", "description", "image"]
+    if type_name in ["drawings", "sculptures", "paintings", "artworks"]:
+        fields += ["creators", "locations", "genres", "movements", "inception", "materials", "depicts", "country", "height", "width"]
+    elif type_name == "creators":
+        fields += ["gender", "date_of_birth", "date_of_death", "place_of_birth", "place_of_death", "citizenship", "movements", "influenced_by"]
+    elif type_name == "movements":
+        fields += ["influenced_by"]
+    elif type_name == "locations":
+        fields += ["country", "website", "part_of", "lat", "lon"]
+    elif type_name == "classes":
+        fields = ["id", "label", "description", "subclass_of"]
+    return fields
 
+def generate_csv(name, extract_dicts):
+    with open(name + ".csv", "w", newline="", encoding='utf-8') as file:
+        writer = csv.DictWriter(file, fieldnames=get_fields(name), delimiter=';', quotechar='"')
+        writer.writeheader()
+        for extract_dict in extract_dicts:
+            writer.writerow(extract_dict)
+    
+def generate_json(name, extract_dicts):
+    with open(name + ".json", "w", newline="", encoding='utf-8') as file:
+        print(name[:-1])
+        file.write("[")
+        for extract_dict in extract_dicts[:-1]:
+            extract_dict["type"] = name[:-1]
+            file.write(json.dumps(extract_dict, ensure_ascii=False))
+            file.write(",")
+        extract_dicts[-1]["type"] = name[:-1]
+        file.write(json.dumps(extract_dicts[-1], ensure_ascii=False))
+        file.write("]")
 
 
 def extract_art_ontology():
     """Extracts *.csv files and a *.ttl file with metadata for artworks from Wikidata"""
 
-    extract_artworks("drawings", "wd:Q93184")
-    extract_artworks("sculptures", "wd:Q860861")
-    extract_artworks("paintings", "wd:Q3305213")
+    for artwork, wd in [("drawings", "wd:Q93184"), ("sculptures", "wd:Q860861"), ("paintings", "wd:Q3305213")]:
+        extracted_artwork = extract_artworks(artwork, wd)
+        generate_csv(artwork, extracted_artwork)
+        generate_json(artwork, extracted_artwork)
 
-    extract_subjects("genres")
-    extract_subjects("movements")
-    extract_subjects("materials")
-    extract_subjects("depicts")
-    extract_subjects("creators")
-    extract_subjects("locations")
-    extract_classes()
+    for subject in ["genres", "movements", "materials", "depicts", "creators", "locations"]:
+        extracted_subject = extract_subjects(subject)
+        generate_csv(subject, extracted_subject)
+        generate_json(subject, extracted_subject)
 
-    merge_artworks()
+    generate_csv("classes", extract_classes())
+
+    generate_csv("artworks", merge_artworks())
 
     generate_rdf()
-
-
-

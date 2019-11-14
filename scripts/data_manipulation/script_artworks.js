@@ -16,13 +16,13 @@ let obj = {
 	label: '',
 	description: '',
 	image: '',
-	creators: [],
+	artists: [],
 	locations: [],
 	genres: [],
 	movements: [],
 	inception: '',
 	materials: [],
-	depicts: [],
+	motifs: [],
 	country: '',
 	height: '',
 	width: '',
@@ -41,13 +41,13 @@ const csvStream = csv({ delimiter: ';' })
 			myObj.label = data[2];
 			myObj.description = data[3];
 			myObj.image = data[4];
-			myObj.creators = helper.constructArray(data[5]);
+			myObj.artists = helper.constructArray(data[5]);
 			myObj.locations = helper.constructArray(data[6]);
 			myObj.genres = helper.constructArray(data[7]);
 			myObj.movements = helper.constructArray(data[8]);
 			myObj.inception = data[9];
 			myObj.materials = helper.constructArray(data[10]);
-			myObj.depicts = helper.constructArray(data[11]);
+			myObj.motifs = helper.constructArray(data[11]);
 			myObj.country = data[12];
 			myObj.height = data[13];
 			myObj.width = data[14];

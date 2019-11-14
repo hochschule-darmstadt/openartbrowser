@@ -39,8 +39,8 @@ def extract_artworks(type_name, wikidata_id):
     extract_dicts = []
 
     for item in items:
-        # if count > 25:
-           # continue
+        if count > 50:
+           continue
 
         # mandatory fields
         try:
@@ -78,9 +78,9 @@ def extract_artworks(type_name, wikidata_id):
         except:
             materials = []
         try:
-            objects = list(map(lambda clm: clm.getTarget().id, clm_dict["P180"]))
+            motifs = list(map(lambda clm: clm.getTarget().id, clm_dict["P180"]))
         except:
-            objects = []
+            motifs = []
         try:
             country = clm_dict["P17"][0].getTarget().get()["labels"]["en"]
         except:
@@ -97,8 +97,8 @@ def extract_artworks(type_name, wikidata_id):
         print(str(count) + " ", end='')
         extract_dicts.append(
             {"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "artists": artists, "locations": locations, "genres": genres,
-             "movements": movements, "inception": inception, "materials": materials, "objects": objects, "country": country, "height": height, "width": width})
-        # print(classes, item, label, description, image, artists, locations, genres, movements,  inception, materials, objects,  country, height, width)
+             "movements": movements, "inception": inception, "materials": materials, "motifs": motifs, "country": country, "height": height, "width": width})
+        # print(classes, item, label, description, image, artists, locations, genres, movements,  inception, materials, motifs,  country, height, width)
 
     print(datetime.datetime.now(), "Finished with", type_name)
     return extract_dicts
@@ -107,7 +107,7 @@ def extract_artworks(type_name, wikidata_id):
 def extract_subjects(subject_type):
     """Extracts metadata from Wikidata of a certain subject type and stores them in a *.csv file
 
-    subject_type -- one of 'genres', 'movements', 'materials', 'objects', 'artists', 'locations'. Will be used as filename
+    subject_type -- one of 'genres', 'movements', 'materials', 'motifs', 'artists', 'locations'. Will be used as filename
 
     Precondition: Files 'paintings.csv', 'drawings.csv', 'sculptures.csv' must have been created before (function extract_artworks).
     Metadata for artworks in theses files will be stored.
@@ -116,7 +116,7 @@ def extract_subjects(subject_type):
     extract_subjects('genres')
     extract_subjects('movements')
     extract_subjects('materials')
-    extract_subjects('objects')
+    extract_subjects('motifs')
     extract_subjects('artists')
     extract_subjects('locations')
     """
@@ -138,8 +138,8 @@ def extract_subjects(subject_type):
     extract_dicts = []
 
     for subject in subjects:
-        # if count > 25:
-            # continue
+        if count > 50:
+            continue
         try:
             item = pywikibot.ItemPage(repo, subject)
             item_dict = item.get()
@@ -249,13 +249,13 @@ def extract_classes():
     """Extracts metadata of classes from Wikidata and stores them in a *.csv file
 
 
-    Precondition: Files 'paintings.csv', 'drawings.csv', 'sculptures.csv', 'genres.csv', 'movements.csv', 'materials.csv', 'objects.csv', 'artists.csv', 'locations.csv' must have been created before (functions extract_artworks and extract_subjects).
+    Precondition: Files 'paintings.csv', 'drawings.csv', 'sculptures.csv', 'genres.csv', 'movements.csv', 'materials.csv', 'motifs.csv', 'artists.csv', 'locations.csv' must have been created before (functions extract_artworks and extract_subjects).
     Metadata for classes referenced in theses files will be stored.
     """
     print(datetime.datetime.now(), "Starting with classes")
     classes = set()
     class_dict = dict()
-    file_names = ['paintings.csv', 'drawings.csv', 'sculptures.csv', 'genres.csv', 'movements.csv', 'materials.csv', 'objects.csv', 'artists.csv', 'locations.csv']
+    file_names = ['paintings.csv', 'drawings.csv', 'sculptures.csv', 'genres.csv', 'movements.csv', 'materials.csv', 'motifs.csv', 'artists.csv', 'locations.csv']
 
     for file_name in file_names:
         with open(file_name, newline="", encoding='utf-8') as file:
@@ -350,7 +350,7 @@ def generate_rdf():
         'materials': {'filename': 'materials.csv', 'class': ':material'},
         'locations': {'filename': 'locations.csv', 'class': ':location'},
         'materials': {'filename': 'materials.csv', 'class': ':material'},
-        'objects': {'filename': 'objects.csv', 'class': ':object'},
+        'motifs': {'filename': 'motifs.csv', 'class': ':motif'},
         'persons': {'filename': 'artists.csv', 'class': ':person'},
         'artworks': {'filename': 'artworks.csv', 'class': ':artwork'}
     }
@@ -364,7 +364,7 @@ def generate_rdf():
         'movements': {'property': ':movement', 'type': 'list'},
         'inception': {'property': ':inception', 'type': 'number'},
         'materials': {'property': ':material', 'type': 'list'},
-        'objects': {'property': ':objects', 'type': 'list'},
+        'motifs': {'property': ':motifs', 'type': 'list'},
         'country': {'property': ':country', 'type': 'string'},
         'height': {'property': ':height', 'type': 'number'},
         'width': {'property': ':width', 'type': 'number'},
@@ -437,7 +437,7 @@ def generate_rdf():
 def get_fields(type_name):
     fields = ["id", "classes", "label", "description", "image"]
     if type_name in ["drawings", "sculptures", "paintings", "artworks"]:
-        fields += ["artists", "locations", "genres", "movements", "inception", "materials", "objects", "country", "height", "width"]
+        fields += ["artists", "locations", "genres", "movements", "inception", "materials", "motifs", "country", "height", "width"]
     elif type_name == "artists":
         fields += ["gender", "date_of_birth", "date_of_death", "place_of_birth", "place_of_death", "citizenship", "movements", "influenced_by"]
     elif type_name == "movements":
@@ -476,7 +476,7 @@ def extract_art_ontology():
         generate_csv(artwork, extracted_artwork)
         generate_json(artwork, extracted_artwork)
 
-    for subject in ["genres", "movements", "materials", "objects", "artists", "locations"]:
+    for subject in ["genres", "movements", "materials", "motifs", "artists", "locations"]:
         extracted_subject = extract_subjects(subject)
         generate_csv(subject, extracted_subject)
         generate_json(subject, extracted_subject)

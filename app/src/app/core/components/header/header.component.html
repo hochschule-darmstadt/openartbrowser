@@ -19,8 +19,14 @@
         </a>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownLanguage">
           <a class="dropdown-item" href="/en{{path}}" [ngClass]="{'active': locale == 'en'}">English</a>
+          <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="/de{{path}}" [ngClass]="{'active': locale == 'de'}">Deutsch</a>
+          <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="/fr{{path}}" [ngClass]="{'active': locale == 'fr'}">Français</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="/es{{path}}" [ngClass]="{'active': locale == 'es'}">Español</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="/it{{path}}" [ngClass]="{'active': locale == 'it'}">Italiano</a>
         </div>
       </li>
       <li class="nav-item dropdown flex-shrink-0">

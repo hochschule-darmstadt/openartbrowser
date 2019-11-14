@@ -112,11 +112,11 @@ def extract_artworks(type_name, wikidata_id):
             sitelinks = item_dict["sitelinks"]
             wikpedia_page = pywikibot.Page(sitelinks["enwiki"])
 
-                abstract = get_abstract(wikpedia_page.pageid)
-                wikipedia_link = wikpedia_page.full_url()
-            except:
-                abstract = ""
-                wikipedia_link = ""
+            abstract = get_abstract(wikpedia_page.pageid)
+            wikipedia_link = wikpedia_page.full_url()
+        except:
+            abstract = ""
+            wikipedia_link = ""
 
         count += 1
         print(str(count) + " ", end='')
@@ -191,11 +191,11 @@ def extract_subjects(subject_type):
             sitelinks = item_dict["sitelinks"]
             wikpedia_page = pywikibot.Page(sitelinks["enwiki"])
 
-                abstract = get_abstract(wikpedia_page.pageid)
-                wikipedia_link = wikpedia_page.full_url()
-            except:
-                abstract = ""
-                wikipedia_link = ""
+            abstract = get_abstract(wikpedia_page.pageid)
+            wikipedia_link = wikpedia_page.full_url()
+        except:
+            abstract = ""
+            wikipedia_link = ""
 
         if subject_type == "creators":
             try:
@@ -261,16 +261,18 @@ def extract_subjects(subject_type):
         count += 1
         print(str(count) + " ", end='')
 
-        subject_dict = {"id": item.id, "classes": classes, "label": label, "description": description,
-                        "image": image, "abstract": abstract, "wikipediaLink": wikipedia_link}
+        # add all common fields
+        subject_dict = {"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "abstract": abstract, "wikipediaLink": wikipedia_link}
+
+        # add fields that are special for different subject types
         if subject_type == "creators":
-            subject_dict.update("gender": gender, "date_of_birth": date_of_birth, "date_of_death": date_of_death,
-                                "place_of_birth": place_of_birth, "place_of_death": place_of_death,
-                                "citizenship": citizenship, "movements": movements, "influenced_by": influenced_by})
+            subject_dict.update({"gender": gender, "date_of_birth": date_of_birth, "date_of_death": date_of_death, "place_of_birth": place_of_birth,
+                                 "place_of_death": place_of_death, "citizenship": citizenship, "movements": movements, "influenced_by": influenced_by})
+
         elif subject_type == "movements":
-            subject_dict.update("influenced_by": influenced_by})
+            subject_dict.update({"influenced_by": influenced_by})
         elif subject_type == "locations":
-            subject_dict.update("country": country, "website": website, "part_of": part_of, "lat": lat, "lon": lon})
+            subject_dict.update({"country": country, "website": website, "part_of": part_of, "lat": lat, "lon": lon})
         extract_dicts.append(subject_dict)
     print()
     print(datetime.datetime.now(), "Finished with", subject_type)

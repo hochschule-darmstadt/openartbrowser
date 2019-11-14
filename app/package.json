@@ -4,9 +4,9 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "start:fr": "ng serve --configuration=fr",
-    "start:de": "ng serve --configuration=de",
-    "start:en": "ng serve --configuration=en",
+    "start:fr": "ng serve --base-href /fr/ --configuration=fr",
+    "start:de": "ng serve --base-href /de/ --configuration=de",
+    "start:en": "ng serve --base-href /en/ --configuration=en",
     "build": "ng build",
     "build-locale": "npm run build:en && npm run build:de && npm run build:fr",
     "build:fr": "ng build --base-href /fr/ --configuration=fr ",

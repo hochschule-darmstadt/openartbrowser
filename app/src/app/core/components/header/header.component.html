@@ -18,9 +18,9 @@
           <h3><i class="fas fa-globe-americas"></i></h3>
         </a>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownLanguage">
-          <a class="dropdown-item" href="/en{{path}}" [ngClass]="{'disable': locale == 'en'}">English</a>
-          <a class="dropdown-item" href="/de{{path}}" [ngClass]="{'disable': locale == 'de'}">Deutsch</a>
-          <a class="dropdown-item" href="/fr{{path}}" [ngClass]="{'disable': locale == 'fr'}">Français</a>
+          <a class="dropdown-item" href="/en{{path}}" [ngClass]="{'active': locale == 'en'}">English</a>
+          <a class="dropdown-item" href="/de{{path}}" [ngClass]="{'active': locale == 'de'}">Deutsch</a>
+          <a class="dropdown-item" href="/fr{{path}}" [ngClass]="{'active': locale == 'fr'}">Français</a>
         </div>
       </li>
       <li class="nav-item dropdown flex-shrink-0">

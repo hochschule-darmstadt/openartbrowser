@@ -112,11 +112,11 @@ def extract_artworks(type_name, wikidata_id):
             sitelinks = item_dict["sitelinks"]
             wikpedia_page = pywikibot.Page(sitelinks["enwiki"])
 
-            abstract = get_abstract(wikpedia_page.id)
-            wikipedia_link = wikpedia_page.full_url()
-        except:
-            abstract = ""
-            wikipedia_link = ""
+                abstract = get_abstract(wikpedia_page.pageid)
+                wikipedia_link = wikpedia_page.full_url()
+            except:
+                abstract = ""
+                wikipedia_link = ""
 
         count += 1
         print(str(count) + " ", end='')
@@ -191,11 +191,11 @@ def extract_subjects(subject_type):
             sitelinks = item_dict["sitelinks"]
             wikpedia_page = pywikibot.Page(sitelinks["enwiki"])
 
-            abstract = get_abstract(wikpedia_page.page_id)
-            wikipedia_link = wikpedia_page.full_url()
-         except:
-            abstract = ""
-            wikipedia_link = ""
+                abstract = get_abstract(wikpedia_page.pageid)
+                wikipedia_link = wikpedia_page.full_url()
+            except:
+                abstract = ""
+                wikipedia_link = ""
 
         if subject_type == "creators":
             try:

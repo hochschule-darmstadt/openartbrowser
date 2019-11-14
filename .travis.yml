@@ -13,7 +13,7 @@ addons:
 
 cache:
   directories:
-    - ./node_modules
+    - ./app/node_modules
 
 jobs:
   include:
@@ -23,27 +23,24 @@ jobs:
         - npm install
       script:
         - npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
-
-    - stage: backend-tests
-      script:
         - echo "no backend / crawler / other tests specified"
 
     - stage: deploy-to-staging
-      if: branch = staging # note: this also counts as base:staging in PRs
+      if: branch = staging AND type = push
       before_script:
         - cd app
         - npm install
       script:
-        - npm run build # include the staging flag
+        - npm run build --prod
       after_success:
         - rsync -rltDvz --rsh="sshpass -p ${SFTP_PASS_STAGE} ssh -o StrictHostKeyChecking=no -l ${SFTP_USER_STAGE}" ./dist/art-browser ${SFTP_USER_STAGE}@${STAGE_ADDR}:${SFTP_PATH_STAGE}
 
     - stage: deploy-to-production
-      if: branch = master # note: this also counts as base:master in PRs
+      if: branch = master AND type = push
       before_script:
         - cd app
         - npm install
       script:
-        - npm run build # include the production flag
+        - npm run build --prod
       after_success:
         - rsync -rltDvz --rsh="sshpass -p ${SFTP_PASS_PROD} ssh -o StrictHostKeyChecking=no -l ${SFTP_USER_PROD}" ./dist/art-browser ${SFTP_USER_PROD}@${PROD_ADDR}:${SFTP_PATH_PROD}

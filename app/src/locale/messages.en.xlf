@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en" target-language="en" datatype="plaintext" original="ng2.template">
     <body>
@@ -28,7 +28,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="menuHome" datatype="html">
-        <source>Home</source>
+        <source>Home</source><target state="final">Home</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/core/components/header/header.component.html</context>
           <context context-type="linenumber">21</context>
@@ -36,7 +36,7 @@
         <note priority="1" from="description">Menu Home item label</note>
       </trans-unit>
       <trans-unit id="menuAbout" datatype="html">
-        <source>About</source>
+        <source>About</source><target state="final">About</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/core/components/header/header.component.html</context>
           <context context-type="linenumber">23</context>
@@ -48,7 +48,7 @@
         <note priority="1" from="description">Menu About item label</note>
       </trans-unit>
       <trans-unit id="menuLegalNotice" datatype="html">
-        <source>Legal Notice</source>
+        <source>Legal Notice</source><target state="final">Legal Notice</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/core/components/header/header.component.html</context>
           <context context-type="linenumber">26</context>
@@ -60,7 +60,7 @@
         <note priority="1" from="description">Menu Legal Notice item label</note>
       </trans-unit>
       <trans-unit id="menuDataProtection" datatype="html">
-        <source>Data Protection Declaration</source>
+        <source>Data Protection Declaration</source><target state="final">Data Protection Declaration</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/core/components/header/header.component.html</context>
           <context context-type="linenumber">29</context>
@@ -72,7 +72,7 @@
         <note priority="1" from="description">Menu Data Protection Declaration item label</note>
       </trans-unit>
        <trans-unit id="search_placeholder" datatype="html">
-        <source>Search for something...</source>
+        <source>Search for something...</source><target state="final">Search for something...</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/components/search/search.component.html</context>
           <context context-type="linenumber">48</context>
@@ -80,28 +80,28 @@
         <note priority="1" from="description">Searchbar Placeholder</note>
       </trans-unit>
       <trans-unit id="ngb.alert.close" datatype="html">
-        <source>Close</source>
+        <source>Close</source><target state="final">Close</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/alert/alert.d.ts</context>
           <context context-type="linenumber">3</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.carousel.previous" datatype="html">
-        <source>Previous</source>
+        <source>Previous</source><target state="final">Previous</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/carousel/carousel.d.ts</context>
           <context context-type="linenumber">13</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.carousel.next" datatype="html">
-        <source>Next</source>
+        <source>Next</source><target state="final">Next</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/carousel/carousel.d.ts</context>
           <context context-type="linenumber">17</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.datepicker.previous-month" datatype="html">
-        <source>Previous month</source>
+        <source>Previous month</source><target state="final">Previous month</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/datepicker/datepicker-navigation.d.ts</context>
           <context context-type="linenumber">4</context>
@@ -112,7 +112,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.datepicker.next-month" datatype="html">
-        <source>Next month</source>
+        <source>Next month</source><target state="final">Next month</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/datepicker/datepicker-navigation.d.ts</context>
           <context context-type="linenumber">26</context>
@@ -123,7 +123,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.datepicker.select-month" datatype="html">
-        <source>Select month</source>
+        <source>Select month</source><target state="final">Select month</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/datepicker/datepicker-navigation-select.d.ts</context>
           <context context-type="linenumber">6</context>
@@ -134,7 +134,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.datepicker.select-year" datatype="html">
-        <source>Select year</source>
+        <source>Select year</source><target state="final">Select year</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/datepicker/datepicker-navigation-select.d.ts</context>
           <context context-type="linenumber">15</context>
@@ -145,168 +145,168 @@
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.pagination.first" datatype="html">
-        <source>««</source>
+        <source>««</source><target state="final">««</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/pagination/pagination.d.ts</context>
           <context context-type="linenumber">2</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.pagination.previous" datatype="html">
-        <source>«</source>
+        <source>«</source><target state="final">«</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/pagination/pagination.d.ts</context>
           <context context-type="linenumber">3</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.pagination.next" datatype="html">
-        <source>»</source>
+        <source>»</source><target state="final">»</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/pagination/pagination.d.ts</context>
           <context context-type="linenumber">4</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.pagination.last" datatype="html">
-        <source>»»</source>
+        <source>»»</source><target state="final">»»</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/pagination/pagination.d.ts</context>
           <context context-type="linenumber">5</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.pagination.first-aria" datatype="html">
-        <source>First</source>
+        <source>First</source><target state="final">First</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/pagination/pagination.d.ts</context>
           <context context-type="linenumber">14</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.pagination.previous-aria" datatype="html">
-        <source>Previous</source>
+        <source>Previous</source><target state="final">Previous</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/pagination/pagination.d.ts</context>
           <context context-type="linenumber">23</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.pagination.next-aria" datatype="html">
-        <source>Next</source>
+        <source>Next</source><target state="final">Next</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/pagination/pagination.d.ts</context>
           <context context-type="linenumber">41</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.pagination.last-aria" datatype="html">
-        <source>Last</source>
+        <source>Last</source><target state="final">Last</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/pagination/pagination.d.ts</context>
           <context context-type="linenumber">49</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.progressbar.value" datatype="html">
-        <source><x id="INTERPOLATION" equiv-text="{{getPercentValue()}}"/>%</source>
+        <source><x id="INTERPOLATION" equiv-text="{{getPercentValue()}}"/>%</source><target state="final"><x id="INTERPOLATION"/>%</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/progressbar/progressbar.d.ts</context>
           <context context-type="linenumber">6</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.timepicker.increment-hours" datatype="html">
-        <source>Increment hours</source>
+        <source>Increment hours</source><target state="final">Increment hours</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/timepicker/timepicker.d.ts</context>
           <context context-type="linenumber">9</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.timepicker.HH" datatype="html">
-        <source>HH</source>
+        <source>HH</source><target state="final">HH</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/timepicker/timepicker.d.ts</context>
           <context context-type="linenumber">12</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.timepicker.hours" datatype="html">
-        <source>Hours</source>
+        <source>Hours</source><target state="final">Hours</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/timepicker/timepicker.d.ts</context>
           <context context-type="linenumber">14</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.timepicker.decrement-hours" datatype="html">
-        <source>Decrement hours</source>
+        <source>Decrement hours</source><target state="final">Decrement hours</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/timepicker/timepicker.d.ts</context>
           <context context-type="linenumber">21</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.timepicker.increment-minutes" datatype="html">
-        <source>Increment minutes</source>
+        <source>Increment minutes</source><target state="final">Increment minutes</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/timepicker/timepicker.d.ts</context>
           <context context-type="linenumber">30</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.timepicker.MM" datatype="html">
-        <source>MM</source>
+        <source>MM</source><target state="final">MM</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/timepicker/timepicker.d.ts</context>
           <context context-type="linenumber">33</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.timepicker.minutes" datatype="html">
-        <source>Minutes</source>
+        <source>Minutes</source><target state="final">Minutes</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/timepicker/timepicker.d.ts</context>
           <context context-type="linenumber">35</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.timepicker.decrement-minutes" datatype="html">
-        <source>Decrement minutes</source>
+        <source>Decrement minutes</source><target state="final">Decrement minutes</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/timepicker/timepicker.d.ts</context>
           <context context-type="linenumber">42</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.timepicker.increment-seconds" datatype="html">
-        <source>Increment seconds</source>
+        <source>Increment seconds</source><target state="final">Increment seconds</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/timepicker/timepicker.d.ts</context>
           <context context-type="linenumber">51</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.timepicker.SS" datatype="html">
-        <source>SS</source>
+        <source>SS</source><target state="final">SS</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/timepicker/timepicker.d.ts</context>
           <context context-type="linenumber">54</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.timepicker.seconds" datatype="html">
-        <source>Seconds</source>
+        <source>Seconds</source><target state="final">Seconds</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/timepicker/timepicker.d.ts</context>
           <context context-type="linenumber">56</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.timepicker.decrement-seconds" datatype="html">
-        <source>Decrement seconds</source>
+        <source>Decrement seconds</source><target state="final">Decrement seconds</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/timepicker/timepicker.d.ts</context>
           <context context-type="linenumber">63</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.timepicker.PM" datatype="html">
-        <source>PM</source>
+        <source>PM</source><target state="final">PM</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/timepicker/timepicker.d.ts</context>
           <context context-type="linenumber">71</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.timepicker.AM" datatype="html">
-        <source>AM</source>
+        <source>AM</source><target state="final">AM</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/timepicker/timepicker.d.ts</context>
           <context context-type="linenumber">72</context>
         </context-group>
       </trans-unit>
       <trans-unit id="artist" datatype="html">
-        <source>Artist</source>
+        <source>Artist</source><target state="final">Artist</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/search-result/search-result.component.html</context>
           <context context-type="linenumber">9</context>
@@ -322,7 +322,7 @@
         <note priority="1" from="description">Artist label</note>
       </trans-unit>
       <trans-unit id="movement" datatype="html">
-        <source>Movement</source>
+        <source>Movement</source><target state="final">Movement</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/search-result/search-result.component.html</context>
           <context context-type="linenumber">24</context>
@@ -342,7 +342,7 @@
         <note priority="1" from="description">Movement label</note>
       </trans-unit>
       <trans-unit id="genre" datatype="html">
-        <source>Genre</source>
+        <source>Genre</source><target state="final">Genre</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/search-result/search-result.component.html</context>
           <context context-type="linenumber">39</context>
@@ -358,7 +358,7 @@
         <note priority="1" from="description">Genre label</note>
       </trans-unit>
       <trans-unit id="material" datatype="html">
-        <source>Material</source>
+        <source>Material</source><target state="final">Material</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/search-result/search-result.component.html</context>
           <context context-type="linenumber">55</context>
@@ -374,7 +374,7 @@
         <note priority="1" from="description">Material label</note>
       </trans-unit>
       <trans-unit id="location" datatype="html">
-        <source>Location</source>
+        <source>Location</source><target state="final">Location</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/search-result/search-result.component.html</context>
           <context context-type="linenumber">71</context>
@@ -390,7 +390,7 @@
         <note priority="1" from="description">Location label</note>
       </trans-unit>
       <trans-unit id="motif" datatype="html">
-        <source>Motif</source>
+        <source>Motif</source><target state="final">Motif</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/search-result/search-result.component.html</context>
           <context context-type="linenumber">87</context>
@@ -406,7 +406,7 @@
         <note priority="1" from="description">Motif label</note>
       </trans-unit>
       <trans-unit id="terms" datatype="html">
-        <source>Terms</source>
+        <source>Terms</source><target state="final">Terms</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/search-result/search-result.component.html</context>
           <context context-type="linenumber">102</context>
@@ -414,15 +414,47 @@
         <note priority="1" from="description">Search Terms label</note>
       </trans-unit>
       <trans-unit id="hits" datatype="html">
-        <source>Hits</source>
+        <source>Hits</source><target state="final">Hits</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/search-result/search-result.component.html</context>
           <context context-type="linenumber">114</context>
         </context-group>
         <note priority="1" from="description">Search Hits label</note>
       </trans-unit>
+      <trans-unit id="artworks" datatype="html">
+        <source>Artworks</source><target state="final">Artworks</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/search-result/search-result.component.html</context>
+          <context context-type="linenumber">126</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artist/artist.component.html</context>
+          <context context-type="linenumber">102</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/genre/genre.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/location/location.component.html</context>
+          <context context-type="linenumber">34</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/material/material.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/motif/motif.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/movement/movement.component.html</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+        <note priority="1" from="description">Artworks label</note>
+      </trans-unit>
       <trans-unit id="born" datatype="html">
-        <source>Born</source>
+        <source>Born</source><target state="final">Born</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artist/artist.component.html</context>
           <context context-type="linenumber">13</context>
@@ -430,7 +462,7 @@
         <note priority="1" from="description">Born infos label</note>
       </trans-unit>
       <trans-unit id="died" datatype="html">
-        <source>Died</source>
+        <source>Died</source><target state="final">Died</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artist/artist.component.html</context>
           <context context-type="linenumber">25</context>
@@ -438,7 +470,7 @@
         <note priority="1" from="description">Died infos label</note>
       </trans-unit>
       <trans-unit id="more" datatype="html">
-        <source>More</source>
+        <source>More</source><target state="final">More</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artist/artist.component.html</context>
           <context context-type="linenumber">37</context>
@@ -450,7 +482,7 @@
         <note priority="1" from="description">Detail More label</note>
       </trans-unit>
       <trans-unit id="gender" datatype="html">
-        <source>Gender</source>
+        <source>Gender</source><target state="final">Gender</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artist/artist.component.html</context>
           <context context-type="linenumber">46</context>
@@ -458,7 +490,7 @@
         <note priority="1" from="description">Artist gender label</note>
       </trans-unit>
       <trans-unit id="citizenship" datatype="html">
-        <source>Citizenship</source>
+        <source>Citizenship</source><target state="final">Citizenship</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artist/artist.component.html</context>
           <context context-type="linenumber">56</context>
@@ -466,7 +498,7 @@
         <note priority="1" from="description">Artist citizenship label</note>
       </trans-unit>
       <trans-unit id="influenced_by" datatype="html">
-        <source>Influenced by</source>
+        <source>Influenced by</source><target state="final">Influenced by</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artist/artist.component.html</context>
           <context context-type="linenumber">82</context>
@@ -478,7 +510,7 @@
         <note priority="1" from="description">Influenced by label</note>
       </trans-unit>
       <trans-unit id="artwork" datatype="html">
-        <source>Artwork</source>
+        <source>Artwork</source><target state="final">Artwork</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
           <context context-type="linenumber">40</context>
@@ -486,7 +518,7 @@
         <note priority="1" from="description">Artwork label</note>
       </trans-unit>
       <trans-unit id="inception" datatype="html">
-        <source>Inception</source>
+        <source>Inception</source><target state="final">Inception</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
           <context context-type="linenumber">89</context>
@@ -494,7 +526,7 @@
         <note priority="1" from="description">Inception label</note>
       </trans-unit>
       <trans-unit id="dimension" datatype="html">
-        <source>Dimension</source>
+        <source>Dimension</source><target state="final">Dimension</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
           <context context-type="linenumber">196</context>
@@ -502,7 +534,7 @@
         <note priority="1" from="description">Dimension label</note>
       </trans-unit>
       <trans-unit id="related_artworks" datatype="html">
-        <source>Related Artworks</source>
+        <source>Related Artworks</source><target state="final">Related Artworks</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
           <context context-type="linenumber">214</context>
@@ -510,7 +542,7 @@
         <note priority="1" from="description">Related Artworks label</note>
       </trans-unit>
       <trans-unit id="artwork_tabs" datatype="html">
-        <source><x id="ICU" equiv-text="{artworkTabs[tab].heading, select, all {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/> </source>
+        <source><x id="ICU" equiv-text="{artworkTabs[tab].heading, select, all {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/> </source><target state="final"><x id="ICU" equiv-text="{artworkTabs[tab].heading, select, all {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/> </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
           <context context-type="linenumber">225</context>
@@ -518,14 +550,14 @@
         <note priority="1" from="description">Artwork Related Artworks Tabs</note>
       </trans-unit>
       <trans-unit id="eb21ca9d04421e780f0b35ae6f4aa5f23f8aeaea" datatype="html">
-        <source>{VAR_SELECT, select, all {All} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material} }</source>
+        <source>{VAR_SELECT, select, all {All} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material} }</source><target state="final">{VAR_SELECT, select, all {All} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material}}</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
           <context context-type="linenumber">225</context>
         </context-group>
       </trans-unit>
       <trans-unit id="related_artworks_headline_prev" datatype="html">
-        <source>Common</source>
+        <source>Common</source><target state="final">Common</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
           <context context-type="linenumber">245</context>
@@ -533,7 +565,7 @@
         <note priority="1" from="description">Related Artworks headline text before tab name </note>
       </trans-unit>
       <trans-unit id="related_artworks_headline_after" datatype="html">
-        <source>tags with artwork</source>
+        <source>tags with artwork</source><target state="final">tags with artwork</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
           <context context-type="linenumber">249</context>
@@ -541,7 +573,7 @@
         <note priority="1" from="description">Related Artworks headline text after tab name </note>
       </trans-unit>
       <trans-unit id="related_artworks_hint" datatype="html">
-        <source>move the mouse over an artwork to display common tags</source>
+        <source>move the mouse over an artwork to display common tags</source><target state="final">move the mouse over an artwork to display common tags</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
           <context context-type="linenumber">260</context>
@@ -549,7 +581,7 @@
         <note priority="1" from="description">Related Artworks hint text</note>
       </trans-unit>
       <trans-unit id="country" datatype="html">
-        <source>Country</source>
+        <source>Country</source><target state="final">Country</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/location/location.component.html</context>
           <context context-type="linenumber">12</context>
@@ -557,7 +589,7 @@
         <note priority="1" from="description">Country label</note>
       </trans-unit>
       <trans-unit id="official_page" datatype="html">
-        <source>Official page</source>
+        <source>Official page</source><target state="final">Official page</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/location/location.component.html</context>
           <context context-type="linenumber">22</context>

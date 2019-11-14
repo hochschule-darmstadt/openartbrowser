@@ -8,10 +8,6 @@ from language_helper import read_language_config as confkeys
 
 filename = "/home/mkherrabi/jsonData/master_flat.json"
 
-#load languageconfig file with keys / language dicts
-langconfig_array = confdicts()
-langconfig_keys = confkeys()
-
 #modifies lang dictionary data by manipulating key values or deleting keys
 #mostly used to get rid of additional language keys
 def modify_langdict(langdict, jsonobject, langkey):
@@ -44,16 +40,23 @@ def generate_langjson(name, extract_dicts):
      with open(name + ".json", "w", newline="", encoding='utf-8') as file:
          file.write(json.dumps(extract_dicts))
         
+#load languageconfig file with keys / language dicts
+langconfig_array = confdicts()
+langconfig_keys = confkeys()
 
-
+#iterate through all json object in the master file
 for item in ijson.items(open(filename, 'r', encoding='utf-8'), 'item'):
     i = 0
+    #iterate through alle language keys and write the json object
+    #in an modified state into the language dictionary arrays
     while i < len(langconfig_keys):
         langconfig_array[i] = modify_langdict(langconfig_array[i], item, langconfig_keys[i])
         i += 1  
 
 
 i = 0
+#generate one master file per language defined in config file.
+#fill the contents of the respective language dicitonary arrays into the files
 while i < len(langconfig_array):
     generate_langjson('master_' + langconfig_keys[i], langconfig_array[i])
     i += 1

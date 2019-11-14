@@ -14,9 +14,24 @@ import pywikibot
 import types
 from pywikibot import pagegenerators as pg
 import csv
-import json
 import datetime
 import ast
+import requests
+import json
+
+
+def get_abstract(page_id, language_code="en"):
+    """Extracts the abstract for a given page_id and language
+
+    page_id -- The wikipedia internal page id. This can be received from pywikibot pages.
+    language_code -- e.g. 'en', 'de', ...
+    """
+
+    url = "https://{}.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&pageids={}".format(language_code, page_id)
+    resp = requests.get(url)
+    resp_obj = json.loads(resp.text)
+
+    return resp_obj["query"]["pages"][str(page_id)]["extract"]
 
 
 def extract_artworks(type_name, wikidata_id):
@@ -31,7 +46,7 @@ def extract_artworks(type_name, wikidata_id):
     extract_artworks('paintings', 'wd:Q3305213')
     """
     print(datetime.datetime.now(), "Starting with", type_name)
-    QUERY = 'SELECT  ?item WHERE {SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". } ?cls wdt:P279* ' + wikidata_id + ' . ?item wdt:P31 ?cls; wdt:P170 ?creator; wdt:P18 ?image .}'
+    QUERY = 'SELECT  ?item ?sitelink WHERE {SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". } ?cls wdt:P279* ' + wikidata_id + ' . ?item wdt:P31 ?cls; wdt:P170 ?creator; wdt:P18 ?image .}'
     # all artworks of this type (including subtypes) with label, creator, and image
     wikidata_site = pywikibot.Site("wikidata", "wikidata")
     items = pg.WikidataSPARQLPageGenerator(QUERY, site=wikidata_site)
@@ -93,11 +108,21 @@ def extract_artworks(type_name, wikidata_id):
             width = str(clm_dict["P2049"][0].getTarget().amount)
         except:
             width = ""
+        try:
+            sitelinks = item_dict["sitelinks"]
+            wikpedia_page = pywikibot.Page(sitelinks["enwiki"])
+
+            abstract = get_abstract(wikpedia_page.pageid)
+            wikipedia_link = wikpedia_page.full_url()
+        except:
+            abstract = ""
+            wikipedia_link = ""
+
         count += 1
         print(str(count) + " ", end='')
         extract_dicts.append(
             {"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "creators": creators, "locations": locations, "genres": genres,
-             "movements": movements, "inception": inception, "materials": materials, "depicts": depicts, "country": country, "height": height, "width": width})
+             "movements": movements, "inception": inception, "materials": materials, "depicts": depicts, "country": country, "height": height, "width": width, "abstract": abstract, "wikipediaLink": wikipedia_link})
         # print(classes, item, label, description, image, creators, locations, genres, movements,  inception, materials, depicts,  country, height, width)
 
     print(datetime.datetime.now(), "Finished with", type_name)
@@ -162,6 +187,15 @@ def extract_subjects(subject_type):
             image = clm_dict["P18"][0].getTarget().get_file_url()
         except:
             image = ""
+        try:
+            sitelinks = item_dict["sitelinks"]
+            wikpedia_page = pywikibot.Page(sitelinks["enwiki"])
+
+            abstract = get_abstract(wikpedia_page.pageid)
+            wikipedia_link = wikpedia_page.full_url()
+        except:
+            abstract = ""
+            wikipedia_link = ""
 
         if subject_type == "creators":
             try:
@@ -226,20 +260,20 @@ def extract_subjects(subject_type):
 
         count += 1
         print(str(count) + " ", end='')
-        
-        if subject_type == "creators":
-            extract_dicts.append({"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "gender": gender, "date_of_birth": date_of_birth,
-                             "date_of_death": date_of_death, "place_of_birth": place_of_birth, "place_of_death": place_of_death, "citizenship": citizenship,
-                             "movements": movements, "influenced_by": influenced_by})
-        elif subject_type == "movements":
-            extract_dicts.append({"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "influenced_by": influenced_by})
-        elif subject_type == "locations":
-            extract_dicts.append(
-                {"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "country": country, "website": website, "part_of": part_of,
-                 "lat": lat, "lon": lon})
-        else:
-            extract_dicts.append({"id": item.id, "classes": classes, "label": label, "description": description, "image": image})
 
+        # add all common fields
+        subject_dict = {"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "abstract": abstract, "wikipediaLink": wikipedia_link}
+
+        # add fields that are special for different subject types
+        if subject_type == "creators":
+            subject_dict.update({"gender": gender, "date_of_birth": date_of_birth, "date_of_death": date_of_death, "place_of_birth": place_of_birth,
+                                 "place_of_death": place_of_death, "citizenship": citizenship, "movements": movements, "influenced_by": influenced_by})
+
+        elif subject_type == "movements":
+            subject_dict.update({"influenced_by": influenced_by})
+        elif subject_type == "locations":
+            subject_dict.update({"country": country, "website": website, "part_of": part_of, "lat": lat, "lon": lon})
+        extract_dicts.append(subject_dict)
     print()
     print(datetime.datetime.now(), "Finished with", subject_type)
     return extract_dicts
@@ -454,7 +488,7 @@ def generate_csv(name, extract_dicts):
         writer.writeheader()
         for extract_dict in extract_dicts:
             writer.writerow(extract_dict)
-    
+
 def generate_json(name, extract_dicts):
     with open(name + ".json", "w", newline="", encoding='utf-8') as file:
         print(name[:-1])

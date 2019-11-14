@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Artist, Artwork, EntityType } from 'src/app/shared/models/models';
-import { DataService } from 'src/app/core/services/data.service';
-import { ActivatedRoute } from '@angular/router';
-import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Artist, Artwork, EntityType, Movement} from 'src/app/shared/models/models';
+import {DataService} from 'src/app/core/services/data.service';
+import {ActivatedRoute} from '@angular/router';
+import {takeUntil} from 'rxjs/operators';
+import {Subject} from 'rxjs';
 import * as _ from 'lodash';
 
 @Component({
@@ -21,16 +21,14 @@ export class ArtistComponent implements OnInit, OnDestroy {
   /** Related artworks */
   sliderItems: Artwork[] = [];
 
-  /** Change collapse icon */
-  collapseDown: boolean = true;
+  /** Change collapse icon; true if more infos are folded in */
+  collapse = true;
 
-  /** score of meta data size */
-  metaNumber: number = 0;
-
-  constructor(private dataService: DataService, private route: ActivatedRoute) {}
+  constructor(private dataService: DataService, private route: ActivatedRoute) {
+  }
 
   toggleDetails() {
-    this.collapseDown = !this.collapseDown;
+    this.collapse = !this.collapse;
   }
 
   /** hook that is executed at component initialization */
@@ -62,7 +60,6 @@ export class ArtistComponent implements OnInit, OnDestroy {
 
   /**
    * @description shuffle the items' categories.
-   * @memberof ArtworkComponent
    */
   shuffle = (a: Artwork[]): Artwork[] => {
     for (let i = a.length - 1; i > 0; i--) {
@@ -70,28 +67,33 @@ export class ArtistComponent implements OnInit, OnDestroy {
       [a[i], a[j]] = [a[j], a[i]];
     }
     return a;
-  };
+  }
 
   /** calculates the size of meta data item section
    * every attribute: +3
    * if attribute is array and size > 3 -> + arraylength
    */
-  calculateCollapseState() {
-    this.collapseDown = true;
-    if (!this.artist.gender) {
-      this.metaNumber += 3;
+  private calculateCollapseState() {
+    let metaNumber = 0;
+    if (this.artist.abstract.length > 400) {
+      metaNumber += 10;
+    } else if (this.artist.abstract.length) {
+      metaNumber += 3;
+    }
+    if (this.artist.gender) {
+      metaNumber += 3;
     }
     if (!_.isEmpty(this.artist.influenced_by)) {
-      this.metaNumber += this.artist.influenced_by.length > 3 ? this.artist.influenced_by.length : 3;
+      metaNumber += this.artist.influenced_by.length > 3 ? this.artist.influenced_by.length : 3;
     }
     if (!_.isEmpty(this.artist.movements)) {
-      this.metaNumber += this.artist.movements.length > 3 ? this.artist.movements.length : 3;
+      metaNumber += this.artist.movements.length > 3 ? this.artist.movements.length : 3;
     }
     if (!_.isEmpty(this.artist.citizenship)) {
-      this.metaNumber += 3;
+      metaNumber += 3;
     }
-    if (this.metaNumber < 10) {
-      this.collapseDown = false;
+    if (metaNumber < 10) {
+      this.collapse = false;
     }
   }
 

@@ -33,6 +33,12 @@ module.exports = function (config) {
         base: 'ChromeHeadless',
         flags: ['--no-sandbox']
       }
+    },
+    proxies: {
+      "/api": {
+        target: "https://openartbrowser.org",
+        secure: false
+      }
     }
   });
 };

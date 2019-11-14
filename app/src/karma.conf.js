@@ -27,6 +27,12 @@ module.exports = function (config) {
     autoWatch: true,
     browsers: ['Chrome'],
     singleRun: false,
-    restartOnFileChange: true
+    restartOnFileChange: true,
+    proxies: {
+      "/api": {
+        target: "https://openartbrowser.org",
+        secure: false
+      }
+    },
   });
 };

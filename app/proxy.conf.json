@@ -1,6 +1,6 @@
 {
   "/api": {
-    "target": "http://openartbrowser.org",
+    "target": "https://openartbrowser.org",
     "secure": false
   }
 }

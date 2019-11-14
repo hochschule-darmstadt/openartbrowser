@@ -13,19 +13,15 @@
     <ngb-highlight class="search__result-label" [result]="r.label" [term]="t"></ngb-highlight>
 
     <p class="badge badge-secondary search__result-chip">
-      <span *ngIf="r?.type !== 'motif' && r?.type !== 'motif'; else elseBlock"> {{ r?.type }}</span>
-      <ng-template #elseBlock> motif </ng-template>
+      <ng-template> motif </ng-template>
     </p>
   </div>
 </ng-template>
 
 <div class="search">
   <div *ngIf="searchItems.length > 0 && isHeaderSearch" class="search__header-chips">
-    <span
-      *ngFor="let i of searchItems"
-      class="badge badge-pill badge-secondary chip search__header-chip"
-      [routerLink]="i?.type !== 'motif' ? '/' + i?.type + '/' + i?.id : '/motif/' + i?.id"
-    >
+    <span *ngFor="let i of searchItems"
+          class="badge badge-pill badge-secondary chip search__header-chip">
       <span *ngIf="i.type === 'artist'" class="fas fa-user"></span>
       <span *ngIf="i.type === 'movement'" class="fas fa-wind"></span>
       <span *ngIf="i.type === 'material'" class="fas fa-scroll"></span>

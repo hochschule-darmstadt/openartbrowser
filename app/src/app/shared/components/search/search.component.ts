@@ -189,7 +189,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
           genre.push(ent);
           break;
         }
-        case 'object': {
+        case 'motif': {
           motifs.push(ent);
           break;
         }
@@ -256,7 +256,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
           params.material.push(item.id);
           break;
         }
-        case 'object': {
+        case 'motif': {
           params.motif.push(item.id);
           break;
         }
@@ -320,9 +320,6 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     const item = this.searchItems[0];
     if (this.searchItems.length === 1 && item.type) {
       let url = `/${item.type}/${item.id}`;
-      if (item.type === 'object') {
-        url = `/motif/${item.id}`;
-      }
       this.router.navigate([url]);
       return;
     }

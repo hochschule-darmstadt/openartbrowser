@@ -54,8 +54,8 @@ def extract_artworks(type_name, wikidata_id):
     extract_dicts = []
 
     for item in items:
-        if count > 50:
-           continue
+        #if count > 50:
+        #   continue
 
         # mandatory fields
         try:
@@ -119,7 +119,7 @@ def extract_artworks(type_name, wikidata_id):
             wikipedia_link = ""
 
         count += 1
-        print(str(count) + " ", end='')
+        #print(str(count) + " ", end='')
         extract_dicts.append(
             {"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "artists": artists, "locations": locations, "genres": genres,
              "movements": movements, "inception": inception, "materials": materials, "motifs": motifs, "country": country, "height": height, "width": width, "abstract": abstract, "wikipediaLink": wikipedia_link})
@@ -163,8 +163,8 @@ def extract_subjects(subject_type):
     extract_dicts = []
 
     for subject in subjects:
-        if count > 50:
-            continue
+        #if count > 50:
+        #    continue
         try:
             item = pywikibot.ItemPage(repo, subject)
             item_dict = item.get()
@@ -259,7 +259,7 @@ def extract_subjects(subject_type):
                 lon = ""
 
         count += 1
-        print(str(count) + " ", end='')
+        #print(str(count) + " ", end='')
 
         # add all common fields
         subject_dict = {"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "abstract": abstract, "wikipediaLink": wikipedia_link}
@@ -310,7 +310,7 @@ def extract_classes():
         #            continue
         extract_class(cls, class_dict, repo)
         count += 1
-        print(str(count) + " ", end='')
+        #print(str(count) + " ", end='')
     for cls in class_dict:
         extract_dicts.append(class_dict[cls])
 
@@ -379,9 +379,7 @@ def generate_rdf():
     configs = {
         'classes': {'filename': 'classes.csv', 'class': 'rdfs:Class'},
         'movements': {'filename': 'movements.csv', 'class': ':movement'},
-        'movements': {'filename': 'movements.csv', 'class': ':movement'},
         'genre': {'filename': 'genres.csv', 'class': ':genre'},
-        'materials': {'filename': 'materials.csv', 'class': ':material'},
         'locations': {'filename': 'locations.csv', 'class': ':location'},
         'materials': {'filename': 'materials.csv', 'class': ':material'},
         'motifs': {'filename': 'motifs.csv', 'class': ':motif'},

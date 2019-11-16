@@ -8,7 +8,7 @@ from language_helper import generate_langdict_arrays as confdicts
 from language_helper import read_language_config as confkeys
 
 #filename = "/home/mkherrabi/jsonData/master_flat.json"
-filename = os.path.dirname(os.path.dirname((os.path.abspath(__file__)))) + "/master_flat_rankone.json"
+filename = os.path.dirname(os.path.dirname((os.path.abspath(__file__)))) + "/crawler_output/master_flat_rankone.json"
 
 def modify_langdict(langdict, jsonobject, langkey):
     """[modifies lang dictionary data by manipulating key values or deleting keys 
@@ -63,7 +63,7 @@ def generate_langjson(name, extract_dicts):
         name {[str]} -- [Name of the generated json language file]
         extract_dicts {[dict]} -- [dictionary that is written into the output file]
     """
-    with open(name + ".json", "w", newline="", encoding='utf-8') as file:
+    with open("scripts/crawler_output/"+ name + ".json", "w", newline="", encoding='utf-8') as file:
         file.write(json.dumps(extract_dicts))
         
 #load languageconfig file with keys / language dicts

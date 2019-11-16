@@ -9,9 +9,10 @@ This will install every need dependency (see package.json)
 
 First execute the script_artworks_rank.js script
 
-1. > node ../data_manipulation/script_artworks_rank.js
+1. > node ../data_manipulation/script_artworks.js
+2. > node ../data_manipulation/script_artworks_rank.js
 
-The execution order of the left ranking script doesn't matter
+The execution order of the other ranking script doesn't matter
 
 > node ../data_manipulation/script_genres_rank.js
 

@@ -2,14 +2,24 @@
 
 The scripts which extract data from wikidata for the openartbrowser are using the programming languages Python and JavaScript.
 To execute them following programs are required:
-- Python version >3.7 available at https://www.python.org/downloads/
-  - > apt-get install python3 
+- Python3 version >3.7 available at https://www.python.org/downloads/
+  - > sudo apt-get install python3
+- Python3 package manager pip3
+  - > sudo apt-get install pip3
 - Node.js >12.13.0 available at https://nodejs.org/
-  - > apt-get install nodejs
+
+
+Installation on ubuntu (with apt):
+- First add Personal Package Archives (PPA) for nodejs with curl
+  - > sudo apt-get install curl
+  - > curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+- Install nodejs with apt-get
+  - > sudo apt-get install nodejs
+
 
 The versions are recommandations older versions may work.
 
-In order to install the dependencies of python and node.js run the install_all.sh script.
+In order to install the dependencies of python and node.js run the install_etl.sh script.
 
 ## Structure
 Folders and scripts are structured by their ETL task.

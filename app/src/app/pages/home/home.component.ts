@@ -111,7 +111,7 @@ export class HomeComponent implements OnInit {
     this.lowerCategories.location.items = this.shuffle(await this.dataService.get20CategoryItems<Location>('location'));
     this.lowerCategories.material.items = this.shuffle(await this.dataService.get20CategoryItems<Material>('material'));
     this.lowerCategories.genre.items = this.shuffle(await this.dataService.get20CategoryItems<Genre>('genre'));
-    this.lowerCategories.motif.items = this.shuffle(await this.dataService.get20CategoryItems<Motif>('object'));
+    this.lowerCategories.motif.items = this.shuffle(await this.dataService.get20CategoryItems<Motif>('motif'));
   };
 
   /**

@@ -16,17 +16,19 @@ let obj = {
 	label: '',
 	description: '',
 	image: '',
-	creators: [],
+	artists: [],
 	locations: [],
 	genres: [],
 	movements: [],
 	inception: '',
 	materials: [],
-	depicts: [],
+	motifs: [],
 	country: '',
 	height: '',
 	width: '',
 	type: '',
+	abstract: '',
+	wikipediaLink: '',
 }
 let objArr = [];
 let ids = [];
@@ -41,16 +43,19 @@ const csvStream = csv({ delimiter: ';' })
 			myObj.label = data[2];
 			myObj.description = data[3];
 			myObj.image = data[4];
-			myObj.creators = helper.constructArray(data[5]);
-			myObj.locations = helper.constructArray(data[6]);
-			myObj.genres = helper.constructArray(data[7]);
-			myObj.movements = helper.constructArray(data[8]);
-			myObj.inception = data[9];
-			myObj.materials = helper.constructArray(data[10]);
-			myObj.depicts = helper.constructArray(data[11]);
-			myObj.country = data[12];
-			myObj.height = data[13];
-			myObj.width = data[14];
+			myObj.abstract = data[5];
+			myObj.wikipediaLink = data[6];
+			myObj.artists = helper.constructArray(data[7]);
+			myObj.locations = helper.constructArray(data[8]);
+			myObj.genres = helper.constructArray(data[9]);
+			myObj.movements = helper.constructArray(data[10]);
+			myObj.inception = data[11];
+			myObj.materials = helper.constructArray(data[12]);
+			myObj.motifs = helper.constructArray(data[13]);
+			myObj.country = data[14];
+			myObj.height = data[15];
+			myObj.width = data[16];
+
 			myObj.type = type;
 
 			objArr.push(myObj);

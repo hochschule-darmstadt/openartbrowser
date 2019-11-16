@@ -2,12 +2,13 @@
 import sys
 import simplejson as json
 import ijson
+import os
 #from ArtOntologyCrawler import readLanguageConfigFile
 from language_helper import generate_langdict_arrays as confdicts
 from language_helper import read_language_config as confkeys
 
-filename = "/home/mkherrabi/jsonData/master_flat.json"
-
+#filename = "/home/mkherrabi/jsonData/master_flat.json"
+filename = os.path.dirname(os.path.dirname((os.path.abspath(__file__)))) + "/master_flat_rankone.json"
 
 def modify_langdict(langdict, jsonobject, langkey):
     """[modifies lang dictionary data by manipulating key values or deleting keys 
@@ -23,24 +24,31 @@ def modify_langdict(langdict, jsonobject, langkey):
     Returns:
         [array[dict]] -- [modified language container]
     """
+    #Language keys that need language specific handling
+    lang_elements = ["label", "description", "gender", "citizenship", "country"]
     tempjson = jsonobject.copy()
-    try:
-        tempjson["label"] = tempjson["label_" + langkey]
-    except:
-        tempjson["label"] = tempjson["label"]
-    try:
-        tempjson["description"] = tempjson["description_" + langkey]
-    except:
-        tempjson["description"] = tempjson["description"]
-
+    delete_keys = []
+    for element in lang_elements:
+        try:
+            tempjson[element] = tempjson[element + '_' +langkey]
+            l = [key for key in tempjson if element + '_' in key]
+            delete_keys.extend(l)
+            print(delete_keys)
+        #Ignore if key doesnt exist
+        except KeyError:
+            if("label" or "description"):
+                print("Warning! 'label' or 'description' language data might not exist fully in master.json"
+                 + ". Id of .json-object: " + tempjson['id'])
+            pass
+ 
 
     # Using dictionary comprehension to find keys         
-    delete_keys = [key for key in tempjson if 'label_' in key 
-     or 'description_' in key
-     ] 
-  
+    #delete_keys = [key for key in tempjson if 'label_' in key 
+     #or 'description_' in key
+     #] 
     # delete the keys 
     for key in delete_keys: 
+       print(key)
        del tempjson[key]  
     
     #print(tempjson)

@@ -2,33 +2,53 @@
 import sys
 import simplejson as json
 import ijson
+import os
 #from ArtOntologyCrawler import readLanguageConfigFile
 from language_helper import generate_langdict_arrays as confdicts
 from language_helper import read_language_config as confkeys
 
-filename = "/home/mkherrabi/jsonData/master_flat.json"
+#filename = "/home/mkherrabi/jsonData/master_flat.json"
+filename = os.path.dirname(os.path.dirname((os.path.abspath(__file__)))) + "/crawler_output/master_flat_rankone.json"
 
-#modifies lang dictionary data by manipulating key values or deleting keys
-#mostly used to get rid of additional language keys
 def modify_langdict(langdict, jsonobject, langkey):
+    """[modifies lang dictionary data by manipulating key values or deleting keys 
+                mostly used to get rid of additional language keys]
+    
+    Arguments:
+        langdict {[array[dict]]} -- [internal language container for the language specified
+                in langkey]
+        jsonobject {[dict]} -- [json object from master file that is passed to our
+                internal dictionaries]
+        langkey {[str]} -- [language key used for modification]
+    
+    Returns:
+        [array[dict]] -- [modified language container]
+    """
+    #Language keys that need language specific handling
+    lang_elements = ["label", "description", "gender", "citizenship", "country"]
     tempjson = jsonobject.copy()
-    try:
-        tempjson["label"] = tempjson["label_" + langkey]
-    except:
-        tempjson["label"] = tempjson["label"]
-    try:
-        tempjson["description"] = tempjson["description_" + langkey]
-    except:
-        tempjson["description"] = tempjson["description"]
-
+    delete_keys = []
+    for element in lang_elements:
+        try:
+            tempjson[element] = tempjson[element + '_' +langkey]
+            l = [key for key in tempjson if element + '_' in key]
+            delete_keys.extend(l)
+            print(delete_keys)
+        #Ignore if key doesnt exist
+        except KeyError:
+            if("label" or "description"):
+                print("Warning! 'label' or 'description' language data might not exist fully in master.json"
+                 + ". Id of .json-object: " + tempjson['id'])
+            pass
+ 
 
     # Using dictionary comprehension to find keys         
-    delete_keys = [key for key in tempjson if 'label_' in key 
-     or 'description_' in key
-     ] 
-  
+    #delete_keys = [key for key in tempjson if 'label_' in key 
+     #or 'description_' in key
+     #] 
     # delete the keys 
     for key in delete_keys: 
+       print(key)
        del tempjson[key]  
     
     #print(tempjson)
@@ -37,8 +57,14 @@ def modify_langdict(langdict, jsonobject, langkey):
 
 #writes temporary language specific data to language files 
 def generate_langjson(name, extract_dicts):
-     with open(name + ".json", "w", newline="", encoding='utf-8') as file:
-         file.write(json.dumps(extract_dicts))
+    """[writes temporary language specific data to language files]
+    
+    Arguments:
+        name {[str]} -- [Name of the generated json language file]
+        extract_dicts {[dict]} -- [dictionary that is written into the output file]
+    """
+    with open("scripts/crawler_output/"+ name + ".json", "w", newline="", encoding='utf-8') as file:
+        file.write(json.dumps(extract_dicts))
         
 #load languageconfig file with keys / language dicts
 langconfig_array = confdicts()

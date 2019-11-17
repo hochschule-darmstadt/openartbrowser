@@ -109,16 +109,16 @@
 }
 
 /* When the nav-tabs is active */
-.nav-tabs>li>a.active,
-.nav-tabs>li>a.active:focus,
-.nav-tabs>li>a.active:hover,
-.nav>li>a:hover {
+.nav-tabs > li > a.active,
+.nav-tabs > li > a.active:focus,
+.nav-tabs > li > a.active:hover,
+.nav > li > a:hover {
   background-color: #868e96;
   border-color: #FFFFFF;
 }
 
 /* When the nav-tabs is hovered */
-.nav-tabs>li>a:hover {
+.nav-tabs > li > a:hover {
   background-color: #868e9644;
   border-color: rgba(255, 255, 255, 0.274);
 }
@@ -128,7 +128,7 @@
 }
 
 /* Unset cursor: pointer; badge */
-.cursor-unset{
+.cursor-unset {
   cursor: unset;
 }
 
@@ -142,6 +142,11 @@
 /* If not highlighted, set as transparent (opacity .4) */
 .badge-transparent {
   opacity: .4;
+}
+
+.wiki-link {
+  white-space: nowrap;
+  float: right;
 }
 
 /* Makes chip and regular text look good together: adds and removes padding on different screen sizes */
@@ -162,7 +167,7 @@
 
 }
 
-/* Adds padding when page gets smaller to avoid overflow between information on the left and information on the right 
+/* Adds padding when page gets smaller to avoid overflow between information on the left and information on the right
  * changes image size
 */
 @media (min-width: 768px) and (max-width: 992px) {

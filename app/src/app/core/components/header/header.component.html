@@ -13,24 +13,37 @@
         <app-search class="form-group has-feedback" [isHeaderSearch]="true"></app-search>
       </li>
       <li class="nav-item dropdown flex-shrink-0">
-        <a
-          class="nav-link dropdown-toggle"
-          data-toggle="dropdown"
-          href="#"
-          role="button"
-          aria-haspopup="true"
-          aria-expanded="true"
-        >
+        <a class="nav-link dropdown-toggle" id="dropdownLanguage" data-toggle="dropdown" href="#" role="button"
+          aria-haspopup="true" aria-expanded="true">
+          <h3><i class="fas fa-globe-americas"></i></h3>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownLanguage">
+          <a class="dropdown-item" href="/en{{path}}" [ngClass]="{'active': locale == 'en'}">English</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="/de{{path}}" [ngClass]="{'active': locale == 'de'}">Deutsch</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="/fr{{path}}" [ngClass]="{'active': locale == 'fr'}">Français</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="/es{{path}}" [ngClass]="{'active': locale == 'es'}">Español</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="/it{{path}}" [ngClass]="{'active': locale == 'it'}">Italiano</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown flex-shrink-0">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+          aria-expanded="true">
           <h3><i class="fas fa-bars"></i></h3>
         </a>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" [routerLink]="['/']">Home</a>
+          <a class="dropdown-item" [routerLink]="['/']" i18n="Menu Home item label@@menuHome">Home</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" [routerLink]="['/about']">About</a>
+          <a class="dropdown-item" [routerLink]="['/about']" i18n="Menu About item label@@menuAbout">About</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" [routerLink]="['/impress']">Legal Notice</a>
+          <a class="dropdown-item" [routerLink]="['/impress']"
+            i18n="Menu Legal Notice item label@@menuLegalNotice">Legal Notice</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" [routerLink]="['/data-protection']">Data Protection Declaration</a>
+          <a class="dropdown-item" [routerLink]="['/data-protection']"
+            i18n="Menu Data Protection Declaration item label@@menuDataProtection">Data Protection Declaration</a>
         </div>
       </li>
     </ul>

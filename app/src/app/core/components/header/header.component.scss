@@ -20,6 +20,11 @@
   width: 100%;
 }
 
+.dropdown .active{
+  color:#00bc8c;
+  pointer-events: none;
+}
+
 .search-form {
   display: flex;
   justify-content: flex-end;

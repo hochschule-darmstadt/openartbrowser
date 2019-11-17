@@ -115,16 +115,20 @@ def extract_artworks(type_name, wikidata_id):
                 descriptionlang = item_dict["descriptions"][langkey]
             except:
                 descriptionlang =  description + " (english)"
-            dict.update({"label_"+langkey: labellang, "description_"+langkey: descriptionlang})
+            try:
+                countrylang = clm_dict["P17"][0].getTarget().get()["labels"][langkey]
+            except:
+                countrylang = country +" (english)"
+            dict.update({"label_"+langkey: labellang, "description_"+langkey: descriptionlang, "country_"+langkey: countrylang})
         extract_dicts.append(dict)
         # print(classes, item, label, description, image, creators, locations, genres, movements,  inception, materials, depicts,  country, height, width)
 
 
 
 
-        #count += 1
-        #if count == 10:
-          #  break
+        count += 1
+        if count == 10:
+            break
 
     print(datetime.datetime.now(), "Finished with", type_name)
     return extract_dicts
@@ -230,12 +234,18 @@ def extract_subjects(subject_type):
                 influenced_by = list(map(lambda clm: clm.getTarget().id, clm_dict["P737"]))
             except:
                 influenced_by = []
-
+        subject_dict = {"id": item.id, "classes": classes, "label": label, "description": description, "image": image}
         if subject_type == "locations":
             try:
                 country = clm_dict["P17"][0].getTarget().get()["labels"]["en"]
             except:
                 country = ""
+            for langkey in languageKeys:
+                try:
+                    countrylang = clm_dict["P17"][0].getTarget().get()["labels"][langkey]
+                except:
+                    countrylang = country
+                subject_dict.update({"country_"+langkey: countrylang})
             try:
                 website = clm_dict["P856"][0].getTarget()
             except:
@@ -254,7 +264,6 @@ def extract_subjects(subject_type):
 
         count += 1
         print(str(count) + " ", end='')
-        subject_dict = {"id": item.id, "classes": classes, "label": label, "description": description, "image": image}
         for langkey in languageKeys:
             try:
                 labellang = item_dict["labels"][langkey]
@@ -493,12 +502,16 @@ def get_fields(type_name):
 
     if type_name in ["drawings", "sculptures", "paintings", "artworks"]:
         fields += ["artists", "locations", "genres", "movements", "inception", "materials", "depicts", "country", "height", "width"]
+        for langkey in languageKeys:
+            fields += ["country_"+langkey]
     elif type_name == "artists":
         fields += ["gender", "date_of_birth", "date_of_death", "place_of_birth", "place_of_death", "citizenship", "movements", "influenced_by"]
     elif type_name == "movements":
         fields += ["influenced_by"]
     elif type_name == "locations":
         fields += ["country", "website", "part_of", "lat", "lon"]
+        for langkey in languageKeys:
+            fields += ["country_"+langkey]
     elif type_name == "classes":
         fields = ["id", "label", "description", "subclass_of"]
         for langkey in languageKeys:
@@ -532,15 +545,15 @@ def extract_art_ontology():
     for artwork, wd in [("drawings", "wd:Q93184"), ("sculptures", "wd:Q860861"), ("paintings", "wd:Q3305213")]:
         extracted_artwork = extract_artworks(artwork, wd)
         generate_csv(artwork, extracted_artwork)
-        generate_json(artwork, extracted_artwork)
+        #generate_json(artwork, extracted_artwork)
 
     for subject in ["genres", "movements", "materials", "depicts", "artists", "locations"]:
         extracted_subject = extract_subjects(subject)
         generate_csv(subject, extracted_subject)
-        generate_json(subject, extracted_subject)
+        #generate_json(subject, extracted_subject)
 
     generate_csv("classes", extract_classes())
 
     generate_csv("artworks", merge_artworks())
 
-    generate_rdf()
+    #generate_rdf()

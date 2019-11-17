@@ -30,4 +30,4 @@ The last step is merging all files into one:
 
 > node ../data_manipulation/script_flatten_rank.js
 
-All intermediate files (*.json) have to be located in ToDo. Otherwise there will be errors.
+All intermediate files (*.json) have to be located in (ToDo: Issue #8). Otherwise there will be errors.

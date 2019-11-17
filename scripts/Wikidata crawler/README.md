@@ -7,7 +7,7 @@ This will install pywikibot and requests (see requirements.txt)
 
 ## Execution
 
-Before starting the extraction you need to configure your pywikibot installation. See the wiki section for this ToDo.
+Before starting the extraction you need to configure your pywikibot installation. See the wiki section for this [pywikibot configuration](https://github.com/hochschule-darmstadt/openartbrowser/wiki/Developer-guide#pywikibot-configuration).
 
 To execute the complete data extraction:
 > python3 -c "import ArtOntologyCrawler; ArtOntologyCrawler.extract_art_ontology()"

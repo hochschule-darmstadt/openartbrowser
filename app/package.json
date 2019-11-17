@@ -4,10 +4,17 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start:fr": "ng serve --configuration=fr",
+    "start:de": "ng serve --configuration=de",
+    "start:en": "ng serve --configuration=en",
     "build": "ng build",
+    "build:fr": "ng build --configuration=fr",
+    "build:de": "ng build --configuration=de",
+    "build:en": "ng build --configuration=en",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "locale": "ng xi18n --output-path locale"
   },
   "private": true,
   "dependencies": {
@@ -42,7 +49,7 @@
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~4.0.0",
     "karma-chrome-launcher": "~2.2.0",
-    "karma-coverage-istanbul-reporter": "^2.0.6",
+    "karma-coverage-istanbul-reporter": "^2.1.0",
     "karma-jasmine": "~1.1.2",
     "karma-jasmine-html-reporter": "^0.2.2",
     "nodemon": "^1.19.4",

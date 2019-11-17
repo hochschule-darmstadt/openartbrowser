@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Artwork, EntityType } from 'src/app/shared/models/models';
-import { takeUntil } from 'rxjs/operators';
-import { DataService } from 'src/app/core/services/data.service';
-import { ActivatedRoute } from '@angular/router';
-import { Subject } from 'rxjs';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Artwork, EntityType} from 'src/app/shared/models/models';
+import {takeUntil} from 'rxjs/operators';
+import {DataService} from 'src/app/core/services/data.service';
+import {ActivatedRoute} from '@angular/router';
+import {Subject} from 'rxjs';
 import * as _ from 'lodash';
 
 /** interface for the tabs */
@@ -30,17 +30,11 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   imageHidden = false;
 
-  /**
-   * @description to toggle details container.
-   * initial as true (close).
-   */
-  collapseDown: boolean = true;
+  /** @description to toggle details container. true if more infos are folded in */
+  collapse = true;
 
   /** whether artwork image viewer is active or not */
   modalIsVisible = false;
-
-  /** score of meta data size */
-  metaNumber: number = 0;
 
   /** number of artworks tabs intialized */
   artworkTabCounter = 0;
@@ -49,7 +43,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    * @description to toggle common tags container.
    * initial as true (close).
    */
-  collapseDownTags: boolean = true;
+  collapseDownTags = true;
 
   /**
    * @description to save the artwork item that is being hovered.
@@ -61,43 +55,43 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   artworkTabs: { [key: string]: ArtworkTab } = {
     all: {
-      heading: 'All',
+      heading: 'all',
       items: [],
       icon: 'list-ul',
       active: true,
     },
     motif: {
-      heading: 'Motif',
+      heading: 'motif',
       items: [],
       icon: 'image',
       active: false,
     },
     artist: {
-      heading: 'Artist',
+      heading: 'artist',
       items: [],
       icon: 'user',
       active: false,
     },
     location: {
-      heading: 'Location',
+      heading: 'location',
       items: [],
       icon: 'archway',
       active: false,
     },
     genre: {
-      heading: 'Genre',
+      heading: 'genre',
       items: [],
       icon: 'tags',
       active: false,
     },
     movement: {
-      heading: 'Movement',
+      heading: 'movement',
       items: [],
       icon: 'wind',
       active: false,
     },
     material: {
-      heading: 'Material',
+      heading: 'material',
       items: [],
       icon: 'scroll',
       active: false,
@@ -114,7 +108,8 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   Object = Object;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {}
+  constructor(private dataService: DataService, private route: ActivatedRoute) {
+  }
 
   /**
    * @description hook that is executed at component initialization
@@ -162,11 +157,11 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     this.resetArtworkTabs();
     /** load artist related data */
     if (this.artwork) {
-      this.dataService.findArtworksByArtists(this.artwork.creators as any).then((artworks) => {
+      this.dataService.findArtworksByArtists(this.artwork.artists as any).then((artworks) => {
         this.fillArtworkTab(this.artworkTabs.artist, artworks);
       });
-      this.dataService.findMultipleById(this.artwork.creators as any, EntityType.ARTIST).then((creators) => {
-        this.artwork.creators = creators;
+      this.dataService.findMultipleById(this.artwork.artists as any, EntityType.ARTIST).then((artists) => {
+        this.artwork.artists = artists;
       });
 
       /** load movement related data */
@@ -186,11 +181,11 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       });
 
       /** load motif related data */
-      this.dataService.findArtworksByMotifs(this.artwork.depicts as any).then((artworks) => {
+      this.dataService.findArtworksByMotifs(this.artwork.motifs as any).then((artworks) => {
         this.fillArtworkTab(this.artworkTabs.motif, artworks);
       });
-      this.dataService.findMultipleById(this.artwork.depicts as any, EntityType.MOTIF).then((motifs) => {
-        this.artwork.depicts = motifs;
+      this.dataService.findMultipleById(this.artwork.motifs as any, EntityType.MOTIF).then((motifs) => {
+        this.artwork.motifs = motifs;
       });
 
       /** load loaction related data */
@@ -231,7 +226,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
 
   /**
    * @description shuffle the items' categories.
-   * @memberof ArtworkComponent
    */
   shuffle = (a: Artwork[]): Artwork[] => {
     for (let i = a.length - 1; i > 0; i--) {
@@ -239,7 +233,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       [a[i], a[j]] = [a[j], a[i]];
     }
     return a;
-  };
+  }
 
   /**
    * @description show popup image zoom.
@@ -271,7 +265,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    * shuffles the set at the end
    * set var artworkTabs.all.items to this Set
    * @param {number} maxAmountFromEachTab
-   * @memberof ArtworkComponent
    */
   selectAllTabItems(maxAmountFromEachTab: number): void {
     const items = new Map<string, Artwork>();
@@ -289,36 +282,42 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    * @description function to toggle details container.
    */
   toggleDetails(): void {
-    this.collapseDown = !this.collapseDown;
+    this.collapse = !this.collapse;
   }
 
   /** calculates the size of meta data item section
    * every attribute: +3
    * if attribute is array and size > 3 -> + arraylength
    */
-  calculateCollapseState() {
-    this.collapseDown = true;
+  private calculateCollapseState() {
+    let metaNumber = 0;
     if (this.artwork) {
+      if (this.artwork.abstract.length > 400) {
+        metaNumber += 10;
+      } else if (this.artwork.abstract.length) {
+        metaNumber += 3;
+      }
       if (!_.isEmpty(this.artwork.genres)) {
-        this.metaNumber += this.artwork.genres.length > 3 ? this.artwork.genres.length : 3;
+        metaNumber += this.artwork.genres.length > 3 ? this.artwork.genres.length : 3;
       }
       if (!_.isEmpty(this.artwork.materials)) {
-        this.metaNumber += this.artwork.materials.length > 3 ? this.artwork.genres.length : 3;
+        metaNumber += this.artwork.materials.length > 3 ? this.artwork.genres.length : 3;
       }
       if (!_.isEmpty(this.artwork.movements)) {
-        this.metaNumber += this.artwork.movements.length > 3 ? this.artwork.movements.length : 3;
+        metaNumber += this.artwork.movements.length > 3 ? this.artwork.movements.length : 3;
       }
-      if (!_.isEmpty(this.artwork.depicts)) {
-        this.metaNumber += this.artwork.depicts.length > 3 ? this.artwork.depicts.length : 3;
+      if (!_.isEmpty(this.artwork.motifs)) {
+        metaNumber += this.artwork.motifs.length > 3 ? this.artwork.motifs.length : 3;
       }
-      if (!this.artwork.height && !this.artwork.width) {
-        this.metaNumber += 3;
+      if (this.artwork.height && this.artwork.width) {
+        metaNumber += 3;
       }
     }
-    if (this.metaNumber < 10) {
-      this.collapseDown = false;
+    if (metaNumber < 10) {
+      this.collapse = false;
     }
   }
+
   /**
    * @description function to toggle common tags container.
    */

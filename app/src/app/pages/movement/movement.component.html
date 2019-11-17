@@ -1,26 +1,49 @@
 <div class="container">
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7">
-      <span class="badge badge-pill badge-secondary chip cursor-unset"><i class="fas fa-wind"></i> Movement</span>
+      <span class="badge badge-pill badge-secondary chip cursor-unset">
+        <i class="fas fa-wind"></i>
+        <ng-container i18n="Movement label@@movement">Movement</ng-container>
+      </span>
       <h2 class="mb-3 first-letter">{{ movement?.label }}</h2>
 
-      <div class="row">
-        <div class="col-md-3 pr-0">
-          <p *ngIf="movement?.influenced_by?.length" class="mb-1 text-muted">Influenced by:</p>
-        </div>
+      <div *ngIf="movement?.abstract?.length || movement?.influenced_by?.length">
+        <h4 class="mt-2 more" href="#collapseArtist" (click)="toggleDetails()">
+          More
+          <i *ngIf="collapse" href="#collapseArtist" class="fas fa-chevron-down"> </i>
+          <i *ngIf="!collapse" href="#collapseArtist" class="fas fa-chevron-up"> </i>
+        </h4>
+        <div [className]="collapse ? 'collapse' : 'collapse show'" id="collapseArtist">
+          <div class="row">
+            <div *ngIf="movement?.abstract" class="col-md pr-0">
+              <span>{{ movement?.abstract }}</span>
+              <p class="wiki-link">More: <a href="{{ movement?.wikipediaLink }}" target="_blank">Wikipedia</a></p>
+            </div>
+          </div>
 
-        <div class="col-md-9 pl-0 info">
-          <p *ngIf="movement?.influenced_by?.length" class="mb-1">
-            <span *ngFor="let influence of movement?.influenced_by" class="badge badge-pill badge-secondary first-letter chip"
-              [routerLink]="influence.type === 'artist' ? '/artist/' + influence.id : '/movement/' + influence.id">
+          <div class="row">
+            <div class="col-md-3 pr-0">
+              <p *ngIf="movement?.influenced_by?.length" class="mb-1 text-muted">
+                 <ng-container i18n="Influenced by label@@influenced_by">Influenced by</ng-container>:
+              </p>
+            </div>
+
+            <div class="col-md-9 info">
+              <p *ngIf="movement?.influenced_by?.length" class="mb-1">
+            <span *ngFor="let influence of movement?.influenced_by"
+                  class="badge badge-pill badge-secondary first-letter chip"
+                  [routerLink]="influence.type === 'artist' ? '/artist/' + influence.id : '/movement/' + influence.id">
               {{ influence.label }}</span>
-          </p>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
     <div class="col-sm-5 img" *ngIf="movement?.image">
-      <img class="img-fluid rounded-circle" src="{{ movement?.imageSmall }}" alt="" />
+      <img class="img-fluid rounded-circle" src="{{ movement?.imageSmall }}" alt=""/>
     </div>
   </div>
-  <app-slider [items]="sliderItems" heading="Artworks"> </app-slider>
+  <h3 i18n="Artworks label@@artworks">Artworks</h3>
+  <app-slider [items]="sliderItems"></app-slider>
 </div>

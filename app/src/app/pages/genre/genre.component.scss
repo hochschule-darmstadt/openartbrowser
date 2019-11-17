@@ -1,8 +1,13 @@
 img {
-    max-height: 20em;
-  }
+  max-height: 20em;
+}
+
+.wiki-link {
+  white-space: nowrap;
+  float: right;
+}
 
 /* Unset cursor: pointer; badge */
-.cursor-unset{
+.cursor-unset {
   cursor: unset;
 }

@@ -126,9 +126,9 @@ def extract_artworks(type_name, wikidata_id):
 
 
 
-        count += 1
-        if count == 10:
-            break
+        #count += 1
+        #if count == 10:
+            #break
 
     print(datetime.datetime.now(), "Finished with", type_name)
     return extract_dicts
@@ -545,15 +545,15 @@ def extract_art_ontology():
     for artwork, wd in [("drawings", "wd:Q93184"), ("sculptures", "wd:Q860861"), ("paintings", "wd:Q3305213")]:
         extracted_artwork = extract_artworks(artwork, wd)
         generate_csv(artwork, extracted_artwork)
-        #generate_json(artwork, extracted_artwork)
+        generate_json(artwork, extracted_artwork)
 
     for subject in ["genres", "movements", "materials", "depicts", "artists", "locations"]:
         extracted_subject = extract_subjects(subject)
         generate_csv(subject, extracted_subject)
-        #generate_json(subject, extracted_subject)
+        generate_json(subject, extracted_subject)
 
     generate_csv("classes", extract_classes())
 
     generate_csv("artworks", merge_artworks())
 
-    #generate_rdf()
+    generate_rdf()

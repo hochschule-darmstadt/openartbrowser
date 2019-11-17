@@ -7,9 +7,25 @@
         </span>
       <h2 class="mb-3 first-letter">{{ genre?.label }}</h2>
       <div class="mb-3 mt-5"></div>
+      <div *ngIf="genre?.abstract">
+        <h4 class="mt-2 more" href="#collapseArtist" (click)="toggleDetails()">
+          More
+          <i *ngIf="collapse" href="#collapseArtist" class="fas fa-chevron-down"> </i>
+          <i *ngIf="!collapse" href="#collapseArtist" class="fas fa-chevron-up"> </i>
+        </h4>
+        <div [className]="collapse ? 'collapse' : 'collapse show'" id="collapseArtist">
+
+          <div class="row">
+            <div *ngIf="genre?.abstract" class="col-md pr-0">
+              <span>{{ genre?.abstract }}</span>
+              <p class="wiki-link">More:&nbsp;<a href="{{ genre?.wikipediaLink }}" target="_blank">Wikipedia</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="col-sm-5 img" *ngIf="genre?.imageSmall">
-      <img class="img-fluid rounded-circle" src="{{ genre?.imageSmall }}" alt="" />
+      <img class="img-fluid rounded-circle" src="{{ genre?.imageSmall }}" alt=""/>
     </div>
   </div>
   <h3 i18n="Artworks label@@artworks">Artworks</h3>

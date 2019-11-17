@@ -1,4 +1,5 @@
 #splits master file into languages
+
 import sys
 import simplejson as json
 import ijson
@@ -31,9 +32,9 @@ def modify_langdict(langdict, jsonobject, langkey):
     for element in lang_elements:
         try:
             tempjson[element] = tempjson[element + '_' +langkey]
+            # Using dictionary comprehension to find keys for deletion later
             l = [key for key in tempjson if element + '_' in key]
             delete_keys.extend(l)
-            print(delete_keys)
         #Ignore if key doesnt exist
         except KeyError:
             if("label" or "description"):
@@ -42,16 +43,11 @@ def modify_langdict(langdict, jsonobject, langkey):
             pass
  
 
-    # Using dictionary comprehension to find keys         
-    #delete_keys = [key for key in tempjson if 'label_' in key 
-     #or 'description_' in key
-     #] 
+         
     # delete the keys 
     for key in delete_keys: 
-       print(key)
        del tempjson[key]  
     
-    #print(tempjson)
     langdict.append(tempjson)
     return langdict
 

@@ -128,7 +128,7 @@ def extract_artworks(type_name, wikidata_id):
 
         #count += 1
         #if count == 10:
-            #break
+          #  break
 
     print(datetime.datetime.now(), "Finished with", type_name)
     return extract_dicts
@@ -194,7 +194,7 @@ def extract_subjects(subject_type):
             image = clm_dict["P18"][0].getTarget().get_file_url()
         except:
             image = ""
-
+        subject_dict = {"id": item.id, "classes": classes, "label": label, "description": description, "image": image}
         if subject_type == "artists":
             try:
                 gender = clm_dict["P21"][0].getTarget().get()["labels"]["en"]
@@ -228,13 +228,23 @@ def extract_subjects(subject_type):
                 influenced_by = list(map(lambda clm: clm.getTarget().id, clm_dict["P737"]))
             except:
                 influenced_by = []
+            for langkey in languageKeys:
+                try:
+                    genderlang = clm_dict["P21"][0].getTarget().get()["labels"][langkey]
+                except:
+                    genderlang = gender
+                try:
+                    citizenshiplang = clm_dict["P27"][0].getTarget().get()["labels"][langkey]
+                except:
+                    citizenshiplang = citizenship
+                subject_dict.update({"gender_"+langkey: genderlang, "citizenship_"+langkey: citizenshiplang})
 
         if subject_type == "movements":
             try:
                 influenced_by = list(map(lambda clm: clm.getTarget().id, clm_dict["P737"]))
             except:
                 influenced_by = []
-        subject_dict = {"id": item.id, "classes": classes, "label": label, "description": description, "image": image}
+
         if subject_type == "locations":
             try:
                 country = clm_dict["P17"][0].getTarget().get()["labels"]["en"]
@@ -410,14 +420,14 @@ def generate_rdf():
         'locations': {'filename': 'locations.csv', 'class': ':location'},
         'materials': {'filename': 'materials.csv', 'class': ':material'},
         'objects': {'filename': 'depicts.csv', 'class': ':object'},
-        'persons': {'filename': 'creators.csv', 'class': ':person'},
+        'persons': {'filename': 'artists.csv', 'class': ':person'},
         'artworks': {'filename': 'artworks.csv', 'class': ':artwork'}
     }
     properties = {
         'label': {'property': 'rdfs:label', 'type': 'string'},
         'description': {'property': ':description', 'type': 'string'},
         'image': {'property': ':image', 'type': 'url'},
-        'creators': {'property': ':creator', 'type': 'list'},
+        'artists': {'property': ':artist', 'type': 'list'},
         'locations': {'property': ':location', 'type': 'list'},
         'genres': {'property': ':genre', 'type': 'list'},
         'movements': {'property': ':movement', 'type': 'list'},
@@ -506,6 +516,8 @@ def get_fields(type_name):
             fields += ["country_"+langkey]
     elif type_name == "artists":
         fields += ["gender", "date_of_birth", "date_of_death", "place_of_birth", "place_of_death", "citizenship", "movements", "influenced_by"]
+        for langkey in languageKeys:
+            fields += ["gender_"+langkey, "citizenship_"+langkey]
     elif type_name == "movements":
         fields += ["influenced_by"]
     elif type_name == "locations":
@@ -532,6 +544,7 @@ def generate_json(name, extract_dicts):
         file.write("[")
         for extract_dict in extract_dicts[:-1]:
             extract_dict["type"] = name[:-1]
+            print (extract_dict["type"])
             file.write(json.dumps(extract_dict, ensure_ascii=False))
             file.write(",")
         extract_dicts[-1]["type"] = name[:-1]

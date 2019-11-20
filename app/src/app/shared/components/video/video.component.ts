@@ -8,13 +8,17 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 })
 export class VideoComponent implements OnInit {
 
-  public safeURL: SafeResourceUrl;
+
 
   constructor(private _sanitizer: DomSanitizer) {
-    this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube-nocookie.com/embed/C0DPdy98e4c?controls=0');
+
   }
 
   ngOnInit() {
+  }
+
+  getEmbedUrl(video){
+    return this._sanitizer.bypassSecurityTrustResourceUrl(video);
   }
 
 }

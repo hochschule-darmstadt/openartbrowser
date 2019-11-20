@@ -32,7 +32,7 @@ Frontend configuration:
 
 - default elasticSearch url is 'http://openartbrowser.org/api/_search'
 
-- to call a locally running elasticsearch docker container, run `npm run start_elocal` or `ng build --configuration=e_local`
+- to call a locally running elasticsearch docker container, run `npm run start_docker` or `ng build --configuration=e_local`
 
 - To change elasticSearch url to another server, change the above url in ‚app/src/app/core/services/data.service.ts‘
 

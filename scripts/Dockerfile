@@ -5,38 +5,29 @@ WORKDIR /app
 RUN pip install pywikibot
 
 COPY ["./Wikidata crawler/", "/app"]
-RUN ls -lah /app
 RUN ["python", "/app/ArtOntologyCrawler.py", "-d"]
-RUN mkdir /app/csv && mv *.csv /app/csv
+RUN ls -lah /app/
+RUN mkdir /app/output_data && mv *.json /app/output_data && mv *.csv /app/output_data
 
 # ------------------------------------------------
 
 FROM node:latest as data_manipulator
 
 WORKDIR /app
-COPY --from=Wikicrawler /app/csv /app/
-RUN mv creators.csv artists.csv 
+COPY --from=Wikicrawler /app/output_data /app/
 
 COPY ["./data_manipulation/", "/app"]
 
 RUN npm install
 
-RUN touch objects.csv && ls -l /app
-
 RUN node script_artworks.js && \
-    node script_genres.js && \
-    node script_movements.js && \
-    node script_materials.js && \
-    node script_objects.js && \
-    node script_artist.js && \
-    node script_locations.js && \
     node script_artworks_rank.js && \
     node script_genres_rank.js && \
-    node script_movements_rank.js && \
-    node script_materials_rank.js && \
-    node script_objects_rank.js && \
     node script_artist_rank.js && \
     node script_locations_rank.js && \
+    node script_materials_rank.js && \
+    node script_movements_rank.js && \
+    node script_motifs_rank.js && \
     node script_flatten_rank.js
 
 # -----------------------------------------
@@ -49,7 +40,7 @@ RUN yum update && \
     yum install -y https://centos7.iuscommunity.org/ius-release.rpm && \
     yum install -y python36u python36u-pip
 
-RUN pip3 install elasticsearch ijson
+RUN pip3 install elasticsearch ijson requests
 
 RUN mkdir /var/log/elasticsearch && \
     mkdir /var/lib/elasticsearch && \
@@ -58,6 +49,7 @@ RUN mkdir /var/log/elasticsearch && \
 
 COPY --chown=elasticsearch:elasticsearch elasticsearch.yml /usr/share/elasticsearch/config/
 
-COPY --from=data_manipulator /app/master_flat_rank.json /app/master_flat.json
+COPY --from=data_manipulator /app/master_flat_rank.json /root/master_flat.json
+
 
 COPY ["./upload_to_elasticsearch/", "/app"]

@@ -263,7 +263,12 @@
             <ng-container i18n="Related Artworks headline text before tab name @@related_artworks_headline_prev">
               Common
             </ng-container>
-            <span *ngIf="tab != 'all'">{{ tab }}</span>
+            <span *ngIf="tab != 'all'">
+	      <ng-container i18n="Related Artworks headline text tab name@@related_artworks_headline_tab_name">
+              {tab, select, all {all} motif {motif} artist {artist}
+              location {location} genre {genre} movement {movement} material {material}}
+              </ng-container>
+	    </span>
             <ng-container i18n="Related Artworks headline text after tab name @@related_artworks_headline_after">
               tags with artwork
             </ng-container>

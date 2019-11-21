@@ -5,3 +5,4 @@ apicache-py3
 *.json
 *.ctrl
 *.lwp
+/.idea/

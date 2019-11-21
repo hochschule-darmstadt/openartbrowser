@@ -81,6 +81,22 @@
               "i18nLocale": "de",
               "i18nMissingTranslation": "error"
             },
+            "es": {
+              "aot": true,
+              "outputPath": "dist/browser/es/",
+              "i18nFile": "src/locale/messages.es.xlf",
+              "i18nFormat": "xlf",
+              "i18nLocale": "es",
+              "i18nMissingTranslation": "error"
+            },
+            "it": {
+              "aot": true,
+              "outputPath": "dist/browser/it/",
+              "i18nFile": "src/locale/messages.it.xlf",
+              "i18nFormat": "xlf",
+              "i18nLocale": "it",
+              "i18nMissingTranslation": "error"
+            },
             "docker": {
               "fileReplacements": [
                 {
@@ -125,6 +141,12 @@
             },
             "de": {
               "browserTarget": "art-browser:build:de"
+            },
+            "es": {
+              "browserTarget": "art-browser:build:es"
+            },
+            "it": {
+              "browserTarget": "art-browser:build:it"
             },
             "docker": {
               "browserTarget": "art-browser:build:docker"

@@ -543,13 +543,30 @@
         </context-group>
         <note priority="1" from="description">Related Artworks headline text before tab name </note>
       </trans-unit>
+      <trans-unit id="related_artworks_headline_tab_name" datatype="html">
+        <source>
+              <x id="ICU" equiv-text="{tab, select, all {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/>
+              </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
+          <context context-type="linenumber">256</context>
+        </context-group>
+        <note priority="1" from="description">Related Artworks headline text tab name</note>
+      </trans-unit>
+      <trans-unit id="2894531d7a06d45b9e13ff93785def69b5963e57" datatype="html">
+        <source>{VAR_SELECT, select, all {all} motif {motif} artist {artist} location {location} genre {genre} movement {movement} material {material} }</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
+          <context context-type="linenumber">257</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="related_artworks_headline_after" datatype="html">
         <source>
               tags with artwork
             </source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
-          <context context-type="linenumber">256</context>
+          <context context-type="linenumber">261</context>
         </context-group>
         <note priority="1" from="description">Related Artworks headline text after tab name </note>
       </trans-unit>
@@ -559,7 +576,7 @@
                 </source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
-          <context context-type="linenumber">267</context>
+          <context context-type="linenumber">272</context>
         </context-group>
         <note priority="1" from="description">Related Artworks hint text</note>
       </trans-unit>

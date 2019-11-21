@@ -16,7 +16,7 @@ export interface QueryObject {
  */
 export default class QueryBuilder {
     /** query object */
-    public query: QueryObject = {
+    private queryObject: QueryObject = {
         query: { bool: { should: [], must: [] } },
         sort: []
     }
@@ -26,9 +26,12 @@ export default class QueryBuilder {
      * @param query predefined query
      */
     constructor(query?: QueryObject) {
-        this.query = query;
+        this.queryObject = query;
     }
 
+    public get query(){
+        return this.queryObject
+    }
     /**
      * Add should have prefix query
      * @param key attribute name
@@ -36,7 +39,7 @@ export default class QueryBuilder {
      * @returns QueryBuilder instance
      */
     public shouldPrefix(key: string, value: string): QueryBuilder {
-        this.query.query.bool.should.push({
+        this.queryObject.query.bool.should.push({
             prefix: { [key]: value }
         });
         return this;
@@ -49,7 +52,7 @@ export default class QueryBuilder {
      * @returns QueryBuilder instance
      */
     public shouldTerm(key: string, value: string): QueryBuilder {
-        this.query.query.bool.must.push({
+        this.queryObject.query.bool.must.push({
             term: { [key]: value }
         });
         return this;
@@ -62,7 +65,7 @@ export default class QueryBuilder {
     * @returns QueryBuilder instance
     */
     public shouldWildcard(key: string, value: string): QueryBuilder {
-        this.query.query.bool.should.push({
+        this.queryObject.query.bool.should.push({
             wildcard: { [key]: '*' + value + '*' }
         });
         return this;
@@ -75,7 +78,7 @@ export default class QueryBuilder {
         * @returns QueryBuilder instance
         */
     public shouldMatch(key: string, value: string): QueryBuilder {
-        this.query.query.bool.should.push({
+        this.queryObject.query.bool.should.push({
             match: { [key]: value }
         });
         return this;
@@ -88,7 +91,7 @@ export default class QueryBuilder {
     * @returns QueryBuilder instance
     */
     public mustWildcard(key: string, value: string): QueryBuilder {
-        this.query.query.bool.must.push({
+        this.queryObject.query.bool.must.push({
             wildcard: { [key]: '*' + value + '*' }
         });
         return this;
@@ -101,7 +104,7 @@ export default class QueryBuilder {
     * @returns QueryBuilder instance
     */
     public mustMatch(key: string, value: string): QueryBuilder {
-        this.query.query.bool.must.push({
+        this.queryObject.query.bool.must.push({
             match: { [key]: value }
         });
         return this;
@@ -115,7 +118,7 @@ export default class QueryBuilder {
     * @returns QueryBuilder instance
     */
     public mustTerm(key: string, value: string): QueryBuilder {
-        this.query.query.bool.must.push({
+        this.queryObject.query.bool.must.push({
             term: { [key]: value }
         });
         return this;
@@ -129,7 +132,7 @@ export default class QueryBuilder {
     * @returns QueryBuilder instance
     */
     public mustPrefix(key: string, value: string): QueryBuilder {
-        this.query.query.bool.must.push({
+        this.queryObject.query.bool.must.push({
             prefix: { [key]: value }
         });
         return this;
@@ -142,7 +145,7 @@ export default class QueryBuilder {
     * @returns QueryBuilder instance
     */
     public minimumShouldMatch(count: number): QueryBuilder {
-        this.query.query.bool.minimum_should_match = count;
+        this.queryObject.query.bool.minimum_should_match = count;
         return this;
     }
 
@@ -152,7 +155,7 @@ export default class QueryBuilder {
      * @returns QueryBuilder instance
      */
     public sort(order: string = "desc"): QueryBuilder {
-        this.query.sort.push({
+        this.queryObject.sort.push({
             relativeRank: { order: order }
         });
         return this;
@@ -164,7 +167,14 @@ export default class QueryBuilder {
      * @returns QueryBuilder instance
      */
     public size(size: number = 20): QueryBuilder {
-        this.query.size = size;
+        this.queryObject.size = size;
         return this;
+    }
+
+    /**
+     * Override toString method
+     */
+    public toString = () : string => {
+        return JSON.stringify(this.queryObject);
     }
 }

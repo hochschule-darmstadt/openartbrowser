@@ -69,7 +69,7 @@ function writeArtists() {
 		obj.relativeRank = percentage
 		percentage += rankStep
 	})
-	fs.writeFile(destLocationFilePath, JSON.stringify(locationMonsterObj), function (err) {
+	fs.writeFile(destLocationFilePath, JSON.stringify(locationMonsterObj), 'utf-8', function (err) {
 		if (err) throw err
 		console.log('the file has been saved')
 	})

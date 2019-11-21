@@ -70,7 +70,7 @@ function writeGenres() {
 		obj.relativeRank = percentage
 		percentage += rankStep
 	})
-	fs.writeFile(destGenresFilePath, JSON.stringify(genreMonsterObj), function (err) {
+	fs.writeFile(destGenresFilePath, JSON.stringify(genreMonsterObj), 'utf-8', function (err) {
 		if (err) throw err
 		console.log('the file has been saved')
 	})

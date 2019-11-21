@@ -1,4 +1,8 @@
 #!/bin/bash
+
+# remove old container
+docker rm -f elastic-dev
+
 # build container
 docker build -t elastic-dev .
 

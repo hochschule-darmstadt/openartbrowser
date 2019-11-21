@@ -16,7 +16,6 @@ import ast
 import sys
 import requests
 import json
-import sys
 
 DEV = False
 DEV_LIMIT = 5

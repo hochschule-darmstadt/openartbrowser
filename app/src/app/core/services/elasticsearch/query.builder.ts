@@ -69,7 +69,7 @@ export default class QueryBuilder {
     }
 
     /**
-        * Add should have match query
+        * Add should match query
         * @param key attribute name
         * @param value attribute value
         * @returns QueryBuilder instance
@@ -95,7 +95,7 @@ export default class QueryBuilder {
     }
 
     /**
-    * Add must have match query
+    * Add must match query
     * @param key attribute name
     * @param value attribute value
     * @returns QueryBuilder instance
@@ -137,7 +137,7 @@ export default class QueryBuilder {
 
 
     /**
-    * Add minimus should match count
+    * Add minimum should match count
     * @param count  minimum count
     * @returns QueryBuilder instance
     */

@@ -85,5 +85,7 @@
     </div>
   </div>
   <app-slider [items]="sliderItems" heading="Artworks"> </app-slider>
-  <app-video></app-video>
+  <div *ngIf="artist?.videoUrl">
+   <app-video></app-video>
+  </div>
 </div>

@@ -8,7 +8,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 })
 export class VideoComponent implements OnInit {
 
-
+video = "test";
 
   constructor(private _sanitizer: DomSanitizer) {
 

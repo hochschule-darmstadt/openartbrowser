@@ -224,7 +224,9 @@
             Loads Youtube-Video Module with a Video releated to the Artwork
             -->
           <div class="row pt-3 pb-3 border-bottom">
-          <app-video></app-video>
+            <div *ngIf="artwork?.videoUrl">
+              <app-video></app-video>
+            </div>
           </div>
 
           <!-- Collapse element for common tags -->

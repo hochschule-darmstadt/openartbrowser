@@ -116,7 +116,7 @@
           <div class="row">
             <div *ngIf="artwork?.abstract" class="col-md pr-0">
               <span>{{ artwork?.abstract }}</span>
-              <p class="wiki-link">More:&nbsp;<a href="{{ artwork?.wikipediaLink }}" target="_blank">Wikipedia</a></p>
+              <p class="wiki-link"><ng-container i18n="Detail More label@@more">More</ng-container>:&nbsp;<a href="{{ artwork?.wikipediaLink }}" target="_blank">Wikipedia</a></p>
             </div>
           </div>
 

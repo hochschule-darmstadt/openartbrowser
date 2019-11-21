@@ -1,1 +1,7 @@
 node_modules
+apicache-py3
+*.ttl
+*.csv
+*.json
+*.ctrl
+*.lwp

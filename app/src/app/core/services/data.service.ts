@@ -18,7 +18,7 @@ export class DataService {
   $searchItems: Subject<TagItem[]> = new Subject();
 
   /** base url of elasticSearch server */
-  serverURI = 'http://openartbrowser.org/api/_search';
+  serverURI = '/api/_search';
 
 	/**
 	 * Constructor
@@ -91,7 +91,7 @@ export class DataService {
 	 * Returns the artworks that contain all the given arguments.
 	 * @param searchObj the arguments to search for.
 	 * @param keywords the list of worlds to search for.
-	 * 
+	 *
 	 */
   public async findArtworksByCategories(searchObj: artSearch, keywords: string[] = []): Promise<Artwork[]> {
     let options = {

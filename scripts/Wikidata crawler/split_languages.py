@@ -7,9 +7,42 @@ import os
 #from ArtOntologyCrawler import readLanguageConfigFile
 from language_helper import generate_langdict_arrays as confdicts
 from language_helper import read_language_config as confkeys
+from language_helper import read_full_language_config as confcont
 
 #filename = "/home/mkherrabi/jsonData/master_flat.json"
 filename = os.path.dirname(os.path.dirname((os.path.abspath(__file__)))) + "/crawler_output/master_flat_rankone.json"
+
+languagedata = confcont()
+
+def fill_language_gaps(element, jsonobject):
+    """[Fills language data into empty elements based on priority, 
+    which is the languageconfig.csv order]
+    
+    Arguments:
+        element {[string]} -- [Name of the key which is in need of gap filling]
+        jsonobject {[dict]} -- [Relevant which contains all data specific to the element]
+        Returns:
+        [dict] -- [Updated json file with language gaps filled in / or not if no language data existant]
+    """
+    for row in languagedata:
+        try:
+            print(row[1])
+            #Skip empty language data
+            if not jsonobject[element + '_' + row[0]]:
+                next
+            #Assign language data to element and fill in which language is used
+            else:
+                jsonobject[element] = jsonobject[element + '_' + row[0]] + ' (' + row[1] + ')'
+        #Should not happen if key attributes in json are atleast existent
+        except KeyError:
+            if(element == "label") or (element == "description"):
+                print("Warning! 'label' or 'description' language data might not exist fully in master.json"
+                 + ". Id of .json-object: " + jsonobject['id'])
+            pass
+    return jsonobject
+
+
+
 
 def modify_langdict(langdict, jsonobject, langkey):
     """[modifies lang dictionary data by manipulating key values or deleting keys 
@@ -31,13 +64,17 @@ def modify_langdict(langdict, jsonobject, langkey):
     delete_keys = []
     for element in lang_elements:
         try:
-            tempjson[element] = tempjson[element + '_' +langkey]
+            if not tempjson[element + '_' +langkey]:                
+                #print("langkey = " + langkey +"tempjson[element + '_' +langkey] = " + tempjson[element + '_' +langkey])
+                tempjson = fill_language_gaps(element, tempjson)
+            else:
+                tempjson[element] = tempjson[element + '_' +langkey]
             # Using dictionary comprehension to find keys for deletion later
             l = [key for key in tempjson if element + '_' in key]
             delete_keys.extend(l)
         #Ignore if key doesnt exist
         except KeyError:
-            if("label" or "description"):
+            if(element == "label") or (element == "description"):
                 print("Warning! 'label' or 'description' language data might not exist fully in master.json"
                  + ". Id of .json-object: " + tempjson['id'])
             pass

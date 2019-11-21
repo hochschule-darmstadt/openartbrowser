@@ -1,7 +1,7 @@
 export const environment = {
-  production: true
+  production: false
 };
 
 export const elasticEnvironment = {
-  serverURI: '/api/_search'
+  serverURI: 'http://localhost:9200/_search'
 };

@@ -1,9 +1,9 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Entity, Artwork, artSearch, EntityType, TagItem} from 'src/app/shared/models/models';
+import { Injectable, Inject, LOCALE_ID } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Entity, Artwork, artSearch, EntityType, TagItem } from 'src/app/shared/models/models';
 import * as _ from 'lodash';
-import {Subject} from 'rxjs';
-import {elasticEnvironment} from 'src/environments/environment';
+import { Subject } from 'rxjs';
+import { elasticEnvironment } from 'src/environments/environment';
 
 
 /**
@@ -19,12 +19,14 @@ export class DataService {
   $searchItems: Subject<TagItem[]> = new Subject();
 
   /** base url of elasticSearch server */
-  serverURI = elasticEnvironment.serverURI;
+  private serverURI: string;
 
   /**
    * Constructor
    */
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, @Inject(LOCALE_ID) locale_id: string) {
+    // build backend api url with specfic index by locale_id
+    this.serverURI = elasticEnvironment.serverURI + "/" + locale_id + "/_search";
   }
 
   public async findEntitiesByLabelText(text: string): Promise<Entity[]> {
@@ -268,8 +270,8 @@ export class DataService {
       "query": {
         "bool": {
           "must": [
-            {"match": {"type": type}},
-            {"prefix": {"image": "http"}}
+            { "match": { "type": type } },
+            { "prefix": { "image": "http" } }
           ]
         }
       },

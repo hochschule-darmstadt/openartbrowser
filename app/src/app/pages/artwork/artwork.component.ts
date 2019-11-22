@@ -132,13 +132,9 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    * clears items of all artwork tabs
    */
   resetArtworkTabs() {
-    this.artworkTabs.all.items = [];
-    this.artworkTabs.artist.items = [];
-    this.artworkTabs.movement.items = [];
-    this.artworkTabs.genre.items = [];
-    this.artworkTabs.material.items = [];
-    this.artworkTabs.motif.items = [];
-    this.artworkTabs.location.items = [];
+    Object.keys(this.artworkTabs).map((key: string) => {
+      this.artworkTabs[key].items = [];
+    })
   }
 
   /**

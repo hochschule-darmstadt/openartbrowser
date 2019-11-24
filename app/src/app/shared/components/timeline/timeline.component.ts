@@ -6,13 +6,14 @@ import {
   EventEmitter,
   Output,
   OnInit,
-  AfterContentInit
+  AfterContentInit, ViewChild
 } from '@angular/core';
 import {Artwork, Entity} from 'src/app/shared/models/models';
 import {CustomStepDefinition, Options} from 'ng5-slider';
-import {Slide} from "../slider/slider.component";
+import {Slide, SliderComponent} from "../slider/slider.component";
 import {NgbCarousel} from "@ng-bootstrap/ng-bootstrap";
 import {FormControl} from "@angular/forms";
+import {by, element} from "protractor";
 
 
 @Component({
@@ -21,60 +22,44 @@ import {FormControl} from "@angular/forms";
   styleUrls: ['./timeline.component.scss']
 })
 
-export class TimelineComponent implements AfterContentInit {
+export class TimelineComponent {
   /**  entities that should be displayed in this slider */
   @Input() items: Artwork[] = [];
 
 
-
   sliderItems: Entity[];
-  carousel = NgbCarousel;
-  itemCountPerPeriod: Number = 4;
+
+  @ViewChild(SliderComponent)
+  private carousel: SliderComponent;
+
+  itemCountPerPeriod: number = 4;
   sliderControl: FormControl = new FormControl(3);
 
-
-
-  ngOnChanges(changes: SimpleChanges) {
-    // rebuild slides if slider items input changed.
-    this.calculatePeriod();
-    this.sliderItems = this.items;//.slice(0,4);
-    //console.log(this)
-
-  }
-
-  ngAfterContentInit(): void {
-    //this.calculatePeriod()
-
-  }
+  manualRefresh: EventEmitter<void> = new EventEmitter<void>();
 
   value: number = 5;
   options: Options = {
     showTicksValues: true,
     stepsArray: [],
-    customValueToPosition: function(val, minVal, maxVal) {
-      //val = Math.sqrt(val);
-
-      //minVal = Math.sqrt(minVal);
-      //maxVal = Math.sqrt(maxVal);
+    customValueToPosition: function (val, minVal, maxVal) {
       var range = maxVal - minVal;
       return (val - minVal) / range;
     },
-    customPositionToValue: function(percent, minVal, maxVal) {
-      //minVal = Math.sqrt(minVal);
-      //maxVal = Math.sqrt(maxVal);
+    customPositionToValue: function (percent, minVal, maxVal) {
       var value = percent * (maxVal - minVal) + minVal;
-      return value;//Math.pow(value, 2);
+      return value;
     }
   };
+
+  ngOnChanges(changes: SimpleChanges) {
+    // rebuild slides if slider items input changed.
+    this.calculatePeriod();
+    this.sliderItems = this.items;
+  }
 
   calculatePeriod() {
     let sliderSteps: CustomStepDefinition[] = [];
 
-    //Math.min(this.items.map(i => i.inception));
-    //console.log(first, this.items);
-    //  p.inception : min, this.items[0].inception);
-    //let first = this.items.reduce((min, p) => p.inception < min ?items
-    console.log(this.items);
     this.items.sort((a, b) => (a.inception > b.inception) ?
       1 : (a.inception === b.inception) ? ((a.artists[0].label > b.artists[0].label) ? 1 : -1) : -1);
 
@@ -85,15 +70,10 @@ export class TimelineComponent implements AfterContentInit {
       }
       sliderSteps.push({value: this.items[i].inception});
     }
-    /*this.items.forEach(function (item, index) {
-      sliderSteps.push({value: item.inception});
-    });*/
 
-    console.log(sliderSteps);
-    this.options = {
-      showTicksValues: true,
-      stepsArray: sliderSteps
-    };
+    const newOptions: Options = Object.assign({}, this.options);
+    newOptions.stepsArray = sliderSteps;
+    this.options = newOptions;
   }
 
   setSliderValue(value) {
@@ -101,10 +81,15 @@ export class TimelineComponent implements AfterContentInit {
   }
 
   public onCarouselMoved(slideData) {
-    console.log("Moved!", slideData)
-    console.log(slideData.hasOwnProperty("current"), +slideData.current.split("-").pop()-3)
-    this.value = +slideData.current.split("-").pop()-3;
+    let slideNumber = +slideData.current.split("-").pop() - (this.itemCountPerPeriod - 1);
+    let year = +this.options.stepsArray[slideNumber].value;
 
-    this.sliderControl.setValue(this.value)
+    this.value = year;
+    this.manualRefresh.emit();
+  }
+
+  onSliderMoved() {
+    let ind = this.options.stepsArray.findIndex(x => x.value === this.value);
+    this.carousel.selectSlide(ind + 3);
   }
 }

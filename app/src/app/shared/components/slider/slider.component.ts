@@ -67,7 +67,8 @@ export class SliderComponent implements OnChanges {
 
   @Output() onSlideChangedCallback = new EventEmitter<any>();
 
-  @ViewChild('myCarousel') carousel: NgbCarousel;
+  @ViewChild(NgbCarousel)
+  carousel: NgbCarousel;
 
   /** emits hovered artwork on hover event. */
   @Output() itemHover: EventEmitter<Entity> = new EventEmitter<Entity>();
@@ -95,7 +96,8 @@ export class SliderComponent implements OnChanges {
     const numberOfSlides = this.items.length / this.displayed_items;
     for (let i = 0; i < numberOfSlides; i++) {
       // get next x items out of items array
-      const items: Entity[] = this.items.slice(i * +this.displayed_items, i * +this.displayed_items + +this.displayed_items);
+      const items: Entity[] =
+        this.items.slice(i * +this.displayed_items, i * +this.displayed_items + +this.displayed_items);
 
       const slide: Slide = makeDefaultSlide(i, items);
 
@@ -139,5 +141,9 @@ export class SliderComponent implements OnChanges {
 
   public onSlideChanged(slideData) {
     this.onSlideChangedCallback.emit(slideData)
+  }
+
+  public selectSlide(slideId) {
+    this.carousel.select("ngb-slide-" + slideId)
   }
 }

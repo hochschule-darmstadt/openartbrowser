@@ -10,7 +10,7 @@ from language_helper import read_language_config as confkeys
 from language_helper import read_full_language_config as confcont
 
 #filename = "/home/mkherrabi/jsonData/master_flat.json"
-filename = os.path.dirname(os.path.dirname((os.path.abspath(__file__)))) + "/crawler_output/master_flat_rankone.json"
+filename = os.path.dirname(os.path.dirname((os.path.abspath(__file__)))) + "/crawler_output/master_flat_rank.json"
 
 languagedata = confcont()
 
@@ -97,7 +97,7 @@ def generate_langjson(name, extract_dicts):
         extract_dicts {[dict]} -- [dictionary that is written into the output file]
     """
     with open("scripts/crawler_output/"+ name + ".json", "w", newline="", encoding='utf-8') as file:
-        file.write(json.dumps(extract_dicts))
+        file.write(json.dumps(extract_dicts, ensure_ascii=False))
         
 #load languageconfig file with keys / language dicts
 langconfig_array = confdicts()

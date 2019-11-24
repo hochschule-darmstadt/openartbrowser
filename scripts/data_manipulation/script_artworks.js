@@ -16,7 +16,17 @@ let obj = {
 	label: '',
 	description: '',
 	image: '',
-	creators: [],
+	label_en:'',
+	description_en:'',
+	label_de:'',
+	description_de:'',
+	label_fr:'',
+	description_fr:'',
+	label_it:'',
+	description_it:'',
+	label_es:'',
+	description_es:'',
+	artists: [],
 	locations: [],
 	genres: [],
 	movements: [],
@@ -26,6 +36,11 @@ let obj = {
 	country: '',
 	height: '',
 	width: '',
+	country_en:'',
+	country_de:'',
+	country_fr:'',
+	country_it:'',
+	country_es:'',
 	type: '',
 }
 let objArr = [];
@@ -41,16 +56,31 @@ const csvStream = csv({ delimiter: ';' })
 			myObj.label = data[2];
 			myObj.description = data[3];
 			myObj.image = data[4];
-			myObj.creators = helper.constructArray(data[5]);
-			myObj.locations = helper.constructArray(data[6]);
-			myObj.genres = helper.constructArray(data[7]);
-			myObj.movements = helper.constructArray(data[8]);
-			myObj.inception = data[9];
-			myObj.materials = helper.constructArray(data[10]);
-			myObj.depicts = helper.constructArray(data[11]);
-			myObj.country = data[12];
-			myObj.height = data[13];
-			myObj.width = data[14];
+			myObj.label_en = data[5];
+			myObj.description_en = data[6];
+			myObj.label_de = data[7];
+			myObj.description_de = data[8];
+			myObj.label_fr = data[9];
+			myObj.description_fr = data[10];
+			myObj.label_it = data[11];
+			myObj.description_it = data[12];
+			myObj.label_es = data[13];
+			myObj.description_es = data[14];
+			myObj.artists = helper.constructArray(data[15]);
+			myObj.locations = helper.constructArray(data[16]);
+			myObj.genres = helper.constructArray(data[17]);
+			myObj.movements = helper.constructArray(data[18]);
+			myObj.inception = data[19];
+			myObj.materials = helper.constructArray(data[20]);
+			myObj.depicts = helper.constructArray(data[21]);
+			myObj.country = data[22];
+			myObj.height = data[23];
+			myObj.width = data[24];
+			myObj.country_en = data[25];
+			myObj.country_de = data[26];
+			myObj.country_fr = data[27];
+			myObj.country_it = data[28];
+			myObj.country_es = data[29],
 			myObj.type = type;
 
 			objArr.push(myObj);

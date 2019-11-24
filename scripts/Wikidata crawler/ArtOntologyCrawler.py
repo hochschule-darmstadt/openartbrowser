@@ -110,15 +110,15 @@ def extract_artworks(type_name, wikidata_id):
             try:
                 labellang = item_dict["labels"][langkey]
             except:
-                labellang = label +" (english)"
+                labellang = label
             try:
                 descriptionlang = item_dict["descriptions"][langkey]
             except:
-                descriptionlang =  description + " (english)"
+                descriptionlang =  description
             try:
                 countrylang = clm_dict["P17"][0].getTarget().get()["labels"][langkey]
             except:
-                countrylang = country +" (english)"
+                countrylang = country
             dict.update({"label_"+langkey: labellang, "description_"+langkey: descriptionlang, "country_"+langkey: countrylang})
         extract_dicts.append(dict)
         # print(classes, item, label, description, image, creators, locations, genres, movements,  inception, materials, depicts,  country, height, width)
@@ -278,11 +278,11 @@ def extract_subjects(subject_type):
             try:
                 labellang = item_dict["labels"][langkey]
             except:
-                labellang = label +" (english)"
+                labellang = label
             try:
                 descriptionlang = item_dict["descriptions"][langkey]
             except:
-                descriptionlang =  description + " (english)"
+                descriptionlang =  description
             subject_dict.update({"label_"+langkey: labellang, "description_"+langkey: descriptionlang})
 
 
@@ -375,11 +375,11 @@ def extract_class(cls, class_dict, repo):
             try:
                 labellang = item_dict["labels"][langkey]
             except:
-                labellang = label + " (english)"
+                labellang = label
             try:
                 descriptionlang = item_dict["descriptions"][langkey]
             except:
-                descriptionlang = description +" (english)"
+                descriptionlang = description
             class_dict[cls].update({"label_"+langkey: labellang, "description_"+langkey: descriptionlang})
         for superclass in subclass_of:
             extract_class(superclass, class_dict, repo)

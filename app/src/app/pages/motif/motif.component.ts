@@ -1,10 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { Motif, Artwork, EntityType } from 'src/app/shared/models/models';
 import { Subject } from 'rxjs';
-import { async } from '@angular/core/testing';
+import DataService from 'src/app/core/services/elasticsearch/data.service';
 
 @Component({
   selector: 'app-motif',
@@ -32,7 +31,7 @@ export class MotifComponent implements OnInit, OnDestroy {
       this.motif = await this.dataService.findById<Motif>(motifId, EntityType.MOTIF);
 
       /** load slider items */
-      await this.dataService.findArtworksByMotifs([this.motif.id]).then((artworks) => {
+      await this.dataService.findArtworksByType("motifs", [this.motif.id]).then((artworks) => {
         this.sliderItems = this.shuffle(artworks);
       });
     });

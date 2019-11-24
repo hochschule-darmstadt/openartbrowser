@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChildren, QueryList } from '@angular/core';
 import { NgbCarouselConfig, NgbCarousel } from '@ng-bootstrap/ng-bootstrap';
-import { Entity, Artist, Artwork, Movement, Material, Location, Genre, Motif } from 'src/app/shared/models/models';
-import { DataService } from 'src/app/core/services/data.service';
+import { Entity, Artist, Artwork, Movement, Material, Location, Genre, Motif, EntityType } from 'src/app/shared/models/models';
+import DataService from 'src/app/core/services/elasticsearch/data.service';
 
 /**
  * @description Interface for the category sliders.
@@ -84,7 +84,7 @@ export class HomeComponent implements OnInit {
     },
   };
 
-  constructor(public dataService: DataService, ngb_config: NgbCarouselConfig) {
+  constructor(public dataService:DataService, ngb_config: NgbCarouselConfig) {
     /** set configuration of ngbCarousel */
     ngb_config.interval = 10000;
     ngb_config.keyboard = false;
@@ -105,13 +105,13 @@ export class HomeComponent implements OnInit {
    * @memberof HomeComponent
    */
   getCategoryItems = async (): Promise<void> => {
-    this.upperCategories.artwork.items = this.shuffle(await this.dataService.get20CategoryItems<Artwork>('artwork'));
-    this.upperCategories.artist.items = this.shuffle(await this.dataService.get20CategoryItems<Artist>('artist'));
-    this.upperCategories.movement.items = this.shuffle(await this.dataService.get20CategoryItems<Movement>('movement'));
-    this.lowerCategories.location.items = this.shuffle(await this.dataService.get20CategoryItems<Location>('location'));
-    this.lowerCategories.material.items = this.shuffle(await this.dataService.get20CategoryItems<Material>('material'));
-    this.lowerCategories.genre.items = this.shuffle(await this.dataService.get20CategoryItems<Genre>('genre'));
-    this.lowerCategories.motif.items = this.shuffle(await this.dataService.get20CategoryItems<Motif>('motif'));
+    this.upperCategories.artwork.items = this.shuffle(await this.dataService.getCategoryItems<Artwork>(EntityType.ARTWORK));
+    this.upperCategories.artist.items = this.shuffle(await this.dataService.getCategoryItems<Artist>(EntityType.ARTIST));
+    this.upperCategories.movement.items = this.shuffle(await this.dataService.getCategoryItems<Movement>(EntityType.MOVEMENT));
+    this.lowerCategories.location.items = this.shuffle(await this.dataService.getCategoryItems<Location>(EntityType.LOCATION));
+    this.lowerCategories.material.items = this.shuffle(await this.dataService.getCategoryItems<Material>(EntityType.MATERIAL));
+    this.lowerCategories.genre.items = this.shuffle(await this.dataService.getCategoryItems<Genre>(EntityType.GENRE));
+    this.lowerCategories.motif.items = this.shuffle(await this.dataService.getCategoryItems<Motif>(EntityType.MOTIF));
   };
 
   /**

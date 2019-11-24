@@ -1,10 +1,10 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {Artwork, EntityType} from 'src/app/shared/models/models';
-import {takeUntil} from 'rxjs/operators';
-import {DataService} from 'src/app/core/services/data.service';
-import {ActivatedRoute} from '@angular/router';
-import {Subject} from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Artwork, EntityType } from 'src/app/shared/models/models';
+import { takeUntil } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
+import { Subject } from 'rxjs';
 import * as _ from 'lodash';
+import DataService from 'src/app/core/services/elasticsearch/data.service';
 
 /** interface for the tabs */
 interface ArtworkTab {
@@ -108,8 +108,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   Object = Object;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {
-  }
+  constructor(private dataService: DataService, private route: ActivatedRoute) {}
 
   /**
    * @description hook that is executed at component initialization
@@ -157,7 +156,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     this.resetArtworkTabs();
     /** load artist related data */
     if (this.artwork) {
-      this.dataService.findArtworksByArtists(this.artwork.artists as any).then((artworks) => {
+      this.dataService.findArtworksByType("artists", this.artwork.artists as any).then((artworks) => {
         this.fillArtworkTab(this.artworkTabs.artist, artworks);
       });
       this.dataService.findMultipleById(this.artwork.artists as any, EntityType.ARTIST).then((artists) => {
@@ -165,7 +164,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       });
 
       /** load movement related data */
-      this.dataService.findArtworksByMovements(this.artwork.movements as any).then((artworks) => {
+      this.dataService.findArtworksByType("movements", this.artwork.movements as any).then((artworks) => {
         this.fillArtworkTab(this.artworkTabs.movement, artworks);
       });
       this.dataService.findMultipleById(this.artwork.movements as any, EntityType.MOVEMENT).then((movements) => {
@@ -173,7 +172,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       });
 
       /** load genre related data */
-      this.dataService.findArtworksByGenres(this.artwork.genres as any).then((artworks) => {
+      this.dataService.findArtworksByType("genres", this.artwork.genres as any).then((artworks) => {
         this.fillArtworkTab(this.artworkTabs.genre, artworks);
       });
       this.dataService.findMultipleById(this.artwork.genres as any, EntityType.GENRE).then((genres) => {
@@ -181,7 +180,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       });
 
       /** load motif related data */
-      this.dataService.findArtworksByMotifs(this.artwork.motifs as any).then((artworks) => {
+      this.dataService.findArtworksByType("motifs", this.artwork.motifs as any).then((artworks) => {
         this.fillArtworkTab(this.artworkTabs.motif, artworks);
       });
       this.dataService.findMultipleById(this.artwork.motifs as any, EntityType.MOTIF).then((motifs) => {
@@ -189,7 +188,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       });
 
       /** load loaction related data */
-      this.dataService.findArtworksByLocations(this.artwork.locations as any).then((artworks) => {
+      this.dataService.findArtworksByType("locations", this.artwork.locations as any).then((artworks) => {
         this.fillArtworkTab(this.artworkTabs.location, artworks);
       });
       this.dataService.findMultipleById(this.artwork.locations as any, EntityType.LOCATION).then((locations) => {
@@ -197,7 +196,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       });
 
       /** load material related data */
-      this.dataService.findArtworksByMaterials(this.artwork.materials as any).then((artworks) => {
+      this.dataService.findArtworksByType("materials",this.artwork.materials as any).then((artworks) => {
         this.fillArtworkTab(this.artworkTabs.material, artworks);
       });
       this.dataService.findMultipleById(this.artwork.materials as any, EntityType.MATERIAL).then((materials) => {

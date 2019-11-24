@@ -1,9 +1,9 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {DataService} from 'src/app/core/services/data.service';
-import {ActivatedRoute} from '@angular/router';
-import {takeUntil} from 'rxjs/operators';
-import {Location, Artwork, EntityType} from 'src/app/shared/models/models';
-import {Subject} from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
+import { Location, Artwork, EntityType } from 'src/app/shared/models/models';
+import { Subject } from 'rxjs';
+import DataService from 'src/app/core/services/elasticsearch/data.service';
 
 @Component({
   selector: 'app-location',
@@ -23,8 +23,7 @@ export class LocationComponent implements OnInit, OnDestroy {
   /** Change collapse icon; true if more infos are folded in */
   collapse = true;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {
-  }
+  constructor(private dataService: DataService, private route: ActivatedRoute) {}
 
   /** hook that is executed at component initialization */
   ngOnInit() {
@@ -35,7 +34,7 @@ export class LocationComponent implements OnInit, OnDestroy {
       this.location = await this.dataService.findById<Location>(locationId, EntityType.LOCATION);
 
       /** load slider items */
-      this.dataService.findArtworksByLocations([this.location.id]).then((artworks) => {
+      this.dataService.findArtworksByType("locations", [this.location.id]).then((artworks) => {
         this.sliderItems = this.shuffle(artworks);
       });
       this.calculateCollapseState();

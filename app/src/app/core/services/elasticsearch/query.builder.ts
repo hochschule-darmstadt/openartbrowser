@@ -16,20 +16,20 @@ export interface QueryObject {
  */
 export default class QueryBuilder {
     /** query object */
-    private queryObject: QueryObject = {
-        query: { bool: { should: [], must: [] } },
-        sort: []
-    }
+    private queryObject: QueryObject;
 
     /**
      * Create new QueryBilder object.
      * @param query predefined query
      */
     constructor(query?: QueryObject) {
-        this.queryObject = query;
+        this.queryObject = (query) ? query : {
+            query: { bool: { should: [], must: [] } },
+            sort: []
+        };
     }
 
-    public get query(){
+    public build() {
         return this.queryObject
     }
     /**
@@ -174,7 +174,7 @@ export default class QueryBuilder {
     /**
      * Override toString method
      */
-    public toString = () : string => {
+    public toString = (): string => {
         return JSON.stringify(this.queryObject);
     }
 }

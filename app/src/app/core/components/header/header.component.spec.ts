@@ -8,8 +8,8 @@ import { FormsModule } from '@angular/forms';
 import { SliderComponent } from 'src/app/shared/components/slider/slider.component';
 import { SlideComponent } from 'src/app/shared/components/slider/slide/slide.component';
 import { RouterModule } from '@angular/router';
-import { DataService } from '../../services/data.service';
 import { HttpClientModule } from '@angular/common/http';
+import DataService from '../../services/elasticsearch/data.service';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;

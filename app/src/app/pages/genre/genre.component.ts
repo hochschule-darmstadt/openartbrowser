@@ -1,9 +1,9 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {DataService} from 'src/app/core/services/data.service';
-import {ActivatedRoute} from '@angular/router';
-import {takeUntil} from 'rxjs/operators';
-import {Genre, Artwork, EntityType} from 'src/app/shared/models/models';
-import {Subject} from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
+import { Genre, Artwork, EntityType } from 'src/app/shared/models/models';
+import { Subject } from 'rxjs';
+import DataService from 'src/app/core/services/elasticsearch/data.service';
 
 @Component({
   selector: 'app-genre',
@@ -36,7 +36,7 @@ export class GenreComponent implements OnInit, OnDestroy {
       this.genre = await this.dataService.findById<Genre>(genreId, EntityType.GENRE);
 
       /** load slider items */
-      this.dataService.findArtworksByGenres([this.genre.id]).then((artworks) => {
+      this.dataService.findArtworksByType("genres",[this.genre.id]).then((artworks) => {
         this.sliderItems = this.shuffle(artworks);
       });
       this.calculateCollapseState();

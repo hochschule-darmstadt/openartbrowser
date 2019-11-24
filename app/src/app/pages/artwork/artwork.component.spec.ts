@@ -4,10 +4,10 @@ import { ArtworkComponent } from './artwork.component';
 import { SlideComponent } from 'src/app/shared/components/slider/slide/slide.component';
 import { SliderComponent } from 'src/app/shared/components/slider/slider.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { DataService } from 'src/app/core/services/data.service';
 import { HttpClientModule } from '@angular/common/http';
 import { ImageViewerModule } from 'ngx-image-viewer';
 import { RouterModule } from '@angular/router';
+import DataService from 'src/app/core/services/elasticsearch/data.service';
 
 describe('ArtworkComponent', () => {
   let component: ArtworkComponent;

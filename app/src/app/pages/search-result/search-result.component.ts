@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Artwork, EntityType, Artist, Location, Movement, Genre, Material, Motif } from 'src/app/shared/models/models';
-import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import DataService from 'src/app/core/services/elasticsearch/data.service';
 
 @Component({
   selector: 'app-search-result',
@@ -69,8 +69,7 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 
   /** fetch search results */
   async getSearchResults() {
-    this.sliderItems = await this.dataService
-      .findArtworksByCategories(
+    this.sliderItems = await this.dataService.searchArtworks(
         {
           artists: this.artistArray.map((artist) => artist.id),
           motifs: this.motifArray.map((motif) => motif.id),

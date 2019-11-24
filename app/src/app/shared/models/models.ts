@@ -64,7 +64,7 @@ export interface Motif extends Entity {
   type: 'motif';
 }
 
-export interface artSearch {
+export interface ArtSearch {
   motifs?: string[];
   artists?: string[];
   movements?: string[];

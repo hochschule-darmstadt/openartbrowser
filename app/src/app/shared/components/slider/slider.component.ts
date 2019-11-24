@@ -1,5 +1,15 @@
-import { Component, Input, SimpleChanges, OnChanges, EventEmitter, Output } from '@angular/core';
-import { Entity } from '../../models/models';
+import {
+  Component,
+  Input,
+  SimpleChanges,
+  OnChanges,
+  EventEmitter,
+  Output,
+  ViewChild,
+  AfterViewInit
+} from '@angular/core';
+import {Entity} from '../../models/models';
+import {NgbCarousel} from "@ng-bootstrap/ng-bootstrap";
 
 export interface Slide {
   /** artworks displayed on this slide */
@@ -21,10 +31,10 @@ export interface Slide {
 /**
  * In order to test the Slide component individually
  * we need a default slide that can be passed to it
- * 
+ *
  * @returns {Slide} a default slide
  */
-export function makeDefaultSlide(id:number = 0, items:Array<Entity> = []): Slide {
+export function makeDefaultSlide(id: number = 0, items: Array<Entity> = []): Slide {
   return {
     id,
     items,
@@ -49,14 +59,27 @@ export class SliderComponent implements OnChanges {
   /**  entities that should be displayed in this slider */
   @Input() items: Entity[] = [];
 
-  // slides of the slider, max 8 items each.
+  /** displayed items once at a time */
+  @Input() displayed_items: number = 8;
+
+  // slides of the slider, max x items each.
   slides: Slide[];
+
+  @Output() onSlideChangedCallback = new EventEmitter<any>();
+
+  @ViewChild('myCarousel') carousel: NgbCarousel;
 
   /** emits hovered artwork on hover event. */
   @Output() itemHover: EventEmitter<Entity> = new EventEmitter<Entity>();
 
-  constructor() { }
+  constructor() {
+  }
 
+  /*
+    ngAfterViewInit() {
+      console.log("Carousel: ", this.carousel)
+    }
+  */
   /** Hook that is called when any data-bound property of a directive changes. */
   ngOnChanges(changes: SimpleChanges) {
     // rebuild slides if slider items input changed.
@@ -68,11 +91,11 @@ export class SliderComponent implements OnChanges {
   /** Divide the slider items into slides. Initialize slides. */
   buildSlides(): void {
     const slidesBuilt: Slide[] = [];
-    // There are 8 images on each slide.
-    const numberOfSlides = this.items.length / 8;
+    // There are x images on each slide.
+    const numberOfSlides = this.items.length / this.displayed_items;
     for (let i = 0; i < numberOfSlides; i++) {
-      // get next 8 items out of items array
-      const items: Entity[] = this.items.slice(i * 8, i * 8 + 8);
+      // get next x items out of items array
+      const items: Entity[] = this.items.slice(i * +this.displayed_items, i * +this.displayed_items + +this.displayed_items);
 
       const slide: Slide = makeDefaultSlide(i, items);
 
@@ -100,9 +123,9 @@ export class SliderComponent implements OnChanges {
     this.slides = slidesBuilt;
   }
 
-  /** delete slide based on id of the passed slide 
+  /** delete slide based on id of the passed slide
    * @param slide slide to be deleted
-  */
+   */
   deleteUnusedSlides() {
     const lastSlide = this.slides[this.slides.length - 1];
     if (lastSlide.items.length === 0) {
@@ -112,5 +135,9 @@ export class SliderComponent implements OnChanges {
       }
       this.slides.splice(this.slides.length - 1, 1);
     }
+  }
+
+  public onSlideChanged(slideData) {
+    this.onSlideChangedCallback.emit(slideData)
   }
 }

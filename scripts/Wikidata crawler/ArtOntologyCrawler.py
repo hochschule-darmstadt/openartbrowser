@@ -18,7 +18,7 @@ import requests
 import json
 
 DEV = False
-DEV_LIMIT = 5
+DEV_LIMIT = 50
 
 def get_abstract(page_id, language_code="en"):
     """Extracts the abstract for a given page_id and language
@@ -526,7 +526,9 @@ def extract_art_ontology():
 
     generate_csv("classes", extract_classes())
 
-    generate_csv("artworks", merge_artworks())
+    merged_artworks = merge_artworks()
+    generate_csv("artworks", merged_artworks)
+    generate_json("artworks", merged_artworks)
 
     generate_rdf()
 

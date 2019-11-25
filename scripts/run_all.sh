@@ -2,8 +2,6 @@ cd Wikidata\ crawler
 export PYWIKIBOT_NO_USER_CONFIG=1
 python3 -c "import ArtOntologyCrawler; ArtOntologyCrawler.extract_art_ontology()"
 
-node ../data_manipulation/script_artworks.js
-
 node ../data_manipulation/script_artworks_rank.js
 
 node ../data_manipulation/script_genres_rank.js

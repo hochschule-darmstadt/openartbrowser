@@ -19,8 +19,13 @@
             <div class="container-image" [routerLink]="['/' + key, item?.id]">
               <img class="image" (error)="onLoadingError(upperCategories[key], item)" src="{{ item?.imageSmall }}" alt="{{ item?.label }}" />
               <div class="overlay">
-                <span class="type badge badge-secondary badge-pill chip"><i class="fas fa-{{ upperCategories[key]?.icon }}"></i>
-                  {{ key | titlecase }}</span>
+                <span class="type badge badge-secondary badge-pill chip">
+                  <i class="fas fa-{{ upperCategories[key]?.icon }}"></i>
+                  <ng-container i18n="Home Slider Labels@@slider_labels">
+                      {key, select, artwork {Artwork} motif {Motif} artist {Artist} location {Location} 
+                      genre {Genre} movement {Movement} material {Material} } 
+                    </ng-container>
+                </span>
                 <span class="label">{{ item?.label | titlecase }}</span>
               </div>
             </div>
@@ -38,8 +43,13 @@
             <div class="container-image" [routerLink]="['/' + key, item?.id]">
               <img class="image" src="{{ item?.imageSmall }}" alt="{{ item?.label }}" (error)="onLoadingError(lowerCategories[key], item)" />
               <div class="overlay">
-                <span class="type badge badge-secondary badge-pill chip"><i class="fas fa-{{ lowerCategories[key]?.icon }}"></i>
-                  {{ key | titlecase }}</span>
+                <span class="type badge badge-secondary badge-pill chip">
+                  <i class="fas fa-{{ lowerCategories[key]?.icon }}"></i>
+                  <ng-container i18n="Home Slider Labels@@slider_labels">
+                    {key, select, artwork {Artwork} motif {Motif} artist {Artist} location {Location} 
+                    genre {Genre} movement {Movement} material {Material} } 
+                  </ng-container>
+                </span>
                 <span class="label">{{ item?.label | titlecase }}</span>
               </div>
             </div>

@@ -29,21 +29,6 @@ let obj = {
 	type: '',
 	abstract: '',
 	wikipediaLink: '',
-	label_en:'',
-	description_en:'',
-	label_de:'',
-	description_de:'',
-	label_fr:'',
-	description_fr:'',
-	label_it:'',
-	description_it:'',
-	label_es:'',
-	description_es:'',
-	country_en:'',
-	country_de:'',
-	country_fr:'',
-	country_it:'',
-	country_es:''
 }
 let objArr = [];
 let ids = [];
@@ -60,31 +45,16 @@ const csvStream = csv({ delimiter: ';' })
 			myObj.image = data[4];
 			myObj.abstract = data[5];
 			myObj.wikipediaLink = data[6];
-			myObj.label_en = data[7];
-			myObj.description_en = data[8];
-			myObj.label_de = data[9];
-			myObj.description_de = data[10];
-			myObj.label_fr = data[11];
-			myObj.description_fr = data[12];
-			myObj.label_it = data[13];
-			myObj.description_it = data[14];
-			myObj.label_es = data[15];
-			myObj.description_es = data[16];
-			myObj.artists = helper.constructArray(data[17]);
-			myObj.locations = helper.constructArray(data[18]);
-			myObj.genres = helper.constructArray(data[19]);
-			myObj.movements = helper.constructArray(data[20]);
-			myObj.inception = data[21];
-			myObj.materials = helper.constructArray(data[22]);
-			myObj.motifs = helper.constructArray(data[23]);
-			myObj.country = data[24];
-			myObj.height = data[25];
-			myObj.width = data[26];
-			myObj.country_en = data[27];
-			myObj.country_de = data[28];
-			myObj.country_fr = data[29];
-			myObj.country_it = data[30];
-			myObj.country_es = data[31],
+			myObj.artists = helper.constructArray(data[7]);
+			myObj.locations = helper.constructArray(data[8]);
+			myObj.genres = helper.constructArray(data[9]);
+			myObj.movements = helper.constructArray(data[10]);
+			myObj.inception = data[11];
+			myObj.materials = helper.constructArray(data[12]);
+			myObj.motifs = helper.constructArray(data[13]);
+			myObj.country = data[14];
+			myObj.height = data[15];
+			myObj.width = data[16];
 
 			myObj.type = type;
 

@@ -145,9 +145,9 @@ def extract_artworks(type_name, wikidata_id):
                 countrylang = country
             dict.update({"label_"+langkey: labellang, "description_"+langkey: descriptionlang, "country_"+langkey: countrylang})
         extract_dicts.append(dict)
-        count += 1
-        if count == 10:
-          break
+        #count += 1
+        #if count == 10:
+          #break
 
     print(datetime.datetime.now(), "Finished with", type_name)
     return extract_dicts

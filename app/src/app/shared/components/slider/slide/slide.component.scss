@@ -1,3 +1,5 @@
+@import "../slider.component.scss";
+
 .img_self {
   display: block;
   width: 100%;
@@ -24,7 +26,7 @@
 
 .item {
   position: relative;
-  max-height: 20em;
+  max-height: $container-height;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -37,6 +39,7 @@
   }
 
   &-container {
+    min-height: $container-height;
     display: flex;
     justify-content: center;
     align-items: center;

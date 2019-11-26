@@ -1,13 +1,4 @@
-import {
-  Component,
-  Input,
-  SimpleChanges,
-  OnChanges,
-  EventEmitter,
-  Output,
-  ViewChild,
-  AfterViewInit
-} from '@angular/core';
+import {Component, Input, SimpleChanges, OnChanges, EventEmitter, Output, ViewChild, ElementRef} from '@angular/core';
 import {Entity} from '../../models/models';
 import {NgbCarousel} from "@ng-bootstrap/ng-bootstrap";
 
@@ -73,19 +64,20 @@ export class SliderComponent implements OnChanges {
   /** emits hovered artwork on hover event. */
   @Output() itemHover: EventEmitter<Entity> = new EventEmitter<Entity>();
 
-  constructor() {
+  constructor(private elRef: ElementRef) {
   }
 
-  /*
-    ngAfterViewInit() {
-      console.log("Carousel: ", this.carousel)
-    }
-  */
   /** Hook that is called when any data-bound property of a directive changes. */
   ngOnChanges(changes: SimpleChanges) {
     // rebuild slides if slider items input changed.
     if (changes.items && this.items) {
       this.buildSlides();
+    }
+    let nextButton = this.elRef.nativeElement.querySelector(".carousel-control-next");
+    let prevButton = this.elRef.nativeElement.querySelector(".carousel-control-prev");
+    if (nextButton !== null && prevButton !== null) {
+      nextButton.addEventListener('click', this.onClickNext.bind(this));
+      prevButton.addEventListener('click', this.onClickPrev.bind(this));
     }
   }
 
@@ -140,10 +132,25 @@ export class SliderComponent implements OnChanges {
   }
 
   public onSlideChanged(slideData) {
-    this.onSlideChangedCallback.emit(slideData)
+    let carouselFirstId = this.carousel.slides.toArray()[0].id;
+    let carouselLastId = this.carousel.slides.toArray().pop().id;
+    // trigger on last slide
+    if (this.carousel.activeId === carouselFirstId && slideData["direction"] === "right") {
+      this.onSlideChangedCallback.emit(-1)
+    } else if (this.carousel.activeId === carouselLastId && slideData["direction"] === "left") {
+      this.onSlideChangedCallback.emit(+1)
+    }
   }
 
-  public selectSlide(slideId) {
-    this.carousel.select("ngb-slide-" + slideId)
+  onClickNext() {
+    if (this.carousel.slides.length === 1) {
+      this.onSlideChangedCallback.emit(1)
+    }
+  }
+
+  onClickPrev() {
+    if (this.carousel.slides.length === 1) {
+      this.onSlideChangedCallback.emit(-1)
+    }
   }
 }

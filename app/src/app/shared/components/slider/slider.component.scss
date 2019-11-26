@@ -8,3 +8,19 @@
 .carousel-control-next {
   width: 2%;
 }
+
+.center {
+  display: flex;
+  justify-content: center;
+}
+
+$container-height: 20em;
+
+.no-items-container {
+  min-height: $container-height;
+  max-height: $container-height;
+}
+
+.no-item-text {
+  font-size: xx-large;
+}

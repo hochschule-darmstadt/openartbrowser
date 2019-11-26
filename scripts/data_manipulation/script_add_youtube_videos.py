@@ -6,8 +6,8 @@ add_for_types = ["artwork", "artist", "movement"]
 
 def add_youtube_videos(
         videofile_location="youtube_videos.csv",
-        ontology_location="art_ontology.json",
-        ontology__output_location="art_ontology.json",
+        ontology_location="../crawler_output/art_ontology.json",
+        ontology__output_location="../crawler_output/art_ontology.json",
 ) -> None:
     """Load the video csv file and add the links to the ontology file"""
     videos = {}

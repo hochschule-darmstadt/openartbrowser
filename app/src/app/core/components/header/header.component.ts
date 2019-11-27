@@ -1,5 +1,4 @@
-import { Component, OnInit, LOCALE_ID, Inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-header',
@@ -7,17 +6,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit {
-  public path: string = "";
-  public locale: string = ""
-  
-  constructor(private router: Router, @Inject(LOCALE_ID) protected localeId: string) {
-    /**
-     * Set the variable path to router url 
-     * every time the url changed.
-     */
-    router.events.subscribe(val => this.path = this.router.url);
-    this.locale = localeId;
-  }
+  constructor() {}
 
-  ngOnInit() { }
+  ngOnInit() {}
 }

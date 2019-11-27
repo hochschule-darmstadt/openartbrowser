@@ -1,10 +1,9 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {DataService} from 'src/app/core/services/data.service';
-import {ActivatedRoute} from '@angular/router';
-import {takeUntil} from 'rxjs/operators';
-import {Movement, Artwork, EntityType} from 'src/app/shared/models/models';
-import {Subject} from 'rxjs';
-import * as _ from "lodash";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { DataService } from 'src/app/core/services/data.service';
+import { ActivatedRoute } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
+import { Movement, Artwork, EntityType } from 'src/app/shared/models/models';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-movement',
@@ -21,11 +20,7 @@ export class MovementComponent implements OnInit, OnDestroy {
   /** Related artworks */
   sliderItems: Artwork[] = [];
 
-  /** Change collapse icon; true if more infos are folded in */
-  collapse = true;
-
-  constructor(private dataService: DataService, private route: ActivatedRoute) {
-  }
+  constructor(private dataService: DataService, private route: ActivatedRoute) {}
 
   /** hook that is executed at component initialization */
   ngOnInit() {
@@ -45,12 +40,12 @@ export class MovementComponent implements OnInit, OnDestroy {
       this.dataService.findMultipleById(this.movement.influenced_by as any, EntityType.ARTIST).then((influences) => {
         this.movement.influenced_by = influences;
       });
-      this.calculateCollapseState();
     });
   }
 
   /**
    * @description shuffle the items' categories.
+   * @memberof ArtworkComponent
    */
   shuffle = (a: Artwork[]): Artwork[] => {
     for (let i = a.length - 1; i > 0; i--) {
@@ -58,24 +53,7 @@ export class MovementComponent implements OnInit, OnDestroy {
       [a[i], a[j]] = [a[j], a[i]];
     }
     return a;
-  }
-
-  toggleDetails() {
-    this.collapse = !this.collapse;
-  }
-
-  private calculateCollapseState() {
-    let metaNumber = 0;
-    if (this.movement.abstract.length > 400) {
-      metaNumber += 10;
-    } else if (this.movement.abstract.length) {
-      metaNumber += 3;
-    }
-    if (!_.isEmpty(this.movement.influenced_by)) {
-      metaNumber += 3;
-    }
-    this.collapse = metaNumber >= 10;
-  }
+  };
 
   ngOnDestroy() {
     this.ngUnsubscribe.next();

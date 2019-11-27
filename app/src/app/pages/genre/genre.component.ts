@@ -1,9 +1,9 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {DataService} from 'src/app/core/services/data.service';
-import {ActivatedRoute} from '@angular/router';
-import {takeUntil} from 'rxjs/operators';
-import {Genre, Artwork, EntityType} from 'src/app/shared/models/models';
-import {Subject} from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { DataService } from 'src/app/core/services/data.service';
+import { ActivatedRoute } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
+import { Genre, Artwork, EntityType } from 'src/app/shared/models/models';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-genre',
@@ -20,11 +20,7 @@ export class GenreComponent implements OnInit, OnDestroy {
   /** Related artworks */
   sliderItems: Artwork[] = [];
 
-  /** Change collapse icon; true if more infos are folded in */
-  collapse = true;
-
-  constructor(private dataService: DataService, private route: ActivatedRoute) {
-  }
+  constructor(private dataService: DataService, private route: ActivatedRoute) {}
 
   /** hook that is executed at component initialization */
   ngOnInit() {
@@ -39,12 +35,12 @@ export class GenreComponent implements OnInit, OnDestroy {
       this.dataService.findArtworksByGenres([this.genre.id]).then((artworks) => {
         this.sliderItems = this.shuffle(artworks);
       });
-      this.calculateCollapseState();
     });
   }
 
   /**
    * @description shuffle the items' categories.
+   * @memberof ArtworkComponent
    */
   shuffle = (a: Artwork[]): Artwork[] => {
     for (let i = a.length - 1; i > 0; i--) {
@@ -52,24 +48,10 @@ export class GenreComponent implements OnInit, OnDestroy {
       [a[i], a[j]] = [a[j], a[i]];
     }
     return a;
-  }
+  };
 
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
-  }
-
-  toggleDetails() {
-    this.collapse = !this.collapse;
-  }
-
-  private calculateCollapseState() {
-    let metaNumber = 0;
-    if (this.genre.abstract.length > 400) {
-      metaNumber += 10;
-    } else if (this.genre.abstract.length) {
-      metaNumber += 3;
-    }
-    this.collapse = metaNumber >= 10;
   }
 }

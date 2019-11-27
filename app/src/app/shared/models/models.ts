@@ -2,8 +2,6 @@ export interface Entity {
   id: string;
   label?: string;
   description?: string;
-  abstract?: string;
-  wikipediaLink?: string;
   image?: string;
   imageSmall?: string;
   imageMedium?: string;
@@ -25,13 +23,13 @@ export interface Artist extends Entity {
 }
 
 export interface Artwork extends Entity {
-  artists: Partial<Artist>[];
+  creators: Partial<Artist>[];
   locations: Partial<Location>[];
   genres: Partial<Genre>[];
   movements: Partial<Movement>[];
   inception?: number;
   materials: Partial<Material>[];
-  motifs: Partial<Motif>[];
+  depicts: Partial<Motif>[];
   country?: string;
   height?: number;
   width?: number;
@@ -65,8 +63,8 @@ export interface Motif extends Entity {
 }
 
 export interface artSearch {
-  motifs?: string[];
-  artists?: string[];
+  depicts?: string[];
+  creators?: string[];
   movements?: string[];
   genres?: string[];
   materials?: string[];
@@ -80,10 +78,10 @@ export enum EntityType {
   LOCATION = 'location',
   MATERIAL = 'material',
   MOVEMENT = 'movement',
-  MOTIF = 'motif'
+  MOTIF = 'object'
 }
 
-export interface TagItem {
+export interface TagItem{
   label: string;
   type?: string;
   id?: string;

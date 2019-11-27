@@ -1,7 +1,7 @@
 <ng-template #rt let-r="result" let-t="term">
   <div class="search__result">
     <span class="search__result-type">
-      <i *ngIf="r['type'] == 'motif'" class="fas fa-image"></i>
+      <i *ngIf="r['type'] == 'object'" class="fas fa-image"></i>
       <i *ngIf="r['type'] == 'location'" class="fas fa-archway"></i>
       <i *ngIf="r['type'] == 'genre'" class="fas fa-tag"></i>
       <i *ngIf="r['type'] == 'material'" class="fas fa-scroll"></i>
@@ -13,21 +13,25 @@
     <ngb-highlight class="search__result-label" [result]="r.label" [term]="t"></ngb-highlight>
 
     <p class="badge badge-secondary search__result-chip">
-      <ng-template> motif </ng-template>
+      <span *ngIf="r?.type !== 'object' && r?.type !== 'depict'; else elseBlock"> {{ r?.type }}</span>
+      <ng-template #elseBlock> motif </ng-template>
     </p>
   </div>
 </ng-template>
 
 <div class="search">
   <div *ngIf="searchItems.length > 0 && isHeaderSearch" class="search__header-chips">
-    <span *ngFor="let i of searchItems"
-          class="badge badge-pill badge-secondary chip search__header-chip">
+    <span
+      *ngFor="let i of searchItems"
+      class="badge badge-pill badge-secondary chip search__header-chip"
+      [routerLink]="i?.type !== 'object' ? '/' + i?.type + '/' + i?.id : '/motif/' + i?.id"
+    >
       <span *ngIf="i.type === 'artist'" class="fas fa-user"></span>
       <span *ngIf="i.type === 'movement'" class="fas fa-wind"></span>
       <span *ngIf="i.type === 'material'" class="fas fa-scroll"></span>
       <span *ngIf="i.type === 'genre'" class="fas fa-tag"></span>
       <span *ngIf="i.type === 'location'" class="fas fa-archway"></span>
-      <span *ngIf="i.type === 'motif'" class="fas fa-image"></span>
+      <span *ngIf="i.type === 'object'" class="fas fa-image"></span>
       <span *ngIf="i.type" class="search__header-chip-label ml-1">{{ i.label }}</span>
       <span *ngIf="!i.type" class="search__header-chip-label">"{{ i.label }}"</span>
       <span (click)="removeTag(i)" class="fas fa-times-circle search__header-chip-removeButton"></span>
@@ -40,8 +44,7 @@
     type="text"
     name="Artwork"
     #input
-    i18n-placeholder="Searchbar Placeholder@@search_placeholder"
-    placeholder="Search for something..."
+    placeholder="{{ placeholderText }}"
     [ngbTypeahead]="search"
     [resultTemplate]="rt"
     [inputFormatter]="formatter"

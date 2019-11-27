@@ -41,13 +41,13 @@ function openArtworks() {
 		let undefinedData = 0
 		_.each(JSON.parse(buf), function (obj) {
 			_.each(obj, function (val, key) {
-				if (key === 'artists') {
-					_.each(val, function (artist) {
-						if (_.isUndefined(artistsCounter.get(artist))) {
+				if (key === 'creators') {
+					_.each(val, function (creator) {
+						if (_.isUndefined(artistsCounter.get(creator))) {
 							undefinedData++
 						}
 						else
-							artistsCounter.set(artist, artistsCounter.get(artist) + 1)
+							artistsCounter.set(creator, artistsCounter.get(creator) + 1)
 					})
 				}
 			})

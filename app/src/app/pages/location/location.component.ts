@@ -1,9 +1,9 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {DataService} from 'src/app/core/services/data.service';
-import {ActivatedRoute} from '@angular/router';
-import {takeUntil} from 'rxjs/operators';
-import {Location, Artwork, EntityType} from 'src/app/shared/models/models';
-import {Subject} from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { DataService } from 'src/app/core/services/data.service';
+import { ActivatedRoute } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
+import { Location, Artwork, EntityType } from 'src/app/shared/models/models';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-location',
@@ -20,11 +20,10 @@ export class LocationComponent implements OnInit, OnDestroy {
   /** Related artworks */
   sliderItems: Artwork[] = [];
 
-  /** Change collapse icon; true if more infos are folded in */
-  collapse = true;
+  /** Change collapse icon */
+  collapseDown: boolean = true;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {
-  }
+  constructor(private dataService: DataService, private route: ActivatedRoute) {}
 
   /** hook that is executed at component initialization */
   ngOnInit() {
@@ -38,12 +37,12 @@ export class LocationComponent implements OnInit, OnDestroy {
       this.dataService.findArtworksByLocations([this.location.id]).then((artworks) => {
         this.sliderItems = this.shuffle(artworks);
       });
-      this.calculateCollapseState();
     });
   }
 
   /**
    * @description shuffle the items' categories.
+   * @memberof ArtworkComponent
    */
   shuffle = (a: Artwork[]): Artwork[] => {
     for (let i = a.length - 1; i > 0; i--) {
@@ -51,20 +50,10 @@ export class LocationComponent implements OnInit, OnDestroy {
       [a[i], a[j]] = [a[j], a[i]];
     }
     return a;
-  }
+  };
 
   toggleDetails() {
-    this.collapse = !this.collapse;
-  }
-
-  private calculateCollapseState() {
-    let metaNumber = 0;
-    if (this.location.abstract.length > 400) {
-      metaNumber += 10;
-    } else if (this.location.abstract.length) {
-      metaNumber += 3;
-    }
-    this.collapse = metaNumber >= 10;
+    this.collapseDown = !this.collapseDown;
   }
 
   ngOnDestroy() {

@@ -72,8 +72,8 @@ export class SearchResultComponent implements OnInit, OnDestroy {
     this.sliderItems = await this.dataService
       .findArtworksByCategories(
         {
-          artists: this.artistArray.map((artist) => artist.id),
-          motifs: this.motifArray.map((motif) => motif.id),
+          creators: this.artistArray.map((artist) => artist.id),
+          depicts: this.motifArray.map((motif) => motif.id),
           movements: this.movementArray.map((movement) => movement.id),
           locations: this.locationArray.map((loc) => loc.id),
           genres: this.genreArray.map((genre) => genre.id),

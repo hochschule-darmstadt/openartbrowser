@@ -28,17 +28,11 @@ module.exports = function (config) {
     browsers: ['Chrome'],
     singleRun: false,
     restartOnFileChange: true,
-    customLaunchers: {
-      ChromeHeadlessNoSandbox: {
-        base: 'ChromeHeadless',
-        flags: ['--no-sandbox']
-      }
-    },
     proxies: {
       "/api": {
         target: "https://openartbrowser.org",
         secure: false
       }
-    }
+    },
   });
 };

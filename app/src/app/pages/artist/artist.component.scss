@@ -6,12 +6,11 @@ img {
   cursor: pointer;
 }
 
-.wiki-link {
-  white-space: nowrap;
-  float: right;
-}
-
 @media (min-width: 992px) {
+  .info {
+    margin-left: -2em;
+  }
+
   /*pl-1*/
   .notchip {
     padding-left: 0.25rem;
@@ -30,6 +29,6 @@ img {
 }
 
 /* Unset cursor: pointer; badge */
-.cursor-unset {
+.cursor-unset{
   cursor: unset;
 }

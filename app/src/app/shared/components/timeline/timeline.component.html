@@ -1,4 +1,4 @@
 <ng5-slider id="ng5slider" [(value)]="value" [options]="options" (valueChange)="onSliderMoved()"
             [manualRefresh]="manualRefresh"></ng5-slider>
-<app-slider #carousel [items]="sliderItems" heading="" displayed_items="{{itemCountPerPeriod}}"
+<app-slider #carousel [items]="sliderItems" [itemsDataGetter]="this.getItemData" heading="" displayed_items="{{itemCountPerPeriod}}"
             (onSlideChangedCallback)="onCarouselMoved($event)"></app-slider>

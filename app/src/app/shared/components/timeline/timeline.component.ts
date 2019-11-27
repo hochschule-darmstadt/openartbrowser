@@ -31,6 +31,9 @@ export class TimelineComponent {
   options: Options = {
     showTicksValues: true,
     stepsArray: [],
+    getPointerColor: function () {
+      return "#00bc8c"
+    },
     customValueToPosition: function (val, minVal, maxVal) {
       let range = maxVal - minVal;
       return (val - minVal) / range;
@@ -95,5 +98,10 @@ export class TimelineComponent {
 
   onSliderMoved() {
     this.updateSliderItems();
+  }
+
+  getItemData(itemId) {
+    let item = this.items.filter(item => item.id === itemId)[0];
+    return item.inception
   }
 }

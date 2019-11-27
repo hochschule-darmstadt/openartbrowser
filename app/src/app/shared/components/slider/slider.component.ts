@@ -17,6 +17,8 @@ export interface Slide {
   isFirstSlide: boolean;
   /** slide id to uniquely identify slide within this slider */
   id: number;
+
+  itemDataGetter:Function;
 }
 
 /**
@@ -33,7 +35,8 @@ export function makeDefaultSlide(id: number = 0, items: Array<Entity> = []): Sli
     isLastSlide: false,
     nextSlide: null,
     prevSlide: null,
-    loadContent: null
+    loadContent: null,
+    itemDataGetter:null
   };
 }
 
@@ -52,6 +55,12 @@ export class SliderComponent implements OnChanges {
 
   /** displayed items once at a time */
   @Input() displayed_items: number = 8;
+
+  /** Emitter to get item-specific data from inside the slide **/
+    //@Output() itemsDataEmitter: EventEmitter<any> = new EventEmitter<Entity>();
+  @Input()
+  itemsDataGetter: Function;
+
 
   // slides of the slider, max x items each.
   slides: Slide[];
@@ -111,7 +120,7 @@ export class SliderComponent implements OnChanges {
         slide.nextSlide = slidesBuilt[0];
         slidesBuilt[0].prevSlide = slide;
       }
-
+      slide.itemDataGetter = this.itemsDataGetter;
       slidesBuilt.push(slide);
     }
     this.slides = slidesBuilt;

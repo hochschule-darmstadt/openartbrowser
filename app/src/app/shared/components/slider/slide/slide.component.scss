@@ -1,10 +1,15 @@
 @import "../slider.component.scss";
 
+.slide {
+  min-height: $container-height;
+  height: $container-height;
+}
+
 .img_self {
-  display: block;
-  width: 100%;
-  max-height: 100%;
+  display: flex;
   cursor: pointer;
+  max-height: 100%;
+  max-width: 100%;
 }
 
 .overlay_view {
@@ -24,13 +29,17 @@
   cursor: pointer;
 }
 
-.item {
+.item-container {
+  height: 100%;
+  display: block;
+  align-items: center;
+}
+
+.overlay-container {
   position: relative;
-  max-height: $container-height;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  max-height: 100%;
+  margin-left: auto;
+  margin-right: auto;
 
   &:hover .overlay_view {
     -webkit-transform: scale(1);
@@ -38,11 +47,22 @@
     transform: scale(1);
   }
 
-  &-container {
-    min-height: $container-height;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  &-caption {
+    max-height: 85%;
+  }
+}
+
+.item {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  &-caption {
+    font-size: large;
+    max-height: 15%;
+    padding: 0.3em;
   }
 }
 
@@ -50,10 +70,10 @@
   color: white;
   font-size: 1em;
   position: absolute;
+  width: 90%;
   top: 50%;
-  left: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
+  -webkit-transform: translate(5%, -50%);
+  -ms-transform: translate(5%, -50%);
+  transform: translate(5%, -50%);
   text-align: center;
 }

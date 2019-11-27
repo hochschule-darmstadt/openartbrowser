@@ -1,19 +1,27 @@
-<div class="row mx-3">
+<div class="row mx-3 slide">
   <div
     *ngFor="let item of slide.items"
     (mouseenter)="this.itemHover.emit(item)"
     (mouseleave)="this.itemHover.emit(null)"
     class="mb-4 col-sm-3 mt-auto mb-auto item-container"
   >
-    <div *ngIf="slide.loadContent" class="img item" [routerLink]="['/artwork', item?.id]">
-      <img
-        class="img-fluid img_self"
-        (error)="onLoadingError(item)"
-        src="{{ item?.imageSmall }}"
-        alt="{{ item?.label }}"
-      />
-      <div class="overlay_view">
-        <span class="img_description">{{ item?.label }}</span>
+    <div *ngIf="slide.loadContent" class="item"
+         [routerLink]="['/artwork', item?.id]">
+      <div class="overlay-container" [ngClass]="(slide?.itemDataGetter)?'overlay-container-caption':'ov'">
+        <img
+          class=" img_self"
+          (error)="onLoadingError(item)"
+          src="{{ item?.imageSmall }}"
+          alt="{{ item?.label }}"
+        />
+        <div class="overlay_view">
+          <span class="img_description">{{ item?.label }}</span>
+        </div>
+      </div>
+
+      <div *ngIf="slide?.itemDataGetter"
+           [textContent]="slide?.itemDataGetter(item?.id)"
+           class="center item-caption">
       </div>
     </div>
   </div>

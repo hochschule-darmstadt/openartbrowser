@@ -67,7 +67,7 @@ function writeMovements() {
 		obj.relativeRank = percentage
 		percentage += rankStep
 	})
-	fs.writeFile(destMovementFilePath, JSON.stringify(movementMonsterObj), function (err) {
+	fs.writeFile(destMovementFilePath, JSON.stringify(movementMonsterObj), 'utf-8', function (err) {
 		if (err) throw err
 		console.log('the file has been saved')
 	})

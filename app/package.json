@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start_docker":  "ng serve --configuration=docker",
     "start:fr": "ng serve --base-href /fr/ --configuration=fr",
     "start:de": "ng serve --base-href /de/ --configuration=de",
     "start:en": "ng serve --base-href /en/ --configuration=en",

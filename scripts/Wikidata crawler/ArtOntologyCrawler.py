@@ -8,17 +8,17 @@ extract_art_ontology()
 This may take several hours.
 """
 
-
-
 import pywikibot
-import types
 from pywikibot import pagegenerators as pg
 import csv
 import datetime
 import ast
+import sys
 import requests
 import json
 
+DEV = False
+DEV_LIMIT = 5
 
 def get_abstract(page_id, language_code="en"):
     """Extracts the abstract for a given page_id and language
@@ -54,8 +54,8 @@ def extract_artworks(type_name, wikidata_id):
     extract_dicts = []
 
     for item in items:
-        #if count > 50:
-        #   continue
+        if DEV and count > DEV_LIMIT:
+            break
 
         # mandatory fields
         try:
@@ -119,11 +119,12 @@ def extract_artworks(type_name, wikidata_id):
             wikipedia_link = ""
 
         count += 1
-        #print(str(count) + " ", end='')
         extract_dicts.append(
-            {"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "artists": artists, "locations": locations, "genres": genres,
-             "movements": movements, "inception": inception, "materials": materials, "motifs": motifs, "country": country, "height": height, "width": width, "abstract": abstract, "wikipediaLink": wikipedia_link})
-        # print(classes, item, label, description, image, artists, locations, genres, movements, inception, materials, motifs,  country, height, width)
+            {"id": item.id, "classes": classes, "label": label, "description": description, "image": image,
+             "artists": artists, "locations": locations, "genres": genres,
+             "movements": movements, "inception": inception, "materials": materials, "motifs": motifs,
+             "country": country, "height": height, "width": width, "abstract": abstract,
+             "wikipediaLink": wikipedia_link})
 
     print(datetime.datetime.now(), "Finished with", type_name)
     return extract_dicts
@@ -163,8 +164,8 @@ def extract_subjects(subject_type):
     extract_dicts = []
 
     for subject in subjects:
-        #if count > 50:
-        #    continue
+        if DEV and count > DEV_LIMIT:
+            break
         try:
             item = pywikibot.ItemPage(repo, subject)
             item_dict = item.get()
@@ -259,15 +260,16 @@ def extract_subjects(subject_type):
                 lon = ""
 
         count += 1
-        #print(str(count) + " ", end='')
 
         # add all common fields
-        subject_dict = {"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "abstract": abstract, "wikipediaLink": wikipedia_link}
+        subject_dict = {"id": item.id, "classes": classes, "label": label, "description": description, "image": image,
+                        "abstract": abstract, "wikipediaLink": wikipedia_link}
 
         # add fields that are special for different subject types
         if subject_type == "artists":
-            subject_dict.update({"gender": gender, "date_of_birth": date_of_birth, "date_of_death": date_of_death, "place_of_birth": place_of_birth,
-                                 "place_of_death": place_of_death, "citizenship": citizenship, "movements": movements, "influenced_by": influenced_by})
+            subject_dict.update({"gender": gender, "date_of_birth": date_of_birth, "date_of_death": date_of_death,
+                                 "place_of_birth": place_of_birth, "place_of_death": place_of_death,
+                                 "citizenship": citizenship, "movements": movements, "influenced_by": influenced_by})
 
         elif subject_type == "movements":
             subject_dict.update({"influenced_by": influenced_by})
@@ -283,13 +285,16 @@ def extract_classes():
     """Extracts metadata of classes from Wikidata and stores them in a *.csv file
 
 
-    Precondition: Files 'paintings.csv', 'drawings.csv', 'sculptures.csv', 'genres.csv', 'movements.csv', 'materials.csv', 'motifs.csv', 'artists.csv', 'locations.csv' must have been created before (functions extract_artworks and extract_subjects).
+    Precondition: Files 'paintings.csv', 'drawings.csv', 'sculptures.csv', 'genres.csv', 'movements.csv',
+                        'materials.csv', 'motifs.csv', 'artists.csv', 'locations.csv'
+                  must have been created before (functions extract_artworks and extract_subjects).
     Metadata for classes referenced in theses files will be stored.
     """
     print(datetime.datetime.now(), "Starting with classes")
     classes = set()
     class_dict = dict()
-    file_names = ['paintings.csv', 'drawings.csv', 'sculptures.csv', 'genres.csv', 'movements.csv', 'materials.csv', 'motifs.csv', 'artists.csv', 'locations.csv']
+    file_names = ['paintings.csv', 'drawings.csv', 'sculptures.csv', 'genres.csv', 'movements.csv',
+                  'materials.csv', 'motifs.csv', 'artists.csv', 'locations.csv']
 
     for file_name in file_names:
         with open(file_name, newline="", encoding='utf-8') as file:
@@ -306,11 +311,11 @@ def extract_classes():
     extract_dicts = []
 
     for cls in classes:
-        #        if count > 10:
-        #            continue
+        if DEV and count > 10:
+            break
         extract_class(cls, class_dict, repo)
         count += 1
-        #print(str(count) + " ", end='')
+        # print(str(count) + " ", end='')
     for cls in class_dict:
         extract_dicts.append(class_dict[cls])
 
@@ -466,12 +471,15 @@ def generate_rdf():
     print()
     print(datetime.datetime.now(), "Finished with", "generating rdf")
 
+
 def get_fields(type_name):
     fields = ["id", "classes", "label", "description", "image", "abstract", "wikipediaLink"]
     if type_name in ["drawings", "sculptures", "paintings", "artworks"]:
-        fields += ["artists", "locations", "genres", "movements", "inception", "materials", "motifs", "country", "height", "width"]
+        fields += ["artists", "locations", "genres", "movements", "inception",
+                   "materials", "motifs", "country", "height", "width"]
     elif type_name == "artists":
-        fields += ["gender", "date_of_birth", "date_of_death", "place_of_birth", "place_of_death", "citizenship", "movements", "influenced_by"]
+        fields += ["gender", "date_of_birth", "date_of_death", "place_of_birth",
+                   "place_of_death", "citizenship", "movements", "influenced_by"]
     elif type_name == "movements":
         fields += ["influenced_by"]
     elif type_name == "locations":
@@ -480,12 +488,14 @@ def get_fields(type_name):
         fields = ["id", "label", "description", "subclass_of"]
     return fields
 
+
 def generate_csv(name, extract_dicts):
     with open(name + ".csv", "w", newline="", encoding='utf-8') as file:
         writer = csv.DictWriter(file, fieldnames=get_fields(name), delimiter=';', quotechar='"')
         writer.writeheader()
         for extract_dict in extract_dicts:
             writer.writerow(extract_dict)
+
 
 def generate_json(name, extract_dicts):
     with open(name + ".json", "w", newline="", encoding='utf-8') as file:
@@ -495,7 +505,8 @@ def generate_json(name, extract_dicts):
             extract_dict["type"] = name[:-1]
             file.write(json.dumps(extract_dict, ensure_ascii=False))
             file.write(",")
-        extract_dicts[-1]["type"] = name[:-1]
+        if len(extract_dicts) >= 1:
+            extract_dicts[-1]["type"] = name[:-1]
         file.write(json.dumps(extract_dicts[-1], ensure_ascii=False))
         file.write("]")
 
@@ -518,3 +529,14 @@ def extract_art_ontology():
     generate_csv("artworks", merge_artworks())
 
     generate_rdf()
+
+
+if __name__ == "__main__":
+    if len(sys.argv) > 1 and sys.argv[1] == "-d":
+        if len(sys.argv) > 2 and sys.argv[2].isdigit():
+            DEV_LIMIT = sys.argv[2]
+        print("DEV MODE: on, DEV_LIM={}".format(DEV_LIMIT))
+        DEV = True
+
+    print("Extracting Art Ontology")
+    extract_art_ontology()

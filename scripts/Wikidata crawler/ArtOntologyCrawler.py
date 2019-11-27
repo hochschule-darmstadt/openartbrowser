@@ -18,7 +18,7 @@ import requests
 import json
 
 DEV = False
-DEV_LIMIT = 50
+DEV_LIMIT = 5
 
 def get_abstract(page_id, language_code="en"):
     """Extracts the abstract for a given page_id and language

@@ -232,6 +232,15 @@
           -->
           <app-slider (itemHover)="this.hoveredArtwork = $event" [items]="artworkTabs[tab].items"></app-slider>
 
+          <!--
+            Loads Youtube-Video Module with a Video releated to the Artwork
+            -->
+          <div class="row pt-3 pb-3 border-bottom">
+            <div *ngIf="artwork?.videoUrl">
+              <app-video></app-video>
+            </div>
+          </div>
+
           <!-- Collapse element for common tags -->
           <h3 class="mt-2 mb-0 more" data-toggle="collapse" href="#collapseTags" (click)="toggleCommonTags()">
             Common <span *ngIf="tab != 'all'">{{ tab }}</span> tags with artwork

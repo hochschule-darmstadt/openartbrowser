@@ -29,9 +29,14 @@ export default class QueryBuilder {
         };
     }
 
-    public build() {
-        return this.queryObject
+    /**
+     * build the query object, aka return the query object
+     * @returns QueryObject
+     */
+    public build(): QueryObject {
+        return this.queryObject;
     }
+
     /**
      * Add should have prefix query
      * @param key attribute name
@@ -59,11 +64,11 @@ export default class QueryBuilder {
     }
 
     /**
-    * Add should have wildcard query
-    * @param key attribute name
-    * @param value attribute value
-    * @returns QueryBuilder instance
-    */
+     * Add should have wildcard query
+     * @param key attribute name
+     * @param value attribute value
+     * @returns QueryBuilder instance
+     */
     public shouldWildcard(key: string, value: string): QueryBuilder {
         this.queryObject.query.bool.should.push({
             wildcard: { [key]: '*' + value + '*' }
@@ -72,11 +77,11 @@ export default class QueryBuilder {
     }
 
     /**
-        * Add should match query
-        * @param key attribute name
-        * @param value attribute value
-        * @returns QueryBuilder instance
-        */
+     * Add should match query
+     * @param key attribute name
+     * @param value attribute value
+     * @returns QueryBuilder instance
+     */
     public shouldMatch(key: string, value: string): QueryBuilder {
         this.queryObject.query.bool.should.push({
             match: { [key]: value }
@@ -85,11 +90,11 @@ export default class QueryBuilder {
     }
 
     /**
-    * Add must have wildcard query
-    * @param key attribute name
-    * @param value attribute value
-    * @returns QueryBuilder instance
-    */
+     * Add must have wildcard query
+     * @param key attribute name
+     * @param value attribute value
+     * @returns QueryBuilder instance
+     */
     public mustWildcard(key: string, value: string): QueryBuilder {
         this.queryObject.query.bool.must.push({
             wildcard: { [key]: '*' + value + '*' }
@@ -98,11 +103,11 @@ export default class QueryBuilder {
     }
 
     /**
-    * Add must match query
-    * @param key attribute name
-    * @param value attribute value
-    * @returns QueryBuilder instance
-    */
+     * Add must match query
+     * @param key attribute name
+     * @param value attribute value
+     * @returns QueryBuilder instance
+     */
     public mustMatch(key: string, value: string): QueryBuilder {
         this.queryObject.query.bool.must.push({
             match: { [key]: value }
@@ -110,13 +115,12 @@ export default class QueryBuilder {
         return this;
     }
 
-
     /**
-    * Add must have term query
-    * @param key attribute name
-    * @param value attribute value
-    * @returns QueryBuilder instance
-    */
+     * Add must have term query
+     * @param key attribute name
+     * @param value attribute value
+     * @returns QueryBuilder instance
+     */
     public mustTerm(key: string, value: string): QueryBuilder {
         this.queryObject.query.bool.must.push({
             term: { [key]: value }
@@ -124,13 +128,12 @@ export default class QueryBuilder {
         return this;
     }
 
-
     /**
-    * Add must have prefix query
-    * @param key attribute name
-    * @param value attribute value
-    * @returns QueryBuilder instance
-    */
+     * Add must have prefix query
+     * @param key attribute name
+     * @param value attribute value
+     * @returns QueryBuilder instance
+     */
     public mustPrefix(key: string, value: string): QueryBuilder {
         this.queryObject.query.bool.must.push({
             prefix: { [key]: value }
@@ -138,12 +141,11 @@ export default class QueryBuilder {
         return this;
     }
 
-
     /**
-    * Add minimum should match count
-    * @param count  minimum count
-    * @returns QueryBuilder instance
-    */
+     * Add minimum should match count
+     * @param count  minimum count
+     * @returns QueryBuilder instance
+     */
     public minimumShouldMatch(count: number): QueryBuilder {
         this.queryObject.query.bool.minimum_should_match = count;
         return this;

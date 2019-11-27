@@ -5,6 +5,7 @@ import {ActivatedRoute} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';
 import * as _ from 'lodash';
+import {DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 
 @Component({
   selector: 'app-artist',
@@ -24,7 +25,13 @@ export class ArtistComponent implements OnInit, OnDestroy {
   /** Change collapse icon; true if more infos are folded in */
   collapse = true;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {
+  /**
+   *@description to use sanitized Youtube URL in artist.component.html
+   */
+  public safeUrl: SafeResourceUrl;
+
+  constructor(private dataService: DataService, private route: ActivatedRoute, public sanitizer: DomSanitizer) {
+    this.sanitizer = sanitizer;
   }
 
   toggleDetails() {
@@ -55,7 +62,14 @@ export class ArtistComponent implements OnInit, OnDestroy {
       /* Count meta data to show more on load */
 
       this.calculateCollapseState();
+
+      /** Get Youtube URL from entity artist.videos*/
+      this.getTrustedUrl(this.artist.videos);
     });
+  }
+
+  getTrustedUrl(url:any){
+    this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
   /**

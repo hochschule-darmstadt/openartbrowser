@@ -5,6 +5,7 @@ import {DataService} from 'src/app/core/services/data.service';
 import {ActivatedRoute} from '@angular/router';
 import {Subject} from 'rxjs';
 import * as _ from 'lodash';
+import {DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 
 /** interface for the tabs */
 interface ArtworkTab {
@@ -108,7 +109,13 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   Object = Object;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {
+  /**
+   *@description to use sanitized Youtube URL in artwork.component.html
+   */
+  public safeUrl: SafeResourceUrl;
+
+  constructor(private dataService: DataService, private route: ActivatedRoute, public sanitizer: DomSanitizer) {
+    this.sanitizer = sanitizer;
   }
 
   /**
@@ -125,7 +132,17 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       this.calculateCollapseState();
       this.resetArtworkTabs();
       this.loadDependencies();
+
+      /** Get Youtube URL from entity artwork.videos*/
+      this.getTrustedUrl(this.artwork.videos)
     });
+  }
+  /**
+   * Gets sanitized Youtube URL as safeUrl
+   */
+
+  getTrustedUrl(url:any){
+    this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
   /**

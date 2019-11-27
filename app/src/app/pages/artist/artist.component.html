@@ -85,7 +85,9 @@
     </div>
   </div>
   <app-slider [items]="sliderItems" heading="Artworks"> </app-slider>
-  <div *ngIf="artist?.videoUrl">
-   <app-video></app-video>
-  </div>
+
+  <!--
+           Loads Youtube-Video Module with a Video releated to the Artist-->
+
+  <iframe *ngIf="artist.videos" width="560" height="315" [src]='this.safeUrl' frameborder="0" allowfullscreen></iframe>
 </div>

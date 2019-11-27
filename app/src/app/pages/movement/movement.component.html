@@ -23,7 +23,8 @@
     </div>
   </div>
   <app-slider [items]="sliderItems" heading="Artworks"> </app-slider>
-  <div *ngIf="movement?.videoUrl">
-    <app-video align="center"></app-video>
-  </div>
+  <!--
+            Loads Youtube-Video Module with a Video releated to the Movement-->
+  <iframe *ngIf="movement?.videos" width="560" height="315" [src]='this.safeUrl' frameborder="0" allowfullscreen></iframe>
 </div>
+

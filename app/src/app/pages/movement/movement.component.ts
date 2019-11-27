@@ -5,6 +5,7 @@ import {takeUntil} from 'rxjs/operators';
 import {Movement, Artwork, EntityType} from 'src/app/shared/models/models';
 import {Subject} from 'rxjs';
 import * as _ from "lodash";
+import {DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 
 @Component({
   selector: 'app-movement',
@@ -24,11 +25,18 @@ export class MovementComponent implements OnInit, OnDestroy {
   /** Change collapse icon; true if more infos are folded in */
   collapse = true;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {
+  /**
+   *@description to use sanitized Youtube URL in movement.component.html
+   */
+  public safeUrl: SafeResourceUrl;
+
+  constructor(private dataService: DataService, private route: ActivatedRoute, public sanitizer: DomSanitizer) {
+    this.sanitizer = sanitizer;
   }
 
   /** hook that is executed at component initialization */
   ngOnInit() {
+
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
       const movementId = params.get('movementId');
@@ -46,7 +54,18 @@ export class MovementComponent implements OnInit, OnDestroy {
         this.movement.influenced_by = influences;
       });
       this.calculateCollapseState();
+
+      /** Get Youtube URL from entity movement.videos*/
+      this.getTrustedUrl(this.movement.videos);
     });
+
+  }
+
+  /**
+   * Gets sanitized Youtube URL as safeUrl
+   */
+  getTrustedUrl(url:any){
+    this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
   /**

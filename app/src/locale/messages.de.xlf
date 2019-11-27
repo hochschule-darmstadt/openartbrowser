@@ -6,7 +6,7 @@
         <source>
           <x id="ICU" equiv-text="{key, select, artwork {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/> 
         </source>
-        <target>
+        <target state="final">
           <x id="ICU" equiv-text="{key, select, artwork {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/>
         </target>
         <context-group purpose="location">
@@ -32,7 +32,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="menuHome" datatype="html">
-        <source>Home</source><target state="final">Home</target>
+        <source>Home</source><target state="final">Hauptseite</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/core/components/header/header.component.html</context>
           <context context-type="linenumber">21</context>
@@ -105,7 +105,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.datepicker.previous-month" datatype="html">
-        <source>Previous month</source><target state="final">Letzter Monat</target>
+        <source>Previous month</source><target state="final">Voriger Monat</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/datepicker/datepicker-navigation.d.ts</context>
           <context context-type="linenumber">4</context>
@@ -184,7 +184,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="ngb.pagination.previous-aria" datatype="html">
-        <source>Previous</source><target state="final">Letzter</target>
+        <source>Previous</source><target state="final">Voriger</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/pagination/pagination.d.ts</context>
           <context context-type="linenumber">23</context>
@@ -308,6 +308,14 @@
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/timepicker/timepicker.d.ts</context>
           <context context-type="linenumber">72</context>
         </context-group>
+      </trans-unit>
+      <trans-unit id="search_result" datatype="html">
+        <source>Search result</source><target state="final">Suchergebnis</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/search-result/search-result.component.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+        <note priority="1" from="description">Search result label</note>
       </trans-unit>
       <trans-unit id="artist" datatype="html">
         <source>Artist</source><target state="final">Künstler</target>
@@ -546,7 +554,7 @@
         <note priority="1" from="description">Related Artworks label</note>
       </trans-unit>
       <trans-unit id="artwork_tabs" datatype="html">
-        <source><x id="ICU" equiv-text="{artworkTabs[tab].heading, select, all {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/> </source><target><x id="ICU" equiv-text="{artworkTabs[tab].heading, select, all {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/> </target>
+        <source><x id="ICU" equiv-text="{artworkTabs[tab].heading, select, all {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/> </source><target state="final"><x id="ICU" equiv-text="{artworkTabs[tab].heading, select, all {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/> </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
           <context context-type="linenumber">225</context>
@@ -568,8 +576,25 @@
         </context-group>
         <note priority="1" from="description">Related Artworks headline text before tab name </note>
       </trans-unit>
+      <trans-unit id="related_artworks_headline_tab_name" datatype="html">
+        <source>
+              <x id="ICU" equiv-text="{tab, select, all {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/>
+              </source><target state="final"><x id="ICU" equiv-text="{tab, select, all {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/></target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
+          <context context-type="linenumber">256</context>
+        </context-group>
+        <note priority="1" from="description">Related Artworks headline text tab name</note>
+      </trans-unit>
+      <trans-unit id="2894531d7a06d45b9e13ff93785def69b5963e57" datatype="html">
+        <source>{VAR_SELECT, select, all {all} motif {motif} artist {artist} location {location} genre {genre} movement {movement} material {material} }</source><target state="final">{VAR_SELECT, select, all {alle} motif {Motiv } artist {Künstler } location {Standort } genre {Genre } movement {Stilrichtung } material {Material } }</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
+          <context context-type="linenumber">257</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="related_artworks_headline_after" datatype="html">
-        <source>tags with artwork</source><target state="final">Tags mit dem Kunstwerk</target>
+        <source>tags with artwork</source><target state="final">Tags mit dem Kunstwerk </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
           <context context-type="linenumber">249</context>

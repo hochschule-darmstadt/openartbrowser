@@ -18,7 +18,7 @@ def add_youtube_videos(
             qid = row["q_id"]
             if qid not in videos:
                 videos[qid] = []
-            video_url = "https://www.youtube.com/embed/{}".format(row["yt_id"])
+            video_url = "https://www.youtube-nocookie.com/embed/{}".format(row["yt_id"])
             videos[qid].append(video_url)
 
     with open(ontology_location, encoding="utf-8") as json_file:

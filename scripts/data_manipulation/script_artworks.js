@@ -38,12 +38,13 @@ let obj = {
 	country: '',
 	height: '',
 	width: '',
-	type: '',
+	iconclasses: [],
 	country_en: '',
 	country_de: '',
 	country_fr: '',
 	country_it: '',
 	country_es: '',
+	type: '',
 }
 let objArr = [];
 let ids = [];
@@ -80,11 +81,12 @@ const csvStream = csv({ delimiter: ';' })
 			myObj.country = data[24];
 			myObj.height = data[25];
 			myObj.width = data[26];
-			myObj.country_en = data[27];
-			myObj.country_de = data[28];
-			myObj.country_fr = data[29];
-			myObj.country_it = data[30];
-			myObj.country_es = data[31];
+			myObj.iconclasses = helper.constructArray(data[27]);
+			myObj.country_en = data[28];
+			myObj.country_de = data[29];
+			myObj.country_fr = data[30];
+			myObj.country_it = data[31];
+			myObj.country_es = data[32];
 
 			myObj.type = type;
 

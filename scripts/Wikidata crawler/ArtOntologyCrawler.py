@@ -118,10 +118,15 @@ def extract_artworks(type_name, wikidata_id):
         except:
             abstract = ""
             wikipedia_link = ""
+        try:
+            iconclasses = list(map(lambda clm: clm.getTarget(), clm_dict["P1257"]))
+            print(iconclasses)
+        except:
+            iconclasses = []
 
         #print(str(count) + " ", end='')
         dict = {"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "artists": artists, "locations": locations, "genres": genres,
-         "movements": movements, "inception": inception, "materials": materials, "motifs": motifs, "country": country, "height": height, "width": width, "abstract": abstract, "wikipediaLink": wikipedia_link}
+         "movements": movements, "inception": inception, "materials": materials, "motifs": motifs, "country": country, "height": height, "width": width, "abstract": abstract, "wikipediaLink": wikipedia_link, "iconclasses": iconclasses}
 
 
         # print(classes, item, label, description, image, artists, locations, genres, movements, inception, materials, motifs,  country, height, width)
@@ -529,7 +534,8 @@ def get_fields(type_name):
     for langkey in languageKeys:
         fields += ["label_"+langkey, "description_"+langkey]
     if type_name in ["drawings", "sculptures", "paintings", "artworks"]:
-        fields += ["artists", "locations", "genres", "movements", "inception", "materials", "motifs", "country", "height", "width"]
+        fields += ["artists", "locations", "genres", "movements", "inception",
+                   "materials", "motifs", "country", "height", "width", "iconclasses"]
         for langkey in languageKeys:
             fields += ["country_"+langkey]
     elif type_name == "artists":

@@ -16,7 +16,7 @@ import ast
 import sys
 import requests
 import json
-from language_helper import read_language_config as conf
+from language_helper import language_config_to_dictionary as language_config
 
 DEV = False
 DEV_LIMIT = 5
@@ -53,7 +53,7 @@ def extract_artworks(type_name, wikidata_id):
     items = pg.WikidataSPARQLPageGenerator(QUERY, site=wikidata_site)
     count = 0
     extract_dicts = []
-    languageKeys = conf()
+    languageKeys = language_config().keys()
     for item in items:
         if DEV and count > DEV_LIMIT:
             break
@@ -177,7 +177,7 @@ def extract_subjects(subject_type):
     repo = site.data_repository()
     print("Total: ", len(subjects), subject_type)
     count = 0
-    languageKeys = conf()
+    languageKeys = language_config().keys()
     extract_dicts = []
 
     for subject in subjects:
@@ -371,7 +371,7 @@ def extract_class(cls, class_dict, repo):
     class_dict -- dictionary with Wikidata ID as key and a dict of class attributes as value; will be updated
     repo -- Wikidata repository as accessed using pywikibot
     """
-    languageKeys = conf()
+    languageKeys = language_config().keys()
     if not cls in class_dict:
         try:
             item = pywikibot.ItemPage(repo, cls)
@@ -524,7 +524,7 @@ def generate_rdf():
 
 def get_fields(type_name):
 
-    languageKeys = conf()
+    languageKeys = language_config().keys()
     fields = ["id", "classes", "label", "description", "image", "abstract", "wikipediaLink"]
     for langkey in languageKeys:
         fields += ["label_"+langkey, "description_"+langkey]

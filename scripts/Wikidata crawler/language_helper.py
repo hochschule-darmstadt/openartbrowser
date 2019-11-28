@@ -1,44 +1,16 @@
 import csv
 import os
-from array import array
 
 
-def read_language_config():
-    """[Reads languageconfig.csv and returns array that contains its keys]
-    
-    Returns:
-        [array] -- [keys of languageconfig.csv as string]
+def language_config_to_dictionary(config_file=os.path.dirname(os.path.abspath(__file__)) + "scripts\\Wikidata crawler\\languageconfig.csv"):
     """
-    fileName = os.path.dirname(os.path.abspath(__file__)) + "/languageconfig.csv"
-    languageKeys = []
-    with open(fileName, encoding = "utf-8") as file:
-        configReader = csv.reader(file, delimiter=";")
-        for row in configReader:
-            if row[0] != "langkey":
-                languageKeys.append(row[0])
-    return languageKeys
+    Reads the languageconfig.csv to a dictionary and returns it
 
-def read_full_language_config():
-    """[Reads languageconfig.csv and returns array that contains its full contents]
-    
-    Returns:
-        [array] -- [contents of languageconfig.csv as list]
+    :arg config_file languageconfig.csv consists of two columns langkey and language
     """
-    fileName = os.path.dirname(os.path.abspath(__file__)) + "/languageconfig.csv"
-    languageKeys = []
-    with open(fileName, encoding = "utf-8") as file:
-        configReader = csv.reader(file, delimiter=";")
-        for row in configReader:
-            if row[0] != "langkey":
-                languageKeys.append(row)
-    return languageKeys
-
-
-def generate_langdict_arrays():
-    """[Generates empty array of dictonaries, one for each language defined in languageconfig.csv ]
-    
-    Returns:
-        [array[]] -- [empty array of arrays, where index = languages count of languageconfig.csv]
-    """
-    dictlist = [[] for x in range(len(read_language_config()))]
-    return dictlist
+    result = {}
+    with open(config_file, encoding="utf-8", mode='r') as file:
+        reader = csv.DictReader(file, delimiter=';')
+        for row in reader:
+            result[row['langkey']] = row['language']
+        return result

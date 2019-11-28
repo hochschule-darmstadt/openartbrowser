@@ -26,7 +26,6 @@ def fill_language_gaps(element, jsonobject):
     """
     for row in languagedata:
         try:
-            #print(row[1])
             #Skip empty language data
             if not jsonobject[element + '_' + row[0]]:
                 next
@@ -70,17 +69,14 @@ def modify_langdict(langdict, jsonobject, langkey):
             else:
                 tempjson[element] = tempjson[element + '_' +langkey]
             # Using dictionary comprehension to find keys for deletion later
-            l = [key for key in tempjson if element + '_' in key]
-            delete_keys.extend(l)
+            dltkey = [key for key in tempjson if element + '_' in key]
+            delete_keys.extend(dltkey)
         #Ignore if key doesnt exist
         except KeyError:
             if(element == "label") or (element == "description"):
                 print("Warning! 'label' or 'description' language data might not exist fully in master.json"
                  + ". Id of .json-object: " + tempjson['id'])
             pass
- 
-
-         
     # delete the keys 
     for key in delete_keys: 
        del tempjson[key]  
@@ -106,7 +102,7 @@ langconfig_keys = confkeys()
 #iterate through all json object in the master file
 for item in ijson.items(open(filename, 'r', encoding='utf-8'), 'item'):
     i = 0
-    #iterate through alle language keys and write the json object
+    #iterate through all language keys and write the json object
     #in an modified state into the language dictionary arrays
     while i < len(langconfig_keys):
         langconfig_array[i] = modify_langdict(langconfig_array[i], item, langconfig_keys[i])

@@ -41,6 +41,10 @@
               <p class="wiki-link">More: <a href="{{ artist?.wikipediaLink }}" target="_blank">Wikipedia</a></p>
             </div>
           </div>
+
+          <!--Loads Youtube-Video Module with a Video releated to the Artwork-->
+          <iframe *ngIf="safeUrl" width="560" height="315" [src]='safeUrl' frameborder="0" allowfullscreen></iframe>
+
           <div class="row">
             <div class="col-md-3 pr-0 ">
               <p *ngIf="artist?.gender" class="text-muted mb-2">Gender:</p>

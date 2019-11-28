@@ -6,6 +6,7 @@ import time
 import datetime
 import uuid
 import requests
+from language_helper import read_language_config
 
 
 def create_or_update_index(
@@ -120,7 +121,13 @@ def apply_snapshot_from_repository(
         print(str(e))
 
 
+def create_or_update_for_each_language(lang_keys = read_language_config(), filepath = "C:\\Users\\Tilo\\Desktop"):
+    for key in lang_keys:
+        create_or_update_index(file="\\Desktop\\master_" + key + ".json", index_name = key, backup_directory="C:\\elasticsearch-7.4.2\\backup")
+
+
 if __name__ == "__main__":
-    if len(sys.argv) > 0:
-        filepath = sys.argv[1]
-        create_or_update_index(file=filepath)
+#    if len(sys.argv) > 0:
+#        filepath = sys.argv[1]
+#        create_or_update_index(file=filepath)
+    create_or_update_for_each_language()

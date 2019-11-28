@@ -87,14 +87,18 @@ export default class DataService {
             .size(400)
             .sort()
             .mustMatch("type", "artwork");
+            
         _.each(searchObj, (arr, key) => {
             if (Array.isArray(arr))
                 arr.forEach(val => query.mustMatch(key, val));
         });
 
-        if (keywords) query.minimumShouldMatch(1);
-        keywords.forEach(keyword => query.shouldMatch("label", keyword)
-            .shouldMatch("description", keyword));
+        keywords.forEach(keyword =>
+            query.mustShouldMatch([
+                { key: 'label', value: keyword }, 
+                { key: "description", value: keyword }
+            ])
+        );
         return this.performQuery(query);
     }
 

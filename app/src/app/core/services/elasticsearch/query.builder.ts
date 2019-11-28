@@ -116,6 +116,20 @@ export default class QueryBuilder {
     }
 
     /**
+     * Add must query with should match options
+     * @param shoulds should options
+     * @returns QueryBuilder instance
+     */
+    public mustShouldMatch(shoulds: { key: string, value: string }[]): QueryBuilder {
+        const mustShould = { bool: { should: [] } };
+        shoulds.forEach((should: { key: string, value: string }) =>
+            mustShould.bool.should.push({ match: { [should.key]: should.value } }));
+
+        this.queryObject.query.bool.must.push(mustShould);
+        return this;
+    }
+
+    /**
      * Add must have term query
      * @param key attribute name
      * @param value attribute value

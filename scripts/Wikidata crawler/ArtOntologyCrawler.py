@@ -18,11 +18,6 @@ import requests
 import json
 from language_helper import read_language_config as conf
 
-
-
-
-
-
 DEV = False
 DEV_LIMIT = 5
 
@@ -145,9 +140,7 @@ def extract_artworks(type_name, wikidata_id):
                 countrylang = country
             dict.update({"label_"+langkey: labellang, "description_"+langkey: descriptionlang, "country_"+langkey: countrylang})
         extract_dicts.append(dict)
-        #count += 1
-        #if count == 10:
-          #break
+        count += 1
 
     print(datetime.datetime.now(), "Finished with", type_name)
     return extract_dicts
@@ -255,6 +248,7 @@ def extract_subjects(subject_type):
                 influenced_by = list(map(lambda clm: clm.getTarget().id, clm_dict["P737"]))
             except:
                 influenced_by = []
+            
             for langkey in languageKeys:
                 try:
                     genderlang = clm_dict["P21"][0].getTarget().get()["labels"][langkey]
@@ -299,8 +293,6 @@ def extract_subjects(subject_type):
                 lat = ""
                 lon = ""
 
-        count += 1
-        #print(str(count) + " ", end='')
         for langkey in languageKeys:
             try:
                 labellang = item_dict["labels"][langkey]
@@ -311,8 +303,6 @@ def extract_subjects(subject_type):
             except:
                 descriptionlang =  description
             subject_dict.update({"label_"+langkey: labellang, "description_"+langkey: descriptionlang})
-
-        # add all common fields
 
         # add fields that are special for different subject types
         if subject_type == "artists":
@@ -325,6 +315,8 @@ def extract_subjects(subject_type):
         elif subject_type == "locations":
             subject_dict.update({"country": country, "website": website, "part_of": part_of, "lat": lat, "lon": lon})
         extract_dicts.append(subject_dict)
+        count += 1
+
     print()
     print(datetime.datetime.now(), "Finished with", subject_type)
     return extract_dicts

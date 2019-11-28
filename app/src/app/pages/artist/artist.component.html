@@ -42,6 +42,9 @@
             </div>
           </div>
           
+          <!--Loads Youtube-Video Module with a Video releated to the Artwork-->
+          <iframe *ngIf="safeUrl" width="560" height="315" [src]='safeUrl' frameborder="0" allowfullscreen></iframe>
+
           <table class="table-fit">
 
             <tbody>

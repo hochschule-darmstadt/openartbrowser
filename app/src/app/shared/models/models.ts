@@ -10,6 +10,7 @@ export interface Entity {
   type: string;
   absoluteRank: number;
   relativeRank: number;
+  videos?: string;
 }
 
 export interface Artist extends Entity {

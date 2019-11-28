@@ -41,56 +41,52 @@
               <p class="wiki-link">More: <a href="{{ artist?.wikipediaLink }}" target="_blank">Wikipedia</a></p>
             </div>
           </div>
-
+          
           <!--Loads Youtube-Video Module with a Video releated to the Artwork-->
           <iframe *ngIf="safeUrl" width="560" height="315" [src]='safeUrl' frameborder="0" allowfullscreen></iframe>
 
-          <div class="row">
-            <div class="col-md-3 pr-0 ">
-              <p *ngIf="artist?.gender" class="text-muted mb-2">Gender:</p>
-            </div>
-            <div class="col-md-9 pl-0 info">
-              <p *ngIf="artist?.gender" class="mb-2 first-letter notchip">{{ artist?.gender }}</p>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-3 pr-0 ">
-              <p *ngIf="artist?.citizenship" class="text-muted mb-2">Citizenship:</p>
-            </div>
-            <div class="col-md-9 pl-0 info">
-              <p *ngIf="artist?.citizenship" class="mb-2 first-letter notchip">{{ artist?.citizenship }}</p>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-3 pr-0 ">
-              <p *ngIf="artist?.movements?.length" class="text-muted mb-2">Movement:</p>
-            </div>
-            <div class="col-md-9 pl-0 info">
-              <p *ngIf="artist?.movements?.length" class="mb-2">
-                <span *ngFor="let movement of artist?.movements"
-                      class="badge badge-pill badge-secondary first-letter chip"
-                      [routerLink]="'/movement/' + movement.id">
-                  <i class="fas fa-wind"></i>
-                  {{ movement.label }}
-                </span>
-              </p>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-3 pr-0 ">
-              <p *ngIf="artist?.influenced_by?.length" class="text-muted mb-2">Influenced by:</p>
-            </div>
-            <div class="col-md-9 pl-0 info">
-              <p *ngIf="artist?.influenced_by?.length" class="mb-2">
-                <span *ngFor="let influencer of artist?.influenced_by"
-                      class="badge badge-pill badge-secondary first-letter chip"
-                      [routerLink]="'/artist/' + influencer.id">
-                  <i class="fas fa-user"></i>
-                  {{ influencer.label }}
-                </span>
-              </p>
-            </div>
-          </div>
+          <table class="table-fit">
+
+            <tbody>
+
+              <tr *ngIf="artist?.gender">
+                <td class="text-muted">Gender:</td>
+                <td>{{ artist?.gender }}</td>
+              </tr>
+
+              <tr *ngIf="artist?.citizenship">
+                <td class="text-muted">Citizenship:</td>
+                <td>{{ artist?.citizenship }}</td>
+              </tr>
+
+              <tr *ngIf="artist?.movements?.length">
+                <td class="text-muted">Movement:</td>
+                <td>
+                    <span *ngFor="let movement of artist?.movements"
+                          class="badge badge-pill badge-secondary first-letter chip"
+                          [routerLink]="'/movement/' + movement.id">
+                      <i class="fas fa-wind"></i>
+                      {{ movement.label }}
+                    </span>
+                </td>
+              </tr>
+
+              <tr *ngIf="artist?.influenced_by?.length">
+                <td class="text-muted">Influenced by:</td>
+                <td>
+                    <span *ngFor="let influencer of artist?.influenced_by"
+                          class="badge badge-pill badge-secondary first-letter chip"
+                          [routerLink]="'/artist/' + influencer.id">
+                      <i class="fas fa-user"></i>
+                      {{ influencer.label }}
+                    </span>
+                </td>
+              </tr>
+
+            </tbody>
+
+          </table>
+          
         </div>
       </div>
     </div>

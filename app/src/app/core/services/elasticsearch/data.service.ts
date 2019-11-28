@@ -23,6 +23,7 @@ export default class DataService {
 
     /**
     * Fetches an entity from the server
+    * Returns null if not found
     * @param id Id of the entity to retrieve
     * @param type if specified, it is assured that the returned entity has this entityType
     */

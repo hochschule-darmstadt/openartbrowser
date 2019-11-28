@@ -10,7 +10,7 @@ from language_helper import read_language_config as confkeys
 from language_helper import read_full_language_config as confcont
 
 #filename = "/home/mkherrabi/jsonData/master_flat.json"
-filename = os.path.dirname(os.path.dirname((os.path.abspath(__file__)))) + "/crawler_output/master_flat_rank.json"
+filename = os.path.dirname(os.path.dirname((os.path.abspath(__file__)))) + "\\crawler_output\\art_ontology.json"
 
 languagedata = confcont()
 
@@ -26,7 +26,7 @@ def fill_language_gaps(element, jsonobject):
     """
     for row in languagedata:
         try:
-            print(row[1])
+            #print(row[1])
             #Skip empty language data
             if not jsonobject[element + '_' + row[0]]:
                 next
@@ -96,7 +96,7 @@ def generate_langjson(name, extract_dicts):
         name {[str]} -- [Name of the generated json language file]
         extract_dicts {[dict]} -- [dictionary that is written into the output file]
     """
-    with open("scripts/crawler_output/"+ name + ".json", "w", newline="", encoding='utf-8') as file:
+    with open(name + ".json", "w", newline="", encoding='utf-8') as file:
         file.write(json.dumps(extract_dicts, ensure_ascii=False))
         
 #load languageconfig file with keys / language dicts

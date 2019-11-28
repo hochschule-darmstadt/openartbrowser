@@ -41,13 +41,13 @@ function openArtworks() {
 		let undefinedData = 0
 		_.each(JSON.parse(buf), function (obj) {
 			_.each(obj, function (val, key) {
-				if (key === 'creators') {
-					_.each(val, function (creator) {
-						if (_.isUndefined(artistsCounter.get(creator))) {
+				if (key === 'artists') {
+					_.each(val, function (artist) {
+						if (_.isUndefined(artistsCounter.get(artist))) {
 							undefinedData++
 						}
 						else
-							artistsCounter.set(creator, artistsCounter.get(creator) + 1)
+							artistsCounter.set(artist, artistsCounter.get(artist) + 1)
 					})
 				}
 			})
@@ -73,7 +73,7 @@ function writeArtists() {
 		obj.relativeRank = percentage
 		percentage += rankStep
 	})
-	fs.writeFile(destinationArtistFilePath, JSON.stringify(artistMonsterObj), function (err) {
+	fs.writeFile(destinationArtistFilePath, JSON.stringify(artistMonsterObj), 'utf-8', function (err) {
 		if (err) throw err
 		console.log('the file has been saved')
 	})

@@ -25,14 +25,22 @@
         </div>
       </div>
 
-      <div *ngIf="artist?.gender || artist?.citizenship || artist?.movements?.length || artist?.influenced_by?.length">
+      <div *ngIf="artist?.gender || artist?.citizenship || artist?.movements?.length ||
+       artist?.influenced_by?.length || artist?.abstract">
         <h4 class="mt-2 more" href="#collapseArtist" (click)="toggleDetails()">
           More
-          <i *ngIf="collapseDown" href="#collapseArtist" class="fas fa-chevron-down"> </i>
-          <i *ngIf="!collapseDown" href="#collapseArtist" class="fas fa-chevron-up"> </i>
+          <i *ngIf="collapse" href="#collapseArtist" class="fas fa-chevron-down"> </i>
+          <i *ngIf="!collapse" href="#collapseArtist" class="fas fa-chevron-up"> </i>
         </h4>
 
-        <div [className]="!collapseDown ? 'collapse show' : 'collapse'" id="collapseArtist">
+        <div [className]="collapse ? 'collapse' : 'collapse show'" id="collapseArtist">
+
+          <div class="row">
+            <div *ngIf="artist?.abstract" class="col-md pr-0">
+              <span>{{ artist?.abstract }}</span>
+              <p class="wiki-link">More: <a href="{{ artist?.wikipediaLink }}" target="_blank">Wikipedia</a></p>
+            </div>
+          </div>
           <div class="row">
             <div class="col-md-3 pr-0 ">
               <p *ngIf="artist?.gender" class="text-muted mb-2">Gender:</p>
@@ -55,8 +63,9 @@
             </div>
             <div class="col-md-9 pl-0 info">
               <p *ngIf="artist?.movements?.length" class="mb-2">
-                <span *ngFor="let movement of artist?.movements" class="badge badge-pill badge-secondary first-letter chip"
-                  [routerLink]="'/movement/' + movement.id">
+                <span *ngFor="let movement of artist?.movements"
+                      class="badge badge-pill badge-secondary first-letter chip"
+                      [routerLink]="'/movement/' + movement.id">
                   <i class="fas fa-wind"></i>
                   {{ movement.label }}
                 </span>
@@ -69,8 +78,9 @@
             </div>
             <div class="col-md-9 pl-0 info">
               <p *ngIf="artist?.influenced_by?.length" class="mb-2">
-                <span *ngFor="let influencer of artist?.influenced_by" class="badge badge-pill badge-secondary first-letter chip"
-                  [routerLink]="'/artist/' + influencer.id">
+                <span *ngFor="let influencer of artist?.influenced_by"
+                      class="badge badge-pill badge-secondary first-letter chip"
+                      [routerLink]="'/artist/' + influencer.id">
                   <i class="fas fa-user"></i>
                   {{ influencer.label }}
                 </span>
@@ -81,8 +91,8 @@
       </div>
     </div>
     <div class="col-sm-5 img" *ngIf="artist?.image">
-      <img class="img-fluid rounded-circle" src="{{ artist?.imageSmall }}" alt="" />
+      <img class="img-fluid rounded-circle" src="{{ artist?.imageSmall }}" alt=""/>
     </div>
   </div>
-  <app-slider [items]="sliderItems" heading="Artworks"> </app-slider>
+  <app-slider [items]="sliderItems" heading="Artworks"></app-slider>
 </div>

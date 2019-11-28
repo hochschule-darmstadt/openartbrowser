@@ -1,0 +1,46 @@
+language: node_js
+
+node_js:
+  - "8"
+
+addons:
+  apt:
+    sources:
+      - google-chrome
+    packages:
+      - google-chrome-stable
+      - sshpass
+
+cache:
+  directories:
+    - ./app/node_modules
+
+jobs:
+  include:
+    - stage: frontend-tests
+      before_script:
+        - cd app
+        - npm install
+      script:
+        - npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
+        - echo "no backend / crawler / other tests specified"
+
+    - stage: deploy-to-staging
+      if: branch = staging AND type = push
+      before_script:
+        - cd app
+        - npm install
+      script:
+        - npm run build -- --prod="true"
+      after_success:
+        - rsync -rltDvz --rsh="sshpass -p ${SFTP_PASS_STAGE} ssh -o StrictHostKeyChecking=no -l ${SFTP_USER_STAGE}" ./dist/art-browser ${SFTP_USER_STAGE}@${STAGE_ADDR}:${SFTP_PATH_STAGE}
+
+    - stage: deploy-to-production
+      if: branch = master AND type = push
+      before_script:
+        - cd app
+        - npm install
+      script:
+        - npm run build -- --prod="true"
+      after_success:
+        - rsync -rltDvz --rsh="sshpass -p ${SFTP_PASS_PROD} ssh -o StrictHostKeyChecking=no -l ${SFTP_USER_PROD}" ./dist/art-browser ${SFTP_USER_PROD}@${PROD_ADDR}:${SFTP_PATH_PROD}

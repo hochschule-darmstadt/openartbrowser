@@ -9,8 +9,8 @@ import requests
 
 
 def create_or_update_index(
-    index_name='api', 
-    repository_name='openartbrowser_index_backup', 
+    index_name='api',
+    repository_name='openartbrowser_index_backup',
     backup_directory='/var/lib/elasticsearch/backup',
     file='/openartbrowser/scripts/crawler_output/ArtOntology.json'):
     """
@@ -33,8 +33,10 @@ def create_or_update_index(
                It should be located in the repository under ~/openartbrowser/scripts/crawler_output
     """
     # Uses localhost:9200 (elasticsearch default) to create the index with it's documents
-    es = Elasticsearch()  
+    es = Elasticsearch()
     # The openartbrowser repository has to be located in the users directory /home/<username>/openartbrowser
+    if not file.startswith('/'):
+        file = '/' + file
     file = str(Path.home()) + file
     print("Start creating/updating the index \"" + index_name +
         "\" now. Current time: " + str(datetime.datetime.now()))
@@ -83,7 +85,7 @@ def create_or_update_index(
 
 
 def list_all_snapshots_from_repository(
-    elastic_search_url='localhost:9200', 
+    elastic_search_url='localhost:9200',
     repository_name='openartbrowser_index_backup'):
     """
     Lists all created snapshots in a repository
@@ -100,7 +102,7 @@ def list_all_snapshots_from_repository(
 
 def apply_snapshot_from_repository(
     snapshot_name,
-    index_name='api', 
+    index_name='api',
     repository_name='openartbrowser_index_backup'):
     """
     Applies a snapshot created in an earlier creation or update from a repository
@@ -117,3 +119,8 @@ def apply_snapshot_from_repository(
     except Exception as e:
         print(str(e))
 
+
+if __name__ == "__main__":
+    if len(sys.argv) > 0:
+        filepath = sys.argv[1]
+        create_or_update_index(file=filepath)

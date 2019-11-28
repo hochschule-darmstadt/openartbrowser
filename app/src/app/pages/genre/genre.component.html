@@ -9,7 +9,7 @@
       <div class="mb-3 mt-5"></div>
       <div *ngIf="genre?.abstract">
         <h4 class="mt-2 more" href="#collapseArtist" (click)="toggleDetails()">
-          More
+          <ng-container i18n="Detail More label@@more">More</ng-container>
           <i *ngIf="collapse" href="#collapseArtist" class="fas fa-chevron-down"> </i>
           <i *ngIf="!collapse" href="#collapseArtist" class="fas fa-chevron-up"> </i>
         </h4>
@@ -18,7 +18,7 @@
           <div class="row">
             <div *ngIf="genre?.abstract" class="col-md pr-0">
               <span>{{ genre?.abstract }}</span>
-              <p class="wiki-link">More:&nbsp;<a href="{{ genre?.wikipediaLink }}" target="_blank">Wikipedia</a></p>
+              <p class="wiki-link"><ng-container i18n="Detail More label@@more">More</ng-container>:&nbsp;<a href="{{ genre?.wikipediaLink }}" target="_blank">Wikipedia</a></p>
             </div>
           </div>
         </div>

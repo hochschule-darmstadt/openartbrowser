@@ -6,7 +6,7 @@
         <source>Home</source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/core/components/header/header.component.html</context>
-          <context context-type="linenumber">21</context>
+          <context context-type="linenumber">38</context>
         </context-group>
         <note priority="1" from="description">Menu Home item label</note>
       </trans-unit>
@@ -14,7 +14,7 @@
         <source>About</source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/core/components/header/header.component.html</context>
-          <context context-type="linenumber">23</context>
+          <context context-type="linenumber">40</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/core/components/footer/footer.component.html</context>
@@ -26,7 +26,7 @@
         <source>Legal Notice</source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/core/components/header/header.component.html</context>
-          <context context-type="linenumber">26</context>
+          <context context-type="linenumber">43</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/core/components/footer/footer.component.html</context>
@@ -38,7 +38,7 @@
         <source>Data Protection Declaration</source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/core/components/header/header.component.html</context>
-          <context context-type="linenumber">29</context>
+          <context context-type="linenumber">46</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/core/components/footer/footer.component.html</context>
@@ -50,7 +50,7 @@
         <source>Search for something...</source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/components/search/search.component.html</context>
-          <context context-type="linenumber">48</context>
+          <context context-type="linenumber">44</context>
         </context-group>
         <note priority="1" from="description">Searchbar Placeholder</note>
       </trans-unit>
@@ -280,6 +280,14 @@
           <context context-type="linenumber">69</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="search_result" datatype="html">
+        <source>Search result</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/search-result/search-result.component.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+        <note priority="1" from="description">Search result label</note>
+      </trans-unit>
       <trans-unit id="artist" datatype="html">
         <source>Artist</source>
         <context-group purpose="location">
@@ -304,11 +312,11 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artist/artist.component.html</context>
-          <context context-type="linenumber">66</context>
+          <context context-type="linenumber">74</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
-          <context context-type="linenumber">138</context>
+          <context context-type="linenumber">146</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/movement/movement.component.html</context>
@@ -324,7 +332,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
-          <context context-type="linenumber">118</context>
+          <context context-type="linenumber">126</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/genre/genre.component.html</context>
@@ -340,7 +348,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
-          <context context-type="linenumber">158</context>
+          <context context-type="linenumber">167</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/material/material.component.html</context>
@@ -372,7 +380,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
-          <context context-type="linenumber">179</context>
+          <context context-type="linenumber">189</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/motif/motif.component.html</context>
@@ -404,15 +412,15 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artist/artist.component.html</context>
-          <context context-type="linenumber">102</context>
+          <context context-type="linenumber">112</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/genre/genre.component.html</context>
-          <context context-type="linenumber">15</context>
+          <context context-type="linenumber">31</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/location/location.component.html</context>
-          <context context-type="linenumber">34</context>
+          <context context-type="linenumber">49</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/material/material.component.html</context>
@@ -424,7 +432,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/movement/movement.component.html</context>
-          <context context-type="linenumber">31</context>
+          <context context-type="linenumber">47</context>
         </context-group>
         <note priority="1" from="description">Artworks label</note>
       </trans-unit>
@@ -448,11 +456,43 @@
         <source>More</source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artist/artist.component.html</context>
-          <context context-type="linenumber">37</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artist/artist.component.html</context>
+          <context context-type="linenumber">48</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
-          <context context-type="linenumber">109</context>
+          <context context-type="linenumber">110</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
+          <context context-type="linenumber">119</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/genre/genre.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/genre/genre.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/location/location.component.html</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/location/location.component.html</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/movement/movement.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/movement/movement.component.html</context>
+          <context context-type="linenumber">20</context>
         </context-group>
         <note priority="1" from="description">Detail More label</note>
       </trans-unit>
@@ -460,7 +500,7 @@
         <source>Gender</source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artist/artist.component.html</context>
-          <context context-type="linenumber">46</context>
+          <context context-type="linenumber">54</context>
         </context-group>
         <note priority="1" from="description">Artist gender label</note>
       </trans-unit>
@@ -468,7 +508,7 @@
         <source>Citizenship</source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artist/artist.component.html</context>
-          <context context-type="linenumber">56</context>
+          <context context-type="linenumber">64</context>
         </context-group>
         <note priority="1" from="description">Artist citizenship label</note>
       </trans-unit>
@@ -476,11 +516,11 @@
         <source>Influenced by</source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artist/artist.component.html</context>
-          <context context-type="linenumber">82</context>
+          <context context-type="linenumber">91</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/movement/movement.component.html</context>
-          <context context-type="linenumber">13</context>
+          <context context-type="linenumber">27</context>
         </context-group>
         <note priority="1" from="description">Influenced by label</note>
       </trans-unit>
@@ -504,7 +544,7 @@
         <source>Dimension</source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
-          <context context-type="linenumber">199</context>
+          <context context-type="linenumber">209</context>
         </context-group>
         <note priority="1" from="description">Artwork Dimension label</note>
       </trans-unit>
@@ -512,7 +552,7 @@
         <source>Related Artworks</source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
-          <context context-type="linenumber">217</context>
+          <context context-type="linenumber">227</context>
         </context-group>
         <note priority="1" from="description">Related Artworks label</note>
       </trans-unit>
@@ -522,7 +562,7 @@
               </source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
-          <context context-type="linenumber">228</context>
+          <context context-type="linenumber">238</context>
         </context-group>
         <note priority="1" from="description">Artwork Related Artworks Tabs</note>
       </trans-unit>
@@ -530,7 +570,7 @@
         <source>{VAR_SELECT, select, all {All} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material} }</source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
-          <context context-type="linenumber">229</context>
+          <context context-type="linenumber">239</context>
         </context-group>
       </trans-unit>
       <trans-unit id="related_artworks_headline_prev" datatype="html">
@@ -539,9 +579,26 @@
             </source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
-          <context context-type="linenumber">252</context>
+          <context context-type="linenumber">263</context>
         </context-group>
         <note priority="1" from="description">Related Artworks headline text before tab name </note>
+      </trans-unit>
+      <trans-unit id="related_artworks_headline_tab_name" datatype="html">
+        <source>
+              <x id="ICU" equiv-text="{tab, select, all {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/>
+              </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
+          <context context-type="linenumber">267</context>
+        </context-group>
+        <note priority="1" from="description">Related Artworks headline text tab name</note>
+      </trans-unit>
+      <trans-unit id="2894531d7a06d45b9e13ff93785def69b5963e57" datatype="html">
+        <source>{VAR_SELECT, select, all {all} motif {motif} artist {artist} location {location} genre {genre} movement {movement} material {material} }</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
+          <context context-type="linenumber">268</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="related_artworks_headline_after" datatype="html">
         <source>
@@ -549,7 +606,7 @@
             </source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
-          <context context-type="linenumber">256</context>
+          <context context-type="linenumber">272</context>
         </context-group>
         <note priority="1" from="description">Related Artworks headline text after tab name </note>
       </trans-unit>
@@ -559,7 +616,7 @@
                 </source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
-          <context context-type="linenumber">267</context>
+          <context context-type="linenumber">283</context>
         </context-group>
         <note priority="1" from="description">Related Artworks hint text</note>
       </trans-unit>

@@ -16,10 +16,9 @@ export default class DataService {
     /**
      * Constructor
      */
-    constructor(private http: HttpClient, @Inject(LOCALE_ID) private locale_id: string) {
+    constructor(private http: HttpClient, @Inject(LOCALE_ID) locale_id: string) {
         // build backend api url with specfic index by locale_id
-        //this.baseUrl = elasticEnvironment.serverURI + "/" + (locale_id || 'en') + "/_search";
-        this.baseUrl = elasticEnvironment.serverURI + "/_search";
+        this.baseUrl = elasticEnvironment.serverURI + "/" + (locale_id || 'en') + "/_search";
     }
 
     /**
@@ -87,7 +86,7 @@ export default class DataService {
             .size(400)
             .sort()
             .mustMatch("type", "artwork");
-            
+
         _.each(searchObj, (arr, key) => {
             if (Array.isArray(arr))
                 arr.forEach(val => query.mustMatch(key, val));

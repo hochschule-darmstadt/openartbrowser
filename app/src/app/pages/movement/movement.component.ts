@@ -5,6 +5,7 @@ import {takeUntil} from 'rxjs/operators';
 import {Movement, Artwork, EntityType} from 'src/app/shared/models/models';
 import {Subject} from 'rxjs';
 import * as _ from "lodash";
+import {DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 
 @Component({
   selector: 'app-movement',
@@ -24,7 +25,11 @@ export class MovementComponent implements OnInit, OnDestroy {
   /** Change collapse icon; true if more infos are folded in */
   collapse = true;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {
+  /** url that gets embedded in iframe in html**/
+  public safeUrl: SafeResourceUrl;
+
+  constructor(private dataService: DataService, private route: ActivatedRoute, public sanitizer: DomSanitizer) {
+    this.sanitizer = sanitizer;
   }
 
   /** hook that is executed at component initialization */
@@ -46,9 +51,20 @@ export class MovementComponent implements OnInit, OnDestroy {
         this.movement.influenced_by = influences;
       });
       this.calculateCollapseState();
+
+      if(this.movement) {
+        this.getTrustedUrl(this.movement.videos);
+      }
     });
   }
 
+  /**
+   *@description sanetizes video url
+   */
+
+  getTrustedUrl(url:any){
+    this.safeUrl = url? this.sanitizer.bypassSecurityTrustResourceUrl(url): "";
+  }
   /**
    * @description shuffle the items' categories.
    */

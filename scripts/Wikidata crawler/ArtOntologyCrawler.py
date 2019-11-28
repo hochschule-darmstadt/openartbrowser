@@ -13,7 +13,7 @@ from pywikibot import pagegenerators as pg
 import csv
 import datetime
 import ast
-<<<<<<< HEAD
+import sys
 import requests
 import json
 from language_helper import read_language_config as conf
@@ -23,14 +23,8 @@ from language_helper import read_language_config as conf
 
 
 
-=======
-import sys
-import requests
-import json
-
 DEV = False
 DEV_LIMIT = 5
->>>>>>> c019f8f716e11adb70a67a115cb126243ebdcf62
 
 def get_abstract(page_id, language_code="en"):
     """Extracts the abstract for a given page_id and language
@@ -66,13 +60,8 @@ def extract_artworks(type_name, wikidata_id):
     extract_dicts = []
     languageKeys = conf()
     for item in items:
-<<<<<<< HEAD
-        #if count > 50:
-        #   continue
-=======
         if DEV and count > DEV_LIMIT:
             break
->>>>>>> c019f8f716e11adb70a67a115cb126243ebdcf62
 
         # mandatory fields
         try:
@@ -135,7 +124,6 @@ def extract_artworks(type_name, wikidata_id):
             abstract = ""
             wikipedia_link = ""
 
-<<<<<<< HEAD
         #print(str(count) + " ", end='')
         dict = {"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "artists": artists, "locations": locations, "genres": genres,
          "movements": movements, "inception": inception, "materials": materials, "motifs": motifs, "country": country, "height": height, "width": width, "abstract": abstract, "wikipediaLink": wikipedia_link}
@@ -160,15 +148,6 @@ def extract_artworks(type_name, wikidata_id):
         #count += 1
         #if count == 10:
           #break
-=======
-        count += 1
-        extract_dicts.append(
-            {"id": item.id, "classes": classes, "label": label, "description": description, "image": image,
-             "artists": artists, "locations": locations, "genres": genres,
-             "movements": movements, "inception": inception, "materials": materials, "motifs": motifs,
-             "country": country, "height": height, "width": width, "abstract": abstract,
-             "wikipediaLink": wikipedia_link})
->>>>>>> c019f8f716e11adb70a67a115cb126243ebdcf62
 
     print(datetime.datetime.now(), "Finished with", type_name)
     return extract_dicts
@@ -209,13 +188,8 @@ def extract_subjects(subject_type):
     extract_dicts = []
 
     for subject in subjects:
-<<<<<<< HEAD
-        #if count > 50:
-        #    continue
-=======
         if DEV and count > DEV_LIMIT:
             break
->>>>>>> c019f8f716e11adb70a67a115cb126243ebdcf62
         try:
             item = pywikibot.ItemPage(repo, subject)
             item_dict = item.get()
@@ -247,11 +221,7 @@ def extract_subjects(subject_type):
         except:
             abstract = ""
             wikipedia_link = ""
-<<<<<<< HEAD
         subject_dict = {"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "abstract": abstract, "wikipediaLink": wikipedia_link}
-=======
-
->>>>>>> c019f8f716e11adb70a67a115cb126243ebdcf62
         if subject_type == "artists":
             try:
                 gender = clm_dict["P21"][0].getTarget().get()["labels"]["en"]
@@ -330,7 +300,6 @@ def extract_subjects(subject_type):
                 lon = ""
 
         count += 1
-<<<<<<< HEAD
         #print(str(count) + " ", end='')
         for langkey in languageKeys:
             try:
@@ -347,20 +316,9 @@ def extract_subjects(subject_type):
 
         # add fields that are special for different subject types
         if subject_type == "artists":
-            subject_dict.update({"gender": gender, "date_of_birth": date_of_birth, "date_of_death": date_of_death, "place_of_birth": place_of_birth,
-                                 "place_of_death": place_of_death, "citizenship": citizenship, "movements": movements, "influenced_by": influenced_by})
-=======
-
-        # add all common fields
-        subject_dict = {"id": item.id, "classes": classes, "label": label, "description": description, "image": image,
-                        "abstract": abstract, "wikipediaLink": wikipedia_link}
-
-        # add fields that are special for different subject types
-        if subject_type == "artists":
             subject_dict.update({"gender": gender, "date_of_birth": date_of_birth, "date_of_death": date_of_death,
                                  "place_of_birth": place_of_birth, "place_of_death": place_of_death,
                                  "citizenship": citizenship, "movements": movements, "influenced_by": influenced_by})
->>>>>>> c019f8f716e11adb70a67a115cb126243ebdcf62
 
         elif subject_type == "movements":
             subject_dict.update({"influenced_by": influenced_by})
@@ -376,24 +334,15 @@ def extract_classes():
     """Extracts metadata of classes from Wikidata and stores them in a *.csv file
 
 
-<<<<<<< HEAD
-    Precondition: Files 'paintings.csv', 'drawings.csv', 'sculptures.csv', 'genres.csv', 'movements.csv', 'materials.csv', 'motifs.csv', 'artists.csv', 'locations.csv' must have been created before (functions extract_artworks and extract_subjects).
-=======
     Precondition: Files 'paintings.csv', 'drawings.csv', 'sculptures.csv', 'genres.csv', 'movements.csv',
                         'materials.csv', 'motifs.csv', 'artists.csv', 'locations.csv'
                   must have been created before (functions extract_artworks and extract_subjects).
->>>>>>> c019f8f716e11adb70a67a115cb126243ebdcf62
     Metadata for classes referenced in theses files will be stored.
     """
     print(datetime.datetime.now(), "Starting with classes")
     classes = set()
     class_dict = dict()
-<<<<<<< HEAD
     file_names = ['paintings.csv', 'drawings.csv', 'sculptures.csv', 'genres.csv', 'movements.csv', 'materials.csv', 'motifs.csv', 'artists.csv', 'locations.csv']
-=======
-    file_names = ['paintings.csv', 'drawings.csv', 'sculptures.csv', 'genres.csv', 'movements.csv',
-                  'materials.csv', 'motifs.csv', 'artists.csv', 'locations.csv']
->>>>>>> c019f8f716e11adb70a67a115cb126243ebdcf62
 
     for file_name in file_names:
         with open(file_name, newline="", encoding='utf-8') as file:
@@ -414,11 +363,7 @@ def extract_classes():
             break
         extract_class(cls, class_dict, repo)
         count += 1
-<<<<<<< HEAD
         #print(str(count) + " ", end='')
-=======
-        # print(str(count) + " ", end='')
->>>>>>> c019f8f716e11adb70a67a115cb126243ebdcf62
     for cls in class_dict:
         extract_dicts.append(class_dict[cls])
 
@@ -585,9 +530,7 @@ def generate_rdf():
     print()
     print(datetime.datetime.now(), "Finished with", "generating rdf")
 
-
 def get_fields(type_name):
-<<<<<<< HEAD
 
     languageKeys = conf()
     fields = ["id", "classes", "label", "description", "image", "abstract", "wikipediaLink"]
@@ -601,15 +544,6 @@ def get_fields(type_name):
         fields += ["gender", "date_of_birth", "date_of_death", "place_of_birth", "place_of_death", "citizenship", "movements", "influenced_by"]
         for langkey in languageKeys:
             fields += ["gender_"+langkey, "citizenship_"+langkey]
-=======
-    fields = ["id", "classes", "label", "description", "image", "abstract", "wikipediaLink"]
-    if type_name in ["drawings", "sculptures", "paintings", "artworks"]:
-        fields += ["artists", "locations", "genres", "movements", "inception",
-                   "materials", "motifs", "country", "height", "width"]
-    elif type_name == "artists":
-        fields += ["gender", "date_of_birth", "date_of_death", "place_of_birth",
-                   "place_of_death", "citizenship", "movements", "influenced_by"]
->>>>>>> c019f8f716e11adb70a67a115cb126243ebdcf62
     elif type_name == "movements":
         fields += ["influenced_by"]
     elif type_name == "locations":
@@ -622,7 +556,6 @@ def get_fields(type_name):
             fields += ["label_"+langkey, "description_"+langkey]
     return fields
 
-
 def generate_csv(name, extract_dicts):
     with open(name + ".csv", "w", newline="", encoding='utf-8') as file:
         writer = csv.DictWriter(file, fieldnames=get_fields(name), delimiter=';', quotechar='"')
@@ -630,10 +563,6 @@ def generate_csv(name, extract_dicts):
         for extract_dict in extract_dicts:
             writer.writerow(extract_dict)
 
-<<<<<<< HEAD
-=======
-
->>>>>>> c019f8f716e11adb70a67a115cb126243ebdcf62
 def generate_json(name, extract_dicts):
     with open(name + ".json", "w", newline="", encoding='utf-8') as file:
         print(name[:-1])

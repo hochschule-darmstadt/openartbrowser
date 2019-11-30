@@ -6,13 +6,18 @@ import ijson
 import os
 #from ArtOntologyCrawler import readLanguageConfigFile
 from language_helper import generate_langdict_arrays as confdicts
-from language_helper import read_language_config as confkeys
-from language_helper import read_full_language_config as confcont
+#from language_helper import read_language_config as confkeys
+#from language_helper import read_full_language_config as confcont
+from language_helper import language_config_to_list as language_config
 
-#filename = "/home/mkherrabi/jsonData/master_flat.json"
+
+
 filename = os.path.dirname(os.path.dirname((os.path.abspath(__file__)))) + "\\crawler_output\\art_ontology.json"
-
-languagedata = confcont()
+        
+#load languageconfig file with keys / language dicts
+language_skeleton = confdicts()
+language_values = language_config()
+language_keys = [item[0] for item in language_values] 
 
 def fill_language_gaps(element, jsonobject):
     """[Fills language data into empty elements based on priority, 
@@ -24,9 +29,8 @@ def fill_language_gaps(element, jsonobject):
         Returns:
         [dict] -- [Updated json file with language gaps filled in / or not if no language data existant]
     """
-    for row in languagedata:
+    for row in language_values:
         try:
-            #print(row[1])
             #Skip empty language data
             if not jsonobject[element + '_' + row[0]]:
                 next
@@ -98,23 +102,20 @@ def generate_langjson(name, extract_dicts):
     with open(name + ".json", "w", newline="", encoding='utf-8') as file:
         file.write(json.dumps(extract_dicts, ensure_ascii=False))
         
-#load languageconfig file with keys / language dicts
-langconfig_array = confdicts()
-langconfig_keys = confkeys()
 
 #iterate through all json object in the master file
 for item in ijson.items(open(filename, 'r', encoding='utf-8'), 'item'):
     i = 0
     #iterate through all language keys and write the json object
     #in an modified state into the language dictionary arrays
-    while i < len(langconfig_keys):
-        langconfig_array[i] = modify_langdict(langconfig_array[i], item, langconfig_keys[i])
+    while i < len(language_keys):
+        language_skeleton[i] = modify_langdict(language_skeleton[i], item, language_keys[i])
         i += 1  
 
 
 i = 0
 #generate one master file per language defined in config file.
 #fill the contents of the respective language dicitonary arrays into the files
-while i < len(langconfig_array):
-    generate_langjson('master_' + langconfig_keys[i], langconfig_array[i])
+while i < len(language_skeleton):
+    generate_langjson('master_' + language_keys[i], language_skeleton[i])
     i += 1

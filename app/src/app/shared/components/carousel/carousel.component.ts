@@ -41,7 +41,7 @@ export function makeDefaultSlide(id:number = 0, items:Array<Entity> = []): Slide
   templateUrl: './slider.component.html',
   styleUrls: ['./slider.component.scss'],
 })
-export class SliderComponent implements OnChanges {
+export class CarouselComponent implements OnChanges {
 
   /** title of this slider */
   @Input() heading: string;

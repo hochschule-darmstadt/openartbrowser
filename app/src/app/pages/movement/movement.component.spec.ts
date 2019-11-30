@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MovementComponent } from './movement.component';
-import { SlideComponent } from 'src/app/shared/components/slider/slide/slide.component';
-import { SliderComponent } from 'src/app/shared/components/slider/slider.component';
+import { SlideComponent } from 'src/app/shared/components/carousel/slide/slide.component';
+import { CarouselComponent } from 'src/app/shared/components/carousel/carousel.component';
 import { DataService } from 'src/app/core/services/data.service';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
@@ -22,7 +22,7 @@ describe('MovementComponent', () => {
       declarations: [
         MovementComponent,
         SlideComponent,
-        SliderComponent,
+        CarouselComponent,
       ],
       providers: [
         DataService,

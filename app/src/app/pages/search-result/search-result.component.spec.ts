@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SearchResultComponent } from './search-result.component';
-import { SlideComponent } from 'src/app/shared/components/slider/slide/slide.component';
-import { SliderComponent } from 'src/app/shared/components/slider/slider.component';
+import { SlideComponent } from 'src/app/shared/components/carousel/slide/slide.component';
+import { CarouselComponent } from 'src/app/shared/components/carousel/carousel.component';
 import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DataService } from 'src/app/core/services/data.service';
@@ -22,7 +22,7 @@ describe('SearchResultComponent', () => {
       declarations: [
         SearchResultComponent,
         SlideComponent,
-        SliderComponent
+        CarouselComponent
       ],
       providers: [
         DataService,

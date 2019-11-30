@@ -10,8 +10,8 @@ import { DataService } from 'src/app/core/services/data.service';
  */
 export interface SliderCategory {
   items: Entity[];
-  key: string;
-  icon: string;
+  key: EntityType;
+  icon: EntityIcon;
 }
 
 @Component({
@@ -98,7 +98,7 @@ export class HomeComponent implements OnInit {
    * @description Get categories by entity type. Return SliderCategory object.
    * @memberof HomeComponent 
    */
-  private async getSliderCategory<T>(category: string, icon: string): Promise<SliderCategory> {
+  private async getSliderCategory<T>(category: EntityType, icon: EntityIcon): Promise<SliderCategory> {
     const items = this.shuffle(await this.dataService.get20CategoryItems<T>(category));
     return { items, key: category, icon }
   }

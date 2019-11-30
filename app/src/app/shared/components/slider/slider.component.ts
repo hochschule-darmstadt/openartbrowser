@@ -1,5 +1,6 @@
 import { Component, Input, SimpleChanges, OnChanges, EventEmitter, Output } from '@angular/core';
 import { Entity } from '../../models/models';
+import { HostListener } from "@angular/core";
 
 export interface Slide {
   /** artworks displayed on this slide */
@@ -24,7 +25,7 @@ export interface Slide {
  * 
  * @returns {Slide} a default slide
  */
-export function makeDefaultSlide(id:number = 0, items:Array<Entity> = []): Slide {
+export function makeDefaultSlide(id: number = 0, items: Array<Entity> = []): Slide {
   return {
     id,
     items,
@@ -52,10 +53,14 @@ export class SliderComponent implements OnChanges {
   // slides of the slider, max 8 items each.
   slides: Slide[];
 
+  private isMobile = false;
+
   /** emits hovered artwork on hover event. */
   @Output() itemHover: EventEmitter<Entity> = new EventEmitter<Entity>();
 
-  constructor() { }
+  constructor() {
+    this.checkIsMobile();
+  }
 
   /** Hook that is called when any data-bound property of a directive changes. */
   ngOnChanges(changes: SimpleChanges) {
@@ -68,11 +73,13 @@ export class SliderComponent implements OnChanges {
   /** Divide the slider items into slides. Initialize slides. */
   buildSlides(): void {
     const slidesBuilt: Slide[] = [];
+    const imagesPerSlide = (this.isMobile ? 1 : 8)
     // There are 8 images on each slide.
-    const numberOfSlides = this.items.length / 8;
+    // There are 1 image on ech slide if is  mobile
+    const numberOfSlides = this.items.length / imagesPerSlide;
     for (let i = 0; i < numberOfSlides; i++) {
       // get next 8 items out of items array
-      const items: Entity[] = this.items.slice(i * 8, i * 8 + 8);
+      const items: Entity[] = this.items.slice(i * imagesPerSlide, i * imagesPerSlide + imagesPerSlide);
 
       const slide: Slide = makeDefaultSlide(i, items);
 
@@ -112,5 +119,11 @@ export class SliderComponent implements OnChanges {
       }
       this.slides.splice(this.slides.length - 1, 1);
     }
+  }
+
+
+  @HostListener('window:resize', ['$event'])
+  checkIsMobile(event?) {
+    this.isMobile = window.innerWidth < 575;
   }
 }

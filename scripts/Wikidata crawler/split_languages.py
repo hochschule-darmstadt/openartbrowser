@@ -6,9 +6,8 @@ import ijson
 import os
 #from ArtOntologyCrawler import readLanguageConfigFile
 from language_helper import generate_langdict_arrays as confdicts
-#from language_helper import read_language_config as confkeys
-#from language_helper import read_full_language_config as confcont
 from language_helper import language_config_to_list as language_config
+from language_helper import get_language_attributes as get_langattributes
 
 
 
@@ -63,7 +62,7 @@ def modify_langdict(langdict, jsonobject, langkey):
         [array[dict]] -- [modified language container]
     """
     #Language keys that need language specific handling
-    lang_attributes = ["label", "description", "gender", "citizenship", "country"]
+    lang_attributes = get_langattributes()
     tempjson = jsonobject.copy()
     delete_keys = []
     for element in lang_attributes:
@@ -99,7 +98,7 @@ def generate_langjson(name, extract_dicts):
         name {[str]} -- [Name of the generated json language file]
         extract_dicts {[dict]} -- [dictionary that is written into the output file]
     """
-    with open(name + ".json", "w", newline="", encoding='utf-8') as file:
+    with open("scripts/crawler_output/" + name + ".json", "w", newline="", encoding='utf-8') as file:
         file.write(json.dumps(extract_dicts, ensure_ascii=False))
         
 

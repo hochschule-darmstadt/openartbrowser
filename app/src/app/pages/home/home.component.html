@@ -1,46 +1,34 @@
-<div class="background-image" [ngStyle]="{'background-image': 'linear-gradient(rgba(34, 34, 34, 0.5), rgba(34, 34, 34, 0.5)), url('+ backgroundImageUrl +')'}">
+<div class="background-image"
+  [ngStyle]="{'background-image': 'linear-gradient(rgba(34, 34, 34, 0.5), rgba(34, 34, 34, 0.5)), url('+ backgroundImageUrl +')'}">
 </div>
 <div class="container">
-  <div class="container-content">
+  <div class="container-search">
     <div class="d-flex justify-content-center row logo">
       <span>open</span>
       <h1>ArtBrowser</h1>
     </div>
-    <div class="contr">
+    <div class="search-control">
       <app-search class="search" id="homeSearch"> </app-search>
     </div>
   </div>
 
   <div class="row pt-4">
-    <div class="col-lg-4 mb-4 container-category" *ngFor="let key of Object.keys(upperCategories)">
+    <div class="mb-4 container-category" *ngFor="let category of categories; let i = index"
+      [ngClass]="(categories.length / 2 > i + 1)?'col-lg-4':'col-lg-3'">
       <ngb-carousel>
-        <div *ngFor="let item of upperCategories[key]?.items" class="">
+        <div *ngFor="let item of category.items">
           <ng-template ngbSlide>
-            <div class="container-image" [routerLink]="['/' + key, item?.id]">
-              <img class="image" (error)="onLoadingError(upperCategories[key], item)" src="{{ item?.imageSmall }}" alt="{{ item?.label }}" />
+            <div class="container-image" [routerLink]="['/' + category.key, item?.id]">
+              <img class="image" (error)="onLoadingError(category, item)" src="{{ item?.imageSmall }}"
+                alt="{{ item?.label }}" />
               <div class="overlay">
-                <span class="type badge badge-secondary badge-pill chip"><i class="fas fa-{{ upperCategories[key]?.icon }}"></i>
-                  {{ key | titlecase }}</span>
-                <span class="label">{{ item?.label | titlecase }}</span>
-              </div>
-            </div>
-          </ng-template>
-        </div>
-      </ngb-carousel>
-    </div>
-  </div>
-
-  <div class="row pt-4">
-    <div class="col-lg-3 mb-4 container-category" *ngFor="let key of Object.keys(lowerCategories)">
-      <ngb-carousel>
-        <div *ngFor="let item of lowerCategories[key]?.items" class="">
-          <ng-template ngbSlide>
-            <div class="container-image" [routerLink]="['/' + key, item?.id]">
-              <img class="image" src="{{ item?.imageSmall }}" alt="{{ item?.label }}" (error)="onLoadingError(lowerCategories[key], item)" />
-              <div class="overlay">
-                <span class="type badge badge-secondary badge-pill chip"><i class="fas fa-{{ lowerCategories[key]?.icon }}"></i>
-                  {{ key | titlecase }}</span>
-                <span class="label">{{ item?.label | titlecase }}</span>
+                <span class="type badge badge-secondary badge-pill chip">
+                  <i class="fas fa-{{ category.icon }}"></i>
+                  {{ category.key | titlecase }}
+                </span>
+                <span class="label">
+                  {{ item?.label | titlecase }}
+                </span>
               </div>
             </div>
           </ng-template>

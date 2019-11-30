@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChildren, QueryList } from '@angular/core';
 import { NgbCarouselConfig, NgbCarousel } from '@ng-bootstrap/ng-bootstrap';
-import { Entity, Artist, Artwork, Movement, Material, Location, Genre, Motif } from 'src/app/shared/models/models';
+import { Entity, Artist, Artwork, Movement, Material, Location, Genre, Motif, EntityIcon, EntityType } from 'src/app/shared/models/models';
 import { DataService } from 'src/app/core/services/data.service';
 
 /**
@@ -10,6 +10,7 @@ import { DataService } from 'src/app/core/services/data.service';
  */
 export interface SliderCategory {
   items: Entity[];
+  key: string;
   icon: string;
 }
 
@@ -41,48 +42,11 @@ export class HomeComponent implements OnInit {
   Object = Object;
 
   /**
-   * @description variable of the first 3 categories.
-   * @type {{ [key: string]: SliderCategory }}
+   * variable of the categories.
+   * @type {SliderCategory[]}
    * @memberof HomeComponent
    */
-  upperCategories: { [key: string]: SliderCategory } = {
-    artwork: {
-      items: [],
-      icon: 'palette',
-    },
-    artist: {
-      items: [],
-      icon: 'user',
-    },
-    movement: {
-      items: [],
-      icon: 'wind',
-    },
-  };
-
-  /**
-   * @description variable of the next 4 categories.
-   * @type {{ [key: string]: SliderCategory }}
-   * @memberof HomeComponent
-   */
-  lowerCategories: { [key: string]: SliderCategory } = {
-    location: {
-      items: [],
-      icon: 'archway',
-    },
-    material: {
-      items: [],
-      icon: 'scroll',
-    },
-    genre: {
-      items: [],
-      icon: 'tags',
-    },
-    motif: {
-      items: [],
-      icon: 'image',
-    },
-  };
+  categories: SliderCategory[] = [];
 
   constructor(public dataService: DataService, ngb_config: NgbCarouselConfig) {
     /** set configuration of ngbCarousel */
@@ -92,60 +56,18 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getCategoryItems().then(() => {
-      setTimeout(() => {
-        this.refreshCarousel(); // need to have a bit delay of time (last categories that is fetched is not refreshing carousel cycle)
-      }, 500);
-      this.getRandomImage();
+    this.setBackground();
+    this.getSlides().then(slides => {
+      // Fetch items for each category using the service;
+      this.categories = slides;
+
+      // need to have a bit delay of time (last categories that is fetched is not refreshing carousel cycle)
+      setTimeout(() => this.refreshCarousel(), 500);
+
+      // assign backgroundImageUrl with a random image from one of the artworks.
+      this.setBackground();
     });
   }
-
-  /**
-   * @description Fetch items for each category using the service.
-   * @memberof HomeComponent
-   */
-  getCategoryItems = async (): Promise<void> => {
-    this.upperCategories.artwork.items = this.shuffle(await this.dataService.get20CategoryItems<Artwork>('artwork'));
-    this.upperCategories.artist.items = this.shuffle(await this.dataService.get20CategoryItems<Artist>('artist'));
-    this.upperCategories.movement.items = this.shuffle(await this.dataService.get20CategoryItems<Movement>('movement'));
-    this.lowerCategories.location.items = this.shuffle(await this.dataService.get20CategoryItems<Location>('location'));
-    this.lowerCategories.material.items = this.shuffle(await this.dataService.get20CategoryItems<Material>('material'));
-    this.lowerCategories.genre.items = this.shuffle(await this.dataService.get20CategoryItems<Genre>('genre'));
-    this.lowerCategories.motif.items = this.shuffle(await this.dataService.get20CategoryItems<Motif>('motif'));
-  };
-
-  /**
-   * @description shuffle the items' categories.
-   * @memberof HomeComponent
-   */
-  shuffle = (a: Entity[]): Entity[] => {
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-  };
-
-  /**
-   * @description make auto next carousel works after fetching categories.
-   * @memberof HomeComponent
-   */
-  refreshCarousel = (): void => {
-    this.carousel.forEach((item) => {
-      item.cycle();
-    });
-  };
-
-  /**
-   * @description assign backgroundImageUrl with a random image from one of the artworks.
-   * @memberof HomeComponent
-   */
-  getRandomImage = (): void => {
-    if (this.upperCategories['artwork'].items.length > 0) {
-      let artworks = this.upperCategories['artwork'].items;
-      this.backgroundImageUrl = artworks[Math.floor(Math.random() * (artworks.length))].imageMedium;
-    }
-  };
 
   /**
    * removes entity from category suggestions if image of item cannot be loaded
@@ -153,8 +75,58 @@ export class HomeComponent implements OnInit {
    * @param item item that should be removed
    */
   onLoadingError(category: SliderCategory, item: Entity) {
-    category.items = category.items.filter((i) => {
-      return item.id !== i.id;
-    });
+    category.items = category.items.filter(i => item.id !== i.id);
+  }
+
+  /**
+   * @description Fetch items for each category using the service. Retrun an array of slider category items.
+   * @memberof HomeComponent 
+   */
+  private getSlides = async (): Promise<SliderCategory[]> => {
+    const cats = [];
+    cats.push(await this.getSliderCategory<Artwork>(EntityType.ARTWORK, EntityIcon.ARTWORK));
+    cats.push(await this.getSliderCategory<Artist>(EntityType.ARTIST, EntityIcon.ARTIST));
+    cats.push(await this.getSliderCategory<Movement>(EntityType.MOVEMENT, EntityIcon.MOVEMENT));
+    cats.push(await this.getSliderCategory<Location>(EntityType.LOCATION, EntityIcon.LOCATION));
+    cats.push(await this.getSliderCategory<Material>(EntityType.MATERIAL, EntityIcon.MATERIAL));
+    cats.push(await this.getSliderCategory<Genre>(EntityType.GENRE, EntityIcon.GENRE));
+    cats.push(await this.getSliderCategory<Motif>(EntityType.MOTIF, EntityIcon.MOTIF));
+    return cats;
+  }
+
+  /**
+   * @description Get categories by entity type. Return SliderCategory object.
+   * @memberof HomeComponent 
+   */
+  private async getSliderCategory<T>(category: string, icon: string): Promise<SliderCategory> {
+    const items = this.shuffle(await this.dataService.get20CategoryItems<T>(category));
+    return { items, key: category, icon }
+  }
+
+  private setBackground() {
+    // assign backgroundImageUrl with a random image from one of the artworks.
+    const artworks = (this.categories && this.categories.length) ? this.categories[0].items : [];
+    if (artworks.length > 0)
+      this.backgroundImageUrl = artworks[Math.floor(Math.random() * (artworks.length))].imageMedium;
+  }
+
+  /**
+   * @description make auto next carousel works after fetching categories.
+   * @memberof HomeComponent
+   */
+  private refreshCarousel(): void {
+    this.carousel.forEach(item => item.cycle());
+  }
+
+  /**
+   * @description shuffle the items' categories.
+   * @memberof HomeComponent
+   */
+  private shuffle(a: Array<any>): Array<any> {
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
   }
 }

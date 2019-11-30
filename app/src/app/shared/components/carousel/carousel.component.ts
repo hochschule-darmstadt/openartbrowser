@@ -38,8 +38,8 @@ export function makeDefaultSlide(id:number = 0, items:Array<Entity> = []): Slide
 
 @Component({
   selector: 'app-slider',
-  templateUrl: './slider.component.html',
-  styleUrls: ['./slider.component.scss'],
+  templateUrl: './carousel.component.html',
+  styleUrls: ['./carousel.component.scss'],
 })
 export class CarouselComponent implements OnChanges {
 

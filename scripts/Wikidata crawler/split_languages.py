@@ -24,7 +24,7 @@ def fill_language_gaps(element, jsonobject):
     
     Arguments:
         element {[string]} -- [Name of the key which is in need of gap filling]
-        jsonobject {[dict]} -- [Relevant which contains all data specific to the element]
+        jsonobject {[dict]} -- [Relevant dict which contains all data specific to the element]
         Returns:
         [dict] -- [Updated json file with language gaps filled in / or not if no language data existant]
     """

@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container entity">
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7">
       <span class="badge badge-pill badge-secondary chip cursor-unset"><i class="fas fa-user"></i> Artist</span>
@@ -25,8 +25,13 @@
         </div>
       </div>
 
-      <div *ngIf="artist?.gender || artist?.citizenship || artist?.movements?.length ||
-       artist?.influenced_by?.length || artist?.abstract">
+      <div *ngIf="
+          artist?.gender ||
+          artist?.citizenship ||
+          artist?.movements?.length ||
+          artist?.influenced_by?.length ||
+          artist?.abstract
+       ">
         <h4 class="mt-2 more" href="#collapseArtist" (click)="toggleDetails()">
           More
           <i *ngIf="collapse" href="#collapseArtist" class="fas fa-chevron-down"> </i>
@@ -64,8 +69,7 @@
             <div class="col-md-9 pl-0 info">
               <p *ngIf="artist?.movements?.length" class="mb-2">
                 <span *ngFor="let movement of artist?.movements"
-                      class="badge badge-pill badge-secondary first-letter chip"
-                      [routerLink]="'/movement/' + movement.id">
+                  class="badge badge-pill badge-secondary first-letter chip" [routerLink]="'/movement/' + movement.id">
                   <i class="fas fa-wind"></i>
                   {{ movement.label }}
                 </span>
@@ -79,8 +83,7 @@
             <div class="col-md-9 pl-0 info">
               <p *ngIf="artist?.influenced_by?.length" class="mb-2">
                 <span *ngFor="let influencer of artist?.influenced_by"
-                      class="badge badge-pill badge-secondary first-letter chip"
-                      [routerLink]="'/artist/' + influencer.id">
+                  class="badge badge-pill badge-secondary first-letter chip" [routerLink]="'/artist/' + influencer.id">
                   <i class="fas fa-user"></i>
                   {{ influencer.label }}
                 </span>
@@ -91,7 +94,7 @@
       </div>
     </div>
     <div class="col-sm-5 img" *ngIf="artist?.image">
-      <img class="img-fluid rounded-circle" src="{{ artist?.imageSmall }}" alt=""/>
+      <img class="img-fluid rounded-circle" src="{{ artist?.imageSmall }}" alt="" />
     </div>
   </div>
   <app-slider [items]="sliderItems" heading="Artworks"></app-slider>

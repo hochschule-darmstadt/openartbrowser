@@ -1,11 +1,15 @@
-<div class="container">
+<div class="container entity">
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7">
-      <span class="badge badge-pill badge-secondary chip cursor-unset"><i class="fas fa-scroll"></i> Material</span>
+      <span class="badge badge-pill badge-secondary chip cursor-unset">
+        <i class="fas fa-scroll"></i>
+        Material
+      </span>
+
       <h2 class="mb-3 first-letter">{{material?.label}} </h2>
       <div class="mb-3 mt-5">
-      </div>
     </div>
+
     <div class="col-sm-5 img" *ngIf="material?.image">
       <img class="img-fluid rounded-circle" src="{{material?.imageSmall}}" alt="">
     </div>

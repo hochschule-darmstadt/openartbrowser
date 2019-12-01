@@ -1,14 +1,19 @@
-<div class="container">
+<div class="container entity">
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7">
-      <span class="badge badge-pill badge-secondary chip cursor-unset"><i class="fas fa-image"></i> Motif</span>
+      <span class="badge badge-pill badge-secondary chip cursor-unset">
+        <i class="fas fa-image"></i>
+        Motif
+      </span>
       <h2 class="mb-3 first-letter">{{ motif?.label }}</h2>
+
       <div class="mb-3 mt-5 pl-2">
         <p *ngIf="motif?.description" class="mb-1 first-letter">
           {{ motif?.description }}
         </p>
       </div>
     </div>
+
     <div class="col-sm-5 img" *ngIf="motif?.image">
       <img class="img-fluid rounded-circle" src="{{ motif?.imageSmall }}" alt="" />
     </div>

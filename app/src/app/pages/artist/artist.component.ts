@@ -1,10 +1,11 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {Artist, Artwork, EntityType, Movement} from 'src/app/shared/models/models';
-import {DataService} from 'src/app/core/services/data.service';
-import {ActivatedRoute} from '@angular/router';
-import {takeUntil} from 'rxjs/operators';
-import {Subject} from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Artist, Artwork, EntityType, Movement } from 'src/app/shared/models/models';
+import { DataService } from 'src/app/core/services/data.service';
+import { ActivatedRoute } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import * as _ from 'lodash';
+import { shuffle } from 'src/app/core/services/utils.service';
 
 @Component({
   selector: 'app-artist',
@@ -40,33 +41,19 @@ export class ArtistComponent implements OnInit, OnDestroy {
       this.artist = await this.dataService.findById<Artist>(artistId, EntityType.ARTIST);
 
       /** load slider items */
-      this.dataService.findArtworksByArtists([this.artist.id]).then((artworks) => {
-        this.sliderItems = this.shuffle(artworks);
-      });
+      this.dataService.findArtworksByArtists([this.artist.id])
+        .then(artworks => this.sliderItems = shuffle(artworks));
       /** dereference movements  */
-      this.dataService.findMultipleById(this.artist.movements as any, EntityType.MOVEMENT).then((movements) => {
-        this.artist.movements = movements;
-      });
+      this.dataService.findMultipleById(this.artist.movements as any, EntityType.MOVEMENT)
+        .then(movements => this.artist.movements = movements);
       /** dereference influenced_bys */
-      this.dataService.findMultipleById(this.artist.influenced_by as any, EntityType.ARTIST).then((influences) => {
-        this.artist.influenced_by = influences;
-      });
+      this.dataService.findMultipleById(this.artist.influenced_by as any, EntityType.ARTIST)
+        .then(influences => this.artist.influenced_by = influences);
 
       /* Count meta data to show more on load */
 
       this.calculateCollapseState();
     });
-  }
-
-  /**
-   * @description shuffle the items' categories.
-   */
-  shuffle = (a: Artwork[]): Artwork[] => {
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
   }
 
   /** calculates the size of meta data item section

@@ -1,7 +1,10 @@
-<div class="container">
+<div class="container entity">
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7">
-      <span class="badge badge-pill badge-secondary chip cursor-unset"><i class="fas fa-wind"></i> Movement</span>
+      <span class="badge badge-pill badge-secondary chip cursor-unset">
+        <i class="fas fa-wind"></i>
+        Movement
+      </span>
       <h2 class="mb-3 first-letter">{{ movement?.label }}</h2>
 
       <div *ngIf="movement?.abstract?.length || movement?.influenced_by?.length">
@@ -25,19 +28,21 @@
 
             <div class="col-md-9 info">
               <p *ngIf="movement?.influenced_by?.length" class="mb-1">
-            <span *ngFor="let influence of movement?.influenced_by"
+                <span *ngFor="let influence of movement?.influenced_by"
                   class="badge badge-pill badge-secondary first-letter chip"
                   [routerLink]="influence.type === 'artist' ? '/artist/' + influence.id : '/movement/' + influence.id">
-              {{ influence.label }}</span>
+                  {{ influence.label }}</span>
               </p>
             </div>
           </div>
         </div>
       </div>
     </div>
+
     <div class="col-sm-5 img" *ngIf="movement?.image">
-      <img class="img-fluid rounded-circle" src="{{ movement?.imageSmall }}" alt=""/>
+      <img class="img-fluid rounded-circle" src="{{ movement?.imageSmall }}" alt="" />
     </div>
   </div>
+  
   <app-slider [items]="sliderItems" heading="Artworks"></app-slider>
 </div>

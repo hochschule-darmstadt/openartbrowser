@@ -1,2 +1,9 @@
 pywikibot>=3.0.dev0
 requests>=2.22.0
+flake8==3.7.9
+pyflakes==2.1.1
+pycodestyle==2.5.0
+pathspec==0.6.0
+black==19.10b0
+appdirs==1.4.3
+regex==2019.11.1

@@ -1,44 +1,42 @@
 import csv
 import os
-from array import array
 
 
-def read_language_config():
-    """[Reads languageconfig.csv and returns array that contains its keys]
-    
+def get_language_attributes():
+    """[Returns all attributes in crawler .csv/.json files that need
+    language handling]
+
     Returns:
-        [array] -- [keys of languageconfig.csv as string]
+        [dict] -- [Dictionary containing all language attributes]
     """
-    fileName = os.path.dirname(os.path.abspath(__file__)) + "/languageconfig.csv"
-    languageKeys = []
-    with open(fileName, encoding = "utf-8") as file:
+    return ["label", "description", "gender", "citizenship", "country"]
+
+
+def language_config_to_list(
+    config_file=os.path.dirname(os.path.abspath(__file__)) + "\\languageconfig.csv",
+):
+    """[Reads languageconfig.csv and returns array that contains its
+    full contents]
+
+    Returns:
+        [list] -- [contents of languageconfig.csv as list]
+    """
+    languageValues = []
+    with open(config_file, encoding="utf-8") as file:
         configReader = csv.reader(file, delimiter=";")
         for row in configReader:
             if row[0] != "langkey":
-                languageKeys.append(row[0])
-    return languageKeys
-
-def read_full_language_config():
-    """[Reads languageconfig.csv and returns array that contains its full contents]
-    
-    Returns:
-        [array] -- [contents of languageconfig.csv as list]
-    """
-    fileName = os.path.dirname(os.path.abspath(__file__)) + "/languageconfig.csv"
-    languageKeys = []
-    with open(fileName, encoding = "utf-8") as file:
-        configReader = csv.reader(file, delimiter=";")
-        for row in configReader:
-            if row[0] != "langkey":
-                languageKeys.append(row)
-    return languageKeys
+                languageValues.append(row)
+    return languageValues
 
 
 def generate_langdict_arrays():
-    """[Generates empty array of dictonaries, one for each language defined in languageconfig.csv ]
-    
+    """[Generates empty array of dictonaries, one for each language
+     defined in languageconfig.csv ]
+
     Returns:
-        [array[]] -- [empty array of arrays, where index = languages count of languageconfig.csv]
+        [array[]] -- [empty array of arrays, where index = languages
+         count of languageconfig.csv]
     """
-    dictlist = [[] for x in range(len(read_language_config()))]
+    dictlist = [[] for x in range(len(language_config_to_list()))]
     return dictlist

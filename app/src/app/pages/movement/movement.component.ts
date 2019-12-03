@@ -46,10 +46,6 @@ export class MovementComponent implements OnInit, OnDestroy {
         this.movement.influenced_by = influences;
       });
       this.calculateCollapseState();
-
-      if (this.movement) {
-        this.getTrustedUrl(this.movement.videos);
-      }
     });
   }
 

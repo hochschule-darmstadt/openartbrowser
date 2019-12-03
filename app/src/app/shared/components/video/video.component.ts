@@ -16,8 +16,7 @@ export class VideoComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public videoExists = false;
 
-  @Input()
-  entity: Entity;
+  @Input() entity: Entity;
 
   ngAfterViewInit(): void {
   }
@@ -26,11 +25,13 @@ export class VideoComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
-    const videoUrl = Array.isArray(this.entity.videos) ? this.entity.videos.pop() : this.entity.videos;
-    if (videoUrl) {
-      this.safeUrl = this.getTrustedUrl(videoUrl);
-      console.log(this.safeUrl);
-      this.validateVideoExists(videoUrl);
+    if (this.entity) {
+      const videoUrl = Array.isArray(this.entity.videos) ? this.entity.videos.pop() : this.entity.videos;
+      if (videoUrl) {
+        this.safeUrl = this.getTrustedUrl(videoUrl);
+        console.log(this.safeUrl);
+        this.validateVideoExists(videoUrl);
+      }
     }
 
   }

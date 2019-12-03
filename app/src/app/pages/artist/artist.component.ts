@@ -5,12 +5,14 @@ import {ActivatedRoute} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';
 import * as _ from 'lodash';
+import {DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 
 @Component({
   selector: 'app-artist',
   templateUrl: './artist.component.html',
   styleUrls: ['./artist.component.scss'],
 })
+
 export class ArtistComponent implements OnInit, OnDestroy {
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();
@@ -24,7 +26,11 @@ export class ArtistComponent implements OnInit, OnDestroy {
   /** Change collapse icon; true if more infos are folded in */
   collapse = true;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {
+  /** url that gets embedded in iframe in html**/
+  public safeUrl: SafeResourceUrl;
+
+  constructor(private dataService: DataService, private route: ActivatedRoute, public sanitizer: DomSanitizer) {
+    this.sanitizer = sanitizer;
   }
 
   toggleDetails() {
@@ -55,7 +61,19 @@ export class ArtistComponent implements OnInit, OnDestroy {
       /* Count meta data to show more on load */
 
       this.calculateCollapseState();
+
+      if(this.artist) {
+        this.getTrustedUrl(this.artist.videos);
+      }
     });
+  }
+
+  /**
+  *@description sanetizes video url
+   */
+
+  getTrustedUrl(url:any){
+    this.safeUrl = url? this.sanitizer.bypassSecurityTrustResourceUrl(url): "";
   }
 
   /**

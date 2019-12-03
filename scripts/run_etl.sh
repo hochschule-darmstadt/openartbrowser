@@ -12,3 +12,6 @@ node ../data_manipulation/script_movements_rank.js
 node ../data_manipulation/script_motifs_rank.js 
 
 node ../data_manipulation/script_flatten_rank.js
+
+cd ../data_manipulation
+python3 .\script_add_youtube_videos.py

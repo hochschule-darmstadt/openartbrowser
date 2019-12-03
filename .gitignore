@@ -2,6 +2,7 @@ node_modules
 apicache-py3
 *.ttl
 *.csv
+!youtube_videos.csv
 *.json
 *.ctrl
 *.lwp

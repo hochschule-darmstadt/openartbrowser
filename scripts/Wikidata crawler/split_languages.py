@@ -5,9 +5,7 @@ import ijson
 import os
 
 # from ArtOntologyCrawler import readLanguageConfigFile
-from language_helper import generate_langdict_arrays as confdicts
 from language_helper import language_config_to_list as language_config
-from language_helper import get_language_attributes as get_langattributes
 
 
 filename = (
@@ -15,11 +13,26 @@ filename = (
     + "\\crawler_output\\art_ontology.json"
 )
 
-# load languageconfig file with keys / language dicts
-language_skeleton = confdicts()
-language_values = language_config()
-language_keys = [item[0] for item in language_values]
 
+def get_language_attributes():
+    """[Returns all attributes in crawler .csv/.json files that need
+    language handling]
+
+    Returns:
+        [dict] -- [Dictionary containing all language attributes]
+    """
+    return ["label", "description", "gender", "citizenship", "country"]
+
+def generate_langdict_arrays():
+    """[Generates empty array of dictonaries, one for each language
+     defined in languageconfig.csv ]
+
+    Returns:
+        [array[]] -- [empty array of arrays, where index = languages
+         count of languageconfig.csv]
+    """
+    dictlist = [[] for x in range(len(language_config()))]
+    return dictlist
 
 def fill_language_gaps(element, jsonobject):
     """[Fills language data into empty elements based on priority,
@@ -73,7 +86,7 @@ def modify_langdict(langdict, jsonobject, langkey):
         [array[dict]] -- [modified language container]
     """
     # Language keys that need language specific handling
-    lang_attributes = get_langattributes()
+    lang_attributes = get_language_attributes()
     tempjson = jsonobject.copy()
     delete_keys = []
     for element in lang_attributes:
@@ -103,7 +116,6 @@ def modify_langdict(langdict, jsonobject, langkey):
     return langdict
 
 
-# writes temporary language specific data to language files
 def generate_langjson_files(name, extract_dicts):
     """[writes temporary language specific data to language files]
 
@@ -116,22 +128,26 @@ def generate_langjson_files(name, extract_dicts):
     ) as file:
         file.write(json.dumps(extract_dicts, ensure_ascii=False))
 
+# load languageconfig file with keys / language dicts
+language_skeleton = generate_langdict_arrays()
+language_values = language_config()
+language_keys = [item[0] for item in language_values]
 
-# iterate through all json object in the master file
-for item in ijson.items(open(filename, "r", encoding="utf-8"), "item"):
+if __name__ == "__main__":
+    for item in ijson.items(open(filename, "r", encoding="utf-8"), "item"):
+        i = 0
+        # iterate through all language keys and write the json object
+        # in an modified state into the language dictionary arrays
+        while i < len(language_keys):
+            language_skeleton[i] = modify_langdict(
+                language_skeleton[i], item, language_keys[i]
+            )
+            i += 1
+
+
     i = 0
-    # iterate through all language keys and write the json object
-    # in an modified state into the language dictionary arrays
-    while i < len(language_keys):
-        language_skeleton[i] = modify_langdict(
-            language_skeleton[i], item, language_keys[i]
-        )
+    # generate one master file per language defined in config file.
+    # fill the contents of the respective language dicitonary arrays into the files
+    while i < len(language_skeleton):
+        generate_langjson_files("art_ontology_" + language_keys[i], language_skeleton[i])
         i += 1
-
-
-i = 0
-# generate one master file per language defined in config file.
-# fill the contents of the respective language dicitonary arrays into the files
-while i < len(language_skeleton):
-    generate_langjson_files("master_" + language_keys[i], language_skeleton[i])
-    i += 1

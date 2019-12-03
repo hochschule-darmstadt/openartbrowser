@@ -2,16 +2,6 @@ import csv
 import os
 
 
-def get_language_attributes():
-    """[Returns all attributes in crawler .csv/.json files that need
-    language handling]
-
-    Returns:
-        [dict] -- [Dictionary containing all language attributes]
-    """
-    return ["label", "description", "gender", "citizenship", "country"]
-
-
 def language_config_to_list(
     config_file=os.path.dirname(os.path.abspath(__file__)) + "\\languageconfig.csv",
 ):
@@ -29,14 +19,3 @@ def language_config_to_list(
                 languageValues.append(row)
     return languageValues
 
-
-def generate_langdict_arrays():
-    """[Generates empty array of dictonaries, one for each language
-     defined in languageconfig.csv ]
-
-    Returns:
-        [array[]] -- [empty array of arrays, where index = languages
-         count of languageconfig.csv]
-    """
-    dictlist = [[] for x in range(len(language_config_to_list()))]
-    return dictlist

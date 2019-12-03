@@ -65,23 +65,22 @@ export class SliderComponent implements OnChanges {
   /** Hook that is called when any data-bound property of a directive changes. */
   ngOnChanges(changes: SimpleChanges) {
     // rebuild slides if slider items input changed.
-    if (changes.items && this.items) {
-      this.buildSlides();
-    }
+    if (changes.items && this.items)
+      this.slides = this.buildSlides(this.items);
   }
 
   /** Divide the slider items into slides. Initialize slides. */
-  buildSlides(): void {
-    const slidesBuilt: Slide[] = [];
-    const imagesPerSlide = (this.isMobile ? 1 : 8)
+  private buildSlides(items: Entity[]): Slide[] {
+    const slides: Slide[] = [];
     // There are 8 images on each slide.
     // There are 1 image on ech slide if is  mobile
-    const numberOfSlides = this.items.length / imagesPerSlide;
+    const imagesPerSlide = (this.isMobile ? 1 : 8)
+    const numberOfSlides = items.length / imagesPerSlide;
     for (let i = 0; i < numberOfSlides; i++) {
       // get next 8 items out of items array
-      const items: Entity[] = this.items.slice(i * imagesPerSlide, i * imagesPerSlide + imagesPerSlide);
+      const slideItems: Entity[] = items.slice(i * imagesPerSlide, i * imagesPerSlide + imagesPerSlide);
 
-      const slide: Slide = makeDefaultSlide(i, items);
+      const slide: Slide = makeDefaultSlide(i, slideItems);
 
       if (i === numberOfSlides - 1) {
         slide.isLastSlide = true;
@@ -92,19 +91,19 @@ export class SliderComponent implements OnChanges {
 
       /** set pointers between this slide and previous slide  */
       if (i !== 0) {
-        slide.prevSlide = slidesBuilt[i - 1];
-        slidesBuilt[i - 1].nextSlide = slide;
+        slide.prevSlide = slides[i - 1];
+        slides[i - 1].nextSlide = slide;
       }
 
       /** if this is the last slide, also set pointers between first and last slide  */
       if (i === numberOfSlides - 1 && numberOfSlides !== 1) {
-        slide.nextSlide = slidesBuilt[0];
-        slidesBuilt[0].prevSlide = slide;
+        slide.nextSlide = slides[0];
+        slides[0].prevSlide = slide;
       }
 
-      slidesBuilt.push(slide);
+      slides.push(slide);
     }
-    this.slides = slidesBuilt;
+    return slides;
   }
 
   /** delete slide based on id of the passed slide 

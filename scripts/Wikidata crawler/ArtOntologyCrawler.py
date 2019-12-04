@@ -357,20 +357,21 @@ def extract_class(cls, class_dict, repo):
 
 
 def merge_artworks():
-    """Merges artworks from files 'paintings.csv', 'drawings.csv', 'sculptures.csv' (function extract_artworks) and stores them in a new file artworks.csv
+    """Merges artworks from files 'paintings.json', 'drawings.json', 'sculptures.json' (function extract_artworks) and stores them in a new file artworks.json and artworks.csv
     """
     print(datetime.datetime.now(), "Starting with", "merging artworks")
     artworks = set()
-    file_names = ['paintings.csv', 'drawings.csv', 'sculptures.csv']
+    file_names = ['paintings.json', 'drawings.json', 'sculptures.json']
     extract_dicts = []
 
     for file_name in file_names:
-        with open(file_name, newline="", encoding='utf-8') as input:
-            reader = csv.DictReader(input, delimiter=';', quotechar='"')
-            for row in reader:
-                if not row['id'] in artworks:  # remove duplicates
-                    extract_dicts.append(row)
-                    artworks.add(row['id'])
+        with open(file_name, encoding='utf-8') as input:
+            object_array = json.load(input)
+            for object in object_array:
+                if not object['id'] in artworks:  # remove duplicates
+                    object['type'] = 'artwork'
+                    extract_dicts.append(object)
+                    artworks.add(object['id'])
 
     print()
     print(datetime.datetime.now(), "Finished with", "merging artworks")
@@ -488,10 +489,9 @@ def get_fields(type_name):
         fields = ["id", "label", "description", "subclass_of"]
     return fields
 
-
-def generate_csv(name, extract_dicts):
+def generate_csv(name, extract_dicts, fields):
     with open(name + ".csv", "w", newline="", encoding='utf-8') as file:
-        writer = csv.DictWriter(file, fieldnames=get_fields(name), delimiter=';', quotechar='"')
+        writer = csv.DictWriter(file, fieldnames=fields, delimiter=';', quotechar='"')
         writer.writeheader()
         for extract_dict in extract_dicts:
             writer.writerow(extract_dict)
@@ -499,7 +499,6 @@ def generate_csv(name, extract_dicts):
 
 def generate_json(name, extract_dicts):
     with open(name + ".json", "w", newline="", encoding='utf-8') as file:
-        print(name[:-1])
         file.write("[")
         for extract_dict in extract_dicts[:-1]:
             extract_dict["type"] = name[:-1]
@@ -516,17 +515,21 @@ def extract_art_ontology():
 
     for artwork, wd in [("drawings", "wd:Q93184"), ("sculptures", "wd:Q860861"), ("paintings", "wd:Q3305213")]:
         extracted_artwork = extract_artworks(artwork, wd)
-        generate_csv(artwork, extracted_artwork)
+        generate_csv(artwork, extracted_artwork, get_fields(artwork))
         generate_json(artwork, extracted_artwork)
 
     for subject in ["genres", "movements", "materials", "motifs", "artists", "locations"]:
         extracted_subject = extract_subjects(subject)
-        generate_csv(subject, extracted_subject)
+        generate_csv(subject, extracted_subject, get_fields(subject))
         generate_json(subject, extracted_subject)
 
-    generate_csv("classes", extract_classes())
+    classes = "classes"
+    generate_csv(classes, extract_classes(), get_fields(classes))
 
-    generate_csv("artworks", merge_artworks())
+    artworks = "artworks"
+    merged_artworks = merge_artworks()
+    generate_csv(artworks, merged_artworks, get_fields(artworks) + ["type"])
+    generate_json(artworks, merged_artworks)
 
     generate_rdf()
 

@@ -1,6 +1,6 @@
 import {enableProdMode, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Entity, Artwork, artSearch, EntityType, TagItem} from 'src/app/shared/models/models';
+import {Entity, Artwork, artSearch, EntityType, TagItem, Iconclass} from 'src/app/shared/models/models';
 import * as _ from 'lodash';
 import {Subject} from 'rxjs';
 import {elasticEnvironment} from 'src/environments/environment';
@@ -189,6 +189,20 @@ export class DataService {
   public async get20CategoryItems<T>(type: string): Promise<T[]> {
     const response = await this.http.post<any>(this.serverURI, this.categoryQuery(type)).toPromise();
     return this.filterData<T>(response);
+  }
+
+  /**
+   * Retrieves IconclassData from the iconclass.org web-service
+   * @see http://www.iconclass.org/help/lod for the documentation
+   * @param iconclasses an Array of Iconclasses to retrieve
+   * @returns an Array containing the iconclassData to the respective Iconclass
+   */
+  public async getIconclassData(iconclasses:Array<Iconclass>): Promise<any> {
+    const results : Array<any> = [];
+    await Promise.all(iconclasses.map(async (key:Iconclass) => 
+      results.push(await this.http.get(`http://iconclass.org/${key}.json`).toPromise())
+    ));
+    return results;
   }
 
   /**

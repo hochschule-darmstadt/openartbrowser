@@ -7,6 +7,7 @@ export interface Entity {
   image?: string;
   imageSmall?: string;
   imageMedium?: string;
+  iconclasses?: Array<Iconclass>;
   type: string;
   absoluteRank: number;
   relativeRank: number;
@@ -32,7 +33,6 @@ export interface Artwork extends Entity {
   inception?: number;
   materials: Partial<Material>[];
   motifs: Partial<Motif>[];
-  iconclasss: Partial<Iconclass>[];
   country?: string;
   height?: number;
   width?: number;
@@ -65,9 +65,7 @@ export interface Motif extends Entity {
   type: 'motif';
 }
 
-export interface Iconclass extends Entity {
-  type: 'iconclass';
-}
+export type Iconclass = string;
 
 export interface artSearch {
   motifs?: string[];
@@ -76,7 +74,6 @@ export interface artSearch {
   genres?: string[];
   materials?: string[];
   locations?: string[];
-  iconclasss?: string[];
 }
 
 export enum EntityType {
@@ -86,8 +83,7 @@ export enum EntityType {
   LOCATION = 'location',
   MATERIAL = 'material',
   MOVEMENT = 'movement',
-  MOTIF = 'motif',
-  ICONCLASS = 'iconclass'
+  MOTIF = 'motif'
 }
 
 export interface TagItem {

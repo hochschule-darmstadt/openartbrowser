@@ -3,7 +3,7 @@ import { Artwork, EntityType, Artist, Location, Movement, Genre, Material, Motif
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import DataService from 'src/app/core/services/elasticsearch/data.service';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 
 @Component({
   selector: 'app-search-result',

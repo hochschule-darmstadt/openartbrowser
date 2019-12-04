@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChildren, QueryList } from '@angular/core';
 import { NgbCarouselConfig, NgbCarousel } from '@ng-bootstrap/ng-bootstrap';
 import { Entity, Artist, Artwork, Movement, Material, Location, Genre, Motif, EntityType } from 'src/app/shared/models/models';
-import DataService from 'src/app/core/services/elasticsearch/data.service';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 
 /**
  * @description Interface for the category sliders.

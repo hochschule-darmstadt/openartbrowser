@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import * as _ from 'lodash';
-import DataService from 'src/app/core/services/elasticsearch/data.service';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 
 @Component({
   selector: 'app-artist',

@@ -9,7 +9,7 @@ import QueryBuilder from './query.builder';
  * Service that handles the requests to the API
  */
 @Injectable()
-export default class DataService {
+export class DataService {
     /** base url of elasticSearch server */
     private baseUrl: string;
 

@@ -4,7 +4,7 @@ import { SearchService } from 'src/app/core/services/search.service';
 import { Router } from '@angular/router';
 import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
 import { TagItem, Entity } from '../../models/models';
-import DataService from 'src/app/core/services/elasticsearch/data.service';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 
 @Component({
   selector: 'app-search',

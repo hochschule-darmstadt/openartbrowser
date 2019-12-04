@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { Material, Artwork, EntityType } from 'src/app/shared/models/models';
 import { Subject } from 'rxjs';
-import DataService from 'src/app/core/services/elasticsearch/data.service';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 
 @Component({
   selector: 'app-material',

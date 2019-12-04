@@ -176,11 +176,6 @@ export class DataService {
     return this.filterData<Artwork>(response);
   }
 
-  public async findArtworksByIconclasss(iconclassIds: string[]): Promise<Artwork[]> {
-    const response = await this.http.post<any>(this.serverURI, this.constructQuery("iconclasss", iconclassIds)).toPromise();
-    return this.filterData<Artwork>(response);
-  }
-
   public async findArtworksByLocations(locationIds: string[]): Promise<Artwork[]> {
     const response = await this.http.post<any>(this.serverURI, this.constructQuery("locations", locationIds)).toPromise();
     return this.filterData<Artwork>(response);

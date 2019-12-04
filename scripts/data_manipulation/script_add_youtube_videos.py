@@ -5,7 +5,10 @@ import sys
 import requests
 
 ADD_FOR_TYPES = ["artwork", "artist", "movement"]
-GOOGLE_DEV_KEY = open("google_dev_key.txt").read()
+try:
+    GOOGLE_DEV_KEY = open("google_dev_keyy.txt").read()
+except FileNotFoundError:
+    GOOGLE_DEV_KEY = ""
 
 
 def check_yt_id_valid(id) -> bool:
@@ -33,6 +36,9 @@ def add_youtube_videos(
         check_ids=True
 ) -> None:
     """Load the video csv file and add the links to the ontology file"""
+    if GOOGLE_DEV_KEY == "":
+        check_ids = False
+
     videos = {}
     broken_ids = []
 

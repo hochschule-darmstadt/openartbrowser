@@ -101,16 +101,10 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
             (a, b): any => {
               let rankA = a.relativeRank;
               let rankB = b.relativeRank;
-              const typeA = a.type;
-              const typeB = b.type;
               const aPos = a.label.toLowerCase().indexOf(term.toLowerCase());
               const bPos = b.label.toLowerCase().indexOf(term.toLowerCase());
 
-              if (typeB < typeA) {
-                return 1;
-              } else if (typeA < typeB) {
-                return -1;
-              }
+             
               // factor 2 for initial position
               if (aPos === 0) {
                 rankA *= 2;
@@ -141,21 +135,9 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
             }
           );
         entities = this.selectSearchResults(entities);
-        entities = entities.sort(
-          (a: Entity, b: Entity): number => {
-            if (a.type === 'artwork') {
-              return b.type === 'artwork' ? 0 : -1;
-            } else if (b.type === 'artwork') {
-              return a.type === 'artwork' ? 0 : 1;
-            } else if (a.type < b.type) {
-              return -1;
-            } else if (a.type === b.type) {
-              return 0;
-            } else if (a.type > b.type) {
-              return 1;
-            }
-          }
-        );
+		
+        entities = this.groupSearchResultsByType(entities);
+		
         return this.searchInput ? entities : [];
       })
     );
@@ -225,6 +207,28 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
         .concat(locations.splice(0, 1));
     }
     return newEntities.concat(restItems).splice(0, 10);
+  }
+  
+  /** resort search items so items of same type are grouped together 
+   * @param entities results which should be resorted
+   */
+  groupSearchResultsByType(entities: Entity[]): Entity[] {
+    let types = [];
+      entities.forEach(function (entity) {
+        if (!types.includes(entity.type)) { 
+          types.push(entity.type);
+        }
+      }); 
+    
+    let entitiesResorted = [];
+    types.forEach(function (type) {
+      entities.forEach(function (entity) {
+        if (entity.type == type) {
+          entitiesResorted.push(entity);
+        }
+      });
+    });
+    return entitiesResorted;
   }
 
   /** build query params for search result url */

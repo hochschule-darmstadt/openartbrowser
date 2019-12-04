@@ -35,17 +35,11 @@ export class TimelineComponent {
   private slideStart: number;
   private slideEnd: number;
 
-  minValue: number;
-  maxValue: number;
+  value: number;
   options: Options = {
     showTicksValues: false,
     showTicks: true,
-    pushRange: true,
-    draggableRange: true,
-
-    maxRange: 10,
-    minRange: 10,
-
+    showSelectionBar: false,
     stepsArray: [],
     getPointerColor: function () {
       return "#00bc8c"
@@ -69,9 +63,6 @@ export class TimelineComponent {
       this.calculatePeriod();
       this.updateSliderItems();
     }
-    console.log(this.maxValue)
-
-
   }
 
   calculatePeriod() {
@@ -113,76 +104,80 @@ export class TimelineComponent {
 
     const newOptions: Options = Object.assign({}, this.options);
     newOptions.stepsArray = sliderSteps;
-    newOptions.minLimit = firstInception-firstPeriod;
-    newOptions.maxLimit = lastInception-firstPeriod-10;
-    console.log("max limit",newOptions.maxLimit);
+    newOptions.minLimit = firstInception - firstPeriod;
+    newOptions.maxLimit = lastInception - firstPeriod;
+    console.log("max limit", newOptions.maxLimit);
     this.options = newOptions;
-    this.minValue = firstPeriod + this.periodSpan; //change to items[0].inception
+    this.value = firstPeriod + this.periodSpan; //change to items[0].inception
 
   }
 
   calcSlideStart() {
-    let referenceIndex = this.items.findIndex(item => +item.inception > this.minValue) - 1;
+    let itemCountSmallerReference = 2;
+    let countReference = this.items.filter(item => +item.inception === this.value).length;
+    console.log("countReference", countReference);
+
+    let referenceIndex: number;
+    if (countReference > itemCountSmallerReference) {
+      referenceIndex = this.items.findIndex(item => +item.inception === this.value);
+    } else {
+      let firstBiggerRef = this.items.findIndex(item => +item.inception > this.value);
+      console.log("firstBiggerRef", firstBiggerRef);
+      referenceIndex = firstBiggerRef - 1;
+    }
+
 
     if (0 >= referenceIndex - 1 && referenceIndex <= this.items.length - 3) {
+      //first slide
       this.slideStart = 0
-    } else if (referenceIndex > this.items.length - this.itemCountPerPeriod - 1) {
+    } else if (referenceIndex + (this.itemCountPerPeriod - 1) > this.items.length) {
+      //last slide
       this.slideStart = this.items.length - this.itemCountPerPeriod
     } else {
+      //between
       this.slideStart = referenceIndex - 1;
       console.log((0 <= referenceIndex - 1 && referenceIndex <= this.items.length - 2), "Requirement met!");
     }
 
     console.log("Slide starting at index: ", this.slideStart, "ending at ", this.slideEnd,
-      "referenceIndex: ", referenceIndex, "minValue", this.minValue);
+      "referenceIndex: ", referenceIndex, "value", this.value);
   }
 
   updateSliderItems() {
     this.slideEnd = this.slideStart + this.itemCountPerPeriod;
-    this.maxValue = +this.items[this.slideEnd - 1].inception;
 
-    console.log(this.minValue, this.slideStart, this.itemCountPerPeriod, this.slideEnd, this.maxValue);
-    // let newMax = this.sliderItems[this.sliderItems.length - 1].inception;
-    // const newOptions: Options = Object.assign({}, this.options);
-    // newOptions.minRange = newMax;
-    // newOptions.maxRange = newMax;
-    // this.options = newOptions;
-
-
-    //      && +item.inception < this.minValue + this.periodSpan);
-    //console.log(this.carousel.carousel.slides.toArray())
+    console.log(this.value, this.slideStart, this.itemCountPerPeriod, this.slideEnd);
   }
 
   public onCarouselMoved(slideData) {
 
 
-    let newValue = +this.minValue + (+slideData * +this.itemCountPerPeriod);
-    this.selectLastSlide = (+slideData === -1 && newValue < this.minValue);
+    let newValue = +this.value + (+slideData * +this.itemCountPerPeriod);
+    this.selectLastSlide = (+slideData === -1 && newValue < this.value);
 
     if (+this.options.stepsArray[0].value <= newValue &&
       newValue <= +this.options.stepsArray[this.options.stepsArray.length - 1].value) {
       // New Value in valid range
-      this.minValue = newValue;
+      this.value = newValue;
     } else if (Math.abs(newValue - +this.options.stepsArray[0].value) <=
       Math.abs(newValue - +this.options.stepsArray[this.options.stepsArray.length - 1].value)) {
       // New Value out of range and first value is closer than last value
-      this.minValue = this.options.stepsArray[0].value
+      this.value = this.options.stepsArray[0].value
     } else {
       // New Value out of range and last value is closer than first value
-      this.minValue = this.options.stepsArray[this.options.stepsArray.length - 1].value
+      this.value = this.options.stepsArray[this.options.stepsArray.length - 1].value
     }
-    console.log("onCarouselMoved", newValue, this.minValue);
+    console.log("onCarouselMoved", newValue, this.value);
 
   }
 
   onSliderMoved() {
     this.calcSlideStart();
     this.updateSliderItems();
-    console.log("Slider moved!", this.slideStart, this.minValue)
-    this.minValue = this.items[this.slideStart + 1].inception;
+    console.log("Slider moved!", this.slideStart, this.value)
+    this.value = this.items[this.slideStart + 1].inception;
 
     console.log("test", this.selectLastSlide);
-
   }
 
   getItemData(itemId) {
@@ -194,16 +189,14 @@ export class TimelineComponent {
   prevClicked() {
     //this.onCarouselMoved(-1)
     this.slideStart = Math.max(this.slideStart - this.itemCountPerPeriod, 0);
-    this.minValue = +this.items[this.slideStart + 1].inception;
+    this.value = +this.items[this.slideStart + 1].inception;
     this.updateSliderItems()
   }
 
   nextClicked() {
     //this.onCarouselMoved(1)
     this.slideStart = Math.min(this.slideStart + (2 * this.itemCountPerPeriod), this.items.length) - this.itemCountPerPeriod;
-    this.minValue = +this.items[this.slideStart + 1].inception;
+    this.value = +this.items[this.slideStart + 1].inception;
     this.updateSliderItems()
   }
-
-
 }

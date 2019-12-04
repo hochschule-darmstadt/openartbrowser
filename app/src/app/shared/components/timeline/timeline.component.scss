@@ -1,0 +1,133 @@
+::ng-deep {
+  .custom-slider {
+    //.ng5-slider-pointer::after {
+    //  background-color: #FF00FF;
+    //}
+
+    .ng5-slider {
+
+      .ng5-slider-selection {
+        visibility: visible !important;
+        background: #00bc8c !important;
+      }
+    }
+    //.ng5-slider-bar {
+    //  background-position-x: center !important;
+    //  background: red no-repeat !important;
+    //}
+    .ng5-slider-tick {
+      visibility: hidden;
+
+      .ng5-slider-tick-legend {
+        visibility: visible !important;
+      }
+    }
+
+    .ng5-slider-combined {
+      visibility: hidden !important;
+    }
+
+    .ng5-slider-model-value {
+      visibility: visible !important;
+    }
+
+    .ng5-slider-model-high {
+      visibility: visible !important;
+    }
+
+    .ng5-slider-pointer-max {
+      pointer-events: none;
+      display: none;
+      visibility: hidden !important;
+    }
+
+    //.ng5-slider {
+    //  .ng5-slider-tick.ng5-slider-selected ::ng-deep {
+    //    border: 1px solid red;
+    //    background: #FF00FF;
+    //  }
+    //}
+    .ng5-slider-pointer:after {
+      background: #FFFFFF !important;
+    }
+
+    .ng5-slider-bubble {
+      color: #FFFFFF !important;
+    }
+  }
+}
+
+
+.carou-control {
+  width: 5%;
+  opacity: 0.4;
+  border: 1px solid red;
+
+  &-next {
+    float: left;
+  }
+
+  &-next {
+    float: right;
+  }
+}
+
+.carou {
+  border: 1px solid green;
+}
+
+.carou-content {
+  width: auto;
+  max-width: 90%;
+  border: 1px solid cyan;
+}
+
+.img_self {
+  display: flex;
+  cursor: pointer;
+  max-height: 100%;
+  max-width: 100%;
+}
+
+.item {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  &-caption {
+    font-size: large;
+    max-height: 15%;
+    padding: 0.3em;
+  }
+}
+
+.overlay-container {
+  position: relative;
+  max-height: 100%;
+  margin-left: auto;
+  margin-right: auto;
+
+  &:hover .overlay_view {
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+  }
+
+  &-caption {
+    max-height: 85%;
+  }
+}
+
+.img_description {
+  color: white;
+  font-size: 1em;
+  position: absolute;
+  width: 90%;
+  top: 50%;
+  -webkit-transform: translate(5%, -50%);
+  -ms-transform: translate(5%, -50%);
+  transform: translate(5%, -50%);
+  text-align: center;
+}

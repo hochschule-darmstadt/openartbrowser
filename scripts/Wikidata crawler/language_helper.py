@@ -1,9 +1,9 @@
+from pathlib import Path
 import csv
-import os
 
 
 def language_config_to_list(
-    config_file=os.path.dirname(os.path.abspath(__file__)) + "\\languageconfig.csv",
+    config_file = Path(__file__).parent.absolute() / "languageconfig.csv"
 ):
     """[Reads languageconfig.csv and returns array that contains its
     full contents]

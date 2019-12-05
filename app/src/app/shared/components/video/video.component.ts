@@ -1,6 +1,7 @@
-import {AfterViewInit, Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
-import {Entity} from '../../models/models';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { Entity } from '../../models/models';
+import { resolve } from 'url';
 
 @Component({
   selector: 'app-video',
@@ -9,14 +10,17 @@ import {Entity} from '../../models/models';
 })
 export class VideoComponent implements OnInit, OnDestroy, AfterViewInit {
 
+  @Input() entity: Entity;
+
   /**
    *  url that gets embedded in iframe in html
    */
-  public safeUrl: SafeResourceUrl;
+  safeUrl: SafeResourceUrl;
 
-  public videoExists = false;
+  videoExists = false;
 
-  @Input() entity: Entity;
+  constructor(private sanitizer: DomSanitizer) {
+  }
 
   ngAfterViewInit(): void {
   }
@@ -25,41 +29,36 @@ export class VideoComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
-    if (this.entity) {
+    if (this.entity && this.entity.videos) {
       const videoUrl = Array.isArray(this.entity.videos) ? this.entity.videos.pop() : this.entity.videos;
       if (videoUrl) {
         this.safeUrl = this.getTrustedUrl(videoUrl);
-        console.log(this.safeUrl);
-        this.validateVideoExists(videoUrl);
+        this.validateVideoExists(videoUrl)
+          .then(exists => this.videoExists = exists);
       }
     }
-
   }
 
   /**
    * @see https://gist.github.com/tonY1883/a3b85925081688de569b779b4657439b
    */
-  validateVideoExists(youtubeVideoHref: string) {
-    const regExpMatchArray = youtubeVideoHref.match('https://www.youtube.com/embed/([^/]+)');
-    if (regExpMatchArray.length === 2) {
-      const that = this;
-      const id = regExpMatchArray[1];
-      const checkURI = 'http://img.youtube.com/vi/' + id + '/mqdefault.jpg';
-      const img = new Image();
-      img.src = checkURI;
-      img.onload = () => that.videoExists = img.width !== 120;
-    }
-  }
-
-  constructor(private sanitizer: DomSanitizer) {
+  private validateVideoExists(youtubeVideoHref: string): Promise<boolean> {
+    return new Promise((resolve: Function, reject: Function) => {
+      const regExpMatchArray = youtubeVideoHref.match('https://www.youtube.com/embed/([^/]+)');
+      if (regExpMatchArray.length === 2) {
+        const id = regExpMatchArray[1];
+        const checkURI = 'http://img.youtube.com/vi/' + id + '/mqdefault.jpg';
+        const img = new Image();
+        img.src = checkURI;
+        img.onload = () => resolve(img.width !== 120);
+      }
+    });
   }
 
   /**
    * @description sanitizes video url
    */
-  getTrustedUrl(url: string) {
+  private getTrustedUrl(url: string): any {
     return url ? this.sanitizer.bypassSecurityTrustResourceUrl(url) : '';
   }
-
-
 }

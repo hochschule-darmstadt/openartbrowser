@@ -2,7 +2,10 @@ node_modules
 apicache-py3
 *.ttl
 *.csv
+!languageconfig.csv
+!youtube_videos.csv
 *.json
 *.ctrl
 *.lwp
 /.idea/
+/scripts/data_manipulation/google_dev_key.txt

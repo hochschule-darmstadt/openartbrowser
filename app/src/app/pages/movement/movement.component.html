@@ -18,10 +18,13 @@
             </div>
           </div>
 
+          <app-video [entity]="movement"></app-video>
+
           <div class="row">
             <div class="col-md-3 pr-0">
               <p *ngIf="movement?.influenced_by?.length" class="mb-1 text-muted">Influenced by:</p>
             </div>
+
 
             <div class="col-md-9 info">
               <p *ngIf="movement?.influenced_by?.length" class="mb-1">

@@ -4,7 +4,7 @@ import {ActivatedRoute} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
 import {Movement, Artwork, EntityType} from 'src/app/shared/models/models';
 import {Subject} from 'rxjs';
-import * as _ from "lodash";
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-movement',

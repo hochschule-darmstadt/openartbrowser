@@ -10,7 +10,7 @@ addons:
     packages:
       - google-chrome-stable
       - sshpass
-      - python3
+      - python3-pip
 
 cache:
   directories:

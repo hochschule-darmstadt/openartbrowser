@@ -6,6 +6,7 @@ import {ActivatedRoute} from '@angular/router';
 import {Subject} from 'rxjs';
 import * as _ from 'lodash';
 import {DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
+import { shuffle } from 'src/app/core/services/utils.service';
 
 /** interface for the tabs */
 interface ArtworkTab {
@@ -231,7 +232,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    * @param items the items the tab should be filled with
    */
   fillArtworkTab(tab: ArtworkTab, items: Artwork[]) {
-    const filtered = this.shuffle(items.filter((artwork) => artwork.id !== this.artwork.id));
+    const filtered = shuffle(items.filter((artwork) => artwork.id !== this.artwork.id));
     if (filtered.length > 0) {
       tab.items = filtered;
     }
@@ -239,17 +240,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     if (this.artworkTabCounter === 6) {
       this.selectAllTabItems(10);
     }
-  }
-
-  /**
-   * @description shuffle the items' categories.
-   */
-  shuffle = (a: Artwork[]): Artwork[] => {
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
   }
 
   /**
@@ -292,7 +282,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
         }
       }
     }
-    this.artworkTabs.all.items = this.shuffle(Array.from(items, ([key, value]) => value));
+    this.artworkTabs.all.items = shuffle(Array.from(items, ([key, value]) => value));
   }
 
   /**

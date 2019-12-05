@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChildren, QueryList } from '@angular/core';
 import { NgbCarouselConfig, NgbCarousel } from '@ng-bootstrap/ng-bootstrap';
 import { Entity, Artist, Artwork, Movement, Material, Location, Genre, Motif, EntityIcon, EntityType } from 'src/app/shared/models/models';
 import { DataService } from 'src/app/core/services/data.service';
+import { shuffle } from 'src/app/core/services/utils.service';
 
 /**
  * @description Interface for the category sliders.
@@ -99,7 +100,7 @@ export class HomeComponent implements OnInit {
    * @memberof HomeComponent 
    */
   private async getSliderCategory<T>(category: EntityType, icon: EntityIcon): Promise<SliderCategory> {
-    const items = this.shuffle(await this.dataService.get20CategoryItems<T>(category));
+    const items = shuffle(await this.dataService.get20CategoryItems<T>(category));
     return { items, key: category, icon }
   }
 
@@ -116,17 +117,5 @@ export class HomeComponent implements OnInit {
    */
   private refreshCarousel(): void {
     this.carousel.forEach(item => item.cycle());
-  }
-
-  /**
-   * @description shuffle the items' categories.
-   * @memberof HomeComponent
-   */
-  private shuffle(a: Array<any>): Array<any> {
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
   }
 }

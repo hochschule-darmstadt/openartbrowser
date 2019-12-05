@@ -1,0 +1,12 @@
+$color1: #00bc8c;
+
+.tooltip .tooltip-inner {
+  border-style: solid;
+  border-color: $color1;
+  font-size: 125%;
+  padding: 1em;
+}
+
+.tooltip .arrow::before {
+  border-top-color: $color1;
+}

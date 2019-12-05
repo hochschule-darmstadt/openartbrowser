@@ -1,40 +1,35 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MovementComponent } from './movement.component';
-import { SlideComponent } from 'src/app/shared/components/slider/slide/slide.component';
-import { SliderComponent } from 'src/app/shared/components/slider/slider.component';
+import { VideoComponent } from './video.component';
 import { DataService } from 'src/app/core/services/data.service';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import {VideoComponent} from "../../shared/components/video/video.component";
+import { FormsModule } from '@angular/forms';
 
-describe('MovementComponent', () => {
-  let component: MovementComponent;
-  let fixture: ComponentFixture<MovementComponent>;
+describe('VideoComponent', () => {
+  let component: VideoComponent;
+  let fixture: ComponentFixture<VideoComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
         NgbModule,
+        FormsModule,
         HttpClientModule,
         RouterModule.forRoot([])
       ],
       declarations: [
-        MovementComponent,
-        SlideComponent,
-        SliderComponent,
-        VideoComponent
+        VideoComponent,
       ],
       providers: [
         DataService,
       ]
-    })
-    .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MovementComponent);
+    fixture = TestBed.createComponent(VideoComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

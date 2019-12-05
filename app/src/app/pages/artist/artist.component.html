@@ -65,7 +65,10 @@
               <p *ngIf="artist?.movements?.length" class="mb-2">
                 <span *ngFor="let movement of artist?.movements"
                       class="badge badge-pill badge-secondary first-letter chip"
-                      [routerLink]="'/movement/' + movement.id">
+                      [routerLink]="'/movement/' + movement.id"
+                      ngbTooltip="{{movement.abstract}}"
+                      tooltipClass="tooltip"
+                      >
                   <i class="fas fa-wind"></i>
                   {{ movement.label }}
                 </span>

@@ -11,6 +11,6 @@ import { FormsModule } from '@angular/forms';
 @NgModule({
   declarations: [SliderComponent, SlideComponent, SearchComponent],
   imports: [CommonModule, NgbModule, RouterModule, FormsModule],
-  exports: [SliderComponent, SearchComponent],
+  exports: [SliderComponent, SearchComponent, NgbModule],
 })
 export class SharedModule {}

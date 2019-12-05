@@ -37,3 +37,8 @@ img {
 .cursor-unset {
   cursor: unset;
 }
+
+::ng-deep .tooltip-inner {
+  max-width: 100% !important;
+  text-align: justify
+}

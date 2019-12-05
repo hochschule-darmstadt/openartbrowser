@@ -11,6 +11,7 @@ addons:
       - google-chrome-stable
       - sshpass
       - python3-pip
+      - python3-setuptools
 
 cache:
   directories:

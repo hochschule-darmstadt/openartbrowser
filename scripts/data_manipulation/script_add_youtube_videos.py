@@ -6,7 +6,7 @@ import requests
 
 ADD_FOR_TYPES = ["artwork", "artist", "movement"]
 try:
-    GOOGLE_DEV_KEY = open("google_dev_keyy.txt").read()
+    GOOGLE_DEV_KEY = open("google_dev_key.txt").read()
 except FileNotFoundError:
     GOOGLE_DEV_KEY = ""
 

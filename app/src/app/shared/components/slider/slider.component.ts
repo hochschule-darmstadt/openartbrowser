@@ -65,8 +65,10 @@ export class SliderComponent implements OnChanges {
   /** Hook that is called when any data-bound property of a directive changes. */
   ngOnChanges(changes: SimpleChanges) {
     // rebuild slides if slider items input changed.
-    if (changes.items && this.items)
-      this.slides = this.buildSlides(this.items);
+    if (changes.items && this.items) {
+      // Slice items to max 20 related artworks when mobile
+      this.slides = this.buildSlides(this.isMobile ? this.items.slice(0, 20) : this.items);
+    }
   }
 
   /** Divide the slider items into slides. Initialize slides. */
@@ -74,10 +76,11 @@ export class SliderComponent implements OnChanges {
     const slides: Slide[] = [];
     // There are 8 images on each slide.
     // There are 1 image on ech slide if is  mobile
-    const imagesPerSlide = (this.isMobile ? 1 : 8)
+    const imagesPerSlide = (this.isMobile ? 1 : 8);
     const numberOfSlides = items.length / imagesPerSlide;
+
     for (let i = 0; i < numberOfSlides; i++) {
-      // get next 8 items out of items array
+      // get next imagesPerSlide items out of items array
       const slideItems: Entity[] = items.slice(i * imagesPerSlide, i * imagesPerSlide + imagesPerSlide);
 
       const slide: Slide = makeDefaultSlide(i, slideItems);

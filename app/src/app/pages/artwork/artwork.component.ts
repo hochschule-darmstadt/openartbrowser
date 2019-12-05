@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnInit, OnDestroy, HostListener} from '@angular/core';
 import {Artwork, EntityType, Iconclass} from 'src/app/shared/models/models';
 import {takeUntil} from 'rxjs/operators';
 import {DataService} from 'src/app/core/services/data.service';
@@ -132,6 +132,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
         const nonEmptyIconclasses = this.artwork.iconclasses.filter((i:Iconclass) => i !== "");
         this.iconclassData = !nonEmptyIconclasses.length ? null : await this.dataService.getIconclassData(nonEmptyIconclasses);
       }
+
     });
   }
 
@@ -251,6 +252,13 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   closeModal() {
     this.modalIsVisible = false;
+  }
+
+  /**
+   * @description close popup image zoom with escape key
+   */
+  @HostListener('window:keydown.esc') escEvent() {
+    this.closeModal()
   }
 
   /**

@@ -128,8 +128,10 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       this.resetArtworkTabs();
       this.loadDependencies();
       
-      const nonEmptyIconclasses = this.artwork.iconclasses.filter((i:Iconclass) => i !== "");
-      this.iconclassData = !nonEmptyIconclasses.length ? null : await this.dataService.getIconclassData(nonEmptyIconclasses);
+      if (this.artwork.iconclasses) {
+        const nonEmptyIconclasses = this.artwork.iconclasses.filter((i:Iconclass) => i !== "");
+        this.iconclassData = !nonEmptyIconclasses.length ? null : await this.dataService.getIconclassData(nonEmptyIconclasses);
+      }
     });
   }
 
@@ -138,13 +140,9 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    * clears items of all artwork tabs
    */
   resetArtworkTabs() {
-    this.artworkTabs.all.items = [];
-    this.artworkTabs.artist.items = [];
-    this.artworkTabs.movement.items = [];
-    this.artworkTabs.genre.items = [];
-    this.artworkTabs.material.items = [];
-    this.artworkTabs.motif.items = [];
-    this.artworkTabs.location.items = [];
+    Object.keys(this.artworkTabs).map((key: string) => {
+      this.artworkTabs[key].items = [];
+    })
   }
 
   /**

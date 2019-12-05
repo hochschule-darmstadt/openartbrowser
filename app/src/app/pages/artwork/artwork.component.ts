@@ -1,5 +1,5 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
-import {Artwork, EntityType} from 'src/app/shared/models/models';
+import {Artwork, EntityType, Iconclass} from 'src/app/shared/models/models';
 import {takeUntil} from 'rxjs/operators';
 import {DataService} from 'src/app/core/services/data.service';
 import {ActivatedRoute} from '@angular/router';
@@ -25,6 +25,8 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    * @description the entity this page is about.
    */
   artwork: Artwork = null;
+
+  iconclassData: Array<any>|null = null;
 
   /**
    * whether artwork image should be hidden
@@ -131,9 +133,10 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       this.resetArtworkTabs();
       this.loadDependencies();
 
-      if(this.artwork) {
-        this.getTrustedUrl(this.artwork.videos);
-      }
+      if(this.artwork) this.getTrustedUrl(this.artwork.videos);
+      
+      const nonEmptyIconclasses = this.artwork.iconclasses.filter((i:Iconclass) => i !== "");
+      this.iconclassData = !nonEmptyIconclasses.length ? null : await this.dataService.getIconclassData(nonEmptyIconclasses);
     });
   }
 

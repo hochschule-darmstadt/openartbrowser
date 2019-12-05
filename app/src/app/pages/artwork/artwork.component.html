@@ -186,6 +186,24 @@
               </p>
             </div>
           </div>
+
+
+          <!-- Iconclass integration -->
+          <div *ngIf="iconclassData !== null" class="row">
+            <div class="col-md-1">
+              <p class="mb-1 text-muted">Iconography:</p>
+            </div>
+            <div class="col-md-11">
+              <p *ngFor="let iconclass of iconclassData" class="mb-1 add-padding">
+                <!-- already adding the fallback to english if the language index is not found on iconclass.org -->
+                <!-- which will for example be the case with 'es' -->
+                <b>[{{iconclass.n}}]</b> {{iconclass.txt.en || iconclass.txt.en}} <br />
+                <!-- the actual language key for the first part of the expression has to be inserted still -->
+              </p>
+            </div>
+          </div>
+          <!-- Iconclass integration -->
+
           <div class="row">
             <div class="col-md-1">
               <p *ngIf="artwork?.height && artwork?.width" class="mb-1 text-muted">Dimension:</p>

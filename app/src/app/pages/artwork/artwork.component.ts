@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnInit, OnDestroy, HostListener} from '@angular/core';
 import {Artwork, EntityType} from 'src/app/shared/models/models';
 import {takeUntil} from 'rxjs/operators';
 import {DataService} from 'src/app/core/services/data.service';
@@ -265,14 +265,14 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   closeModal() {
     this.modalIsVisible = false;
   }
-  
+
   /**
    * @description close popup image zoom with escape key
    */
   @HostListener('window:keydown.esc') escEvent() {
     this.closeModal()
   }
-  
+
   /**
    * @description Hook that is called when a directive, pipe, or service is destroyed.
    */

@@ -1,3 +1,7 @@
+#navbar:hover ::ng-deep .form-group{
+  width: 100%;
+}
+
 .navbar-nav {
   display: flex;
   align-items: center;
@@ -5,19 +9,39 @@
   flex-wrap: wrap;
 }
 
-.dropdown-toggle{
-  padding: 0 0.6em !important;
+.dropdown{
+  .dropdown-toggle{
+    padding: 0 0.6em !important;
+  }
+  .dropdown-toggle::after {
+    display: none;
+  }
+  .dropdown-menu {
+    width: auto;
+  }
 }
-.dropdown-toggle::after {
-  display: none;
+@media (max-width: 575px){
+  .dropdown.show .dropdown-toggle { 
+    text-align: center;
+  }
 }
 
-.dropdown-menu {
-  width: auto;
-}
+#title {
+  h3{
+    font-size: 1.2em;
+  }
+  span {
+    font-size: 0.7em;
 
-#navbarColor03:hover ::ng-deep .form-group{
-  width: 100%;
+    @media (min-width: 0px) and (max-width: 576px) {
+      font-size: 0.5em;
+      margin-left: 2em;
+    }
+
+    @media (min-width: 577px) and (max-width: 991px) {
+      font-size: 0.6em;
+    }
+  }
 }
 
 .search-form {
@@ -30,8 +54,9 @@
   padding-left: 0;
   padding-bottom: 0.3em;
 
-  @media (min-width: 0px) and (max-width: 576px) {
+  @media (max-width: 576px) {
     min-width: 300px;
+    justify-content: center;
   }
 
   .form-group {
@@ -63,7 +88,7 @@
 
 }
 
-#navbarColor03:hover ::ng-deep .search__header-chips,
+#navbar:hover ::ng-deep .search__header-chips,
 .form-group:focus-within ::ng-deep .search__header-chips {
   opacity: 1;
   transition: all 0.25s ease-out;
@@ -72,7 +97,7 @@
   padding: 0.1em;
 }
 
-#navbarColor03:hover ::ng-deep .form-control,
+#navbar:hover ::ng-deep .form-control,
 .form-group:focus-within ::ng-deep .form-control {
   height: 1.8em !important;
   padding-left: 0.6em !important;
@@ -81,38 +106,13 @@
   opacity: 1 !important;
 }
 
-#navbarColor03:hover .form-group,
+#navbar:hover .form-group,
 .search-form .form-group:focus-within {
   flex-grow: 1;
 }
 
-#navbarColor03:hover ::ng-deep .search-chip,
+#navbar:hover ::ng-deep .search-chip,
 .search-form .form-group:focus-within ::ng-deep .search-chip {
   display: inline-block;
   margin-bottom: 6px;
-}
-
-#headerTitle {
-  font-size: 1.2em;
-
-  @media (min-width: 0px) and (max-width: 576px) {
-    font-size: 1em;
-  }
-
-  @media (min-width: 577px) and (max-width: 991px) {
-    font-size: 1.2em;
-  }
-}
-
-#h3-span {
-  font-size: 0.7em;
-
-  @media (min-width: 0px) and (max-width: 576px) {
-    font-size: 0.5em;
-    margin-left: 2em;
-  }
-
-  @media (min-width: 577px) and (max-width: 991px) {
-    font-size: 0.6em;
-  }
 }

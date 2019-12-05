@@ -76,5 +76,5 @@ def add_youtube_videos(
 
 
 if __name__ == "__main__":
-    check = len(sys.argv) > 1 and sys.argv[1] == "-c"
+    check = "-c" in sys.argv
     add_youtube_videos(check_ids=check)

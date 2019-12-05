@@ -5,8 +5,10 @@ WORKDIR /app
 RUN pip install pywikibot
 
 COPY ["./Wikidata crawler/", "/app"]
+# run ArtOntologyCrawler in development mode
 RUN ["python", "/app/ArtOntologyCrawler.py", "-d"]
 RUN ls -lah /app/
+# move all files needed by the next stage into output_data
 RUN mkdir /app/output_data && mv *.json /app/output_data && mv *.csv /app/output_data
 
 # ------------------------------------------------
@@ -14,6 +16,7 @@ RUN mkdir /app/output_data && mv *.json /app/output_data && mv *.csv /app/output
 FROM node:latest as data_manipulator
 
 WORKDIR /app
+# get files from previous stage
 COPY --from=Wikicrawler /app/output_data /app/
 
 COPY ["./data_manipulation/", "/app"]
@@ -47,9 +50,11 @@ RUN mkdir /var/log/elasticsearch && \
     chown elasticsearch:elasticsearch /var/log/elasticsearch && \
     chown elasticsearch:elasticsearch /var/lib/elasticsearch
 
+# copy elasticsearch config from repo into docker container
 COPY --chown=elasticsearch:elasticsearch elasticsearch.yml /usr/share/elasticsearch/config/
 
+# master_flat_rank.json is moved to /root becasuse elasticsearch_helper.py expects the json file in the
+# home directory
 COPY --from=data_manipulator /app/master_flat_rank.json /root/master_flat.json
-
 
 COPY ["./upload_to_elasticsearch/", "/app"]

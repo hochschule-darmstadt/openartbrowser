@@ -115,6 +115,9 @@
             </div>
           </div>
 
+          <!--Loads Youtube-Video Module with a Video releated to the Artwork-->
+          <iframe *ngIf="safeUrl" width="560" height="315" [src]='safeUrl' frameborder="0" allowfullscreen></iframe>
+
           <div class="row">
             <div class="col-md-1">
               <p *ngIf="artwork?.genres?.length" class="mb-1 text-muted">Genre:</p>

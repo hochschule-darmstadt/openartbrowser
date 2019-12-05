@@ -2,8 +2,6 @@ cd Wikidata\ crawler
 export PYWIKIBOT_NO_USER_CONFIG=1
 python3 -c "import ArtOntologyCrawler; ArtOntologyCrawler.extract_art_ontology()"
 
-node ../data_manipulation/script_artworks.js
-
 node ../data_manipulation/script_artworks_rank.js
 
 node ../data_manipulation/script_genres_rank.js
@@ -14,3 +12,6 @@ node ../data_manipulation/script_movements_rank.js
 node ../data_manipulation/script_motifs_rank.js 
 
 node ../data_manipulation/script_flatten_rank.js
+
+cd ../data_manipulation
+python3 .\script_add_youtube_videos.py

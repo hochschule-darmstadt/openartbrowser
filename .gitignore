@@ -1,11 +1,42 @@
-node_modules
-apicache-py3
+# ETL
+google_dev_key.txt
 *.ttl
 *.csv
 !languageconfig.csv
 !youtube_videos.csv
+crawler_output
+apicache-py3
 *.json
 *.ctrl
 *.lwp
-/.idea/
-/scripts/data_manipulation/google_dev_key.txt
+*.pyc
+__pycache__
+
+# frontend
+/dist
+/tmp
+/out-tsc
+
+# IDEs / tooling
+node_modules
+npm-debug.log
+yarn-error.log
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.vscode/*
+.history/*
+
+# misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+testem.log
+/typings
+.DS_Store
+Thumbs.db
+/.idea

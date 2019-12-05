@@ -74,7 +74,9 @@ export class SliderComponent implements OnChanges {
     const slides: Slide[] = [];
     // There are 8 images on each slide.
     // There are 1 image on ech slide if is  mobile
-    const imagesPerSlide = (this.isMobile ? 1 : 8)
+    const imagesPerSlide = (this.isMobile ? 1 : 8);
+    // Slice items to max 20 related artworks when mobile
+    if (this.isMobile) items = items.slice(0, 20);
     const numberOfSlides = items.length / imagesPerSlide;
     for (let i = 0; i < numberOfSlides; i++) {
       // get next 8 items out of items array

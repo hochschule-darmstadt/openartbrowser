@@ -6,7 +6,6 @@ import { Movement, Artwork, EntityType } from 'src/app/shared/models/models';
 import { Subject } from 'rxjs';
 import * as _ from "lodash";
 import { shuffle } from 'src/app/core/services/utils.service';
-import {DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 
 @Component({
   selector: 'app-movement',
@@ -26,11 +25,7 @@ export class MovementComponent implements OnInit, OnDestroy {
   /** Change collapse icon; true if more infos are folded in */
   collapse = true;
 
-  /** url that gets embedded in iframe in html**/
-  public safeUrl: SafeResourceUrl;
-
-  constructor(private dataService: DataService, private route: ActivatedRoute, public sanitizer: DomSanitizer) {
-    this.sanitizer = sanitizer;
+  constructor(private dataService: DataService, private route: ActivatedRoute) {
   }
 
   /** hook that is executed at component initialization */
@@ -51,22 +46,11 @@ export class MovementComponent implements OnInit, OnDestroy {
         .then(influences => this.movement.influenced_by = influences);
 
       this.calculateCollapseState();
-
-      if(this.movement) {
-        this.getTrustedUrl(this.movement.videos);
-      }
     });
   }
 
   toggleDetails() {
     this.collapse = !this.collapse;
-  }
-
-  /**
-   *@description sanetizes video url
-   */
-  private getTrustedUrl(url:any){
-    this.safeUrl = url? this.sanitizer.bypassSecurityTrustResourceUrl(url): "";
   }
 
   private calculateCollapseState() {

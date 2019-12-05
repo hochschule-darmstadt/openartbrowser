@@ -6,7 +6,6 @@ import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import * as _ from 'lodash';
 import { shuffle } from 'src/app/core/services/utils.service';
-import {DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 
 @Component({
   selector: 'app-artist',
@@ -26,11 +25,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
   /** Change collapse icon; true if more infos are folded in */
   collapse = true;
 
-  /** url that gets embedded in iframe in html**/
-  public safeUrl: SafeResourceUrl;
-
-  constructor(private dataService: DataService, private route: ActivatedRoute, public sanitizer: DomSanitizer) {
-    this.sanitizer = sanitizer;
+  constructor(private dataService: DataService, private route: ActivatedRoute) {
   }
 
   toggleDetails() {
@@ -58,20 +53,10 @@ export class ArtistComponent implements OnInit, OnDestroy {
       /* Count meta data to show more on load */
 
       this.calculateCollapseState();
-
-      if(this.artist) {
-        this.getTrustedUrl(this.artist.videos);
-      }
     });
   }
 
   /**
-   *@description sanetizes video url
-   */
-  private getTrustedUrl(url:any){
-    this.safeUrl = url? this.sanitizer.bypassSecurityTrustResourceUrl(url): "";
-  }
-
   /** calculates the size of meta data item section
    * every attribute: +3
    * if attribute is array and size > 3 -> + arraylength

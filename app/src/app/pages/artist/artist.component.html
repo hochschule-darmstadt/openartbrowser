@@ -46,9 +46,8 @@
               <p class="wiki-link">More: <a href="{{ artist?.wikipediaLink }}" target="_blank">Wikipedia</a></p>
             </div>
           </div>
-          
-          <!--Loads Youtube-Video Module with a Video releated to the Artwork-->
-          <iframe *ngIf="safeUrl" width="560" height="315" [src]='safeUrl' frameborder="0" allowfullscreen></iframe>
+
+          <app-video [entity]="artist"></app-video>
 
           <table class="table-fit">
 
@@ -91,7 +90,7 @@
             </tbody>
 
           </table>
-          
+
         </div>
       </div>
     </div>

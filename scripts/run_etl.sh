@@ -1,3 +1,4 @@
+#!/bin/sh 
 cd Wikidata\ crawler
 export PYWIKIBOT_NO_USER_CONFIG=1
 python3 -c "import ArtOntologyCrawler; ArtOntologyCrawler.extract_art_ontology()"

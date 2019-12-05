@@ -4,6 +4,7 @@ import {Entity, Artwork, ArtSearch, EntityType, TagItem} from 'src/app/shared/mo
 import * as _ from 'lodash';
 import {Subject} from 'rxjs';
 import {elasticEnvironment} from 'src/environments/environment';
+import { Iconclass } from 'src/app/shared/models/entity.interface';
 
 
 /**
@@ -184,6 +185,17 @@ export class DataService {
   public async get20CategoryItems<T>(type: string): Promise<T[]> {
     const response = await this.http.post<any>(this.serverURI, this.categoryQuery(type)).toPromise();
     return this.filterData<T>(response);
+  }
+
+  /**
+   * Retrieves IconclassData from the iconclass.org web-service
+   * @see http://www.iconclass.org/help/lod for the documentation
+   * @param iconclasses an Array of Iconclasses to retrieve
+   * @returns an Array containing the iconclassData to the respective Iconclass
+   */
+  public async getIconclassData(iconclasses:Array<Iconclass>): Promise<any> {
+    return await iconclasses.map(async (key:Iconclass) => 
+      await this.http.get(`http://iconclass.org/${key}.json`));
   }
 
   /**

@@ -7,6 +7,7 @@ import { SlideComponent } from 'src/app/shared/components/carousel/slide/slide.c
 import { CarouselComponent } from 'src/app/shared/components/carousel/carousel.component';
 import { DataService } from 'src/app/core/services/data.service';
 import { HttpClientModule } from '@angular/common/http';
+import {VideoComponent} from "../../shared/components/video/video.component";
 
 describe('ArtistComponent', () => {
   let component: ArtistComponent;
@@ -23,6 +24,7 @@ describe('ArtistComponent', () => {
         ArtistComponent,
         SlideComponent,
         CarouselComponent,
+        VideoComponent
       ],
       providers: [
         DataService,

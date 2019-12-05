@@ -1,37 +1,36 @@
-<div class="custom-slider">
-  <ng5-slider id="ng5slider" [(value)]="value" [options]="options"
-              (valueChange)="onSliderMoved()"></ng5-slider>
-</div>
-<div class="carou row mx-0">
-  <div class="carou-control carou-control-prev" (click)="prevClicked()">
-    <span><</span>
+<div class="timeline-container">
+  <div class="custom-slider">
+    <ng5-slider id="ng5slider" [(value)]="value" [options]="options"
+                (valueChange)="onSliderMoved()"></ng5-slider>
   </div>
-  <div class="carou-content row mx-0">
-    <div *ngFor="let item of items |slice:slideStart:slideEnd"
-         class="mb-4 col-sm-3 mt-auto mb-auto item-container">
-      <div class="overlay-container">
-        <img
-          class=" img_self"
-          src="{{ item?.imageSmall }}"
-          alt="{{ item?.label }}"
-        />
-        <div class="overlay_view">
-          <span class="img_description">{{ item?.label }}</span>
+  <div class="carou row mt-5 mx-0">
+    <div class="carou-control" (click)="prevClicked()">
+      <div class="fas fa-chevron-left carou-control-icon " aria-hidden="true"></div>
+    </div>
+    <div class="carou-content row mx-0">
+      <div *ngFor="let item of items |slice:slideStart:slideEnd"
+           class="mb-4 col-sm-3 mt-auto mb-auto item-container">
+        <div class="item">
+          <div class="overlay-container" [ngClass]="(item?.inception)?'overlay-container-caption':''">
+            <img
+              class=" img_self"
+              src="{{ item?.imageSmall }}"
+              alt="{{ item?.label }}"
+            />
+            <div class="overlay_view">
+              <span class="img_description">{{ item?.label }}</span>
+            </div>
+          </div>
+          <div *ngIf="item?.inception"
+               [textContent]="item?.inception"
+               class="center item-caption">
+          </div>
         </div>
       </div>
-      <div *ngIf="item?.inception"
-           [textContent]="item?.inception"
-           class="center item-caption">
-      </div>
-
+    </div>
+    <div class="carou-control" (click)="nextClicked()">
+      <span class="fas fa-chevron-right carou-control-icon"> </span>
     </div>
   </div>
-  <div class="carou-control carou-control-next" (click)="nextClicked()">
-    <span>></span>
-  </div>
 </div>
-
-<!--<app-slider #carousel [items]="sliderItems" [itemsDataGetter]="this.getItemData" heading=""
-            displayed_items="{{itemCountPerPeriod}}"
-            (onSlideChangedCallback)="onCarouselMoved($event)"></app-slider>
--->
+<hr>

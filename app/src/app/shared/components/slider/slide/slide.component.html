@@ -7,7 +7,7 @@
   >
     <div *ngIf="slide.loadContent" class="item"
          [routerLink]="['/artwork', item?.id]">
-      <div class="overlay-container" [ngClass]="(slide?.itemDataGetter)?'overlay-container-caption':'ov'">
+      <div class="overlay-container" [ngClass]="(slide?.itemDataGetter)?'overlay-container-caption':''">
         <img
           class=" img_self"
           (error)="onLoadingError(item)"

@@ -128,8 +128,10 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       this.resetArtworkTabs();
       this.loadDependencies();
       
-      const nonEmptyIconclasses = this.artwork.iconclasses.filter((i:Iconclass) => i !== "");
-      this.iconclassData = !nonEmptyIconclasses.length ? null : await this.dataService.getIconclassData(nonEmptyIconclasses);
+      if (this.artwork.iconclasses) {
+        const nonEmptyIconclasses = this.artwork.iconclasses.filter((i:Iconclass) => i !== "");
+        this.iconclassData = !nonEmptyIconclasses.length ? null : await this.dataService.getIconclassData(nonEmptyIconclasses);
+      }
     });
   }
 

@@ -1,10 +1,14 @@
 import csv
 import json
+import sys
 
 import requests
 
 ADD_FOR_TYPES = ["artwork", "artist", "movement"]
-GOOGLE_DEV_KEY = open("google_dev_key.txt").read()
+try:
+    GOOGLE_DEV_KEY = open("google_dev_key.txt").read()
+except FileNotFoundError:
+    GOOGLE_DEV_KEY = ""
 
 
 def check_yt_id_valid(id) -> bool:
@@ -19,7 +23,7 @@ def check_yt_id_valid(id) -> bool:
         return video_exists or res.status_code == 403
         # 403 means api usage limit is reached
 
-    except requests.HTTPError or KeyError:
+    except (requests.HTTPError, KeyError):
         # Unexpected request errors
         # Key error if API response is broken
         return True
@@ -28,25 +32,33 @@ def add_youtube_videos(
         videofile_location="youtube_videos.csv",
         ontology_location="../crawler_output/art_ontology.json",
         ontology_output_location="../crawler_output/art_ontology.json",
-        check_links=True
+        broken_ids_logging_location="../crawler_output/broken_links.json",
+        check_ids=True
 ) -> None:
     """Load the video csv file and add the links to the ontology file"""
+    if GOOGLE_DEV_KEY == "":
+        check_ids = False
+
     videos = {}
+    broken_ids = []
 
     with open(videofile_location, encoding="utf-8") as csv_file:
         csv_reader = csv.DictReader(csv_file, delimiter=';')
         for row in csv_reader:
             qid = row["q_id"]
             yt_id = row["yt_id"]
-            if check_links and not check_yt_id_valid(yt_id):
-                print("Found broken id: {} ({})".format(yt_id, row["videoname"]))
+            if check_ids and not check_yt_id_valid(yt_id):
+                broken_ids.append(row)
                 continue
             if qid not in videos:
                 videos[qid] = []
             video_url = "https://www.youtube.com/embed/{}".format(yt_id)
             videos[qid].append(video_url)
 
-    print("done")
+    if len(broken_ids) > 0:
+        broken_ids_out = json.dumps(broken_ids)
+        with open(broken_ids_logging_location, 'w') as json_file:
+            json_file.write(broken_ids_out)
 
     with open(ontology_location, encoding="utf-8") as json_file:
         ontology = json.load(json_file)
@@ -64,4 +76,5 @@ def add_youtube_videos(
 
 
 if __name__ == "__main__":
-    add_youtube_videos()
+    check = "-c" in sys.argv
+    add_youtube_videos(check_ids=check)

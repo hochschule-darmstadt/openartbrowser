@@ -6,7 +6,7 @@ import { RouterModule } from '@angular/router';
 import { SlideComponent } from 'src/app/shared/components/slider/slide/slide.component';
 import { SliderComponent } from 'src/app/shared/components/slider/slider.component';
 import { HttpClientModule } from '@angular/common/http';
-import DataService from 'src/app/core/services/elasticsearch/data.service';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 
 describe('ArtistComponent', () => {
   let component: ArtistComponent;

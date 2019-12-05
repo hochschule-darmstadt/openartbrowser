@@ -9,7 +9,7 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SliderComponent } from 'src/app/shared/components/slider/slider.component';
 import { SlideComponent } from 'src/app/shared/components/slider/slide/slide.component';
-import DataService from 'src/app/core/services/elasticsearch/data.service';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;

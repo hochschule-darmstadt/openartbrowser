@@ -6,7 +6,7 @@ import { SliderComponent } from 'src/app/shared/components/slider/slider.compone
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import DataService from 'src/app/core/services/elasticsearch/data.service';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 
 describe('MotifComponent', () => {
   let component: MotifComponent;

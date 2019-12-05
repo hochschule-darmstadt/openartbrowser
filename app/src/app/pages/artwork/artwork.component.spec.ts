@@ -7,7 +7,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientModule } from '@angular/common/http';
 import { ImageViewerModule } from 'ngx-image-viewer';
 import { RouterModule } from '@angular/router';
-import DataService from 'src/app/core/services/elasticsearch/data.service';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 
 describe('ArtworkComponent', () => {
   let component: ArtworkComponent;

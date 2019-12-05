@@ -45,9 +45,9 @@
           <p *ngIf="artwork?.artists?.length" class="mb-1 text-muted">Artist:</p>
         </div>
 
-        <!-- 
-          Check length of attribute "artists", if not empty create chips 
-          and it's navigation link for every artist 
+        <!--
+          Check length of attribute "artists", if not empty create chips
+          and it's navigation link for every artist
         -->
         <div class="col-md-11">
           <p *ngIf="artwork?.artists?.length" class="mb-1 add-padding">
@@ -111,8 +111,7 @@
             </div>
           </div>
 
-          <!--Loads Youtube-Video Module with a Video releated to the Artwork-->
-          <iframe *ngIf="safeUrl" width="560" height="315" [src]='safeUrl' frameborder="0" allowfullscreen></iframe>
+          <app-video [entity]="artwork"></app-video>
 
           <div class="row">
             <div class="col-md-1">
@@ -174,8 +173,8 @@
               <p *ngIf="artwork?.motifs?.length" class="mb-1 text-muted">Motif:</p>
             </div>
 
-            <!-- 
-              Check length of attribute "motifs", if not empty create chips and it's navigation link for every motif 
+            <!--
+              Check length of attribute "motifs", if not empty create chips and it's navigation link for every motif
             -->
             <div class="col-md-11">
               <p *ngIf="artwork?.motifs?.length" class="mb-1 add-padding">

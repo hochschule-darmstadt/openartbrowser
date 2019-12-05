@@ -5,7 +5,6 @@ import {DataService} from 'src/app/core/services/data.service';
 import {ActivatedRoute} from '@angular/router';
 import {Subject} from 'rxjs';
 import * as _ from 'lodash';
-import {DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 
 /** interface for the tabs */
 interface ArtworkTab {
@@ -111,11 +110,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   Object = Object;
 
-  /** url that gets embedded in iframe in html**/
-  public safeUrl: SafeResourceUrl;
-
-  constructor(private dataService: DataService, private route: ActivatedRoute, public sanitizer: DomSanitizer) {
-    this.sanitizer = sanitizer;
+  constructor(private dataService: DataService, private route: ActivatedRoute) {
   }
 
   /**
@@ -132,21 +127,12 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       this.calculateCollapseState();
       this.resetArtworkTabs();
       this.loadDependencies();
-
-      if(this.artwork) this.getTrustedUrl(this.artwork.videos);
       
       const nonEmptyIconclasses = this.artwork.iconclasses.filter((i:Iconclass) => i !== "");
       this.iconclassData = !nonEmptyIconclasses.length ? null : await this.dataService.getIconclassData(nonEmptyIconclasses);
     });
   }
 
-  /**
-   *@description sanetizes video url
-   */
-
-  getTrustedUrl(url:any){
-    this.safeUrl = url? this.sanitizer.bypassSecurityTrustResourceUrl(url): "";
-  }
 
   /**
    * clears items of all artwork tabs

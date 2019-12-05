@@ -56,7 +56,7 @@ def extract_artworks(type_name, wikidata_id):
     count = 0
     extract_dicts = []
     for item in items:
-        if DEV and count > DEV_LIMIT:
+        if DEV and count > int(DEV_LIMIT):
             break
 
         # mandatory fields

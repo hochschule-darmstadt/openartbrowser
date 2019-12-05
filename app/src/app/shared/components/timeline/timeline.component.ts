@@ -25,15 +25,10 @@ export class TimelineComponent {
   private periodSpan = 1;
 
   itemCountPerPeriod: number = 4;
-  manualRefresh: EventEmitter<void> = new EventEmitter<void>();
 
-  /** trigger deletion of unused slides in slider component */
-  @Output()
-  deleteUnusedSlides: EventEmitter<void> = new EventEmitter<void>();
-
-  private selectLastSlide: boolean = false;
   private slideStart: number;
   private slideEnd: number;
+  private sliderAllowEvent: boolean = true;
 
   value: number;
   options: Options = {
@@ -56,11 +51,12 @@ export class TimelineComponent {
     }
   };
 
-
   ngOnChanges(changes: SimpleChanges) {
+    console.log("ON CHANGES", this.items.length);
     if (typeof this.items !== 'undefined' && this.items.length > 0) {
       // rebuild slides if slider items input changed.
       this.calculatePeriod();
+      this.calcSlideStart();
       this.updateSliderItems();
     }
   }
@@ -82,12 +78,14 @@ export class TimelineComponent {
     let averagePeriodCount = 7;
     let reasonablePeriodDistance = 5;
     let minimumPeriodDistance = 1;
+    // Example:  30/7 = 4,28 ; 4,28 / 5 = 0,85 ; Math.max( Math.round(0.85)*5, 1) = 5
     this.periodSpan = Math.max(Math.round(inceptionSpan / averagePeriodCount / reasonablePeriodDistance)
       * reasonablePeriodDistance, minimumPeriodDistance);
+    /*
     console.log(inceptionSpan, "/", averagePeriodCount, "/", reasonablePeriodDistance, " = ",
       inceptionSpan / averagePeriodCount / reasonablePeriodDistance, " rounded: ",
       Math.round(inceptionSpan / averagePeriodCount / reasonablePeriodDistance), " result = ", this.periodSpan);
-    // 30/7 = 4,28 ; 4,28 / 5 = 0,85 ; Math.max( Math.round(0.85)*5, 1) = 5
+    */
 
     // get the biggest multiple of periodSpan that is less than firstInception / same for lastInception
     let firstPeriod = firstInception - (firstInception % this.periodSpan);
@@ -106,26 +104,22 @@ export class TimelineComponent {
     newOptions.stepsArray = sliderSteps;
     newOptions.minLimit = firstInception - firstPeriod;
     newOptions.maxLimit = lastInception - firstPeriod;
-    console.log("max limit", newOptions.maxLimit);
     this.options = newOptions;
-    this.value = firstPeriod + this.periodSpan; //change to items[0].inception
+    this.value = +this.items[0].inception;
 
   }
 
   calcSlideStart() {
     let itemCountSmallerReference = 2;
     let countReference = this.items.filter(item => +item.inception === this.value).length;
-    console.log("countReference", countReference);
 
     let referenceIndex: number;
     if (countReference > itemCountSmallerReference) {
       referenceIndex = this.items.findIndex(item => +item.inception === this.value);
     } else {
       let firstBiggerRef = this.items.findIndex(item => +item.inception > this.value);
-      console.log("firstBiggerRef", firstBiggerRef);
-      referenceIndex = firstBiggerRef - 1;
+      referenceIndex = firstBiggerRef > 0 ? firstBiggerRef - 1 : this.items.length - (this.itemCountPerPeriod - 1);
     }
-
 
     if (0 >= referenceIndex - 1 && referenceIndex <= this.items.length - 3) {
       //first slide
@@ -136,66 +130,38 @@ export class TimelineComponent {
     } else {
       //between
       this.slideStart = referenceIndex - 1;
-      console.log((0 <= referenceIndex - 1 && referenceIndex <= this.items.length - 2), "Requirement met!");
     }
-
-    console.log("Slide starting at index: ", this.slideStart, "ending at ", this.slideEnd,
-      "referenceIndex: ", referenceIndex, "value", this.value);
   }
 
   updateSliderItems() {
     this.slideEnd = this.slideStart + this.itemCountPerPeriod;
 
-    console.log(this.value, this.slideStart, this.itemCountPerPeriod, this.slideEnd);
-  }
-
-  public onCarouselMoved(slideData) {
-
-
-    let newValue = +this.value + (+slideData * +this.itemCountPerPeriod);
-    this.selectLastSlide = (+slideData === -1 && newValue < this.value);
-
-    if (+this.options.stepsArray[0].value <= newValue &&
-      newValue <= +this.options.stepsArray[this.options.stepsArray.length - 1].value) {
-      // New Value in valid range
-      this.value = newValue;
-    } else if (Math.abs(newValue - +this.options.stepsArray[0].value) <=
-      Math.abs(newValue - +this.options.stepsArray[this.options.stepsArray.length - 1].value)) {
-      // New Value out of range and first value is closer than last value
-      this.value = this.options.stepsArray[0].value
-    } else {
-      // New Value out of range and last value is closer than first value
-      this.value = this.options.stepsArray[this.options.stepsArray.length - 1].value
-    }
-    console.log("onCarouselMoved", newValue, this.value);
-
+    console.log(this.value, this.slideStart, this.slideEnd, this.sliderAllowEvent);
   }
 
   onSliderMoved() {
+    if (!this.sliderAllowEvent) {
+      this.sliderAllowEvent = true;
+      return
+    }
     this.calcSlideStart();
     this.updateSliderItems();
-    console.log("Slider moved!", this.slideStart, this.value)
-    this.value = this.items[this.slideStart + 1].inception;
-
-    console.log("test", this.selectLastSlide);
+    this.value = +this.items[this.slideStart + 1].inception;
   }
-
-  getItemData(itemId) {
-    let item = this.items.filter(item => item.id === itemId)[0];
-    return item.inception
-  }
-
 
   prevClicked() {
-    //this.onCarouselMoved(-1)
+    let oldStart = this.slideStart;
     this.slideStart = Math.max(this.slideStart - this.itemCountPerPeriod, 0);
+    this.sliderAllowEvent = oldStart === this.slideStart;
     this.value = +this.items[this.slideStart + 1].inception;
     this.updateSliderItems()
   }
 
   nextClicked() {
-    //this.onCarouselMoved(1)
-    this.slideStart = Math.min(this.slideStart + (2 * this.itemCountPerPeriod), this.items.length) - this.itemCountPerPeriod;
+    let oldStart = this.slideStart;
+    this.slideStart = Math.min(this.slideStart + (2 * this.itemCountPerPeriod),
+      this.items.length) - this.itemCountPerPeriod;
+    this.sliderAllowEvent = oldStart === this.slideStart;
     this.value = +this.items[this.slideStart + 1].inception;
     this.updateSliderItems()
   }

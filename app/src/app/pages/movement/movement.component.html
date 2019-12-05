@@ -40,5 +40,5 @@
     </div>
   </div>
   <!--<app-slider *ngIf="sliderItems?.length" [items]="sliderItems" heading="Artworks" displayed_items="8"></app-slider>-->
-  <app-timeline [items]="sliderItems"></app-timeline>
+  <app-timeline *ngIf="sliderItems?.length" [items]="sliderItems"></app-timeline>
 </div>

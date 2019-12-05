@@ -16,6 +16,7 @@ import ast
 import sys
 import requests
 import json
+from pathlib import Path
 from language_helper import language_config_to_list as language_config
 
 DEV = False
@@ -171,6 +172,8 @@ def extract_subjects(subject_type):
     print(datetime.datetime.now(), "Starting with", subject_type)
     subjects = set()
     file_names = ['paintings.csv', 'drawings.csv', 'sculptures.csv']
+    file_names = [Path.cwd() / "IntermediateFiles" / "csv" / file_name \
+        for file_name in file_names]
     for file_name in file_names:
         with open(file_name, newline="", encoding='utf-8') as file:
             reader = csv.DictReader(file, delimiter=';', quotechar='"')
@@ -341,6 +344,8 @@ def extract_classes():
     class_dict = dict()
     file_names = ['paintings.csv', 'drawings.csv', 'sculptures.csv', 'genres.csv', 'movements.csv', 'materials.csv', 'motifs.csv', 'artists.csv', 'locations.csv']
 
+    file_names = [Path.cwd() / "IntermediateFiles" / "csv" / file_name \
+        for file_name in file_names]
     for file_name in file_names:
         with open(file_name, newline="", encoding='utf-8') as file:
             reader = csv.DictReader(file, delimiter=';', quotechar='"')
@@ -417,6 +422,8 @@ def merge_artworks():
     print(datetime.datetime.now(), "Starting with", "merging artworks")
     artworks = set()
     file_names = ['paintings.json', 'drawings.json', 'sculptures.json']
+    file_names = [Path.cwd() / "IntermediateFiles" / "json" / file_name \
+        for file_name in file_names]
     extract_dicts = []
 
     for file_name in file_names:
@@ -478,6 +485,9 @@ def generate_rdf():
         'url': {'start': '<', 'end': '>'},
         'number': {'start': '', 'end': ''}
     }
+
+    for config in configs:
+        configs[config]['filename'] = Path.cwd() / "IntermediateFiles" / "csv" / configs[config]['filename']
 
     with open("ArtOntology.ttl", "w", newline="", encoding='utf-8') as output:
         with open('ArtOntologyHeader.txt', newline="", encoding='utf-8') as input:
@@ -554,14 +564,22 @@ def get_fields(type_name):
     return fields
 
 def generate_csv(name, extract_dicts, fields):
-    with open(name + ".csv", "w", newline="", encoding='utf-8') as file:
+    out_dir = Path.cwd() / "IntermediateFiles" / "csv"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    filename = out_dir / (name + ".csv")
+    with open(filename, "w", newline="", encoding='utf-8') as file:
         writer = csv.DictWriter(file, fieldnames=fields, delimiter=';', quotechar='"')
         writer.writeheader()
         for extract_dict in extract_dicts:
             writer.writerow(extract_dict)
 
 def generate_json(name, extract_dicts):
-    with open(name + ".json", "w", newline="", encoding='utf-8') as file:
+    if len(extract_dicts) == 0:
+        return
+    out_dir = Path.cwd() / "IntermediateFiles" / "json"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    filename = out_dir / (name + ".json")
+    with open(filename, "w", newline="", encoding='utf-8') as file:
         file.write("[")
         for extract_dict in extract_dicts[:-1]:
             extract_dict["type"] = name[:-1]

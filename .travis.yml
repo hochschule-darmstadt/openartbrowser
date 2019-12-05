@@ -26,8 +26,10 @@ jobs:
         - echo "no backend / crawler / other tests specified"
 
     - stage: backend-tests
-      before_script:
+      python: 3.6
+      before_install:
         - cd scripts/Wikidata\ crawler
+      install:
         - pip3 install -r requirements.txt
       script:
         - python3 ArtOntologyCrawler.py -d 1

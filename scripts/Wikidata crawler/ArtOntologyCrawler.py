@@ -17,12 +17,9 @@ import sys
 import requests
 import json
 from pathlib import Path
-from language_helper import language_config_to_list as language_config
 
 DEV = False
 DEV_LIMIT = 5
-languageValues = language_config()
-languageKeys = [item[0] for item in languageValues] 
 
 def get_abstract(page_id, language_code="en"):
     """Extracts the abstract for a given page_id and language
@@ -38,7 +35,24 @@ def get_abstract(page_id, language_code="en"):
     return resp_obj["query"]["pages"][str(page_id)]["extract"]
 
 
-def extract_artworks(type_name, wikidata_id):
+def language_config_to_list(
+    config_file=Path(__file__).parent.parent.absolute() / "languageconfig.csv"
+):
+    """[Reads languageconfig.csv and returns array that contains its
+    full contents]
+
+    Returns:
+        [list] -- [contents of languageconfig.csv as list]
+    """
+    languageValues = []
+    with open(config_file, encoding="utf-8") as file:
+        configReader = csv.reader(file, delimiter=";")
+        for row in configReader:
+            if row[0] != "langkey":
+                languageValues.append(row)
+    return languageValues
+
+def extract_artworks(type_name, wikidata_id, languageKeys=[item[0] for item in language_config_to_list()]):
     """Extracts artworks metadata from Wikidata and stores them in a *.csv file.
 
     type_name -- e.g., 'drawings', will be used as filename
@@ -163,7 +177,7 @@ def extract_artworks(type_name, wikidata_id):
     return extract_dicts
 
 
-def extract_subjects(subject_type):
+def extract_subjects(subject_type, languageKeys=[item[0] for item in language_config_to_list()]):
     """Extracts metadata from Wikidata of a certain subject type and stores them in a *.csv file
 
     subject_type -- one of 'genres', 'movements', 'materials', 'motifs', 'artists', 'locations'. Will be used as filename
@@ -387,7 +401,7 @@ def extract_classes():
     return extract_dicts
 
 
-def extract_class(cls, class_dict, repo):
+def extract_class(cls, class_dict, repo, languageKeys=[item[0] for item in language_config_to_list()]):
     """Extracts metadata of a class and it superclasses from Wikidata and stores them in a dictionary
 
     cls -- ID of a Wikidata class
@@ -550,7 +564,8 @@ def generate_rdf():
     print(datetime.datetime.now(), "Finished with", "generating rdf")
     print()
 
-def get_fields(type_name):
+
+def get_fields(type_name, languageKeys=[item[0] for item in language_config_to_list()]):
 
     fields = ["id", "classes", "label", "description", "image", "abstract", "wikipediaLink"]
     for langkey in languageKeys:

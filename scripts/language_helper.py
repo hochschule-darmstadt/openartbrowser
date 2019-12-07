@@ -18,4 +18,3 @@ def language_config_to_list(
             if row[0] != "langkey":
                 languageValues.append(row)
     return languageValues
-

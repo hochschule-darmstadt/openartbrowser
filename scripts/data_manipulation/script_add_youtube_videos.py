@@ -1,6 +1,7 @@
 import csv
 import json
 import sys
+from pathlib import Path
 
 import requests
 
@@ -29,10 +30,10 @@ def check_yt_id_valid(id) -> bool:
         return True
 
 def add_youtube_videos(
-        videofile_location="youtube_videos.csv",
-        ontology_location="../crawler_output/art_ontology.json",
-        ontology_output_location="../crawler_output/art_ontology.json",
-        broken_ids_logging_location="../crawler_output/broken_links.json",
+        videofile_location=Path(__file__).resolve().parent / "youtube_videos.csv",
+        ontology_location=Path(__file__).resolve().parent.parent / "crawler_output/art_ontology.json",
+        ontology_output_location=Path(__file__).resolve().parent.parent / "crawler_output/art_ontology.json",
+        broken_ids_logging_location=Path(__file__).resolve().parent.parent / "crawler_output/broken_links.json",
         check_ids=True
 ) -> None:
     """Load the video csv file and add the links to the ontology file"""

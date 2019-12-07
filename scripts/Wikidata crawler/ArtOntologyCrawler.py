@@ -50,7 +50,7 @@ def extract_artworks(type_name, wikidata_id):
     extract_artworks('paintings', 'wd:Q3305213')
     """
     print(datetime.datetime.now(), "Starting with", type_name)
-    QUERY = 'SELECT ?item ?sitelink WHERE {SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". } ?cls wdt:P279* ' + wikidata_id + ' . ?item wdt:P31 ?cls; wdt:P170 ?artist; wdt:P18 ?image . }'
+    QUERY = 'SELECT ?item ?sitelink WHERE {SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". } ?cls wdt:P279* ' + wikidata_id + ' . ?item wdt:P31 ?cls; wdt:P18 ?image . }'
     # all artworks of this type (including subtypes) with label, artist, and image
     wikidata_site = pywikibot.Site("wikidata", "wikidata")
     items = pg.WikidataSPARQLPageGenerator(QUERY, site=wikidata_site)
@@ -60,17 +60,27 @@ def extract_artworks(type_name, wikidata_id):
         if DEV and count > int(DEV_LIMIT):
             break
 
-        # mandatory fields
+        # Loading the item and claims is mandatory. The only mandatory field is the image.
+        # The try-catch-blocks have to stay because anyone can input anything on wikidata
         try:
             item_dict = item.get()
-            label = item_dict["labels"]["en"]
             clm_dict = item_dict["claims"]
-            classes = list(map(lambda clm: clm.getTarget().id, clm_dict["P31"]))
             image = clm_dict["P18"][0].getTarget().get_file_url()
-            artists = list(map(lambda clm: clm.getTarget().id, clm_dict["P170"]))
         except:
             continue
-            # optional fields
+        # optional fields
+        try:
+            label = item_dict["labels"]["en"]
+        except:
+            label = ""
+        try:
+            classes = list(map(lambda clm: clm.getTarget().id, clm_dict["P31"]))
+        except:
+            classes = []
+        try:
+            artists = list(map(lambda clm: clm.getTarget().id, clm_dict["P170"]))
+        except:
+            artists = []
         try:
             description = item_dict["descriptions"]["en"]
         except:
@@ -189,8 +199,9 @@ def extract_subjects(subject_type):
     extract_dicts = []
 
     for subject in subjects:
-        if DEV and count > DEV_LIMIT:
+        if DEV and count > int(DEV_LIMIT):
             break
+        # The try-catch-blocks have to stay because anyone can input anything on wikidata
         try:
             item = pywikibot.ItemPage(repo, subject)
             item_dict = item.get()
@@ -384,6 +395,7 @@ def extract_class(cls, class_dict, repo):
     repo -- Wikidata repository as accessed using pywikibot
     """
     if not cls in class_dict:
+        # The try-catch-blocks have to stay because anyone can input anything on wikidata
         try:
             item = pywikibot.ItemPage(repo, cls)
             item_dict = item.get()
@@ -629,7 +641,7 @@ def extract_art_ontology():
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "-d":
         if len(sys.argv) > 2 and sys.argv[2].isdigit():
-            DEV_LIMIT = sys.argv[2]
+            DEV_LIMIT = int(sys.argv[2])
         print("DEV MODE: on, DEV_LIM={}".format(DEV_LIMIT))
         DEV = True
 

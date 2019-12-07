@@ -1,9 +1,8 @@
 #!/bin/sh 
-cd Wikidata\ crawler
-export PYWIKIBOT_NO_USER_CONFIG=1
-python3 -c "import ArtOntologyCrawler; ArtOntologyCrawler.extract_art_ontology()"
 
-cd intermediate_files/json/
+python3 Wikidata\ crawler/ArtOntologyCrawler.py
+
+cd crawler_output/intermediate_files/json/
 
 node ../../../data_manipulation/script_artworks_rank.js
 
@@ -14,7 +13,9 @@ node ../../../data_manipulation/script_materials_rank.js
 node ../../../data_manipulation/script_movements_rank.js 
 node ../../../data_manipulation/script_motifs_rank.js 
 
+# Merges all *_rank.json files into art_ontology.json
 node ../../../data_manipulation/script_flatten_rank.js
 
-cd ../../../data_manipulation
-python3 .\script_add_youtube_videos.py
+python3 ../../../data_manipulation/script_add_youtube_videos.py
+
+python3 ../../../Wikidata\ crawler/split_languages.py

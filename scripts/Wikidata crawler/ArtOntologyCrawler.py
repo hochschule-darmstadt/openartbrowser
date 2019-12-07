@@ -199,7 +199,7 @@ def extract_subjects(subject_type):
     extract_dicts = []
 
     for subject in subjects:
-        if DEV and count > DEV_LIMIT:
+        if DEV and count > int(DEV_LIMIT):
             break
         # The try-catch-blocks have to stay because anyone can input anything on wikidata
         try:
@@ -641,7 +641,7 @@ def extract_art_ontology():
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "-d":
         if len(sys.argv) > 2 and sys.argv[2].isdigit():
-            DEV_LIMIT = sys.argv[2]
+            DEV_LIMIT = int(sys.argv[2])
         print("DEV MODE: on, DEV_LIM={}".format(DEV_LIMIT))
         DEV = True
 

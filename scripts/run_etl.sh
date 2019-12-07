@@ -14,7 +14,7 @@ node ../../../data_manipulation/script_movements_rank.js
 node ../../../data_manipulation/script_motifs_rank.js 
 
 # Merges all *_rank.json files into art_ontology.json
-node --max-old-space-size=4096 ../data_manipulation/script_flatten_rank.js
+node --max-old-space-size=4096 ../../../data_manipulation/script_flatten_rank.js
 
 if [ -f ../../../crawler_output/art_ontology.json ]; then
     echo "art_ontology.json already exist in directory crawler_output. Removing ..."

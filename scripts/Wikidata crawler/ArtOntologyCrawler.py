@@ -182,7 +182,7 @@ def extract_subjects(subject_type):
     print(datetime.datetime.now(), "Starting with", subject_type)
     subjects = set()
     file_names = ['paintings.csv', 'drawings.csv', 'sculptures.csv']
-    file_names = [Path.cwd() / "intermediate_files" / "csv" / "artworks" / file_name \
+    file_names = [Path.cwd() / "crawler_output" / "intermediate_files" / "csv" / "artworks" / file_name \
         for file_name in file_names]
     for file_name in file_names:
         with open(file_name, newline="", encoding='utf-8') as file:
@@ -356,7 +356,7 @@ def extract_classes():
     subjects = ['genres.csv', 'movements.csv', 'materials.csv', 'motifs.csv', 'artists.csv', 'locations.csv']
     artworks = ['paintings.csv', 'drawings.csv', 'sculptures.csv']
 
-    base_dir = Path.cwd() / "intermediate_files" / "csv"
+    base_dir = Path.cwd() / "crawler_output" / "intermediate_files" / "csv"
     file_names = [base_dir / subject for subject in subjects] + [base_dir / "artworks" / artwork \
             for artwork in artworks]
     for file_name in file_names:
@@ -436,7 +436,7 @@ def merge_artworks():
     print(datetime.datetime.now(), "Starting with", "merging artworks")
     artworks = set()
     file_names = ['paintings.json', 'drawings.json', 'sculptures.json']
-    file_names = [Path.cwd() / "intermediate_files" / "json" / "artworks" / file_name \
+    file_names = [Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "artworks" / file_name \
         for file_name in file_names]
     extract_dicts = []
 
@@ -501,7 +501,7 @@ def generate_rdf():
     }
 
     for config in configs:
-        configs[config]['filename'] = Path.cwd() / "intermediate_files" / "csv" / configs[config]['filename']
+        configs[config]['filename'] = Path.cwd() / "crawler_output" / "intermediate_files" / "csv" / configs[config]['filename']
 
     with open("ArtOntology.ttl", "w", newline="", encoding='utf-8') as output:
         with open('ArtOntologyHeader.txt', newline="", encoding='utf-8') as input:
@@ -607,32 +607,32 @@ def extract_art_ontology():
     for artwork, wd in [("drawings", "wd:Q93184"), ("sculptures", "wd:Q860861"), ("paintings", "wd:Q3305213")]:
         extracted_artwork = extract_artworks(artwork, wd)
 
-        filename = Path.cwd() / "intermediate_files" / "csv" / "artworks" / artwork
+        filename = Path.cwd() / "crawler_output" / "intermediate_files" / "csv" / "artworks" / artwork
         generate_csv(artwork, extracted_artwork, get_fields(artwork), filename)
 
-        filename = Path.cwd() / "intermediate_files" / "json" / "artworks" / artwork
+        filename = Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "artworks" / artwork
         generate_json(artwork, extracted_artwork, filename)
 
     for subject in ["genres", "movements", "materials", "motifs", "artists", "locations"]:
         extracted_subject = extract_subjects(subject)
 
-        filename = Path.cwd() / "intermediate_files" / "csv" / subject
+        filename = Path.cwd() / "crawler_output" / "intermediate_files" / "csv" / subject
         generate_csv(subject, extracted_subject, get_fields(subject), filename)
 
-        filename = Path.cwd() / "intermediate_files" / "json" / subject
+        filename = Path.cwd() / "crawler_output" / "intermediate_files" / "json" / subject
         generate_json(subject, extracted_subject, filename)
 
     classes = "classes"
-    filename = Path.cwd() / "intermediate_files" / "csv" / classes
+    filename = Path.cwd() / "crawler_output" / "intermediate_files" / "csv" / classes
     generate_csv(classes, extract_classes(), get_fields(classes), filename)
 
     artworks = "artworks"
     merged_artworks = merge_artworks()
 
-    filename = Path.cwd() / "intermediate_files" / "csv" / artworks
+    filename = Path.cwd() / "crawler_output" / "intermediate_files" / "csv" / artworks
     generate_csv(artworks, merged_artworks, get_fields(artworks) + ["type"], filename)
 
-    filename = Path.cwd() / "intermediate_files" / "json" / artworks
+    filename = Path.cwd() / "crawler_output" / "intermediate_files" / "json" / artworks
     generate_json(artworks, merged_artworks, filename)
 
     generate_rdf()

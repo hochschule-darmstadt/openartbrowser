@@ -194,8 +194,8 @@ export class DataService {
    * @returns an Array containing the iconclassData to the respective Iconclass
    */
   public async getIconclassData(iconclasses:Array<Iconclass>): Promise<any> {
-    return await iconclasses.map(async (key:Iconclass) => 
-      await this.http.get(`http://iconclass.org/${key}.json`));
+    return await Promise.all(iconclasses.map(async (key:Iconclass) => 
+      await this.http.get(`http://iconclass.org/${key}.json`)));
   }
 
   /**

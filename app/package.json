@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "start_docker":  "ng serve --configuration=docker",
+    "start_docker": "ng serve --configuration=docker",
     "start:fr": "ng serve --base-href /fr/ --configuration=fr",
     "start:de": "ng serve --base-href /de/ --configuration=de",
     "start:en": "ng serve --base-href /en/ --configuration=en",
@@ -37,7 +37,7 @@
     "@types/qs": "^6.5.3",
     "core-js": "^2.6.10",
     "lodash": "^4.17.15",
-    "ngx-image-viewer": "^1.0.13",
+    "ngx-image-viewer": "github:hochschule-darmstadt/ngx-image-viewer#build",
     "rxjs": "~6.3.3",
     "tslib": "^1.10.0",
     "zone.js": "~0.8.26"

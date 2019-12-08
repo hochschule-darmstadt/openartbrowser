@@ -18,6 +18,15 @@ img {
   }
 }
 
+table.table-fit {
+  td{
+    padding-bottom: 0.5em;
+    padding-right: 2em;
+    vertical-align: top;
+    text-align: left;
+  }
+}
+
 @media (max-width: 992px) {
   .info {
     margin-left: 1em;

@@ -7,6 +7,7 @@ import { SlideComponent } from 'src/app/shared/components/slider/slide/slide.com
 import { SliderComponent } from 'src/app/shared/components/slider/slider.component';
 import { HttpClientModule } from '@angular/common/http';
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
+import {VideoComponent} from "../../shared/components/video/video.component";
 
 describe('ArtistComponent', () => {
   let component: ArtistComponent;
@@ -23,6 +24,7 @@ describe('ArtistComponent', () => {
         ArtistComponent,
         SlideComponent,
         SliderComponent,
+        VideoComponent
       ],
       providers: [
         DataService,

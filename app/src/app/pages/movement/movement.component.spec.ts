@@ -7,6 +7,7 @@ import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
+import {VideoComponent} from "../../shared/components/video/video.component";
 
 describe('MovementComponent', () => {
   let component: MovementComponent;
@@ -23,6 +24,7 @@ describe('MovementComponent', () => {
         MovementComponent,
         SlideComponent,
         SliderComponent,
+        VideoComponent
       ],
       providers: [
         DataService,

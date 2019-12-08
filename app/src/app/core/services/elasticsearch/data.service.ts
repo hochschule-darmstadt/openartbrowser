@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import { HttpClient } from '@angular/common/http';
 import { Injectable, Inject, LOCALE_ID } from '@angular/core';
-import { EntityType, Artwork, ArtSearch, Entity } from 'src/app/shared/models/models';
+import { EntityType, Artwork, ArtSearch, Entity, Iconclass } from 'src/app/shared/models/models';
 import { elasticEnvironment } from 'src/environments/environment';
 import QueryBuilder from './query.builder';
 
@@ -126,6 +126,18 @@ export class DataService {
             .sort()
             .size(20);
         return this.performQuery<T>(query);
+    }
+
+    /**
+     * Retrieves IconclassData from the iconclass.org web-service
+     * @see http://www.iconclass.org/help/lod for the documentation
+     * @param iconclasses an Array of Iconclasses to retrieve
+     * @returns an Array containing the iconclassData to the respective Iconclass
+     */
+    public async getIconclassData(iconclasses:Array<Iconclass>): Promise<any> {
+        return await Promise.all(iconclasses.map(async (key:Iconclass) => 
+            await this.http.get(`http://iconclass.org/${key}.json`)
+        ));
     }
 
     /**

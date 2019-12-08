@@ -7,9 +7,11 @@ export interface Entity {
   image?: string;
   imageSmall?: string;
   imageMedium?: string;
+  iconclasses?: Array<Iconclass>;
   type: string;
   absoluteRank: number;
   relativeRank: number;
+  videos?: string;
 }
 
 export interface Artist extends Entity {
@@ -64,6 +66,7 @@ export interface Motif extends Entity {
   type: 'motif';
 }
 
+export type Iconclass = string;
 export interface ArtSearch {
   motifs?: string[];
   artists?: string[];

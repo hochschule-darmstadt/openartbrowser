@@ -14,7 +14,7 @@ const searchResultRoutes: Routes = [
 
 @NgModule({
   declarations: [SearchResultComponent],
-  imports: [CommonModule, SharedModule, RouterModule.forChild(searchResultRoutes), NgbModule.forRoot()],
+  imports: [CommonModule, SharedModule, RouterModule.forChild(searchResultRoutes), NgbModule],
   exports: [SearchResultComponent],
 })
 export class SearchResultRoutingModule {}

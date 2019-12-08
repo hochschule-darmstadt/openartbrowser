@@ -5,6 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Motif, Artwork, EntityType } from 'src/app/shared/models/models';
 import { Subject } from 'rxjs';
 import { async } from '@angular/core/testing';
+import { shuffle } from 'src/app/core/services/utils.service';
 
 @Component({
   selector: 'app-motif',
@@ -21,7 +22,7 @@ export class MotifComponent implements OnInit, OnDestroy {
   /** Related artworks */
   sliderItems: Artwork[] = [];
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {}
+  constructor(private dataService: DataService, private route: ActivatedRoute) { }
 
   /** hook that is executed at component initialization */
   ngOnInit() {
@@ -32,23 +33,10 @@ export class MotifComponent implements OnInit, OnDestroy {
       this.motif = await this.dataService.findById<Motif>(motifId, EntityType.MOTIF);
 
       /** load slider items */
-      await this.dataService.findArtworksByMotifs([this.motif.id]).then((artworks) => {
-        this.sliderItems = this.shuffle(artworks);
-      });
+      await this.dataService.findArtworksByMotifs([this.motif.id])
+        .then(artworks => this.sliderItems = shuffle(artworks));
     });
   }
-
-  /**
-   * @description shuffle the items' categories.
-   * @memberof ArtworkComponent
-   */
-  shuffle = (a: Artwork[]): Artwork[] => {
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-  };
 
   ngOnDestroy() {
     this.ngUnsubscribe.next();

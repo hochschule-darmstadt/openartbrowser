@@ -1,8 +1,13 @@
-<div class="container">
+<div class="container entity">
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7">
-      <span class="badge badge-pill badge-secondary chip cursor-unset"><i class="fas fa-archway"></i> Location</span>
+      <span class="badge badge-pill badge-secondary chip cursor-unset">
+        <i class="fas fa-archway"></i> 
+        Location
+      </span>
+
       <h2 class="mb-3 first-letter">{{ location?.label }}</h2>
+
       <div *ngIf="location?.country" class="row mt-5">
         <div class="col-md-3 pr-0">
           <p *ngIf="location?.country" class="text-muted">Country:</p>
@@ -19,6 +24,7 @@
           <p *ngIf="location?.website"><a href="{{location?.website}}" target="_blank">{{location?.label}}</a></p>
         </div>
       </div>
+
       <div *ngIf="location?.abstract">
         <h4 class="mt-2 more" href="#collapseArtist" (click)="toggleDetails()">
           More
@@ -35,6 +41,7 @@
         </div>
       </div>
     </div>
+    
     <div class="col-sm-5 img" *ngIf="location?.image">
       <img class="img-fluid rounded-circle" src="{{ location?.imageSmall }}" alt=""/>
     </div>

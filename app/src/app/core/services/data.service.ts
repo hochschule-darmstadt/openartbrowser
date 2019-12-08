@@ -1,9 +1,10 @@
-import {enableProdMode, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Entity, Artwork, artSearch, EntityType, TagItem, Iconclass} from 'src/app/shared/models/models';
+import {Entity, Artwork, ArtSearch, EntityType, TagItem} from 'src/app/shared/models/models';
 import * as _ from 'lodash';
 import {Subject} from 'rxjs';
 import {elasticEnvironment} from 'src/environments/environment';
+import { Iconclass } from 'src/app/shared/models/entity.interface';
 
 
 /**
@@ -96,7 +97,7 @@ export class DataService {
    * @param keywords the list of worlds to search for.
    *
    */
-  public async findArtworksByCategories(searchObj: artSearch, keywords: string[] = []): Promise<Artwork[]> {
+  public async findArtworksByCategories(searchObj: ArtSearch, keywords: string[] = []): Promise<Artwork[]> {
     let options = {
       "query": {
         "bool": {
@@ -193,11 +194,8 @@ export class DataService {
    * @returns an Array containing the iconclassData to the respective Iconclass
    */
   public async getIconclassData(iconclasses:Array<Iconclass>): Promise<any> {
-    const results : Array<any> = [];
-    await Promise.all(iconclasses.map(async (key:Iconclass) => 
-      results.push(await this.http.get(`http://iconclass.org/${key}.json`).toPromise())
-    ));
-    return results;
+    return await Promise.all(iconclasses.map(async (key:Iconclass) => 
+      await this.http.get(`http://iconclass.org/${key}.json`)));
   }
 
   /**

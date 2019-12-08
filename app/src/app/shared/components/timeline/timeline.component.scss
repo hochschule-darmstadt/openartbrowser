@@ -1,4 +1,4 @@
-@import "../slider/slider.component.scss";
+$container-height: 20em;
 
 .timeline-container {
   margin-top: 1em;
@@ -63,14 +63,24 @@
   max-width: 90%;
   max-height: $container-height+5;
   min-height: $container-height+5;
+  left: -100px;
+}
+.slideAnimationLeft {
+  transition: 1s;
+  left: 0;
+}
+.slideAnimationRight {
+  left: 0;
+  transition: 1s;
 }
 
 .item-container {
   height: 100%;
   display: block;
   align-items: center;
-  padding-left: 5px;
-  padding-right: 5px;
+  // Padding between items/artworks
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .item {
@@ -83,10 +93,9 @@
   &-caption {
     font-size: large;
     max-height: 15%;
-    padding: 0.3em;
+    min-height: 2rem;
+    margin: 0.3em;
     align-self: center;
-    margin-top: 0.57*$container-height;
-    position: absolute;
   }
 }
 
@@ -100,6 +109,10 @@
     -webkit-transform: scale(1);
     -ms-transform: scale(1);
     transform: scale(1);
+  }
+
+  &-caption{
+    max-height: 80%;
   }
 }
 

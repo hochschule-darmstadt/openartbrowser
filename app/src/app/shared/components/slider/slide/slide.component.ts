@@ -17,8 +17,6 @@ export class SlideComponent implements AfterViewInit {
   /** the slide that should be displayed */
   @Input() slide: Slide = makeDefaultSlide();
 
-  //@Output() itemDataEmitter: EventEmitter<any> = new EventEmitter<Entity>();
- // @Input() itemDataGetter: Function;
   /** emits hovered artwork on item hover event */
   @Output()
   itemHover: EventEmitter<Entity> = new EventEmitter<Entity>();

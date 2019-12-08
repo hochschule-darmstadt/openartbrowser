@@ -1,8 +1,8 @@
-@import "../slider.component.scss";
+$container-row-height: 15em;
 
 .slide {
-  min-height: $container-height;
-  height: $container-height;
+  min-height: $container-row-height*2;
+  height: $container-row-height*2;
 }
 
 .img_self {
@@ -30,9 +30,13 @@
 }
 
 .item-container {
+  max-height: 50%;
   height: 100%;
   display: block;
   align-items: center;
+  // Padding between items/artworks
+  padding: 10px;
+
 }
 
 .overlay-container {
@@ -46,10 +50,6 @@
     -ms-transform: scale(1);
     transform: scale(1);
   }
-
-  &-caption {
-    max-height: 85%;
-  }
 }
 
 .item {
@@ -58,12 +58,6 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-
-  &-caption {
-    font-size: large;
-    max-height: 15%;
-    padding: 0.3em;
-  }
 }
 
 .img_description {

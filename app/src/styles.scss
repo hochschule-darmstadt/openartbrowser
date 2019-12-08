@@ -11,16 +11,6 @@ html {
   cursor: pointer;
 }
 
-/* Customize carousel  (has no power in slider.compoent.scss)*/
-.carousel-indicators {
-  visibility: hidden;
-}
-
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-  width: 100%;
-}
-
 *:focus {
   outline: transparent;
 }

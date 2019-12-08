@@ -50,6 +50,8 @@ export class TimelineComponent {
       return percent * (maxVal - minVal) + minVal;
     }
   };
+  private slideLeft: boolean;
+  private slideRight: boolean;
 
   ngOnChanges(changes: SimpleChanges) {
     console.log("ON CHANGES", this.items.length);
@@ -152,7 +154,8 @@ export class TimelineComponent {
   prevClicked() {
     let oldStart = this.slideStart;
     this.slideStart = Math.max(this.slideStart - this.itemCountPerPeriod, 0);
-    this.sliderAllowEvent = oldStart === this.slideStart;
+    // decide if sliderMoved-Event should be suppressed and if items should be animated
+    this.sliderAllowEvent, this.slideRight = oldStart === this.slideStart;
     this.value = +this.items[this.slideStart + 1].inception;
     this.updateSliderItems()
   }
@@ -161,7 +164,8 @@ export class TimelineComponent {
     let oldStart = this.slideStart;
     this.slideStart = Math.min(this.slideStart + (2 * this.itemCountPerPeriod),
       this.items.length) - this.itemCountPerPeriod;
-    this.sliderAllowEvent = oldStart === this.slideStart;
+    // decide if sliderMoved-Event should be suppressed and if items should be animated
+    this.sliderAllowEvent, this.slideLeft = oldStart === this.slideStart;
     this.value = +this.items[this.slideStart + 1].inception;
     this.updateSliderItems()
   }

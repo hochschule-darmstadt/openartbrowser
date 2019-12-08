@@ -39,6 +39,19 @@
       <img class="img-fluid rounded-circle" src="{{ movement?.imageSmall }}" alt=""/>
     </div>
   </div>
-  <app-timeline *ngIf="sliderItems?.length" [items]="sliderItems"></app-timeline>
-  <app-slider *ngIf="sliderItems?.length" [items]="sliderItems" heading="Artworks" displayed_items="8"></app-slider>
+
+  <ul class="nav nav-pills">
+    <li>
+      <button type="button" class="btn btn-secondary" (click)="toggleComponent()"
+              [disabled]="showTimelineNotArtworks">TIMELINE
+      </button>
+    </li>
+    <li>
+      <button type="button" class="btn btn-secondary" (click)="toggleComponent()"
+              [disabled]="!showTimelineNotArtworks">ARTWORKS
+      </button>
+    </li>
+  </ul>
+  <app-timeline *ngIf="showTimelineNotArtworks && sliderItems?.length" [items]="sliderItems"></app-timeline>
+  <app-slider *ngIf="(!showTimelineNotArtworks) && sliderItems?.length" [items]="sliderItems"></app-slider>
 </div>

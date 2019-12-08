@@ -24,6 +24,9 @@ export class MovementComponent implements OnInit, OnDestroy {
   /** Change collapse icon; true if more infos are folded in */
   collapse = true;
 
+  /** Toggle bool for displaying either timeline or artworks carousel component **/
+  private showTimelineNotArtworks = true;
+
   constructor(private dataService: DataService, private route: ActivatedRoute) {
   }
 
@@ -80,5 +83,9 @@ export class MovementComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
+  }
+
+  toggleComponent() {
+    this.showTimelineNotArtworks = !this.showTimelineNotArtworks;
   }
 }

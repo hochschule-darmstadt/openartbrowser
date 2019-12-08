@@ -5,9 +5,8 @@
     (mouseleave)="this.itemHover.emit(null)"
     class="mb-4 col-sm-3 mt-auto mb-auto item-container"
   >
-    <div *ngIf="slide.loadContent" class="item"
-         [routerLink]="['/artwork', item?.id]">
-      <div class="overlay-container" [ngClass]="(slide?.itemDataGetter)?'overlay-container-caption':''">
+    <div *ngIf="slide.loadContent" class="item" [routerLink]="['/artwork', item?.id]">
+      <div class="overlay-container">
         <img
           class=" img_self"
           (error)="onLoadingError(item)"
@@ -17,11 +16,6 @@
         <div class="overlay_view">
           <span class="img_description">{{ item?.label }}</span>
         </div>
-      </div>
-
-      <div *ngIf="slide?.itemDataGetter"
-           [textContent]="slide?.itemDataGetter(item?.id)"
-           class="center item-caption">
       </div>
     </div>
   </div>

@@ -7,10 +7,16 @@
     <div class="carou-control" (click)="prevClicked()">
       <div class="fas fa-chevron-left carou-control-icon " aria-hidden="true"></div>
     </div>
-    <div class="carou-content row mx-0">
+    <!-- container for content of the carousel -->
+    <div class="carou-content row mx-0 slideAnimationRight"
+         [ngClass]="slideLeft? 'slideAnimationLeft': slideRight?'slideAnimationRight':''">
+      <!-- container for all x items -->
       <div *ngFor="let item of items |slice:slideStart:slideEnd"
            class="mb-4 col-sm-3 mt-auto mb-auto item-container">
-        <div class="item">
+        <div class="item" [routerLink]="['/artwork', item?.id]">
+          <!-- Div for centering the image -->
+          <div *ngIf="item?.inception" class="item-caption"></div>
+          <!-- container for image and hover description -->
           <div class="overlay-container" [ngClass]="(item?.inception)?'overlay-container-caption':''">
             <img
               class=" img_self"

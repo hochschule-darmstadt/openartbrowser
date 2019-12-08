@@ -1,15 +1,25 @@
-.center {
-  display: flex;
-  justify-content: center;
+/* style for carousel next prev icons */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  width: 100%;
 }
 
-$container-height: 20em;
+::ng-deep {
+  .custom-carousel {
+    .carousel-indicators {
+      //display: none;
+      top: -4% !important;
+      pointer-events: none !important;
+    }
 
-.no-items-container {
-  min-height: $container-height;
-  max-height: $container-height;
-}
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+      width: 100% !important;
+    }
 
-.no-item-text {
-  font-size: xx-large;
+    .carousel-control-prev,
+    .carousel-control-next {
+      width: 2% !important;
+    }
+  }
 }

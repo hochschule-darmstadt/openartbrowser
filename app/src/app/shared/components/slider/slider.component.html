@@ -1,21 +1,13 @@
-<h3 *ngIf="heading">{{ heading }}</h3>
-
-<ngb-carousel #innerCarousel class="mb-4 mt-4"
-              data-interval="15000" (slide)="onSlideChanged($event)">
-  <div *ngFor="let slide of slides">
-    <ng-template ngbSlide>
-      <app-slide [slide]="slide" (itemHover)="itemHover.emit($event)"
-                 (deleteUnusedSlides)="deleteUnusedSlides($event)">
-      </app-slide>
-    </ng-template>
-
-  </div>
-  <div *ngIf="!(items?.length > 0)">
-    <ng-template ngbSlide>
-      <div class="center no-items-container">
-        <span class="m-auto no-item-text">No items to display</span>
-      </div>
-    </ng-template>
-  </div>
-</ngb-carousel>
-<hr>
+<div *ngIf="items?.length">
+  <h3 *ngIf="heading">{{ heading }}</h3>
+  <ngb-carousel class="mb-4 mt-4 custom-carousel" data-interval="15000">
+    <div *ngFor="let slide of slides">
+      <ng-template ngbSlide>
+        <app-slide [slide]="slide" (itemHover)="itemHover.emit($event)"
+                   (deleteUnusedSlides)="deleteUnusedSlides($event)">
+        </app-slide>
+      </ng-template>
+    </div>
+  </ngb-carousel>
+  <hr>
+</div>

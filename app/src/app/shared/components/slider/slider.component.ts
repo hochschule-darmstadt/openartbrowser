@@ -1,6 +1,5 @@
-import {Component, Input, SimpleChanges, OnChanges, EventEmitter, Output, ViewChild, ElementRef} from '@angular/core';
+import {Component, Input, SimpleChanges, OnChanges, EventEmitter, Output} from '@angular/core';
 import {Entity} from '../../models/models';
-import {NgbCarousel} from "@ng-bootstrap/ng-bootstrap";
 
 export interface Slide {
   /** artworks displayed on this slide */
@@ -17,8 +16,6 @@ export interface Slide {
   isFirstSlide: boolean;
   /** slide id to uniquely identify slide within this slider */
   id: number;
-
-  itemDataGetter:Function;
 }
 
 /**
@@ -35,8 +32,7 @@ export function makeDefaultSlide(id: number = 0, items: Array<Entity> = []): Sli
     isLastSlide: false,
     nextSlide: null,
     prevSlide: null,
-    loadContent: null,
-    itemDataGetter:null
+    loadContent: null
   };
 }
 
@@ -53,27 +49,13 @@ export class SliderComponent implements OnChanges {
   /**  entities that should be displayed in this slider */
   @Input() items: Entity[] = [];
 
-  /** displayed items once at a time */
-  @Input() displayed_items: number = 8;
-
-  /** Emitter to get item-specific data from inside the slide **/
-    //@Output() itemsDataEmitter: EventEmitter<any> = new EventEmitter<Entity>();
-  @Input()
-  itemsDataGetter: Function;
-
-
-  // slides of the slider, max x items each.
+  // slides of the slider, max 8 items each.
   slides: Slide[];
-
-  @Output() onSlideChangedCallback = new EventEmitter<any>();
-
-  @ViewChild(NgbCarousel)
-  carousel: NgbCarousel;
 
   /** emits hovered artwork on hover event. */
   @Output() itemHover: EventEmitter<Entity> = new EventEmitter<Entity>();
 
-  constructor(private elRef: ElementRef) {
+  constructor() {
   }
 
   /** Hook that is called when any data-bound property of a directive changes. */
@@ -82,23 +64,16 @@ export class SliderComponent implements OnChanges {
     if (changes.items && this.items) {
       this.buildSlides();
     }
-    let nextButton = this.elRef.nativeElement.querySelector(".carousel-control-next");
-    let prevButton = this.elRef.nativeElement.querySelector(".carousel-control-prev");
-    if (nextButton !== null && prevButton !== null) {
-      nextButton.addEventListener('click', this.onClickNext.bind(this));
-      prevButton.addEventListener('click', this.onClickPrev.bind(this));
-    }
   }
 
   /** Divide the slider items into slides. Initialize slides. */
   buildSlides(): void {
     const slidesBuilt: Slide[] = [];
-    // There are x images on each slide.
-    const numberOfSlides = this.items.length / this.displayed_items;
+    // There are 8 images on each slide.
+    const numberOfSlides = this.items.length / 8;
     for (let i = 0; i < numberOfSlides; i++) {
-      // get next x items out of items array
-      const items: Entity[] =
-        this.items.slice(i * +this.displayed_items, i * +this.displayed_items + +this.displayed_items);
+      // get next 8 items out of items array
+      const items: Entity[] = this.items.slice(i * 8, i * 8 + 8);
 
       const slide: Slide = makeDefaultSlide(i, items);
 
@@ -120,7 +95,7 @@ export class SliderComponent implements OnChanges {
         slide.nextSlide = slidesBuilt[0];
         slidesBuilt[0].prevSlide = slide;
       }
-      slide.itemDataGetter = this.itemsDataGetter;
+
       slidesBuilt.push(slide);
     }
     this.slides = slidesBuilt;
@@ -137,29 +112,6 @@ export class SliderComponent implements OnChanges {
         lastSlide.prevSlide.nextSlide = null;
       }
       this.slides.splice(this.slides.length - 1, 1);
-    }
-  }
-
-  public onSlideChanged(slideData) {
-    let carouselFirstId = this.carousel.slides.toArray()[0].id;
-    let carouselLastId = this.carousel.slides.toArray().pop().id;
-    // trigger on last slide
-    if (this.carousel.activeId === carouselFirstId && slideData["direction"] === "right") {
-      this.onSlideChangedCallback.emit(-1)
-    } else if (this.carousel.activeId === carouselLastId && slideData["direction"] === "left") {
-      this.onSlideChangedCallback.emit(+1)
-    }
-  }
-
-  onClickNext() {
-    if (this.carousel.slides.length === 1) {
-      this.onSlideChangedCallback.emit(1)
-    }
-  }
-
-  onClickPrev() {
-    if (this.carousel.slides.length === 1) {
-      this.onSlideChangedCallback.emit(-1)
     }
   }
 }

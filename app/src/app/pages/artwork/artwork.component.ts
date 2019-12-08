@@ -1,5 +1,5 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {Artwork, EntityType} from 'src/app/shared/models/models';
+import {Component, OnInit, OnDestroy, HostListener} from '@angular/core';
+import {Artwork, EntityType, Iconclass} from 'src/app/shared/models/models';
 import {takeUntil} from 'rxjs/operators';
 import {DataService} from 'src/app/core/services/data.service';
 import {ActivatedRoute} from '@angular/router';
@@ -24,6 +24,8 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    * @description the entity this page is about.
    */
   artwork: Artwork = null;
+
+  iconclassData: Array<any>|null = null;
 
   /**
    * whether artwork image should be hidden
@@ -125,20 +127,23 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       this.calculateCollapseState();
       this.resetArtworkTabs();
       this.loadDependencies();
+      
+      if (this.artwork.iconclasses) {
+        const nonEmptyIconclasses = this.artwork.iconclasses.filter((i:Iconclass) => i !== "");
+        this.iconclassData = !nonEmptyIconclasses.length ? null : await this.dataService.getIconclassData(nonEmptyIconclasses);
+      }
+
     });
   }
+
 
   /**
    * clears items of all artwork tabs
    */
   resetArtworkTabs() {
-    this.artworkTabs.all.items = [];
-    this.artworkTabs.artist.items = [];
-    this.artworkTabs.movement.items = [];
-    this.artworkTabs.genre.items = [];
-    this.artworkTabs.material.items = [];
-    this.artworkTabs.motif.items = [];
-    this.artworkTabs.location.items = [];
+    Object.keys(this.artworkTabs).map((key: string) => {
+      this.artworkTabs[key].items = [];
+    })
   }
 
   /**
@@ -247,6 +252,13 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   closeModal() {
     this.modalIsVisible = false;
+  }
+
+  /**
+   * @description close popup image zoom with escape key
+   */
+  @HostListener('window:keydown.esc') escEvent() {
+    this.closeModal()
   }
 
   /**

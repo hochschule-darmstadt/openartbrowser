@@ -11,6 +11,7 @@ import * as _ from 'lodash';
   templateUrl: './artist.component.html',
   styleUrls: ['./artist.component.scss'],
 })
+
 export class ArtistComponent implements OnInit, OnDestroy {
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();

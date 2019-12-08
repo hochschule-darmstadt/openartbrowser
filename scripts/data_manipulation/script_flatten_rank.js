@@ -9,7 +9,7 @@ const locations = 'locations_rank.json'
 const materials = 'materials_rank.json'
 const movements = 'movements_rank.json'
 const motifs = 'motifs_rank.json'
-const master = 'master_flat_rank.json'
+const art_ontology = 'art_ontology.json'
 
 const artistStream = fs.createReadStream(artists, { flags: 'r', encoding: 'utf8' })
 const artworksStream = fs.createReadStream(artworks, { flags: 'r', encoding: 'utf8' })
@@ -62,7 +62,7 @@ constructObjects(artistStream, artistArr)
 	})
 
 /*	after converting all the json files into motifs, this function concat these arrays and write 
-	the result into master file as json
+	the result into art_ontology file as json
 */
 function processData() {
 	if (!_.isEmpty(artistArr) || !_.isEmpty(objectArr) || !_.isEmpty(artworkArr) || !_.isEmpty(genreArr)
@@ -74,7 +74,7 @@ function processData() {
 }
 
 function writeData(obj) {
-	fs.writeFile(master, JSON.stringify(obj), 'utf-8', function (err) {
+	fs.writeFile(art_ontology, JSON.stringify(obj), 'utf-8', function (err) {
 		if (err) {
 			console.log(err)
 			return false

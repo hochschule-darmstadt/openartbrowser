@@ -93,5 +93,5 @@
       <img class="img-fluid rounded-circle" src="{{ artist?.imageSmall }}" alt=""/>
     </div>
   </div>
-  <app-slider [items]="sliderItems" heading="Artworks"></app-slider>
+  <app-slider [items]="sliderItems" heading="Artworks" totalArtworks="{{sliderItems.length === 200 ? artist?.absoluteRank : sliderItems.length}}"></app-slider>
 </div>

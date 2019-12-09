@@ -1,118 +1,37 @@
 <div class="container">
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7">
-      <h2 i18n="Search result label@@search_result" class="mb-3 first-letter">Search result</h2>
+      <h2 class="mb-3 first-letter">Search result</h2>
 
       <div class="row">
-        <div class="col-md-3 pr-0">
-          <p *ngIf="artistArray?.length" class="mb-1 text-muted">
-            <ng-container i18n="Artist label@@artist">Artist</ng-container>:
-          </p>
+        <ng-container *ngFor="let result of searchResults; let i = index">
+          <div class="col-md-3 pr-0" *ngIf="result?.items">
+            <p class="mb-1 text-muted">{{ result?.key | titlecase }}:</p>
+          </div>
+
+          <div class="col-md-9 pl-0 info" *ngIf="result?.items">
+            <p class="mb-1">
+              <span *ngFor="let item of result?.items" class="badge badge-pill badge-secondary first-letter chip"
+                [routerLink]="['/' + result?.key, item?.id]">
+                <i class="fas fa-{{ result?.icon }}"></i>
+                {{ item?.label }}
+              </span>
+            </p>
+          </div>
+        </ng-container>
+
+        <div class="col-md-3 pr-0" *ngIf="searchTerms?.length">
+          <p class="mb-1 text-muted">Terms:</p>
         </div>
 
-        <div class="col-md-9 pl-0 info">
-          <p *ngIf="artistArray?.length" class="mb-1">
-            <span *ngFor="let artist of artistArray" class="badge badge-pill badge-secondary first-letter chip"
-              [routerLink]="'/artist/' + artist?.id">
-              <span class="fas fa-user"></span>
-              {{ artist.label }}</span>
-          </p>
-        </div>
-
-        <div class="col-md-3 pr-0">
-          <p *ngIf="movementArray?.length" class="mb-1 text-muted">
-            <ng-container i18n="Movement label@@movement">Movement</ng-container>:
-          </p>
-        </div>
-
-        <div class="col-md-9 pl-0 info">
-          <p *ngIf="movementArray?.length" class="mb-1">
-            <span *ngFor="let movement of movementArray" class="badge badge-pill badge-secondary first-letter chip"
-              [routerLink]="'/movement/' + movement?.id">
-              <span class="fas fa-wind"></span>
-              {{ movement.label }}</span>
-          </p>
-        </div>
-
-        <div class="col-md-3 pr-0">
-          <p *ngIf="genreArray?.length" class="mb-1 text-muted">
-            <ng-container i18n="Genre label@@genre">Genre</ng-container>:
-          </p>
-        </div>
-
-        <div class="col-md-9 pl-0 info">
-          <p *ngIf="genreArray?.length" class="mb-1">
-            <span *ngFor="let genre of genreArray" class="badge badge-pill badge-secondary first-letter chip"
-              [routerLink]="'/genre/' + genre?.id">
-              <span class="fas fa-tag"></span>
-
-              {{ genre.label }}</span>
-          </p>
-        </div>
-
-        <div class="col-md-3 pr-0">
-          <p *ngIf="materialArray?.length" class="mb-1 text-muted">
-            <ng-container i18n="Material label@@material">Material</ng-container>:
-          </p>
-        </div>
-
-        <div class="col-md-9 pl-0 info">
-          <p *ngIf="materialArray?.length" class="mb-1">
-            <span *ngFor="let material of materialArray" class="badge badge-pill badge-secondary first-letter chip"
-              [routerLink]="'/material/' + material?.id">
-              <span class="fas fa-scroll"></span>
-
-              {{ material.label }}</span>
-          </p>
-        </div>
-
-        <div class="col-md-3 pr-0">
-          <p *ngIf="locationArray?.length" class="mb-1 text-muted">
-            <ng-container i18n="Location label@@location">Location</ng-container>:
-          </p>
-        </div>
-
-        <div class="col-md-9 pl-0 info">
-          <p *ngIf="locationArray?.length" class="mb-1">
-            <span *ngFor="let location of locationArray" class="badge badge-pill badge-secondary first-letter chip"
-              [routerLink]="'/location/' + location?.id">
-              <span class="fas fa-archway"></span>
-
-              {{ location.label }}</span>
-          </p>
-        </div>
-
-        <div class="col-md-3 pr-0">
-          <p *ngIf="motifArray?.length" class="mb-1 text-muted">
-            <ng-container i18n="Motif label@@motif">Motif</ng-container>:
-          </p>
-        </div>
-
-        <div class="col-md-9 pl-0 info">
-          <p *ngIf="motifArray?.length" class="mb-1">
-            <span *ngFor="let motif of motifArray" class="badge badge-pill badge-secondary first-letter chip"
-              [routerLink]="'/motif/' + motif?.id">
-              <span class="fas fa-image"></span>
-              {{ motif.label }}</span>
-          </p>
-        </div>
-
-        <div class="col-md-3 pr-0">
-          <p *ngIf="searchTerms?.length" class="mb-1 text-muted">
-            <ng-container i18n="Search Terms label@@terms">Terms</ng-container>:
-          </p>
-        </div>
-
-        <div class="col-md-9 pl-0 info">
-          <p *ngIf="searchTerms?.length" class="mb-1 ml-2 mr-2">
+        <div class="col-md-9 pl-0 info" *ngIf="searchTerms?.length">
+          <p class="mb-1 ml-2 mr-2">
             <span *ngFor="let term of searchTerms" class="first-letter"> "{{ term }}" </span>
           </p>
         </div>
 
         <div class="col-md-3 pr-0">
-          <p class="mb-1 text-muted">
-            <ng-container i18n="Search Hits label@@hits">Hits</ng-container>:
-          </p>
+          <p class="mb-1 text-muted">Hits:</p>
         </div>
 
         <div class="col-md-9 pl-0 info">
@@ -123,6 +42,5 @@
       </div>
     </div>
   </div>
-  <h3 i18n="Artworks label@@artworks">Artworks</h3>
-  <app-slider [items]="sliderItems"></app-slider>
+  <app-slider [items]="sliderItems" heading="Artworks"> </app-slider>
 </div>

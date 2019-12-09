@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container entity">
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7">
       <span class="badge badge-pill badge-secondary chip cursor-unset">
@@ -6,6 +6,7 @@
         <ng-container i18n="Location label@@location">Location</ng-container>
       </span>
       <h2 class="mb-3 first-letter">{{ location?.label }}</h2>
+
       <div *ngIf="location?.country" class="row mt-5">
         <div class="col-md-3 pr-0">
           <p *ngIf="location?.country" class="text-muted">
@@ -26,6 +27,7 @@
           <p *ngIf="location?.website"><a href="{{location?.website}}" target="_blank">{{location?.label}}</a></p>
         </div>
       </div>
+
       <div *ngIf="location?.abstract">
         <h4 class="mt-2 more" href="#collapseArtist" (click)="toggleDetails()">
           <ng-container i18n="Detail More label@@more">More</ng-container>
@@ -42,6 +44,7 @@
         </div>
       </div>
     </div>
+    
     <div class="col-sm-5 img" *ngIf="location?.image">
       <img class="img-fluid rounded-circle" src="{{ location?.imageSmall }}" alt=""/>
     </div>

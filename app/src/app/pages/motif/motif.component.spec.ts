@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MotifComponent } from './motif.component';
-import { SlideComponent } from 'src/app/shared/components/slider/slide/slide.component';
-import { SliderComponent } from 'src/app/shared/components/slider/slider.component';
+import { SlideComponent } from 'src/app/shared/components/carousel/slide/slide.component';
+import { CarouselComponent } from 'src/app/shared/components/carousel/carousel.component';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -22,7 +22,7 @@ describe('MotifComponent', () => {
       declarations: [
         MotifComponent,
         SlideComponent,
-        SliderComponent,
+        CarouselComponent,
       ],
       providers: [
         DataService,

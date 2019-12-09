@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ArtworkComponent } from './artwork.component';
-import { SlideComponent } from 'src/app/shared/components/slider/slide/slide.component';
-import { SliderComponent } from 'src/app/shared/components/slider/slider.component';
+import { SlideComponent } from 'src/app/shared/components/carousel/slide/slide.component';
+import { CarouselComponent } from 'src/app/shared/components/carousel/carousel.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientModule } from '@angular/common/http';
 import { ImageViewerModule } from 'ngx-image-viewer';
@@ -25,7 +25,7 @@ describe('ArtworkComponent', () => {
       declarations: [
         ArtworkComponent,
         SlideComponent,
-        SliderComponent,
+        CarouselComponent,
         VideoComponent
       ],
       providers: [

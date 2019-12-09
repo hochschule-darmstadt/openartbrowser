@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container entity">
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7">
       <span class="badge badge-pill badge-secondary chip cursor-unset">
@@ -32,8 +32,13 @@
         </div>
       </div>
 
-      <div *ngIf="artist?.gender || artist?.citizenship || artist?.movements?.length ||
-       artist?.influenced_by?.length || artist?.abstract">
+      <div *ngIf="
+          artist?.gender ||
+          artist?.citizenship ||
+          artist?.movements?.length ||
+          artist?.influenced_by?.length ||
+          artist?.abstract
+       ">
         <h4 class="mt-2 more" href="#collapseArtist" (click)="toggleDetails()">
           <ng-container i18n="Detail More label@@more">More</ng-container>
           <i *ngIf="collapse" href="#collapseArtist" class="fas fa-chevron-down"> </i>
@@ -103,7 +108,7 @@
       </div>
     </div>
     <div class="col-sm-5 img" *ngIf="artist?.image">
-      <img class="img-fluid rounded-circle" src="{{ artist?.imageSmall }}" alt=""/>
+      <img class="img-fluid rounded-circle" src="{{ artist?.imageSmall }}" alt="" />
     </div>
   </div>
 

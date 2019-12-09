@@ -7,8 +7,8 @@ import { SearchComponent } from 'src/app/shared/components/search/search.compone
 import { SearchResultComponent } from '../search-result/search-result.component';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { SliderComponent } from 'src/app/shared/components/slider/slider.component';
-import { SlideComponent } from 'src/app/shared/components/slider/slide/slide.component';
+import { CarouselComponent } from 'src/app/shared/components/carousel/carousel.component';
+import { SlideComponent } from 'src/app/shared/components/carousel/slide/slide.component';
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 
 describe('HomeComponent', () => {
@@ -27,7 +27,7 @@ describe('HomeComponent', () => {
         HomeComponent,
         SearchComponent,
         SearchResultComponent,
-        SliderComponent,
+        CarouselComponent,
         SlideComponent
       ],
       providers: [

@@ -1,22 +1,3 @@
-img {
-  max-height: 20em;
-}
-
-.more {
-  cursor: pointer;
-}
-
-.wiki-link {
-  white-space: nowrap;
-  float: right;
-}
-
-@media (min-width: 992px) {
-  /*pl-1*/
-  .notchip {
-    padding-left: 0.25rem;
-  }
-}
 
 table.table-fit {
   td{
@@ -25,20 +6,4 @@ table.table-fit {
     vertical-align: top;
     text-align: left;
   }
-}
-
-@media (max-width: 992px) {
-  .info {
-    margin-left: 1em;
-  }
-
-  /*pl-0*/
-  .notchip {
-    padding-left: 0;
-  }
-}
-
-/* Unset cursor: pointer; badge */
-.cursor-unset {
-  cursor: unset;
 }

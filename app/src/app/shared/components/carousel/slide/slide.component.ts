@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, AfterViewInit, ElementRef } from '@angular/core';
 import { Entity } from 'src/app/shared/models/models';
-import { Slide, makeDefaultSlide } from '../slider.component';
+import { Slide, makeDefaultSlide } from '../carousel.component';
 
 /**
  * a slide of the slider.

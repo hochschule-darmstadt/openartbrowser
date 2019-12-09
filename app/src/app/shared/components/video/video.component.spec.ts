@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { VideoComponent } from './video.component';
-import { DataService } from 'src/app/core/services/data.service';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';

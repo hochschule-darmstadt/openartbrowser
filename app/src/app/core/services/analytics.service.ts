@@ -1,14 +1,16 @@
-/// <reference types="@types/google.analytics" />
 import {AnalyticsProperty} from '../../../environments/environment_analytics';
+declare const ga: (command: string, trackingId: string, cookieDomain: string) => void;
 
-export const Analytics = {
+export const AnalyticsService = {
   options: {
     pageTracking: {
       clearQueryParams: true,
     }
   },
   setTrackingId: () => {
-    ga('create', AnalyticsProperty.trackingId, 'none');
+    if (typeof ga === 'function') {
+      ga('create', AnalyticsProperty.trackingId, 'auto');
+    }
   }
 };
 

@@ -1,5 +1,5 @@
-import {Component, Input, SimpleChanges, EventEmitter, ViewChild, Output} from '@angular/core';
-import {Artwork, Entity} from 'src/app/shared/models/models';
+import {Component, Input, HostListener} from '@angular/core';
+import {Artwork} from 'src/app/shared/models/models';
 import {CustomStepDefinition, Options} from 'ng5-slider';
 import {animate, style, transition, trigger} from "@angular/animations";
 
@@ -24,7 +24,8 @@ export class TimelineComponent {
   //sliderItems: Artwork[];
   private periodSpan = 1;
 
-  itemCountPerPeriod: number = 4;
+  private itemCountPerPeriod: number = 4;
+  private averagePeriodCount: number;
 
   private slideStart: number;
   private slideEnd: number;
@@ -52,11 +53,36 @@ export class TimelineComponent {
   };
   private slideLeft: boolean;
   private slideRight: boolean;
+  private referenceItem: number;
 
-  ngOnChanges(changes: SimpleChanges) {
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    let screenWidth = window.innerWidth;
+    this.itemCountPerPeriod = Math.max(1, Math.floor(screenWidth / 300));
+    this.referenceItem = +(this.itemCountPerPeriod > 1); // Convert bool to int, cause i can, LOL
+    this.averagePeriodCount = Math.min(7, Math.floor(screenWidth / 125));
+    console.log("average count", this.averagePeriodCount);
+    this.refreshComponent();
+  }
+
+  constructor() {
+    this.onResize();
+  }
+
+  ngOnChanges() {
     console.log("ON CHANGES", this.items.length);
     if (typeof this.items !== 'undefined' && this.items.length > 0) {
       // rebuild slides if slider items input changed.
+      this.items.sort((a, b) => (a.inception > b.inception) ?
+        1 : (a.inception === b.inception) ? ((a.artists[0].label > b.artists[0].label) ? 1 : -1) : -1);
+      this.items = this.items.filter(item => item.inception);
+      this.value = +this.items[0].inception;
+      this.refreshComponent()
+    }
+  }
+
+  refreshComponent() {
+    if (typeof this.items !== 'undefined' && this.items.length > 0) {
       this.calculatePeriod();
       this.calcSlideStart();
       this.updateSliderItems();
@@ -65,11 +91,7 @@ export class TimelineComponent {
 
   calculatePeriod() {
     let sliderSteps: CustomStepDefinition[] = [];
-    let sliderItems: Artwork[] = [];
 
-    this.items.sort((a, b) => (a.inception > b.inception) ?
-      1 : (a.inception === b.inception) ? ((a.artists[0].label > b.artists[0].label) ? 1 : -1) : -1);
-    this.items = this.items.filter(item => item.inception);
     let firstInception = +this.items[0].inception;
     let lastInception = +this.items[this.items.length - 1].inception;
 
@@ -77,11 +99,10 @@ export class TimelineComponent {
     if (inceptionSpan === 0) {
       //only 1 period
     }
-    let averagePeriodCount = 7;
     let reasonablePeriodDistance = 5;
     let minimumPeriodDistance = 1;
     // Example:  30/7 = 4,28 ; 4,28 / 5 = 0,85 ; Math.max( Math.round(0.85)*5, 1) = 5
-    this.periodSpan = Math.max(Math.round(inceptionSpan / averagePeriodCount / reasonablePeriodDistance)
+    this.periodSpan = Math.max(Math.round(inceptionSpan / this.averagePeriodCount / reasonablePeriodDistance)
       * reasonablePeriodDistance, minimumPeriodDistance);
     /*
     console.log(inceptionSpan, "/", averagePeriodCount, "/", reasonablePeriodDistance, " = ",
@@ -107,8 +128,6 @@ export class TimelineComponent {
     newOptions.minLimit = firstInception - firstPeriod;
     newOptions.maxLimit = lastInception - firstPeriod;
     this.options = newOptions;
-    this.value = +this.items[0].inception;
-
   }
 
   calcSlideStart() {
@@ -126,12 +145,13 @@ export class TimelineComponent {
     if (0 >= referenceIndex - 1 && referenceIndex <= this.items.length - 3) {
       //first slide
       this.slideStart = 0
-    } else if (referenceIndex + (this.itemCountPerPeriod - 1) > this.items.length) {
+    } else if (referenceIndex + (this.itemCountPerPeriod - this.referenceItem) > this.items.length) {
       //last slide
-      this.slideStart = this.items.length - this.itemCountPerPeriod
+      this.slideStart = this.items.length - this.itemCountPerPeriod;
+      console.log("calcSlideStart slideStart:", this.slideStart);
     } else {
       //between
-      this.slideStart = referenceIndex - 1;
+      this.slideStart = referenceIndex - this.referenceItem;
     }
   }
 
@@ -148,25 +168,27 @@ export class TimelineComponent {
     }
     this.calcSlideStart();
     this.updateSliderItems();
-    this.value = +this.items[this.slideStart + 1].inception;
+
+    console.log("onSliderMove ReferenceItem: ", this.referenceItem, this.slideStart, this.items);
+    this.value = +this.items[this.slideStart + this.referenceItem].inception;
+
   }
 
   prevClicked() {
-    let oldStart = this.slideStart;
     this.slideStart = Math.max(this.slideStart - this.itemCountPerPeriod, 0);
-    // decide if sliderMoved-Event should be suppressed and if items should be animated
-    this.sliderAllowEvent, this.slideRight = oldStart === this.slideStart;
-    this.value = +this.items[this.slideStart + 1].inception;
+    this.value = +this.items[this.slideStart + this.referenceItem].inception;
+    // decide if sliderMoved-Event should be suppressed
+    this.sliderAllowEvent = false;
+    console.log("Allowed: ", this.sliderAllowEvent);
     this.updateSliderItems()
   }
 
   nextClicked() {
-    let oldStart = this.slideStart;
     this.slideStart = Math.min(this.slideStart + (2 * this.itemCountPerPeriod),
       this.items.length) - this.itemCountPerPeriod;
-    // decide if sliderMoved-Event should be suppressed and if items should be animated
-    this.sliderAllowEvent, this.slideLeft = oldStart === this.slideStart;
-    this.value = +this.items[this.slideStart + 1].inception;
+    this.value = +this.items[this.slideStart + this.referenceItem].inception;
+    // decide if sliderMoved-Event should be suppressed
+    this.sliderAllowEvent = false;
     this.updateSliderItems()
   }
 }

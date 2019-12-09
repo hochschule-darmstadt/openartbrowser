@@ -12,7 +12,7 @@
          [ngClass]="slideLeft? 'slideAnimationLeft': slideRight?'slideAnimationRight':''">
       <!-- container for all x items -->
       <div *ngFor="let item of items |slice:slideStart:slideEnd"
-           class="mb-4 col-sm-3 mt-auto mb-auto item-container">
+           class="mb-4 col item-container">
         <div class="item" [routerLink]="['/artwork', item?.id]">
           <!-- Div for centering the image -->
           <div *ngIf="item?.inception" class="item-caption"></div>

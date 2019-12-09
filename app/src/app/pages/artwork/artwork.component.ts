@@ -128,9 +128,9 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       this.calculateCollapseState();
       this.resetArtworkTabs();
       this.loadDependencies();
-      
+
       if (this.artwork.iconclasses) {
-        const nonEmptyIconclasses = this.artwork.iconclasses.filter((i:Iconclass) => i !== "");
+        const nonEmptyIconclasses = this.artwork.iconclasses.filter((i: Iconclass) => i !== '');
         this.iconclassData = !nonEmptyIconclasses.length ? null : await this.dataService.getIconclassData(nonEmptyIconclasses);
       }
 
@@ -144,7 +144,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   resetArtworkTabs() {
     Object.keys(this.artworkTabs).map((key: string) => {
       this.artworkTabs[key].items = [];
-    })
+    });
   }
 
   /**
@@ -163,7 +163,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     this.resetArtworkTabs();
     /** load artist related data */
     if (this.artwork) {
-      this.dataService.findArtworksByType("artists", this.artwork.artists as any).then((artworks) => {
+      this.dataService.findArtworksByType('artists', this.artwork.artists as any).then((artworks) => {
         this.fillArtworkTab(this.artworkTabs.artist, artworks);
       });
       this.dataService.findMultipleById(this.artwork.artists as any, EntityType.ARTIST).then((artists) => {
@@ -171,7 +171,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       });
 
       /** load movement related data */
-      this.dataService.findArtworksByType("movements", this.artwork.movements as any).then((artworks) => {
+      this.dataService.findArtworksByType('movements', this.artwork.movements as any).then((artworks) => {
         this.fillArtworkTab(this.artworkTabs.movement, artworks);
       });
       this.dataService.findMultipleById(this.artwork.movements as any, EntityType.MOVEMENT).then((movements) => {
@@ -179,7 +179,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       });
 
       /** load genre related data */
-      this.dataService.findArtworksByType("genres", this.artwork.genres as any).then((artworks) => {
+      this.dataService.findArtworksByType('genres', this.artwork.genres as any).then((artworks) => {
         this.fillArtworkTab(this.artworkTabs.genre, artworks);
       });
       this.dataService.findMultipleById(this.artwork.genres as any, EntityType.GENRE).then((genres) => {
@@ -187,7 +187,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       });
 
       /** load motif related data */
-      this.dataService.findArtworksByType("motifs", this.artwork.motifs as any).then((artworks) => {
+      this.dataService.findArtworksByType('motifs', this.artwork.motifs as any).then((artworks) => {
         this.fillArtworkTab(this.artworkTabs.motif, artworks);
       });
       this.dataService.findMultipleById(this.artwork.motifs as any, EntityType.MOTIF).then((motifs) => {
@@ -195,7 +195,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       });
 
       /** load loaction related data */
-      this.dataService.findArtworksByType("locations", this.artwork.locations as any).then((artworks) => {
+      this.dataService.findArtworksByType('locations', this.artwork.locations as any).then((artworks) => {
         this.fillArtworkTab(this.artworkTabs.location, artworks);
       });
       this.dataService.findMultipleById(this.artwork.locations as any, EntityType.LOCATION).then((locations) => {
@@ -203,7 +203,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       });
 
       /** load material related data */
-      this.dataService.findArtworksByType("materials",this.artwork.materials as any).then((artworks) => {
+      this.dataService.findArtworksByType('materials', this.artwork.materials as any).then((artworks) => {
         this.fillArtworkTab(this.artworkTabs.material, artworks);
       });
       this.dataService.findMultipleById(this.artwork.materials as any, EntityType.MATERIAL).then((materials) => {
@@ -248,7 +248,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    * @description close popup image zoom with escape key
    */
   @HostListener('window:keydown.esc') escEvent() {
-    this.closeModal()
+    this.closeModal();
   }
 
   /**

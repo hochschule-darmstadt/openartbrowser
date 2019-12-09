@@ -18,7 +18,8 @@ export class DataService {
      */
     constructor(private http: HttpClient, @Inject(LOCALE_ID) locale_id: string) {
         // build backend api url with specfic index by locale_id
-        this.baseUrl = elasticEnvironment.serverURI + "/" + (locale_id || 'en') + "/_search";
+        const ISO_639_1_LOCALE = locale_id.substr(0, 2);
+        this.baseUrl = elasticEnvironment.serverURI + "/" + (ISO_639_1_LOCALE || 'en') + "/_search";
     }
 
     /**
@@ -95,7 +96,7 @@ export class DataService {
 
         keywords.forEach(keyword =>
             query.mustShouldMatch([
-                { key: 'label', value: keyword }, 
+                { key: 'label', value: keyword },
                 { key: "description", value: keyword }
             ])
         );
@@ -135,7 +136,7 @@ export class DataService {
      * @returns an Array containing the iconclassData to the respective Iconclass
      */
     public async getIconclassData(iconclasses:Array<Iconclass>): Promise<any> {
-        return await Promise.all(iconclasses.map(async (key:Iconclass) => 
+        return await Promise.all(iconclasses.map(async (key:Iconclass) =>
             await this.http.get(`http://iconclass.org/${key}.json`)
         ));
     }

@@ -7,8 +7,9 @@ import {DataService} from 'src/app/core/services/data.service';
 import {RouterModule} from '@angular/router';
 import {HttpClientModule} from '@angular/common/http';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {TimelineComponent} from "src/app/shared/components/timeline/timeline.component";
-import {VideoComponent} from "../../shared/components/video/video.component";
+import {TimelineComponent} from 'src/app/shared/components/timeline/timeline.component';
+import {VideoComponent} from '../../shared/components/video/video.component';
+import {Ng5SliderModule} from 'ng5-slider';
 
 describe('MovementComponent', () => {
   let component: MovementComponent;
@@ -19,6 +20,7 @@ describe('MovementComponent', () => {
       imports: [
         NgbModule,
         HttpClientModule,
+        Ng5SliderModule,
         RouterModule.forRoot([])
       ],
       declarations: [

@@ -7,8 +7,8 @@ import {RouterModule} from '@angular/router';
 import {SearchComponent} from './components/search/search.component';
 import {FormsModule} from '@angular/forms';
 import {VideoComponent} from './components/video/video.component';
-import {TimelineComponent} from "./components/timeline/timeline.component";
-import {Ng5SliderModule} from "ng5-slider";
+import {TimelineComponent} from './components/timeline/timeline.component';
+import {Ng5SliderModule} from 'ng5-slider';
 
 /** Everything that should be used within multiple feature modules but isn't always required goes here */
 @NgModule({

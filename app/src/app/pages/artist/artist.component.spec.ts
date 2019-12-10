@@ -7,7 +7,9 @@ import { SlideComponent } from 'src/app/shared/components/carousel/slide/slide.c
 import { CarouselComponent } from 'src/app/shared/components/carousel/carousel.component';
 import { DataService } from 'src/app/core/services/data.service';
 import { HttpClientModule } from '@angular/common/http';
-import {VideoComponent} from "../../shared/components/video/video.component";
+import {VideoComponent} from '../../shared/components/video/video.component';
+import {TimelineComponent} from '../../shared/components/timeline/timeline.component';
+import {Ng5SliderModule} from 'ng5-slider';
 
 describe('ArtistComponent', () => {
   let component: ArtistComponent;
@@ -18,12 +20,14 @@ describe('ArtistComponent', () => {
       imports: [
         NgbModule,
         HttpClientModule,
-        RouterModule.forRoot([])
+        RouterModule.forRoot([]),
+        Ng5SliderModule,
       ],
       declarations: [
         ArtistComponent,
         SlideComponent,
         CarouselComponent,
+        TimelineComponent,
         VideoComponent
       ],
       providers: [

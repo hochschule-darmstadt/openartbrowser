@@ -1,9 +1,9 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, Input, ChangeDetectorRef } from '@angular/core';
-import { interval, Observable, Subject } from 'rxjs';
-import { DataService } from 'src/app/core/services/data.service';
-import { Router } from '@angular/router';
-import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
-import { TagItem, Entity } from '../../models/models';
+import {AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {interval, Observable, Subject} from 'rxjs';
+import {DataService} from 'src/app/core/services/data.service';
+import {Router} from '@angular/router';
+import {debounceTime, switchMap, takeUntil} from 'rxjs/operators';
+import {Entity, EntityType, TagItem} from '../../models/models';
 
 @Component({
   selector: 'app-search',
@@ -44,7 +44,8 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();
 
-  constructor(private dataService: DataService, private router: Router, private cdRef: ChangeDetectorRef) {}
+  constructor(private dataService: DataService, private router: Router, private cdRef: ChangeDetectorRef) {
+  }
 
   ngOnInit() {
     this.dataService.$searchItems.pipe(takeUntil(this.ngUnsubscribe)).subscribe((items) => {
@@ -143,10 +144,10 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
         entities = this.selectSearchResults(entities);
         entities = entities.sort(
           (a: Entity, b: Entity): number => {
-            if (a.type === 'artwork') {
-              return b.type === 'artwork' ? 0 : -1;
-            } else if (b.type === 'artwork') {
-              return a.type === 'artwork' ? 0 : 1;
+            if (a.type === EntityType.ARTWORK) {
+              return b.type === EntityType.ARTWORK ? 0 : -1;
+            } else if (b.type === EntityType.ARTWORK) {
+              return 1;
             } else if (a.type < b.type) {
               return -1;
             } else if (a.type === b.type) {
@@ -173,31 +174,31 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     const locations = [];
     for (const ent of entities) {
       switch (ent.type) {
-        case 'artwork': {
+        case EntityType.ARTWORK: {
           artworks.push(ent);
           break;
         }
-        case 'artist': {
+        case EntityType.ARTIST: {
           artists.push(ent);
           break;
         }
-        case 'material': {
+        case EntityType.MATERIAL: {
           materials.push(ent);
           break;
         }
-        case 'genre': {
+        case EntityType.GENRE: {
           genre.push(ent);
           break;
         }
-        case 'motif': {
+        case EntityType.MOTIF: {
           motifs.push(ent);
           break;
         }
-        case 'movement': {
+        case EntityType.MOVEMENT: {
           movements.push(ent);
           break;
         }
-        case 'location': {
+        case EntityType.LOCATION: {
           locations.push(ent);
           break;
         }
@@ -240,27 +241,27 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     };
     for (const item of this.searchItems) {
       switch (item.type) {
-        case 'artist': {
+        case EntityType.ARTIST: {
           params.artist.push(item.id);
           break;
         }
-        case 'movement': {
+        case EntityType.MOVEMENT: {
           params.movement.push(item.id);
           break;
         }
-        case 'genre': {
+        case EntityType.GENRE: {
           params.genre.push(item.id);
           break;
         }
-        case 'material': {
+        case EntityType.MATERIAL: {
           params.material.push(item.id);
           break;
         }
-        case 'motif': {
+        case EntityType.MOTIF: {
           params.motif.push(item.id);
           break;
         }
-        case 'location': {
+        case EntityType.LOCATION: {
           params.location.push(item.id);
           break;
         }
@@ -293,7 +294,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     }, 300);
 
     this.searchInput = '';
-    if ($event.item.type === 'artwork') {
+    if ($event.item.type === EntityType.ARTWORK) {
       const url = `/artwork/${$event.item.id}`;
       $event.preventDefault();
       this.router.navigate([url]);
@@ -323,7 +324,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
       this.router.navigate([url]);
       return;
     }
-    this.router.navigate(['/search'], { queryParams: this.buildQueryParams() });
+    this.router.navigate(['/search'], {queryParams: this.buildQueryParams()});
     return;
   }
 

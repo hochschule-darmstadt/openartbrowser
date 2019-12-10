@@ -7,7 +7,7 @@ export interface Entity {
   image?: string;
   imageSmall?: string;
   imageMedium?: string;
-  type: string;
+  type: EntityType;
   absoluteRank: number;
   relativeRank: number;
 }
@@ -21,7 +21,7 @@ export interface Artist extends Entity {
   citizenship?: string;
   movements: Partial<Movement>[];
   influenced_by: Partial<Artist>[];
-  type: 'artist';
+  type: EntityType.ARTIST;
 }
 
 export interface Artwork extends Entity {
@@ -35,11 +35,11 @@ export interface Artwork extends Entity {
   country?: string;
   height?: number;
   width?: number;
-  type: 'artwork';
+  type: EntityType.ARTWORK;
 }
 
 export interface Genre extends Entity {
-  type: 'genre';
+  type: EntityType.GENRE;
 }
 
 export interface Location extends Entity {
@@ -48,20 +48,20 @@ export interface Location extends Entity {
   part_of: Partial<Location>[];
   lat?: string;
   lon?: string;
-  type: 'location';
+  type: EntityType.LOCATION;
 }
 
 export interface Material extends Entity {
-  type: 'material';
+  type: EntityType.MATERIAL;
 }
 
 export interface Movement extends Entity {
   influenced_by: Partial<Entity>[];
-  type: 'movement';
+  type: EntityType.MOVEMENT;
 }
 
 export interface Motif extends Entity {
-  type: 'motif';
+  type: EntityType.MOTIF;
 }
 
 export interface artSearch {

@@ -7,6 +7,7 @@ import { SharedModule } from './shared/shared.module';
 import { HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SearchResultComponent } from './pages/search-result/search-result.component';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 /** routes to our feature modules.
  * advantage of routing to modules instead of components: lazy loading.
@@ -74,6 +75,7 @@ const routes: Routes = [
     CoreModule,
     SharedModule,
     NgbModule,
+    BrowserAnimationsModule,
     RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' })
   ],
   bootstrap: [AppComponent],

@@ -1,7 +1,7 @@
 import {Component, Input, HostListener} from '@angular/core';
 import {Artwork} from 'src/app/shared/models/models';
 import {CustomStepDefinition, Options} from 'ng5-slider';
-import {animate, style, transition, trigger} from "@angular/animations";
+import {animate, state, style, transition, trigger} from '@angular/animations';
 
 
 @Component({
@@ -9,12 +9,26 @@ import {animate, style, transition, trigger} from "@angular/animations";
   templateUrl: './timeline.component.html',
   styleUrls: ['./timeline.component.scss'],
   animations: [
-    trigger('fadeIn', [
-      transition(':enter', [
-        style({opacity: '0'}),
-        animate('.5s ease-out', style({opacity: '1'})),
+    trigger('slideNext', [
+      state('out', style({transform: 'translateX(150%)', opacity: 0})),
+      state('in', style({ transform: 'translateX(0)', opacity: 1})),
+      transition('in => out', [
+        animate(0),
       ]),
+      transition('out => in', [
+        animate(400),
+      ])
     ]),
+    trigger('slidePrev', [
+      state('out', style({transform: 'translateX(-150%)', opacity: 0})),
+      state('in', style({ transform: 'translateX(0)', opacity: 1})),
+      transition('in => out', [
+        animate(0),
+      ]),
+      transition('out => in', [
+        animate(400),
+      ])
+    ])
   ],
 })
 
@@ -31,7 +45,11 @@ export class TimelineComponent {
   private slideEnd: number;
   private sliderAllowEvent: boolean = true;
 
+  private slideOutRight = false;
+  private slideOutLeft = false;
+
   value: number;
+  previousValue: number;
   options: Options = {
     showTicksValues: false,
     showTicks: true,
@@ -51,14 +69,12 @@ export class TimelineComponent {
       return percent * (maxVal - minVal) + minVal;
     }
   };
-  private slideLeft: boolean;
-  private slideRight: boolean;
   private referenceItem: number;
 
   @HostListener('window:resize', ['$event'])
   onResize() {
     let screenWidth = window.innerWidth;
-    this.itemCountPerPeriod = Math.max(1, Math.floor(screenWidth / 300));
+    this.itemCountPerPeriod = Math.min(4, Math.max(1, Math.floor(screenWidth / 300)));
     this.referenceItem = +(this.itemCountPerPeriod > 1); // Convert bool to int, cause i can, LOL
     this.averagePeriodCount = Math.min(7, Math.floor(screenWidth / 125));
     console.log("average count", this.averagePeriodCount);
@@ -77,6 +93,7 @@ export class TimelineComponent {
         1 : (a.inception === b.inception) ? ((a.artists[0].label > b.artists[0].label) ? 1 : -1) : -1);
       this.items = this.items.filter(item => item.inception);
       this.value = +this.items[0].inception;
+      this.previousValue = this.value;
       this.refreshComponent()
     }
   }
@@ -164,31 +181,53 @@ export class TimelineComponent {
   onSliderMoved() {
     if (!this.sliderAllowEvent) {
       this.sliderAllowEvent = true;
-      return
+      return;
     }
     this.calcSlideStart();
     this.updateSliderItems();
 
     console.log("onSliderMove ReferenceItem: ", this.referenceItem, this.slideStart, this.items);
-    this.value = +this.items[this.slideStart + this.referenceItem].inception;
 
+    this.value = +this.items[this.slideStart + this.referenceItem].inception;
+    if (this.value > this.previousValue) {
+      this.slideOutRight = true;
+    } else if (this.value < this.previousValue) {
+      this.slideOutLeft = true;
+    }
+
+    this.previousValue = this.value;
   }
 
   prevClicked() {
+    if (this.slideStart > 0) {
+      this.slideOutLeft = true;
+    }
+
     this.slideStart = Math.max(this.slideStart - this.itemCountPerPeriod, 0);
     this.value = +this.items[this.slideStart + this.referenceItem].inception;
     // decide if sliderMoved-Event should be suppressed
     this.sliderAllowEvent = false;
     console.log("Allowed: ", this.sliderAllowEvent);
-    this.updateSliderItems()
+
+    this.updateSliderItems();
   }
 
   nextClicked() {
+    if (this.slideEnd < this.items.length) {
+      this.slideOutRight = true;
+    }
+
     this.slideStart = Math.min(this.slideStart + (2 * this.itemCountPerPeriod),
       this.items.length) - this.itemCountPerPeriod;
     this.value = +this.items[this.slideStart + this.referenceItem].inception;
     // decide if sliderMoved-Event should be suppressed
     this.sliderAllowEvent = false;
-    this.updateSliderItems()
+
+    this.updateSliderItems();
+  }
+
+  resetSlideAnimation() {
+    this.slideOutRight = false;
+    this.slideOutLeft = false;
   }
 }

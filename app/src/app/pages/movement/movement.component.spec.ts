@@ -24,7 +24,7 @@ describe('MovementComponent', () => {
       declarations: [
         MovementComponent,
         SlideComponent,
-        TimelineComponent
+        TimelineComponent,
         CarouselComponent,
         VideoComponent
       ],

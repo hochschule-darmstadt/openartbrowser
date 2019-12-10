@@ -16,20 +16,21 @@
            class="mb-4 col item-container">
         <div class="item" [routerLink]="['/artwork', item?.id]">
           <!-- Div for centering the image -->
-          <div *ngIf="item?.inception" class="item-caption"></div>
+          <div *ngIf="item?.date" class="item-caption"></div>
           <!-- container for image and hover description -->
-          <div class="overlay-container" [ngClass]="(item?.inception)?'overlay-container-caption':''">
+          <div class="overlay-container" [ngClass]="(item?.date)?'overlay-container-caption':''">
             <img
               class=" img_self"
               src="{{ item?.imageSmall }}"
               alt="{{ item?.label }}"
+              [ngClass]="item?.type == 'artist' ? 'rounded-circle':''"
             />
-            <div class="overlay_view">
+            <div class="overlay_view" [ngClass]="item?.type == 'artist' ? 'rounded-circle':''">
               <span class="img_description">{{ item?.label }}</span>
             </div>
           </div>
-          <div *ngIf="item?.inception"
-               [textContent]="item?.inception"
+          <div *ngIf="item?.date"
+               [textContent]="item?.type === 'artist'? item?.description : item?.date"
                class="center item-caption">
           </div>
         </div>

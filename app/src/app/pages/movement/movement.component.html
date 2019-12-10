@@ -52,6 +52,6 @@
       </button>
     </li>
   </ul>
-  <app-timeline *ngIf="showTimelineNotArtworks && sliderItems?.length" [items]="sliderItems"></app-timeline>
+  <app-timeline *ngIf="showTimelineNotArtworks && sliderItems?.length" [artworks]="sliderItems"></app-timeline>
   <app-slider *ngIf="(!showTimelineNotArtworks) && sliderItems?.length" [items]="sliderItems"></app-slider>
 </div>

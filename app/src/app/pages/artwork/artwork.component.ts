@@ -1,10 +1,12 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnInit, OnDestroy, HostListener} from '@angular/core';
 import {Artwork, EntityType} from 'src/app/shared/models/models';
 import {takeUntil} from 'rxjs/operators';
 import {DataService} from 'src/app/core/services/data.service';
 import {ActivatedRoute} from '@angular/router';
 import {Subject} from 'rxjs';
 import * as _ from 'lodash';
+import { shuffle } from 'src/app/core/services/utils.service';
+import { Iconclass } from 'src/app/shared/models/entity.interface';
 
 /** interface for the tabs */
 interface ArtworkTab {
@@ -24,6 +26,8 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    * @description the entity this page is about.
    */
   artwork: Artwork = null;
+
+  iconclassData: Array<any>|null = null;
 
   /**
    * whether artwork image should be hidden
@@ -125,20 +129,23 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       this.calculateCollapseState();
       this.resetArtworkTabs();
       this.loadDependencies();
+      
+      if (this.artwork.iconclasses) {
+        const nonEmptyIconclasses = this.artwork.iconclasses.filter((i:Iconclass) => i !== "");
+        this.iconclassData = !nonEmptyIconclasses.length ? null : await this.dataService.getIconclassData(nonEmptyIconclasses);
+      }
+
     });
   }
+
 
   /**
    * clears items of all artwork tabs
    */
   resetArtworkTabs() {
-    this.artworkTabs.all.items = [];
-    this.artworkTabs.artist.items = [];
-    this.artworkTabs.movement.items = [];
-    this.artworkTabs.genre.items = [];
-    this.artworkTabs.material.items = [];
-    this.artworkTabs.motif.items = [];
-    this.artworkTabs.location.items = [];
+    Object.keys(this.artworkTabs).map((key: string) => {
+      this.artworkTabs[key].items = [];
+    })
   }
 
   /**
@@ -214,7 +221,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    * @param items the items the tab should be filled with
    */
   fillArtworkTab(tab: ArtworkTab, items: Artwork[]) {
-    const filtered = this.shuffle(items.filter((artwork) => artwork.id !== this.artwork.id));
+    const filtered = shuffle(items.filter((artwork) => artwork.id !== this.artwork.id));
     if (filtered.length > 0) {
       tab.items = filtered;
     }
@@ -222,17 +229,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     if (this.artworkTabCounter === 6) {
       this.selectAllTabItems(10);
     }
-  }
-
-  /**
-   * @description shuffle the items' categories.
-   */
-  shuffle = (a: Artwork[]): Artwork[] => {
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
   }
 
   /**
@@ -247,6 +243,13 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   closeModal() {
     this.modalIsVisible = false;
+  }
+
+  /**
+   * @description close popup image zoom with escape key
+   */
+  @HostListener('window:keydown.esc') escEvent() {
+    this.closeModal()
   }
 
   /**
@@ -275,7 +278,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
         }
       }
     }
-    this.artworkTabs.all.items = this.shuffle(Array.from(items, ([key, value]) => value));
+    this.artworkTabs.all.items = shuffle(Array.from(items, ([key, value]) => value));
   }
 
   /**

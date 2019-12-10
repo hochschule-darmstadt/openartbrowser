@@ -9,7 +9,6 @@ export class DataProtectionComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
 }

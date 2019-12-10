@@ -1,17 +1,21 @@
-<div class="container">
+<div class="container entity">
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7">
-      <span class="badge badge-pill badge-secondary chip cursor-unset"><i class="fas fa-tag"></i> Genre</span>
+      <span class="badge badge-pill badge-secondary chip cursor-unset">
+        <i class="fas fa-tag"></i>
+        Genre
+      </span>
       <h2 class="mb-3 first-letter">{{ genre?.label }}</h2>
       <div class="mb-3 mt-5"></div>
+      
       <div *ngIf="genre?.abstract">
         <h4 class="mt-2 more" href="#collapseArtist" (click)="toggleDetails()">
           More
           <i *ngIf="collapse" href="#collapseArtist" class="fas fa-chevron-down"> </i>
           <i *ngIf="!collapse" href="#collapseArtist" class="fas fa-chevron-up"> </i>
         </h4>
-        <div [className]="collapse ? 'collapse' : 'collapse show'" id="collapseArtist">
 
+        <div [className]="collapse ? 'collapse' : 'collapse show'" id="collapseArtist">
           <div class="row">
             <div *ngIf="genre?.abstract" class="col-md pr-0">
               <span>{{ genre?.abstract }}</span>
@@ -21,8 +25,9 @@
         </div>
       </div>
     </div>
+
     <div class="col-sm-5 img" *ngIf="genre?.imageSmall">
-      <img class="img-fluid rounded-circle" src="{{ genre?.imageSmall }}" alt=""/>
+      <img class="img-fluid rounded-circle" src="{{ genre?.imageSmall }}" alt="" />
     </div>
   </div>
   <app-slider [items]="sliderItems" heading="Artworks"></app-slider>

@@ -7,7 +7,7 @@
 ::ng-deep {
   .custom-carousel {
     .carousel-indicators {
-      //display: none;
+      visibility: visible !important;
       top: -4% !important;
       pointer-events: none !important;
     }

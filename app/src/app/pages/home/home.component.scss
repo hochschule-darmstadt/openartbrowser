@@ -168,6 +168,12 @@ $color1: #00bc8c;
     transition: all 0.5s ease;
     border-radius: 15px;
 
+    ::ng-deep {
+      .carousel-indicators {
+        visibility: hidden !important;
+      }
+    }
+
     &:hover {
       cursor: pointer;
       transition: all 0.2s ease;

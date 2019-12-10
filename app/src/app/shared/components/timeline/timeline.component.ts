@@ -82,7 +82,7 @@ export class TimelineComponent {
   onResize() {
     let screenWidth = window.innerWidth;
     this.itemCountPerPeriod = Math.min(4, Math.max(1, Math.floor(screenWidth / 300)));
-    this.referenceItem = +(this.itemCountPerPeriod > 1); // Convert bool to int, cause i can, LOL
+    this.referenceItem = +(this.itemCountPerPeriod > 1 && this.items.length > 1); // Convert bool to int, cause i can, LOL
     this.averagePeriodCount = Math.min(7, Math.floor(screenWidth / 125));
     this.refreshComponent();
   }
@@ -93,16 +93,19 @@ export class TimelineComponent {
 
   ngOnChanges() {
     if (typeof this.artworks !== 'undefined' && this.artworks.length > 0) {
+      this.items = [];
       this.buildTimelineItemsFromArtworks();
       this.getArtistTimelineItems().then(artists => {
         this.items = this.items.concat(artists);
         this.sortItems();
+        this.refreshComponent();
+        this.value = this.items[0].date;
       });
       this.sortItems();
       this.items = this.items.filter(item => item.date);
       this.value = +this.items[0].date;
       this.previousValue = this.value;
-      this.refreshComponent()
+      this.refreshComponent();
     }
   }
 
@@ -202,10 +205,11 @@ export class TimelineComponent {
   }
 
   prevClicked() {
-    if (this.slideStart > 0) {
-      this.slideOutLeft = true;
+    if (this.slideStart <= 0) {
+      // Return if first slide
+      return
     }
-
+    this.slideOutLeft = true;
     this.slideStart = Math.max(this.slideStart - this.itemCountPerPeriod, 0);
     this.value = +this.items[this.slideStart + this.referenceItem].date;
     // decide if sliderMoved-Event should be suppressed
@@ -214,10 +218,11 @@ export class TimelineComponent {
   }
 
   nextClicked() {
-    if (this.slideEnd < this.items.length) {
-      this.slideOutRight = true;
+    if (this.slideEnd >= this.items.length) {
+      // Return if last slide
+      return
     }
-
+    this.slideOutRight = true;
     this.slideStart = Math.min(this.slideStart + (2 * this.itemCountPerPeriod),
       this.items.length) - this.itemCountPerPeriod;
     this.value = +this.items[this.slideStart + this.referenceItem].date;
@@ -255,8 +260,10 @@ export class TimelineComponent {
     this.artworks.sort((a, b) => a.relativeRank > b.relativeRank ? 1 : -1)
       .slice(0, Math.max(10, Math.floor(this.artworks.length / 10))) //get top 10%
       .forEach(artwork => {
-        artwork.artists.forEach(artistId => artistIds.add(artistId + ""))
-      })
+        if (artwork.artists) {
+          artwork.artists.forEach(artistId => artistIds.add(artistId + ""))
+        }
+      });
     await this.dataService.findMultipleById(Array.from(artistIds) as any, EntityType.ARTIST)
       .then((artworkArtists: Artist[]) => {
         artworkArtists.forEach(artist => {

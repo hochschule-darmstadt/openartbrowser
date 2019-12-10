@@ -46,7 +46,7 @@ $container-height: 20em;
 .carou-control {
   position: relative;
   width: 3%;
-  // opacity: 0.4;
+  opacity: 0.4;
   text-align: center;
 
   &-icon {
@@ -55,6 +55,9 @@ $container-height: 20em;
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
     font-size: 2rem;
+  }
+  &:hover {
+    opacity: 1;
   }
 }
 

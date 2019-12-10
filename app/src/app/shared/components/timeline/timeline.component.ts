@@ -10,23 +10,23 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
   styleUrls: ['./timeline.component.scss'],
   animations: [
     trigger('slideNext', [
-      state('out', style({transform: 'translateX(150%)', opacity: 0})),
+      state('out', style({transform: 'translateX(7%)', opacity: 0})),
       state('in', style({ transform: 'translateX(0)', opacity: 1})),
       transition('in => out', [
         animate(0),
       ]),
       transition('out => in', [
-        animate(400),
+        animate(300),
       ])
     ]),
     trigger('slidePrev', [
-      state('out', style({transform: 'translateX(-150%)', opacity: 0})),
+      state('out', style({transform: 'translateX(-7%)', opacity: 0})),
       state('in', style({ transform: 'translateX(0)', opacity: 1})),
       transition('in => out', [
         animate(0),
       ]),
       transition('out => in', [
-        animate(400),
+        animate(300),
       ])
     ])
   ],

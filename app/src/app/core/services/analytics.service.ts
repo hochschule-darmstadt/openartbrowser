@@ -1,5 +1,5 @@
 import {AnalyticsProperty} from '../../../environments/environment_analytics';
-declare const ga: (command: string, trackingId: string, cookieDomain: string) => void;
+declare const ga: (command: string, fields: string, options: string | boolean) => void;
 
 export const AnalyticsService = {
   options: {
@@ -10,6 +10,7 @@ export const AnalyticsService = {
   setTrackingId: () => {
     if (typeof ga === 'function') {
       ga('create', AnalyticsProperty.trackingId, 'auto');
+      ga('set', 'anonymizeIp', true);
     }
   }
 };

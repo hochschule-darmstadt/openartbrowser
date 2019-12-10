@@ -53,50 +53,64 @@
 
             <tbody>
 
-              <tr *ngIf="artist?.gender">
-                <td class="text-muted">Gender:</td>
-                <td>{{ artist?.gender }}</td>
-              </tr>
+            <tr *ngIf="artist?.gender">
+              <td class="text-muted">Gender:</td>
+              <td>{{ artist?.gender }}</td>
+            </tr>
 
-              <tr *ngIf="artist?.citizenship">
-                <td class="text-muted">Citizenship:</td>
-                <td>{{ artist?.citizenship }}</td>
-              </tr>
+            <tr *ngIf="artist?.citizenship">
+              <td class="text-muted">Citizenship:</td>
+              <td>{{ artist?.citizenship }}</td>
+            </tr>
 
-              <tr *ngIf="artist?.movements?.length">
-                <td class="text-muted">Movement:</td>
-                <td>
+            <tr *ngIf="artist?.movements?.length">
+              <td class="text-muted">Movement:</td>
+              <td>
                     <span *ngFor="let movement of artist?.movements"
                           class="badge badge-pill badge-secondary first-letter chip"
                           [routerLink]="'/movement/' + movement.id">
                       <i class="fas fa-wind"></i>
                       {{ movement.label }}
                     </span>
-                </td>
-              </tr>
+              </td>
+            </tr>
 
-              <tr *ngIf="artist?.influenced_by?.length">
-                <td class="text-muted">Influenced by:</td>
-                <td>
+            <tr *ngIf="artist?.influenced_by?.length">
+              <td class="text-muted">Influenced by:</td>
+              <td>
                     <span *ngFor="let influencer of artist?.influenced_by"
                           class="badge badge-pill badge-secondary first-letter chip"
                           [routerLink]="'/artist/' + influencer.id">
                       <i class="fas fa-user"></i>
                       {{ influencer.label }}
                     </span>
-                </td>
-              </tr>
-
+              </td>
+            </tr>
             </tbody>
-
           </table>
-
         </div>
       </div>
     </div>
     <div class="col-sm-5 img" *ngIf="artist?.image">
-      <img class="img-fluid rounded-circle" src="{{ artist?.imageSmall }}" alt="" />
+      <img class="img-fluid rounded-circle" src="{{ artist?.imageSmall }}" alt=""/>
     </div>
   </div>
-  <app-slider [items]="sliderItems" heading="Artworks" totalArtworks="{{sliderItems.length === 200 ? artist?.absoluteRank : sliderItems.length}}"></app-slider>
+
+  <div class="row">
+    <ul class="nav nav-pills">
+      <li>
+        <button type="button" class="btn btn-secondary" (click)="toggleComponent()"
+                [disabled]="showTimelineNotArtworks">TIMELINE
+        </button>
+      </li>
+      <li>
+        <button type="button" class="btn btn-secondary" (click)="toggleComponent()"
+                [disabled]="!showTimelineNotArtworks">ARTWORKS
+        </button>
+      </li>
+    </ul>
+    <span class="ml-1 mt-auto mb-auto">({{ sliderItems?.length }})</span>
+  </div>
+  <app-timeline *ngIf="showTimelineNotArtworks && sliderItems?.length" [artworks]="sliderItems"></app-timeline>
+  <app-slider *ngIf="(!showTimelineNotArtworks) && sliderItems?.length" [items]="sliderItems"></app-slider>
 </div>

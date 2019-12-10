@@ -47,8 +47,6 @@ export class CarouselComponent implements OnChanges {
   /** title of this slider */
   @Input() heading: string;
 
-  @Input() totalArtworks?: number;
-
   /**  entities that should be displayed in this slider */
   @Input() items: Entity[] = [];
 

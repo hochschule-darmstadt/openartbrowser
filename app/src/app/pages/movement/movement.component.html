@@ -32,8 +32,8 @@
             <div class="col-md-9 info">
               <p *ngIf="movement?.influenced_by?.length" class="mb-1">
                 <span *ngFor="let influence of movement?.influenced_by"
-                  class="badge badge-pill badge-secondary first-letter chip"
-                  [routerLink]="influence.type === 'artist' ? '/artist/' + influence.id : '/movement/' + influence.id">
+                      class="badge badge-pill badge-secondary first-letter chip"
+                      [routerLink]="influence.type === 'artist' ? '/artist/' + influence.id : '/movement/' + influence.id">
                   {{ influence.label }}</span>
               </p>
             </div>
@@ -43,22 +43,25 @@
     </div>
 
     <div class="col-sm-5 img" *ngIf="movement?.image">
-      <img class="img-fluid rounded-circle" src="{{ movement?.imageSmall }}" alt="" />
+      <img class="img-fluid rounded-circle" src="{{ movement?.imageSmall }}" alt=""/>
     </div>
   </div>
-
-  <ul class="nav nav-pills">
-    <li>
-      <button type="button" class="btn btn-secondary" (click)="toggleComponent()"
-              [disabled]="showTimelineNotArtworks">TIMELINE
-      </button>
-    </li>
-    <li>
-      <button type="button" class="btn btn-secondary" (click)="toggleComponent()"
-              [disabled]="!showTimelineNotArtworks">ARTWORKS
-      </button>
-    </li>
-  </ul>
-  <app-timeline *ngIf="showTimelineNotArtworks && sliderItems?.length" [artworks]="sliderItems"></app-timeline>
+  <div class="row">
+    <ul class="nav nav-pills">
+      <li>
+        <button type="button" class="btn btn-secondary" (click)="toggleComponent()"
+                [disabled]="showTimelineNotArtworks">TIMELINE
+        </button>
+      </li>
+      <li>
+        <button type="button" class="btn btn-secondary" (click)="toggleComponent()"
+                [disabled]="!showTimelineNotArtworks">ARTWORKS
+        </button>
+      </li>
+    </ul>
+    <span class="ml-1 mt-auto mb-auto">({{ sliderItems?.length }})</span>
+  </div>
+  <app-timeline *ngIf="showTimelineNotArtworks && sliderItems?.length" [artworks]="sliderItems"
+                displayArtists="true"></app-timeline>
   <app-slider *ngIf="(!showTimelineNotArtworks) && sliderItems?.length" [items]="sliderItems"></app-slider>
 </div>

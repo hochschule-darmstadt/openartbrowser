@@ -1,11 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Artist, Artwork, EntityType, Movement } from 'src/app/shared/models/models';
-import { DataService } from 'src/app/core/services/data.service';
-import { ActivatedRoute } from '@angular/router';
-import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Artist, Artwork, EntityType, Movement} from 'src/app/shared/models/models';
+import {DataService} from 'src/app/core/services/data.service';
+import {ActivatedRoute} from '@angular/router';
+import {takeUntil} from 'rxjs/operators';
+import {Subject} from 'rxjs';
 import * as _ from 'lodash';
-import { shuffle } from 'src/app/core/services/utils.service';
+import {shuffle} from 'src/app/core/services/utils.service';
 
 @Component({
   selector: 'app-artist',
@@ -24,6 +24,9 @@ export class ArtistComponent implements OnInit, OnDestroy {
 
   /** Change collapse icon; true if more infos are folded in */
   collapse = true;
+
+  /** Toggle bool for displaying either timeline or artworks carousel component **/
+  private showTimelineNotArtworks = true;
 
   constructor(private dataService: DataService, private route: ActivatedRoute) {
   }
@@ -57,7 +60,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
   }
 
   /**
-  /** calculates the size of meta data item section
+   /** calculates the size of meta data item section
    * every attribute: +3
    * if attribute is array and size > 3 -> + arraylength
    */
@@ -88,5 +91,9 @@ export class ArtistComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
+  }
+
+  toggleComponent() {
+    this.showTimelineNotArtworks = !this.showTimelineNotArtworks;
   }
 }

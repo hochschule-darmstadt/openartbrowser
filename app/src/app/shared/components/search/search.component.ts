@@ -14,7 +14,8 @@ import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 })
 export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  @ViewChild('input') input: ElementRef;
+  @ViewChild('input', {static: false}) 
+  inputRef: ElementRef;
 
   /** input for search component */
   searchInput: string;
@@ -58,7 +59,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.placeholderArray.unshift(this.input.nativeElement.placeholder);
+    this.placeholderArray.unshift(this.inputRef.nativeElement.placeholder);
     const inv = interval(8000);
     inv.pipe(takeUntil(this.ngUnsubscribe)).subscribe((val) => this.changePlaceholdertext());
     this.cdRef.detectChanges();
@@ -72,7 +73,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   /** Change the text inside the placeholder */
   public changePlaceholdertext() {
     this.counter = ++this.counter % this.placeholderArray.length;
-    this.input.nativeElement.placeholder = this.placeholderArray[this.counter];
+    this.inputRef.nativeElement.placeholder = this.placeholderArray[this.counter];
   }
 
   /**

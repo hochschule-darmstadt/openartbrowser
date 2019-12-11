@@ -4,7 +4,7 @@
     <body>
       <trans-unit id="slider_labels" datatype="html">
         <source>
-          <x id="ICU" equiv-text="{key, select, artwork {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/> 
+          <x id="ICU" equiv-text="{key, select, artwork {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/>
         </source>
         <target state="final">
           <x id="ICU" equiv-text="{key, select, artwork {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/>
@@ -624,6 +624,14 @@
           <context context-type="linenumber">22</context>
         </context-group>
         <note priority="1" from="description">Official page label</note>
+      </trans-unit>
+      <trans-unit id="ngb.toast.close-aria" datatype="html">
+        <source>Close</source>
+        <target state="final">Schließen</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/toast/toast.d.ts</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
       </trans-unit>
     </body>
   </file>

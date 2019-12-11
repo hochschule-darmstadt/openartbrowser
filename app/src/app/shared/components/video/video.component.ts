@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import {AfterViewInit, Component, Input, OnChanges, OnDestroy, OnInit} from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Entity } from '../../models/models';
 import { resolve } from 'url';
@@ -8,7 +8,7 @@ import { resolve } from 'url';
   templateUrl: './video.component.html',
   styleUrls: ['./video.component.scss'],
 })
-export class VideoComponent implements OnInit, OnDestroy, AfterViewInit {
+export class VideoComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
 
   @Input() entity: Entity;
 
@@ -29,6 +29,9 @@ export class VideoComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
+  }
+
+  initVideo(): void {
     if (this.entity && this.entity.videos) {
       const videoUrl = Array.isArray(this.entity.videos) ? this.entity.videos.pop() : this.entity.videos;
       if (videoUrl) {
@@ -60,5 +63,11 @@ export class VideoComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   private getTrustedUrl(url: string): any {
     return url ? this.sanitizer.bypassSecurityTrustResourceUrl(url) : '';
+  }
+
+  ngOnChanges(changes): void {
+    if (changes.entity !== undefined) {
+      this.initVideo();
+    }
   }
 }

@@ -68,7 +68,7 @@
                   [label]="movement.label"
                   [tooltip]="movement.abstract"
                   [redirectUrl]="'/movement/' + movement.id"
-                  [icon]="'fa-wind'"
+                  type="movement"
                   >
                 </app-badge>
               </p>
@@ -80,12 +80,14 @@
             </div>
             <div class="col-md-9 pl-0 info">
               <p *ngIf="artist?.influenced_by?.length" class="mb-2">
-                <span *ngFor="let influencer of artist?.influenced_by"
-                      class="badge badge-pill badge-secondary first-letter chip"
-                      [routerLink]="'/artist/' + influencer.id">
-                  <i class="fas fa-user"></i>
-                  {{ influencer.label }}
-                </span>
+                 <app-badge 
+                  *ngFor="let influencer of artist?.influenced_by"
+                  [label]="influencer.label"
+                  [tooltip]="influencer.abstract"
+                  [redirectUrl]="'/artist/' + influencer.id"
+                  type="artist"
+                  >
+                </app-badge>
               </p>
             </div>
           </div>

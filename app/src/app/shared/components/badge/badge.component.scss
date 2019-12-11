@@ -9,4 +9,5 @@ $color1: #00bc8c;
 
 .tooltip .arrow::before {
   border-top-color: $color1;
+  border-bottom-color: $color1;
 }

@@ -5,8 +5,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule } from '@angular/router';
 import { SlideComponent } from 'src/app/shared/components/carousel/slide/slide.component';
 import { CarouselComponent } from 'src/app/shared/components/carousel/carousel.component';
-import { DataService } from 'src/app/core/services/data.service';
 import { HttpClientModule } from '@angular/common/http';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 import {VideoComponent} from "../../shared/components/video/video.component";
 
 describe('ArtistComponent', () => {

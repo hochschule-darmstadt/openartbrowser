@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { Movement, Artwork, EntityType } from 'src/app/shared/models/models';
 import { Subject } from 'rxjs';
-import * as _ from "lodash";
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
+import * as _ from 'lodash';
 import { shuffle } from 'src/app/core/services/utils.service';
 
 @Component({
@@ -24,9 +24,7 @@ export class MovementComponent implements OnInit, OnDestroy {
 
   /** Change collapse icon; true if more infos are folded in */
   collapse = true;
-
-  constructor(private dataService: DataService, private route: ActivatedRoute) {
-  }
+  constructor(private dataService: DataService, private route: ActivatedRoute) {}
 
   /** hook that is executed at component initialization */
   ngOnInit() {
@@ -38,7 +36,7 @@ export class MovementComponent implements OnInit, OnDestroy {
       this.movement = await this.dataService.findById<Movement>(movementId, EntityType.MOVEMENT);
 
       /** load slider items */
-      await this.dataService.findArtworksByMovements([this.movement.id])
+      await this.dataService.findArtworksByType("movements", [this.movement.id])
         .then(artworks => this.sliderItems = shuffle(artworks));
 
       /** dereference influenced_bys  */

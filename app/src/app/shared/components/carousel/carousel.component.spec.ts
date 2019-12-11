@@ -2,7 +2,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CarouselComponent } from './carousel.component';
 import { SlideComponent } from './slide/slide.component';
-import { DataService } from 'src/app/core/services/data.service';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -22,8 +21,7 @@ describe('SliderComponent', () => {
         CarouselComponent,
         SlideComponent,
       ],
-      providers: [
-        DataService,
+      providers: [        
       ]
     }).compileComponents();
   }));

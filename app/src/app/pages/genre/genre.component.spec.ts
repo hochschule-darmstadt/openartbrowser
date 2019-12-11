@@ -6,7 +6,7 @@ import { CarouselComponent } from 'src/app/shared/components/carousel/carousel.c
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
-import { DataService } from 'src/app/core/services/data.service';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 
 describe('GenreComponent', () => {
   let component: GenreComponent;

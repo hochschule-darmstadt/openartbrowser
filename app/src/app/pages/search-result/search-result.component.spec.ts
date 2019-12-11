@@ -5,8 +5,8 @@ import { SlideComponent } from 'src/app/shared/components/carousel/slide/slide.c
 import { CarouselComponent } from 'src/app/shared/components/carousel/carousel.component';
 import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { DataService } from 'src/app/core/services/data.service';
 import { HttpClientModule } from '@angular/common/http';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 
 describe('SearchResultComponent', () => {
   let component: SearchResultComponent;

@@ -1,11 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Artist, Artwork, EntityType, Movement } from 'src/app/shared/models/models';
-import { DataService } from 'src/app/core/services/data.service';
+
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import * as _ from 'lodash';
 import { shuffle } from 'src/app/core/services/utils.service';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 
 @Component({
   selector: 'app-artist',
@@ -41,8 +42,9 @@ export class ArtistComponent implements OnInit, OnDestroy {
       this.artist = await this.dataService.findById<Artist>(artistId, EntityType.ARTIST);
 
       /** load slider items */
-      this.dataService.findArtworksByArtists([this.artist.id])
+      this.dataService.findArtworksByType("artists", [this.artist.id])
         .then(artworks => this.sliderItems = shuffle(artworks));
+      
       /** dereference movements  */
       this.dataService.findMultipleById(this.artist.movements as any, EntityType.MOVEMENT)
         .then(movements => this.artist.movements = movements);

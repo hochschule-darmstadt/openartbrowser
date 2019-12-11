@@ -4,10 +4,10 @@ import { ArtworkComponent } from './artwork.component';
 import { SlideComponent } from 'src/app/shared/components/carousel/slide/slide.component';
 import { CarouselComponent } from 'src/app/shared/components/carousel/carousel.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { DataService } from 'src/app/core/services/data.service';
 import { HttpClientModule } from '@angular/common/http';
 import { ImageViewerModule } from 'ngx-image-viewer';
 import { RouterModule } from '@angular/router';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 import {VideoComponent} from "../../shared/components/video/video.component";
 
 describe('ArtworkComponent', () => {

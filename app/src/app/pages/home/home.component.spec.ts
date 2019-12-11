@@ -1,7 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HomeComponent } from './home.component';
-import { DataService } from 'src/app/core/services/data.service';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientModule } from '@angular/common/http';
 import { SearchComponent } from 'src/app/shared/components/search/search.component';
@@ -10,6 +9,7 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CarouselComponent } from 'src/app/shared/components/carousel/carousel.component';
 import { SlideComponent } from 'src/app/shared/components/carousel/slide/slide.component';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;

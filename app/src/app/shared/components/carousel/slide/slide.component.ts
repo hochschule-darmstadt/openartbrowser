@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter, AfterViewInit, ElementRef } from '@angular/core';
 import { Entity } from 'src/app/shared/models/models';
-import { DataService } from 'src/app/core/services/data.service';
 import { Slide, makeDefaultSlide } from '../carousel.component';
 
 /**
@@ -25,7 +24,7 @@ export class SlideComponent implements AfterViewInit {
   @Output()
   deleteUnusedSlides: EventEmitter<void> = new EventEmitter<void>();
 
-  constructor(public dataService: DataService, private el: ElementRef) {}
+  constructor(private el: ElementRef) {}
 
   ngAfterViewInit() {
     if (window && 'IntersectionObserver' in window) {

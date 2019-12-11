@@ -14,9 +14,6 @@ addons:
     packages:
       - google-chrome-stable
       - sshpass
-      - python3-pip
-      - python3-setuptools
-      - python3-wheel
 
 cache:
   directories:
@@ -33,14 +30,15 @@ jobs:
         - echo "no backend / crawler / other tests specified"
 
     - stage: backend-tests
-      python: 3.7
-      before_install:
-        - cd scripts/Wikidata\ crawler
-        - python --version
-      install:
-        - pip3 install -r requirements.txt
-      script:
-        - python3 ArtOntologyCrawler.py -d 1
+      - language: python
+        python: 3.8
+        before_install:
+          - cd scripts/Wikidata\ crawler
+        install:
+          - pip3 install -r requirements.txt
+        script:
+          - python3 ArtOntologyCrawler.py -d 1
+      
 
     - stage: deploy-to-staging
       if: branch = staging AND type = push

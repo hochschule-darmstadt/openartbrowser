@@ -47,7 +47,7 @@ export class VideoComponent implements OnInit, OnDestroy, AfterViewInit {
       const regExpMatchArray = youtubeVideoHref.match('https://www.youtube.com/embed/([^/]+)');
       if (regExpMatchArray.length === 2) {
         const id = regExpMatchArray[1];
-        const checkURI = 'http://img.youtube.com/vi/' + id + '/mqdefault.jpg';
+        const checkURI = 'https://img.youtube.com/vi/' + id + '/mqdefault.jpg';
         const img = new Image();
         img.src = checkURI;
         img.onload = () => resolve(img.width !== 120);

@@ -23,10 +23,10 @@
                 alt="{{ item?.label }}" />
               <div class="overlay">
                 <span class="type badge badge-secondary badge-pill chip">
-                  <i class="fas fa-{{ upperCategories[key]?.icon }}"></i>
+                  <i class="fas fa-{{ categories[category.key]?.icon }}"></i>
                   <ng-container i18n="Home Slider Labels@@slider_labels">
-                      {key, select, artwork {Artwork} motif {Motif} artist {Artist} location {Location} 
-                      genre {Genre} movement {Movement} material {Material} } 
+                      {key, select, artwork {Artwork} motif {Motif} artist {Artist} location {Location}
+                      genre {Genre} movement {Movement} material {Material} }
                     </ng-container>
                 </span>
                 <span class="label">{{ item?.label | titlecase }}</span>

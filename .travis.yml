@@ -3,6 +3,10 @@ language: node_js
 node_js:
   - "8"
 
+notifications:
+  email: false
+  slack: 'hdampse:U1CJmoQ7s8a3wIZC0Wi3wWZ7'
+
 addons:
   apt:
     sources:
@@ -32,7 +36,7 @@ jobs:
       python: 3.7
       before_install:
         - cd scripts/Wikidata\ crawler
-        - python3 --version
+        - python --version
       install:
         - pip3 install -r requirements.txt
       script:

@@ -34,6 +34,7 @@ jobs:
         python: 3.8
         before_install:
           - cd scripts/Wikidata\ crawler
+          - python --version
         install:
           - pip3 install -r requirements.txt
         script:

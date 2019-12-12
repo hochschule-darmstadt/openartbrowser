@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Artist, Artwork, EntityType, Movement} from 'src/app/shared/models/models';
 import {DataService} from 'src/app/core/services/data.service';
 import {ActivatedRoute} from '@angular/router';
@@ -12,17 +12,14 @@ import * as _ from 'lodash';
   styleUrls: ['./artist.component.scss'],
 })
 export class ArtistComponent implements OnInit, OnDestroy {
-  /** use this to end subscription to url parameter in ngOnDestroy */
-  private ngUnsubscribe = new Subject();
-
   /** The entity this page is about */
   artist: Artist = null;
-
   /** Related artworks */
   sliderItems: Artwork[] = [];
-
   /** Change collapse icon; true if more infos are folded in */
   collapse = true;
+  /** use this to end subscription to url parameter in ngOnDestroy */
+  private ngUnsubscribe = new Subject();
 
   constructor(private dataService: DataService, private route: ActivatedRoute) {
   }
@@ -53,7 +50,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
       });
 
       /* Count meta data to show more on load */
-
+      this.aggregatePictureMovementsToArtist();
       this.calculateCollapseState();
     });
   }
@@ -67,6 +64,36 @@ export class ArtistComponent implements OnInit, OnDestroy {
       [a[i], a[j]] = [a[j], a[i]];
     }
     return a;
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
+
+  /**
+   * Get all movements from the artworks of an artist and add them to the artist movements.
+   * Since the first query only gives back the movement id and not the complete movement object,
+   * it needs to be queried again to get the corresponding movement object.
+   * Since the movements are added as arrays of arrays the deletion of duplicate movements is done at the end.
+   */
+  private aggregatePictureMovementsToArtist() {
+    const allMovements: Partial<Movement>[] = [];
+    this.dataService.findArtworksByArtists([this.artist.id]).then((artworks) => {
+      artworks.forEach(artwork => {
+        artwork.movements.forEach(movement => {
+          if (movement !== '') {
+            allMovements.push(movement);
+          }
+        });
+      });
+      this.dataService.findMultipleById(allMovements as any, EntityType.MOVEMENT).then((movements) => {
+        movements.forEach(movement => {
+          this.artist.movements.push(movement);
+        });
+        this.artist.movements = _.uniqWith(this.artist.movements, _.isEqual);
+      });
+    });
   }
 
   /** calculates the size of meta data item section
@@ -95,10 +122,5 @@ export class ArtistComponent implements OnInit, OnDestroy {
     if (metaNumber < 10) {
       this.collapse = false;
     }
-  }
-
-  ngOnDestroy() {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
   }
 }

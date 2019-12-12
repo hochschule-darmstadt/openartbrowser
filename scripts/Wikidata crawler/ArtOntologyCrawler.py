@@ -600,7 +600,7 @@ def generate_csv(name, extract_dicts, fields, filename):
             writer.writerow(extract_dict)
 
 
-def generate_json(name, extract_dicts):
+def generate_json(name, extract_dicts, filename):
     if len(extract_dicts) == 0:
         return
     filename.parent.mkdir(parents=True, exist_ok=True)

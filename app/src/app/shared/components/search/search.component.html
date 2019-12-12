@@ -1,20 +1,20 @@
-<ng-template #rt let-r="result" let-t="term">
+<ng-template #rt let-r="result" let-t="term" let-type="result['type']">
   <div class="search__result">
     <span class="search__result-type">
-      <i *ngIf="r['type'] == 'motif'" class="fas fa-image"></i>
-      <i *ngIf="r['type'] == 'location'" class="fas fa-archway"></i>
-      <i *ngIf="r['type'] == 'genre'" class="fas fa-tag"></i>
-      <i *ngIf="r['type'] == 'material'" class="fas fa-scroll"></i>
-      <i *ngIf="r['type'] == 'movement'" class="fas fa-wind"></i>
-      <i *ngIf="r['type'] == 'artist'" class="fas fa-user"></i>
-      <img *ngIf="r['type'] == 'artwork'" [src]="r?.imageSmall" class="search__result-type-thumbnail" />
+      <i *ngIf="type == 'motif'" class="fas fa-image"></i>
+      <i *ngIf="type == 'location'" class="fas fa-archway"></i>
+      <i *ngIf="type == 'genre'" class="fas fa-tag"></i>
+      <i *ngIf="type == 'material'" class="fas fa-scroll"></i>
+      <i *ngIf="type == 'movement'" class="fas fa-wind"></i>
+      <i *ngIf="type == 'artist'" class="fas fa-user"></i>
+      <img *ngIf="type == 'artwork'" [src]="r?.imageSmall" class="search__result-type-thumbnail" />
     </span>
 
     <ngb-highlight class="search__result-label" [result]="r.label" [term]="t"></ngb-highlight>
 
     <p class="badge badge-secondary search__result-chip">
-      <ng-container i18n="@@slider_labels">
-        {r?.type, select, artwork {Artwork} motif {Motif} artist {Artist} location {Location}
+      <ng-container i18n="Entity Type Labels@@entity_labels">
+        {type, select, artwork {Artwork} motif {Motif} artist {Artist} location {Location}
         genre {Genre} movement {Movement} material {Material} }
       </ng-container>
     </p>

@@ -2,35 +2,36 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en" target-language="en" datatype="plaintext" original="ng2.template">
     <body>
-      <trans-unit id="slider_labels" datatype="html">
+      <trans-unit id="entity_labels" datatype="html">
         <source>
-          <x id="ICU" equiv-text="{key, select, artwork {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/>
+          <x id="ICU" equiv-text="{type, select, artwork {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/>
         </source>
         <target state="final">
-          <x id="ICU" equiv-text="{key, select, artwork {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/>
+          <x id="ICU" equiv-text="{type, select, artwork {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/>
         </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/home/home.component.html</context>
           <context context-type="linenumber">24</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/pages/home/home.component.html</context>
-          <context context-type="linenumber">48</context>
+          <context context-type="sourcefile">app/shared/components/search/search.component.html</context>
+          <context context-type="linenumber">16</context>
         </context-group>
-        <note priority="1" from="description">Home Slider Labels</note>
+        <note priority="1" from="description">Entity Type Labels</note>
       </trans-unit>
-      <trans-unit id="55b23cdc14ddfb2b8f63be560716952dbb384e8d" datatype="html">
+      <trans-unit id="7aef07fe92fd10201c6e412a6fea56339edd6ead" datatype="html">
         <source>{VAR_SELECT, select, artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material} }</source>
-	<target state="final">{VAR_SELECT, select, artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material}}</target>
+	      <target state="final">{VAR_SELECT, select, artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material}}</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/home/home.component.html</context>
           <context context-type="linenumber">25</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/pages/home/home.component.html</context>
-          <context context-type="linenumber">49</context>
+          <context context-type="sourcefile">app/shared/components/search/search.component.html</context>
+          <context context-type="linenumber">17</context>
         </context-group>
       </trans-unit>
+
       <trans-unit id="menuHome" datatype="html">
         <source>Home</source><target state="final">Home</target>
         <context-group purpose="location">

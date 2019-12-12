@@ -44,7 +44,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
       this.artist = await this.dataService.findById<Artist>(artistId, EntityType.ARTIST);
 
       /** load slider items */
-      this.dataService.findArtworksByArtists([this.artist.id])
+      this.dataService.findArtworksByType("artists", [this.artist.id])
         .then(artworks => this.sliderItems = shuffle(artworks));
       /** dereference movements  */
       this.dataService.findMultipleById(this.artist.movements as any, EntityType.MOVEMENT)

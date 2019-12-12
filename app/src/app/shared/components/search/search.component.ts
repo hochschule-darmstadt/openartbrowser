@@ -1,5 +1,15 @@
-import {AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import {interval, Observable, Subject} from 'rxjs';
+import { SearchService } from 'src/app/core/services/search.service';
 import {DataService} from 'src/app/core/services/data.service';
 import {Router} from '@angular/router';
 import {debounceTime, switchMap, takeUntil} from 'rxjs/operators';
@@ -9,8 +19,13 @@ import {Entity, EntityType, TagItem} from '../../models/models';
   selector: 'app-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
+  providers: [SearchService]
 })
 export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
+
+  @ViewChild('input', {static: false})
+  inputRef: ElementRef;
+
   /** input for search component */
   searchInput: string;
 
@@ -21,15 +36,11 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input()
   isHeaderSearch = false;
 
-  /** String value binding the placeholder in the searchbar */
-  placeholderText: string;
-
   /** Array of all placeholder values */
   placeholderArray: string[] = [
-    'Search for something...',
-    'Try "Mona Lisa"',
-    'Try "Vincent van Gogh"',
-    'Try "Renaissance"',
+    '"Mona Lisa"',
+    '"Vincent van Gogh"',
+    '"Renaissance"',
   ];
 
   /** Counter of placeholderArray */
@@ -44,17 +55,20 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();
 
-  constructor(private dataService: DataService, private router: Router, private cdRef: ChangeDetectorRef) {
-  }
+  constructor(
+    private dataService: DataService,
+    private searchService: SearchService,
+    private router: Router,
+    private cdRef: ChangeDetectorRef) { }
 
   ngOnInit() {
-    this.dataService.$searchItems.pipe(takeUntil(this.ngUnsubscribe)).subscribe((items) => {
+    this.searchService.$searchItems.pipe(takeUntil(this.ngUnsubscribe)).subscribe((items) => {
       this.searchItems = items;
     });
   }
 
   ngAfterViewInit() {
-    this.placeholderText = this.placeholderArray[0];
+    this.placeholderArray.unshift(this.inputRef.nativeElement.placeholder);
     const inv = interval(8000);
     inv.pipe(takeUntil(this.ngUnsubscribe)).subscribe((val) => this.changePlaceholdertext());
     this.cdRef.detectChanges();
@@ -67,11 +81,8 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /** Change the text inside the placeholder */
   public changePlaceholdertext() {
-    ++this.counter;
-    if (this.counter === this.placeholderArray.length) {
-      this.counter = 0;
-    }
-    this.placeholderText = this.placeholderArray[this.counter];
+    this.counter = ++this.counter % this.placeholderArray.length;
+    this.inputRef.nativeElement.placeholder = this.placeholderArray[this.counter];
   }
 
   /**
@@ -95,7 +106,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
         if (term === '') {
           return [];
         }
-        let entities = await this.dataService.findEntitiesByLabelText(term.toLowerCase());
+        let entities = await this.dataService.findByLabel(term.toLowerCase());
         entities = entities
           .filter((v) => v.label.toLowerCase().indexOf(term.toLowerCase()) > -1)
           .sort(
@@ -300,7 +311,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
       this.router.navigate([url]);
       return;
     } else {
-      this.dataService.addSearchTag({
+      this.searchService.addSearchTag({
         label: $event.item.label,
         type: $event.item.type,
         id: $event.item.id,
@@ -338,7 +349,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
     if (this.searchInput) {
-      this.dataService.addSearchTag({
+      this.searchService.addSearchTag({
         label: this.searchInput,
         type: null,
         id: null,
@@ -350,7 +361,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /** remove chip from search bar */
   public removeTag(item: TagItem) {
-    this.dataService.removeSearchTag(item);
+    this.searchService.removeSearchTag(item);
   }
 
   /**
@@ -366,13 +377,13 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   /** remove newest chip */
   public removeNewestTag() {
     if (this.searchInput === '' && this.rmTag) {
-      this.dataService.removeSearchTag(this.searchItems[this.searchItems.length - 1]);
+      this.searchService.removeSearchTag(this.searchItems[this.searchItems.length - 1]);
     }
     this.rmTag = false;
   }
 
   /** remove all chips */
   public clearAllTags() {
-    this.dataService.clearSearchTags();
+    this.searchService.clearSearchTags();
   }
 }

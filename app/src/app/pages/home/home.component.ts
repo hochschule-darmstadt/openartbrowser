@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChildren, QueryList } from '@angular/core';
 import { NgbCarouselConfig, NgbCarousel } from '@ng-bootstrap/ng-bootstrap';
 import { Entity, Artist, Artwork, Movement, Material, Location, Genre, Motif, EntityIcon, EntityType } from 'src/app/shared/models/models';
-import { DataService } from 'src/app/core/services/data.service';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 import { shuffle } from 'src/app/core/services/utils.service';
 
 /**
@@ -49,7 +49,7 @@ export class HomeComponent implements OnInit {
    */
   categories: SliderCategory[] = [];
 
-  constructor(public dataService: DataService, ngb_config: NgbCarouselConfig) {
+  constructor(public dataService:DataService, ngb_config: NgbCarouselConfig) {
     /** set configuration of ngbCarousel */
     ngb_config.interval = 10000;
     ngb_config.keyboard = false;
@@ -100,7 +100,7 @@ export class HomeComponent implements OnInit {
    * @memberof HomeComponent 
    */
   private async getSliderCategory<T>(category: EntityType, icon: EntityIcon): Promise<SliderCategory> {
-    const items = shuffle(await this.dataService.get20CategoryItems<T>(category));
+    const items = shuffle(await this.dataService.getCategoryItems<T>(category));
     return { items, key: category, icon }
   }
 

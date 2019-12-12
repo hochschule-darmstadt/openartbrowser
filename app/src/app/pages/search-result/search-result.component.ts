@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Artwork, EntityType, Entity, EntityIcon, ArtSearch } from 'src/app/shared/models/models';
-import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 
 /**
  * @description Interface for the search results.
@@ -89,7 +89,7 @@ export class SearchResultComponent implements OnInit, OnDestroy {
   private async getSliderItems(results: SearchResult[], terms: string[]): Promise<Artwork[]> {
     const search: ArtSearch = {};
     results.forEach(typeArray => search[typeArray.key + "s"] = typeArray.items.map((e: Entity) => e.id));
-    return await this.dataService.findArtworksByCategories(search, terms);
+    return await this.dataService.searchArtworks(search, terms);
   }
 
   ngOnDestroy() {

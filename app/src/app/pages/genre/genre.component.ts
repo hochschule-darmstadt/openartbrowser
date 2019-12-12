@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { Genre, Artwork, EntityType } from 'src/app/shared/models/models';
 import { Subject } from 'rxjs';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 import { shuffle } from 'src/app/core/services/utils.service';
 
 @Component({
@@ -36,9 +36,8 @@ export class GenreComponent implements OnInit, OnDestroy {
       this.genre = await this.dataService.findById<Genre>(genreId, EntityType.GENRE);
 
       /** load slider items */
-      this.dataService.findArtworksByGenres([this.genre.id])
+      this.dataService.findArtworksByType("genres",[this.genre.id])
         .then(artworks => this.sliderItems = shuffle(artworks));
-
       this.calculateCollapseState();
     });
   }

@@ -41,7 +41,7 @@ export class MovementComponent implements OnInit, OnDestroy {
       this.movement = await this.dataService.findById<Movement>(movementId, EntityType.MOVEMENT);
 
       /** load slider items */
-      await this.dataService.findArtworksByMovements([this.movement.id])
+      await this.dataService.findArtworksByType("movements", [this.movement.id])
         .then(artworks => this.sliderItems = shuffle(artworks));
 
       /** dereference influenced_bys  */

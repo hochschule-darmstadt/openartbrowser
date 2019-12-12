@@ -1,9 +1,10 @@
+
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { Material, Artwork, EntityType } from 'src/app/shared/models/models';
 import { Subject } from 'rxjs';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 import { shuffle } from 'src/app/core/services/utils.service';
 
 @Component({
@@ -33,7 +34,7 @@ export class MaterialComponent implements OnInit, OnDestroy {
       this.material = await this.dataService.findById<Material>(materialId, EntityType.MATERIAL);
 
       /** load slider items */
-      this.dataService.findArtworksByMaterials([this.material.id])
+      this.dataService.findArtworksByType("materials", [this.material.id])
         .then(artworks => this.sliderItems = shuffle(artworks));
     });
   }

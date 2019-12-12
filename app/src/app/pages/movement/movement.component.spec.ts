@@ -1,5 +1,4 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-
 import {MovementComponent} from './movement.component';
 import {SlideComponent} from 'src/app/shared/components/carousel/slide/slide.component';
 import {CarouselComponent} from 'src/app/shared/components/carousel/carousel.component';

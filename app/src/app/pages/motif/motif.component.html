@@ -3,7 +3,7 @@
     <div class="col-sm-7">
       <span class="badge badge-pill badge-secondary chip cursor-unset">
         <i class="fas fa-image"></i>
-        Motif
+        <ng-container i18n="Motif label@@motif">Motif</ng-container>
       </span>
       <h2 class="mb-3 first-letter">{{ motif?.label }}</h2>
 
@@ -18,6 +18,6 @@
       <img class="img-fluid rounded-circle" src="{{ motif?.imageSmall }}" alt="" />
     </div>
   </div>
-
-  <app-slider [items]="sliderItems" heading="Artworks"> </app-slider>
+  <h3 i18n="Artworks label@@artworks">Artworks</h3>
+  <app-slider [items]="sliderItems"></app-slider>
 </div>

@@ -1,16 +1,9 @@
 import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  Input,
-  OnDestroy,
-  OnInit,
-  ViewChild
+  AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild
 } from '@angular/core';
 import {interval, Observable, Subject} from 'rxjs';
-import { SearchService } from 'src/app/core/services/search.service';
-import {DataService} from 'src/app/core/services/data.service';
+import {SearchService} from 'src/app/core/services/search.service';
+import {DataService} from 'src/app/core/services/elasticsearch/data.service';
 import {Router} from '@angular/router';
 import {debounceTime, switchMap, takeUntil} from 'rxjs/operators';
 import {Entity, EntityType, TagItem} from '../../models/models';
@@ -59,7 +52,8 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     private dataService: DataService,
     private searchService: SearchService,
     private router: Router,
-    private cdRef: ChangeDetectorRef) { }
+    private cdRef: ChangeDetectorRef) {
+  }
 
   ngOnInit() {
     this.searchService.$searchItems.pipe(takeUntil(this.ngUnsubscribe)).subscribe((items) => {
@@ -97,7 +91,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
    * search for entities with specified search term
    * sort search results by relativeRank, type, position of the term within the search result.
    * select 10 out of all results that should be shown
-   * @param text: search term
+   * @param text$: search term
    */
   public search = (text$: Observable<string>) =>
     text$.pipe(

@@ -2,7 +2,7 @@ import {Component, Input, HostListener} from '@angular/core';
 import {Artist, Artwork, Entity, EntityType} from 'src/app/shared/models/models';
 import {CustomStepDefinition, Options} from 'ng5-slider';
 import {animate, state, style, transition, trigger} from '@angular/animations';
-import {DataService} from "../../../core/services/data.service";
+import {DataService} from 'src/app/core/services/elasticsearch/data.service';
 
 interface TimelineItem extends Entity {
   date: number; // represents the value the item is located at in the timeline

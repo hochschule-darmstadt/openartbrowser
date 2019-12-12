@@ -1,6 +1,6 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
-import {Artist, Artwork, EntityType, Movement} from 'src/app/shared/models/models';
-import {DataService} from 'src/app/core/services/data.service';
+import {Artist, Artwork, EntityType} from 'src/app/shared/models/models';
+import {DataService} from 'src/app/core/services/elasticsearch/data.service';
 import {ActivatedRoute} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';

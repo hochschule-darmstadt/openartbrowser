@@ -98,70 +98,65 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
           return [];
         }
         let entities = await this.dataService.findByLabel(term.toLowerCase());
-        entities = entities
-          .filter((v) => v.label.toLowerCase().indexOf(term.toLowerCase()) > -1)
-          .sort(
-            (a, b): any => {
-              let rankA = a.relativeRank;
-              let rankB = b.relativeRank;
-              const typeA = a.type;
-              const typeB = b.type;
-              const aPos = a.label.toLowerCase().indexOf(term.toLowerCase());
-              const bPos = b.label.toLowerCase().indexOf(term.toLowerCase());
-
-              if (typeB < typeA) {
-                return 1;
-              } else if (typeA < typeB) {
-                return -1;
-              }
-              // factor 2 for initial position
-              if (aPos === 0) {
-                rankA *= 2;
-              }
-              if (bPos === 0) {
-                rankB *= 2;
-              }
-              // factor 0.5 for non-whitespace in front
-              if (
-                aPos > 0 &&
-                a.label
-                  .toLowerCase()
-                  .charAt(aPos - 1)
-                  .match(/\S/)
-              ) {
-                rankA *= 0.5;
-              }
-              if (
-                bPos > 0 &&
-                b.label
-                  .toLowerCase()
-                  .charAt(bPos - 1)
-                  .match(/\S/)
-              ) {
-                rankA *= 0.5;
-              }
-              return rankB > rankA ? 1 : rankB < rankA ? -1 : 0;
-            }
-          );
+        entities = entities.filter((v) => v.label.toLowerCase().indexOf(term.toLowerCase()) > -1);        
+  
+        // sort results by rank and modify rank by whether it starts with search term
+        entities = this.sortSearchResultsByRank(entities, term);		 
+        // select best results of each group
         entities = this.selectSearchResults(entities);
-        entities = entities.sort(
-          (a: Entity, b: Entity): number => {
-            if (a.type === 'artwork') {
-              return b.type === 'artwork' ? 0 : -1;
-            } else if (b.type === 'artwork') {
-              return a.type === 'artwork' ? 0 : 1;
-            } else if (a.type < b.type) {
-              return -1;
-            } else if (a.type === b.type) {
-              return 0;
-            } else if (a.type > b.type) {
-              return 1;
-            }
-          }
-        );
+        // sort results again, after selection sorted them statically
+        entities = this.sortSearchResultsByRank(entities, term);	
+        // group results by type, group with result of highest modified rank starts
+        entities = this.groupSearchResultsByType(entities);
+        
         return this.searchInput ? entities : [];
       })
     );
+	
+  /** sort search items by rank and whether results starts with search term
+   * @param entities results which should be sorted
+   */
+  sortSearchResultsByRank(entities: Entity[], term: string): Entity[] {  
+    let sortedEntities = entities;
+    sortedEntities.sort(
+        (a, b): any => {
+        let rankA = a.relativeRank;
+        let rankB = b.relativeRank;
+        const aPos = a.label.toLowerCase().indexOf(term.toLowerCase());
+        const bPos = b.label.toLowerCase().indexOf(term.toLowerCase());
+
+        // factor 2 for initial position
+        if (aPos === 0) {
+          rankA *= 2;
+        }
+        if (bPos === 0) {
+          rankB *= 2;
+        }
+        // factor 0.5 for non-whitespace in front
+        if (
+          aPos > 0 &&
+        a.label
+        .toLowerCase()
+        .charAt(aPos - 1)
+        .match(/\S/)
+        ) {
+          rankA *= 0.5;
+        }
+        if (
+        bPos > 0 &&
+        b.label
+        .toLowerCase()
+        .charAt(bPos - 1)
+        .match(/\S/)
+        ) {
+          rankA *= 0.5;
+        }
+        return rankB > rankA ? 1 : rankB < rankA ? -1 : 0;
+      }
+    );
+    return sortedEntities;
+  }
+
 
   /** select up to 10 results from entities, distributes over all categories
    * @param entities results out of which should be selected
@@ -228,6 +223,28 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
         .concat(locations.splice(0, 1));
     }
     return newEntities.concat(restItems).splice(0, 10);
+  }
+  
+  /** resort search items so items of same type are grouped together 
+   * @param entities results which should be resorted
+   */
+  groupSearchResultsByType(entities: Entity[]): Entity[] {
+    let types = [];
+      entities.forEach(function (entity) {
+        if (!types.includes(entity.type)) { 
+          types.push(entity.type);
+        }
+      }); 
+    
+    let entitiesResorted = [];
+    types.forEach(function (type) {
+      entities.forEach(function (entity) {
+        if (entity.type == type) {
+          entitiesResorted.push(entity);
+        }
+      });
+    });
+    return entitiesResorted;
   }
 
   /** build query params for search result url */

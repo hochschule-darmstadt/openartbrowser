@@ -6,13 +6,14 @@ import time
 import datetime
 import uuid
 import requests
-
+import sys
+import csv
 
 def create_or_update_index(
-    index_name='api',
+    index_name,
     repository_name='openartbrowser_index_backup',
     backup_directory='/var/lib/elasticsearch/backup',
-    file='/openartbrowser/scripts/crawler_output/ArtOntology.json'):
+    file=Path(__file__).resolve().parent.parent / "crawler_output" / "art_ontology.json"):
     """
     Creates or updates an index with new documents. 
     If the passed index exists a snapshot for the current index is created.
@@ -29,15 +30,9 @@ def create_or_update_index(
                                 - Following entry in elasticsearch.yml required:
                                   path.repo: ["path_to_folder"]
     :arg file: Name of the file which contains the documents to be created or updated
-               The default file is ArtOntology.json
-               It should be located in the repository under ~/openartbrowser/scripts/crawler_output
     """
     # Uses localhost:9200 (elasticsearch default) to create the index with it's documents
     es = Elasticsearch()
-    # The openartbrowser repository has to be located in the users directory /home/<username>/openartbrowser
-    if not file.startswith('/'):
-        file = '/' + file
-    file = str(Path.home()) + file
     print("Start creating/updating the index \"" + index_name +
         "\" now. Current time: " + str(datetime.datetime.now()))
     start = time.time()
@@ -120,7 +115,30 @@ def apply_snapshot_from_repository(
         print(str(e))
 
 
+def language_config_to_list(
+    config_file=Path(__file__).parent.parent.absolute() /
+    "languageconfig.csv"
+):
+    """[Reads languageconfig.csv and returns array that contains its
+    full contents]
+
+    Returns:
+        [list] -- [contents of languageconfig.csv as list]
+    """
+    languageValues = []
+    with open(config_file, encoding="utf-8") as file:
+        configReader = csv.reader(file, delimiter=";")
+        for row in configReader:
+            if row[0] != "langkey":
+                languageValues.append(row)
+    return languageValues
+
+def create_or_update_for_each_language(lang_keys=[item[0] for item in language_config_to_list()], filepath=Path(__file__).resolve().parent.parent / "crawler_output"):
+    for key in lang_keys:
+        create_or_update_index(file=filepath / str("art_ontology_" + key + ".json"),index_name=key)
+
 if __name__ == "__main__":
-    if len(sys.argv) > 0:
-        filepath = sys.argv[1]
-        create_or_update_index(file=filepath)
+#    if len(sys.argv) > 0:
+#        filepath = sys.argv[1]
+#        create_or_update_index(index_name='api', file=filepath)
+    create_or_update_for_each_language()

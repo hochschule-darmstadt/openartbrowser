@@ -5,11 +5,11 @@ import { SearchResultComponent } from 'src/app/pages/search-result/search-result
 import { SearchComponent } from 'src/app/shared/components/search/search.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
-import { SliderComponent } from 'src/app/shared/components/slider/slider.component';
-import { SlideComponent } from 'src/app/shared/components/slider/slide/slide.component';
+import { CarouselComponent } from 'src/app/shared/components/carousel/carousel.component';
+import { SlideComponent } from 'src/app/shared/components/carousel/slide/slide.component';
 import { RouterModule } from '@angular/router';
-import { DataService } from '../../services/data.service';
 import { HttpClientModule } from '@angular/common/http';
+import { DataService } from '../../services/elasticsearch/data.service';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
@@ -28,7 +28,7 @@ describe('HeaderComponent', () => {
         SearchComponent, 
         SearchResultComponent,
         SlideComponent,
-        SliderComponent,
+        CarouselComponent,
       ],
       providers: [
         DataService,

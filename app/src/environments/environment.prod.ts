@@ -3,5 +3,5 @@ export const environment = {
 };
 
 export const elasticEnvironment = {
-  serverURI: '/api/_search'
+  serverURI: '/api'
 };

@@ -1,9 +1,10 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {DataService} from 'src/app/core/services/data.service';
-import {ActivatedRoute} from '@angular/router';
-import {takeUntil} from 'rxjs/operators';
-import {Genre, Artwork, EntityType} from 'src/app/shared/models/models';
-import {Subject} from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
+import { Genre, Artwork, EntityType } from 'src/app/shared/models/models';
+import { Subject } from 'rxjs';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
+import { shuffle } from 'src/app/core/services/utils.service';
 
 @Component({
   selector: 'app-genre',
@@ -23,8 +24,7 @@ export class GenreComponent implements OnInit, OnDestroy {
   /** Change collapse icon; true if more infos are folded in */
   collapse = true;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {
-  }
+  constructor(private dataService: DataService, private route: ActivatedRoute) { }
 
   /** hook that is executed at component initialization */
   ngOnInit() {
@@ -36,22 +36,10 @@ export class GenreComponent implements OnInit, OnDestroy {
       this.genre = await this.dataService.findById<Genre>(genreId, EntityType.GENRE);
 
       /** load slider items */
-      this.dataService.findArtworksByGenres([this.genre.id]).then((artworks) => {
-        this.sliderItems = this.shuffle(artworks);
-      });
+      this.dataService.findArtworksByType("genres",[this.genre.id])
+        .then(artworks => this.sliderItems = shuffle(artworks));
       this.calculateCollapseState();
     });
-  }
-
-  /**
-   * @description shuffle the items' categories.
-   */
-  shuffle = (a: Artwork[]): Artwork[] => {
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
   }
 
   ngOnDestroy() {

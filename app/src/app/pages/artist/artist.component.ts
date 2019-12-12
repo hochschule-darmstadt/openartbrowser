@@ -26,7 +26,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
   collapse = true;
 
   /** Toggle bool for displaying either timeline or artworks carousel component **/
-  private showTimelineNotArtworks = true;
+  showTimelineNotArtworks = true;
 
   constructor(private dataService: DataService, private route: ActivatedRoute) {
   }

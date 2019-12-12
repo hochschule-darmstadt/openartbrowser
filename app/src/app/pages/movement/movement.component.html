@@ -52,11 +52,13 @@
     <ul class="nav nav-pills">
       <li>
         <button type="button" class="btn btn-secondary" (click)="toggleComponent()"
+                i18n="Timeline toggle label@@toggletimeline"
                 [disabled]="showTimelineNotArtworks">TIMELINE
         </button>
       </li>
       <li>
         <button type="button" class="btn btn-secondary" (click)="toggleComponent()"
+                i18n="Artworks toggle label@@toggleartworks"
                 [disabled]="!showTimelineNotArtworks">ARTWORKS
         </button>
       </li>

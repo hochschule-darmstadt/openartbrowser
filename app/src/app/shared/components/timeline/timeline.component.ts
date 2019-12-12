@@ -53,8 +53,8 @@ export class TimelineComponent {
   private averagePeriodCount: number;
 
   /** Index of the starting and ending items */
-  private slideStart: number;
-  private slideEnd: number;
+  slideStart: number;
+  slideEnd: number;
 
   /** Controls carousel movement by the slider
    *  In case the carousel moves the timeline, the timeline
@@ -215,7 +215,7 @@ export class TimelineComponent {
   }
 
   /** Handler for valueChange event from slider */
-  private onSliderMoved() {
+  onSliderMoved() {
     /** Check if event should happen */
     if (!this.sliderAllowEvent) {
       this.sliderAllowEvent = true;
@@ -236,7 +236,7 @@ export class TimelineComponent {
   }
 
   /** Handler for click event from control buttons */
-  private prevClicked() {
+  prevClicked() {
     if (this.slideStart <= 0) {
       // Return if first slide
       return
@@ -250,7 +250,7 @@ export class TimelineComponent {
   }
 
   /** Handler for click event from control buttons */
-  private nextClicked() {
+  nextClicked() {
     if (this.slideEnd >= this.items.length) {
       // Return if last slide
       return

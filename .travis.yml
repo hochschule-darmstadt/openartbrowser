@@ -36,10 +36,8 @@ jobs:
         - python --version
       install:
         - pip3 install -r requirements.txt
-      before_script:
-        - cd Wikidata\ crawler/
       script:
-        - python ArtOntologyCrawler.py -d 1
+        - python Wikidata\ crawler/ArtOntologyCrawler.py -d 1
 
     - stage: deploy-to-staging
       if: branch = staging AND type = push

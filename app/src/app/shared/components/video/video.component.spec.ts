@@ -1,22 +1,26 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SlideComponent } from './slide.component';
+import { VideoComponent } from './video.component';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 import { RouterModule } from '@angular/router';
-import { DataService } from 'src/app/core/services/data.service';
 import { HttpClientModule } from '@angular/common/http';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { FormsModule } from '@angular/forms';
 
-describe('SlideComponent', () => {
-  let component: SlideComponent;
-  let fixture: ComponentFixture<SlideComponent>;
+describe('VideoComponent', () => {
+  let component: VideoComponent;
+  let fixture: ComponentFixture<VideoComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
+        NgbModule,
+        FormsModule,
         HttpClientModule,
         RouterModule.forRoot([])
       ],
       declarations: [
-        SlideComponent,
+        VideoComponent,
       ],
       providers: [
         DataService,
@@ -25,7 +29,7 @@ describe('SlideComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SlideComponent);
+    fixture = TestBed.createComponent(VideoComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

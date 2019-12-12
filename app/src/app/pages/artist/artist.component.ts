@@ -1,6 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Artist, Artwork, EntityType, Movement} from 'src/app/shared/models/models';
-import {DataService} from 'src/app/core/services/data.service';
 import {ActivatedRoute} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';
@@ -42,7 +41,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
       /** load slider items */
       this.dataService.findArtworksByType("artists", [this.artist.id])
         .then(artworks => this.sliderItems = shuffle(artworks));
-      
+
       /** dereference movements  */
       this.dataService.findMultipleById(this.artist.movements as any, EntityType.MOVEMENT)
         .then(movements => this.artist.movements = movements);
@@ -80,7 +79,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
    */
   private aggregatePictureMovementsToArtist() {
     const allMovements: Partial<Movement>[] = [];
-    this.dataService.findArtworksByArtists([this.artist.id]).then((artworks) => {
+    this.dataService.findArtworksByType("artists", [this.artist.id]).then((artworks) => {
       artworks.forEach(artwork => {
         artwork.movements.forEach(movement => {
           if (movement !== '') {

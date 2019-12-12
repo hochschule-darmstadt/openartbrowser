@@ -13,7 +13,10 @@
     <ngb-highlight class="search__result-label" [result]="r.label" [term]="t"></ngb-highlight>
 
     <p class="badge badge-secondary search__result-chip">
-      <span> {{ r?.type }}</span>
+      <ng-container i18n="@@slider_labels">
+        {r?.type, select, artwork {Artwork} motif {Motif} artist {Artist} location {Location}
+        genre {Genre} movement {Movement} material {Material} }
+      </ng-container>
     </p>
   </div>
 </ng-template>

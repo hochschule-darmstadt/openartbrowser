@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy, HostListener} from '@angular/core';
+import {Component, OnInit, OnDestroy, HostListener, Inject, LOCALE_ID} from '@angular/core';
 import {Artwork, EntityType} from 'src/app/shared/models/models';
 import {takeUntil} from 'rxjs/operators';
 import {ActivatedRoute} from '@angular/router';
@@ -28,7 +28,8 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   artwork: Artwork = null;
 
   iconclassData: Array<any>|null = null;
-
+  locale: string = 'en';
+  
   /**
    * whether artwork image should be hidden
    */
@@ -112,7 +113,9 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   Object = Object;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {}
+  constructor(private dataService: DataService, private route: ActivatedRoute, @Inject(LOCALE_ID) locale_id: string) {
+    this.locale = locale_id.substr(0, 2);
+  }
 
   /**
    * @description hook that is executed at component initialization

@@ -1,3 +1,4 @@
 __pycache__
 crawler_output
 *.pyc
+/data_manipulation/google_dev_key.txt

@@ -36,19 +36,19 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   imageHidden = false;
 
   /** @description to toggle details container. true if more infos are folded in */
-  collapse = true;
+  collapseDetails = true;
+
+  /**
+   * @description to toggle common tags container.
+   * initial as false (open).
+   */
+  collapseTags = false;
 
   /** whether artwork image viewer is active or not */
   modalIsVisible = false;
 
   /** number of artworks tabs intialized */
   artworkTabCounter = 0;
-
-  /**
-   * @description to toggle common tags container.
-   * initial as true (close).
-   */
-  collapseDownTags = true;
 
   /**
    * @description to save the artwork item that is being hovered.
@@ -283,13 +283,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     this.artworkTabs.all.items = shuffle(Array.from(items, ([key, value]) => value));
   }
 
-  /**
-   * @description function to toggle details container.
-   */
-  toggleDetails(): void {
-    this.collapse = !this.collapse;
-  }
-
   /** calculates the size of meta data item section
    * every attribute: +3
    * if attribute is array and size > 3 -> + arraylength
@@ -319,14 +312,21 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       }
     }
     if (metaNumber < 10) {
-      this.collapse = false;
+      this.collapseDetails = false;
     }
+  }
+
+  /**
+   * @description function to toggle details container.
+   */
+  toggleDetails(): void {
+    this.collapseDetails = !this.collapseDetails;
   }
 
   /**
    * @description function to toggle common tags container.
    */
   toggleCommonTags(): void {
-    this.collapseDownTags = !this.collapseDownTags;
+    this.collapseTags = !this.collapseTags;
   }
 }

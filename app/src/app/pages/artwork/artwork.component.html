@@ -107,17 +107,20 @@
           artwork?.materials?.length ||
           artwork?.motifs?.length
         ">
-        <h4 class="mt-2 more" href="#collapseArtwork" (click)="toggleDetails()">
-          <ng-container i18n="Detail More label@@more">More</ng-container> 
-          <i *ngIf="collapse" href="#collapseArtwork" class="fas fa-chevron-down"></i>
-          <i *ngIf="!collapse" href="#collapseArtwork" class="fas fa-chevron-up"></i>
+        <h4 class="mt-2 more" data-toggle="collapse" href="#collapseDetails" (click)="toggleDetails()">
+          <ng-container i18n="Detail More label@@more">More</ng-container>
+          <i *ngIf="collapseDetails" data-toggle="collapse" href="#collapseDetails" class="fas fa-chevron-down"></i>
+          <i *ngIf="!collapseDetails" data-toggle="collapse" href="#collapseDetails" class="fas fa-chevron-up"></i>
         </h4>
 
-        <div [className]="collapse ? 'collapse' : 'collapse show'" id="collapseArtwork">
+        <div class="collapse show"  id="collapseDetails">
           <div class="row">
             <div *ngIf="artwork?.abstract" class="col-md pr-0">
               <span>{{ artwork?.abstract }}</span>
-              <p class="wiki-link"><ng-container i18n="Detail More label@@more">More</ng-container>:&nbsp;<a href="{{ artwork?.wikipediaLink }}" target="_blank">Wikipedia</a></p>
+              <p class="wiki-link">
+                <ng-container i18n="Detail More label@@more">More</ng-container>:&nbsp;<a
+                  href="{{ artwork?.wikipediaLink }}" target="_blank">Wikipedia</a>
+              </p>
             </div>
           </div>
 
@@ -237,6 +240,7 @@
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>
@@ -282,18 +286,18 @@
               Common
             </ng-container>
             <span *ngIf="tab != 'all'">
-	      <ng-container i18n="Related Artworks headline text tab name@@related_artworks_headline_tab_name">
-              {tab, select, all {all} motif {motif} artist {artist}
-              location {location} genre {genre} movement {movement} material {material}}
+              <ng-container i18n="Related Artworks headline text tab name@@related_artworks_headline_tab_name">
+                {tab, select, all {all} motif {motif} artist {artist}
+                location {location} genre {genre} movement {movement} material {material}}
               </ng-container>
-	    </span>
+            </span>
             <ng-container i18n="Related Artworks headline text after tab name @@related_artworks_headline_after">
               tags with artwork
             </ng-container>
             <span>"{{ (artwork?.label?.length > 35) ?
                 (artwork?.label | slice:0:35) + '...' : (artwork?.label) }}"</span>
-            <i *ngIf="collapseDownTags" data-toggle="collapse" href="#collapseTags"
-              class="ml-2 fas fa-chevron-down"></i>
+            <i *ngIf="collapseTags" data-toggle="collapse" href="#collapseTags" class="ml-2 fas fa-chevron-down"></i>
+            <i *ngIf="!collapseTags" data-toggle="collapse" href="#collapseTags" class="ml-2 fas fa-chevron-up"></i>
           </h3>
 
           <div class="collapse show" id="collapseTags">
@@ -312,7 +316,7 @@
             -->
             <span *ngIf="artwork?.motifs?.length && (tab == 'motif' || tab == 'all')" class="mb-1">
               <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
-                    [ngClass]="{'badge-light': motif && hoveredArtwork?.motifs?.includes(motif.id) }"
+                [ngClass]="{'badge-light': motif && hoveredArtwork?.motifs?.includes(motif.id) }"
                 *ngFor="let motif of artwork?.motifs" [routerLink]="'/motif/' + motif.id">
                 <i class="fas fa-image"></i>
                 {{ motif?.label }}</span>
@@ -320,9 +324,9 @@
 
             <span *ngIf="artwork?.artists?.length && (tab == 'artist' || tab == 'all')" class="mb-1">
               <span *ngFor="let artist of artwork?.artists"
-                 [ngClass]="{'badge-light': artist && hoveredArtwork?.artists?.includes(artist.id) }"
+                [ngClass]="{'badge-light': artist && hoveredArtwork?.artists?.includes(artist.id) }"
                 class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
-                 [routerLink]="'/artist/' + artist.id">
+                [routerLink]="'/artist/' + artist.id">
                 <i class="fas fa-user"></i>
                 {{ artist?.label }}</span>
             </span>

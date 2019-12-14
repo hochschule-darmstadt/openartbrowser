@@ -47,7 +47,7 @@
 
         <div [className]="collapse ? 'collapse' : 'collapse show'" id="collapseArtist">
 
-          <div class="row">
+          <div class="row abstract">
             <div *ngIf="artist?.abstract" class="col-md pr-0">
               <span>{{ artist?.abstract }}</span>
               <p class="wiki-link"><ng-container i18n="Detail More label@@more">More</ng-container>: <a href="{{ artist?.wikipediaLink }}" target="_blank">Wikipedia</a></p>

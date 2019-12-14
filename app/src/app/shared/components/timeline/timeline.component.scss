@@ -45,7 +45,6 @@ $container-height: 20em;
   //flex-direction: row;
   //align-items: center;
   justify-content: center;
-  border: 1px solid darkslategrey;
 }
 
 .carou-control {
@@ -75,7 +74,6 @@ $container-height: 20em;
   height: $container-height+5;
   left: -100px;
 
-  border: 1px solid springgreen;
 }
 
 .slideAnimationLeft {
@@ -92,7 +90,6 @@ $container-height: 20em;
   // Padding between items/artworks
   padding-left: 10px;
   padding-right: 10px;
-  border: 1px solid blue;
 }
 
 .item {
@@ -100,7 +97,6 @@ $container-height: 20em;
   height: 100%;
   display: flex;
   flex-direction: column;
-  border: 1px solid red;
 
   &-caption {
     font-size: large;
@@ -110,7 +106,6 @@ $container-height: 20em;
     align-self: center;
     margin-top: auto;
     padding-top: 0.3em;
-    border: 1px solid green;
   }
 }
 
@@ -118,7 +113,6 @@ $container-height: 20em;
   position: relative;
   margin: 0 auto;
 
-  border: 1px solid darkorange;
 
   &:hover .overlay_view {
     -webkit-transform: scale(1);

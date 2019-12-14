@@ -8,3 +8,10 @@
 .carousel-control-next {
   width: 2%;
 }
+
+@media (max-width: 575px) {
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: 4%;
+  }
+}

@@ -131,6 +131,13 @@ $container-height: 20em;
   }
 }
 
+@-moz-document url-prefix() { 
+  .overlay-container {
+    display: flex;
+    justify-content: center;
+  }
+}
+
 .overlay_view {
   position: absolute;
   bottom: 0;

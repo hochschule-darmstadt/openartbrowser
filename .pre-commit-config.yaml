@@ -21,3 +21,7 @@ repos:
     rev: 3.7.9
     hooks:
       - id: flake8
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: "" # Use the sha / tag you want to point at
+    hooks:
+      - id: eslint

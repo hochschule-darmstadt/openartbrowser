@@ -77,6 +77,16 @@ html {
     }
   }
 
+  @media (max-width: 575px) {
+    &:not(.artwork) > .row:first-child{
+      flex-direction: column-reverse;
+     
+      img { 
+        margin-bottom: 3rem;
+      }
+    }
+  }
+
   .abstract > div{
     text-align: justify;
   }

@@ -6,7 +6,8 @@ $container-row-height: 15em;
 }
 
 .img_self {
-  display: flex;
+  display: block;
+  margin:0 auto;
   cursor: pointer;
   max-height: 100%;
   max-width: 100%;

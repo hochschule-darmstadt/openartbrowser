@@ -11,7 +11,7 @@ import { shuffle } from 'src/app/core/services/utils.service';
  */
 export interface SliderCategory {
   items: Entity[];
-  key: EntityType;
+  type: EntityType;
   icon: EntityIcon;
 }
 
@@ -101,7 +101,7 @@ export class HomeComponent implements OnInit {
    */
   private async getSliderCategory<T>(category: EntityType, icon: EntityIcon): Promise<SliderCategory> {
     const items = shuffle(await this.dataService.getCategoryItems<T>(category));
-    return { items, key: category, icon }
+    return { items, type: category, icon }
   }
 
   private setBackground() {

@@ -126,14 +126,8 @@
 @media (max-width: 575px) {
   .nav-tabs .nav-item { width: 100%; }
 }
-.more {
-  cursor: pointer;
-}
 
-/* Unset cursor: pointer; badge */
-.cursor-unset {
-  cursor: unset;
-}
+
 
 /* For highlighted common tags chips */
 .badge-light {
@@ -145,29 +139,6 @@
 /* If not highlighted, set as transparent (opacity .4) */
 .badge-transparent {
   opacity: .4;
-}
-
-.wiki-link {
-  white-space: nowrap;
-  float: right;
-}
-
-/* Makes chip and regular text look good together: adds and removes padding on different screen sizes */
-@media (min-width: 992px) {
-
-  /*pl-1*/
-  .notchip {
-    padding-left: 0.25rem;
-  }
-}
-
-@media (max-width: 992px) {
-
-  /*pl-0*/
-  .notchip {
-    padding-left: 0;
-  }
-
 }
 
 /* Adds padding when page gets smaller to avoid overflow between information on the left and information on the right

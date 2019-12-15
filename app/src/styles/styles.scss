@@ -1,0 +1,51 @@
+/************************************
+    Global Style Properties
+************************************/
+
+html, body {
+  height: 100%;
+}
+
+*:focus {
+  outline: transparent;
+}
+
+.first-letter::first-letter {
+  text-transform: uppercase;
+}
+
+.chip {
+  font-size: 1em;
+  margin-right: 4px;
+}
+
+/* Badge */
+.badge:hover {
+  cursor: pointer;
+}
+
+.badge i{
+  margin-right:5px;
+}
+
+/* Customize carousel  (has no power in slider.compoent.scss)*/
+.carousel-indicators {
+  visibility: hidden;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  width: 100%;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  width: 2%;
+}
+
+@media (max-width: 575px) {
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: 4%;
+  }
+}

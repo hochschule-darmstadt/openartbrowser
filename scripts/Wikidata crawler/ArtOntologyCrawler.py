@@ -599,20 +599,17 @@ def generate_csv(name, extract_dicts, fields, filename):
         for extract_dict in extract_dicts:
             writer.writerow(extract_dict)
 
+
 def generate_json(name, extract_dicts, filename):
     if len(extract_dicts) == 0:
         return
     filename.parent.mkdir(parents=True, exist_ok=True)
     with open(filename.with_suffix('.json'), "w", newline="", encoding='utf-8') as file:
-        file.write("[")
-        for extract_dict in extract_dicts[:-1]:
-            extract_dict["type"] = name[:-1]
-            file.write(json.dumps(extract_dict, ensure_ascii=False))
-            file.write(",")
-        if len(extract_dicts) >= 1:
-            extract_dicts[-1]["type"] = name[:-1]
-        file.write(json.dumps(extract_dicts[-1], ensure_ascii=False))
-        file.write("]")
+        arrayToDump = []
+        for extract_dict in extract_dicts:
+            extract_dict["type"] = name[:-1] # name[:-1] removes the last character of the name
+            arrayToDump.append(extract_dict)
+        file.write(json.dumps(arrayToDump, ensure_ascii=False))
 
 
 def extract_art_ontology():

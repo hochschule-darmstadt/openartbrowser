@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Artist, Artwork, EntityType, Movement } from 'src/app/shared/models/models';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Artist, Artwork, EntityType, Movement} from 'src/app/shared/models/models';
+import {ActivatedRoute} from '@angular/router';
+import {takeUntil} from 'rxjs/operators';
+import {Subject} from 'rxjs';
 
-import { ActivatedRoute } from '@angular/router';
-import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
 import * as _ from 'lodash';
 import { shuffle } from 'src/app/core/services/utils.service';
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
@@ -14,17 +14,14 @@ import { DataService } from 'src/app/core/services/elasticsearch/data.service';
   styleUrls: ['./artist.component.scss'],
 })
 export class ArtistComponent implements OnInit, OnDestroy {
-  /** use this to end subscription to url parameter in ngOnDestroy */
-  private ngUnsubscribe = new Subject();
-
   /** The entity this page is about */
   artist: Artist = null;
-
   /** Related artworks */
   sliderItems: Artwork[] = [];
-
   /** Change collapse icon; true if more infos are folded in */
   collapse = true;
+  /** use this to end subscription to url parameter in ngOnDestroy */
+  private ngUnsubscribe = new Subject();
 
   constructor(private dataService: DataService, private route: ActivatedRoute) {
   }
@@ -44,7 +41,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
       /** load slider items */
       this.dataService.findArtworksByType("artists", [this.artist.id])
         .then(artworks => this.sliderItems = shuffle(artworks));
-      
+
       /** dereference movements  */
       this.dataService.findMultipleById(this.artist.movements as any, EntityType.MOVEMENT)
         .then(movements => this.artist.movements = movements);
@@ -53,12 +50,52 @@ export class ArtistComponent implements OnInit, OnDestroy {
         .then(influences => this.artist.influenced_by = influences);
 
       /* Count meta data to show more on load */
-
+      this.aggregatePictureMovementsToArtist();
       this.calculateCollapseState();
     });
   }
 
   /**
+   * @description shuffle the items' categories.
+   */
+  shuffle = (a: Artwork[]): Artwork[] => {
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
+
+  /**
+   * Get all movements from the artworks of an artist and add them to the artist movements.
+   * Since the first query only gives back the movement id and not the complete movement object,
+   * it needs to be queried again to get the corresponding movement object.
+   * Since the movements are added as arrays of arrays the deletion of duplicate movements is done at the end.
+   */
+  private aggregatePictureMovementsToArtist() {
+    const allMovements: Partial<Movement>[] = [];
+    this.dataService.findArtworksByType("artists", [this.artist.id]).then((artworks) => {
+      artworks.forEach(artwork => {
+        artwork.movements.forEach(movement => {
+          if (movement !== '') {
+            allMovements.push(movement);
+          }
+        });
+      });
+      this.dataService.findMultipleById(allMovements as any, EntityType.MOVEMENT).then((movements) => {
+        movements.forEach(movement => {
+          this.artist.movements.push(movement);
+        });
+        this.artist.movements = _.uniqWith(this.artist.movements, _.isEqual);
+      });
+    });
+  }
+
   /** calculates the size of meta data item section
    * every attribute: +3
    * if attribute is array and size > 3 -> + arraylength
@@ -85,10 +122,5 @@ export class ArtistComponent implements OnInit, OnDestroy {
     if (metaNumber < 10) {
       this.collapse = false;
     }
-  }
-
-  ngOnDestroy() {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
   }
 }

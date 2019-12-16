@@ -42,15 +42,14 @@ $container-height: 20em;
 .carou {
   margin: 3% 0 0 0;
   display: flex;
-  //flex-direction: row;
-  //align-items: center;
-  justify-content: center;
+  flex-direction: row;
 }
 
 .carou-control {
   position: relative;
   width: 3%;
   opacity: 0.4;
+  margin: 0 1em;
   text-align: center;
 
   &-icon {
@@ -67,23 +66,16 @@ $container-height: 20em;
 }
 
 .carou-content {
-  justify-content: space-between;
   display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+
   width: 90%;
   max-width: 90%;
   height: $container-height+5;
   left: -100px;
 
-}
-
-.slideAnimationLeft {
-  transition: 1s;
-  left: 0;
-}
-
-.slideAnimationRight {
-  left: 0;
-  transition: 1s;
 }
 
 .item-container {
@@ -113,7 +105,6 @@ $container-height: 20em;
   position: relative;
   margin: 0 auto;
 
-
   &:hover .overlay_view {
     -webkit-transform: scale(1);
     -ms-transform: scale(1);
@@ -122,13 +113,6 @@ $container-height: 20em;
 
   &-caption {
     max-height: 80%;
-  }
-}
-
-@-moz-document url-prefix() { 
-  .overlay-container {
-    display: flex;
-    justify-content: center;
   }
 }
 
@@ -151,8 +135,6 @@ $container-height: 20em;
 
 .img_self {
   cursor: pointer;
-  max-height: 100%;
-  max-width: 100%;
 }
 
 .img_description {
@@ -166,4 +148,3 @@ $container-height: 20em;
   transform: translate(5%, -50%);
   text-align: center;
 }
-

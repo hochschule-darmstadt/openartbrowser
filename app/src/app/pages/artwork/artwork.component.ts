@@ -29,7 +29,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
 
   iconclassData: Array<any>|null = null;
   locale: string = 'en';
-  
+
   /**
    * whether artwork image should be hidden
    */
@@ -295,17 +295,20 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       } else if (this.artwork.abstract.length) {
         metaNumber += 3;
       }
-      if (!_.isEmpty(this.artwork.genres)) {
+      if (!_.isEmpty(this.artwork.genres.filter(Boolean))) {
         metaNumber += this.artwork.genres.length > 3 ? this.artwork.genres.length : 3;
       }
-      if (!_.isEmpty(this.artwork.materials)) {
+      if (!_.isEmpty(this.artwork.materials.filter(Boolean))) {
         metaNumber += this.artwork.materials.length > 3 ? this.artwork.genres.length : 3;
       }
-      if (!_.isEmpty(this.artwork.movements)) {
+      if (!_.isEmpty(this.artwork.movements.filter(Boolean))) {
         metaNumber += this.artwork.movements.length > 3 ? this.artwork.movements.length : 3;
       }
-      if (!_.isEmpty(this.artwork.motifs)) {
+      if (!_.isEmpty(this.artwork.motifs.filter(Boolean))) {
         metaNumber += this.artwork.motifs.length > 3 ? this.artwork.motifs.length : 3;
+      }
+      if (!_.isEmpty(this.artwork.iconclasses.filter(Boolean))){
+        metaNumber += this.artwork.iconclasses.length > 3 ? this.artwork.iconclasses.length : 3;
       }
       if (this.artwork.height && this.artwork.width) {
         metaNumber += 3;
@@ -314,6 +317,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     if (metaNumber < 10) {
       this.collapseDetails = false;
     }
+    console.log(this.collapseDetails, metaNumber)
   }
 
   /**

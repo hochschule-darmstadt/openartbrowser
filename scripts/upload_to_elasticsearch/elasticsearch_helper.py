@@ -356,6 +356,23 @@ def swap_to_backup_for_each_language(
                 print("After debugging deletion is possible with the delete_index function")
 
 
+def count_check_for_each_language(
+    lang_keys=[item[0] for item in language_config_to_list()]):
+    """
+    After the indices were created check that the indice document count 
+    equals the JSON object count of the corresponding JSON file
+
+    :arg lang_leys: Languagekeys for which the check has to be satisfied.
+    """
+    es = Elasticsearch()
+    for key in lang_keys:
+        es.indices.refresh(key)
+        es_document_count = es.cat.count(index=key)
+        # ToDo: Load JSON
+        # ToDo assert json len == count
+    
+
+
 if __name__ == "__main__":
     create_index_for_each_language()
     swap_index_for_each_language()

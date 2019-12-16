@@ -68,7 +68,7 @@ $container-height: 20em;
 .carou-content {
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
+  justify-content: space-around;
   align-items: center;
 
   width: 90%;
@@ -79,6 +79,7 @@ $container-height: 20em;
 }
 
 .item-container {
+  min-width: 25%;
   // Padding between items/artworks
   padding-left: 10px;
   padding-right: 10px;
@@ -135,6 +136,7 @@ $container-height: 20em;
 
 .img_self {
   cursor: pointer;
+  max-width: 100%;
 }
 
 .img_description {

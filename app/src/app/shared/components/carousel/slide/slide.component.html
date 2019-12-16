@@ -5,7 +5,7 @@
     (mouseleave)="this.itemHover.emit(null)"
     class="pb-4 col-sm-3 mt-auto mb-auto item-container"
   >
-    <div *ngIf="slide.loadContent" class="img item" [routerLink]="['/artwork', item?.id]">
+    <a *ngIf="slide.loadContent" class="img item" [routerLink]="['/artwork', item?.id]">
       <img
         class="img-fluid img_self"
         (error)="onLoadingError(item)"
@@ -15,6 +15,6 @@
       <div class="overlay_view">
         <span class="img_description">{{ item?.label }}</span>
       </div>
-    </div>
+    </a>
   </div>
 </div>

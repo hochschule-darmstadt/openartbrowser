@@ -14,12 +14,12 @@ def create_empty_index(
     index_name
 ) -> bool:
     """
-    Creates an empty index (meaning no documents inside)
+    Creates an empty index (meaning no documents inside).
 
-    :arg index_name: Name of the index to be created
+    :arg index_name: Name of the index to be created.
 
     Returns:
-        True if index didn't exist and could be created else False
+        True if index didn't exist and could be created else False.
     """
     es = Elasticsearch()
 
@@ -32,13 +32,12 @@ def create_empty_index(
 
 def delete_index(index_name) -> bool:
     """
-    Delete an index by it's name
+    Delete an index by it's name.
 
-    :arg index_name: Name of the index to be deleted
+    :arg index_name: Name of the index to be deleted.
 
     Returns:
-        True if index extists and could be deleted else False
-
+        True if index extists and could be deleted else False.
     """
     es = Elasticsearch()
     if es.indices.exists(index=index_name):
@@ -53,11 +52,11 @@ def create_index(
     index_name,
     file) -> None:
     """
-    Creates an index with new documents from art_ontology_<language_code>.json
+    Creates an index with new documents from art_ontology_<language_code>.json.
 
-    :arg index_name: Index name in which documents should be created
+    :arg index_name: Index name in which documents should be created.
     :arg file: Name of the file which contains the documents to be created 
-               e. g. art_ontology_<language_code>.json
+               e. g. art_ontology_<language_code>.json.
     """
     # Uses localhost:9200 (elasticsearch default) to create the index with it's documents
     es = Elasticsearch()
@@ -92,11 +91,11 @@ def swap_index(index_name_new, index_name_current, index_name_old) -> bool:
     This is possible because the backup and restore feature of elasticsearch
     allows renaming when restoring a snapshot.
 
-    :arg index_name_new: Newly created index which replaces the current index
-    :arg index_name_current: The current index which replaces the old index
-    :arg index_name_old: The old index which will be deleted
+    :arg index_name_new: Newly created index which replaces the current index.
+    :arg index_name_current: The current index which replaces the old index.
+    :arg index_name_old: The old index which will be deleted.
     Returns:
-        True when the index swap worked else False
+        True when the index swap worked else False.
     """
     es = Elasticsearch()
     print("Checking if current index exists")
@@ -123,10 +122,6 @@ def swap_index(index_name_new, index_name_current, index_name_old) -> bool:
         index_name=index_name_current,
         snapshot_name=index_current_snapshot)
     list_all_snapshots_from_repository()
-
-    # Close the indices to be swapped, they will be reopened on applying the snapshot
-    es.indices.close(index=index_name_new)
-    es.indices.close(index=index_name_current)
 
     # First swap
     # Check if index_name_current_old exists if it does delete index
@@ -163,19 +158,19 @@ def create_snapshot_for_index(
     index_name,
     snapshot_name,
     repository_name='openartbrowser_index_backup',
-    backup_directory='/var/lib/elasticsearch/backup') -> None:
+    backup_directory='C:\\elasticsearch-7.4.2\\backup') -> None:
     """
-    :arg index_name: Index for which the snapshot should be created for
-    :arg snapshot_name: Name for the snapshot
-    :arg repository_name: Name for a repository which stores snapshots
-                            The openartbrowser repository is 'openartbrowser_index_backup'
-    :arg backup_directory: Directory in which the repository is located
-                            The openartbrowser backup directory is /var/lib/elasticsearch/backup
-                            IMPORTANT:
-                            1. The directory has to exist before execution
-                            2. This directory is also needed in the elasticsearch.yaml configuration file
-                                - Following entry in elasticsearch.yml required:
-                                path.repo: ["path_to_folder"]
+    :arg index_name: Index for which the snapshot should be created for.
+    :arg snapshot_name: Name for the snapshot.
+    :arg repository_name: Name for a repository which stores snapshots.
+                          The openartbrowser repository is 'openartbrowser_index_backup'.
+    :arg backup_directory: Directory in which the repository is located.
+                           The openartbrowser backup directory is C:\\elasticsearch-7.4.2\\backup
+                           IMPORTANT:
+                           1. The directory has to exist before execution
+                           2. This directory is also needed in the elasticsearch.yaml configuration file
+                               - Following entry in elasticsearch.yml required:
+                               path.repo: ["path_to_folder"]
     """
     es = Elasticsearch()
 
@@ -201,11 +196,11 @@ def apply_snapshot_from_repository(
     new_index_name,
     repository_name='openartbrowser_index_backup') -> None:
     """
-    Applies a snapshot created in an earlier creation from a repository
+    Applies a snapshot created in an earlier creation from a repository.
 
-    :arg index_name: Name of the index the snapshot should be applied
-    :arg repository_name: Name of the repository the snapshot is in
-    :arg snapshot_name: Name of the snapshot
+    :arg index_name: Name of the index the snapshot should be applied.
+    :arg repository_name: Name of the repository the snapshot is in.
+    :arg snapshot_name: Name of the snapshot.
     """
     es = Elasticsearch()
 
@@ -230,12 +225,12 @@ def apply_snapshot_from_repository(
 def delete_snapshot_from_repository(
         snapshot_name,
         repository_name='openartbrowser_index_backup',
-        backup_directory='/var/lib/elasticsearch/backup') -> None:
+        backup_directory='C:\\elasticsearch-7.4.2\\backup') -> None:
     """
-    Delete a snapshot from the repository
+    Delete a snapshot from the repository.
 
     :arg snapshot_name: Name of the snapshot to be deleted.
-    :arg repository_name: Name of the repository the snapshot is in
+    :arg repository_name: Name of the repository the snapshot is in.
     :arg backup_directory: Directory in which the repository is located.
                            See create_snapshot_for_index for more information on that.
     """
@@ -259,10 +254,10 @@ def list_all_snapshots_from_repository(
         elastic_search_url='localhost:9200',
         repository_name='openartbrowser_index_backup') -> None:
     """
-    Lists all created snapshots in a repository
+    Lists all created snapshots in a repository.
 
     :arg elastic_search_url: Url of the ElasticSearch server. The default is 'localhost:9200'.
-    :arg repository_name: Name of the repository which contains the snapshots
+    :arg repository_name: Name of the repository which contains the snapshots.
     """
     try:
         req = requests.get(url="http://" + elastic_search_url +
@@ -274,7 +269,7 @@ def list_all_snapshots_from_repository(
 
 def list_all_indices(elastic_search_url='localhost:9200') -> None:
     """
-    List all indices
+    List all indices.
 
     :arg elastic_search_url: Url of the ElasticSearch server. The default is 'localhost:9200'.
     """
@@ -309,10 +304,10 @@ def create_index_for_each_language(
     filepath=Path(__file__).resolve().parent.parent / "crawler_output") -> None:
     """
     Creates a new index for each language in the languageconfig.csv.
-    The new indice name convention is <indexname>_new
+    The new indice name convention is <indexname>_new.
 
-    :arg lang_leys: Languagekeys for which the index has to be created
-    :arg filepath: Location of the art_ontology_*.json language files
+    :arg lang_leys: Languagekeys for which the index has to be created.
+    :arg filepath: Location of the art_ontology_*.json language files.
     """
     for key in lang_keys:
         create_index(file=filepath / str("art_ontology_" + key + ".json"),index_name=key + "_new")
@@ -357,25 +352,38 @@ def swap_to_backup_for_each_language(
 
 
 def count_check_for_each_language(
-    lang_keys=[item[0] for item in language_config_to_list()]):
+    lang_keys=[item[0] for item in language_config_to_list()], 
+    filepath=Path(__file__).resolve().parent.parent / "crawler_output") -> bool:
     """
     After the indices were created check that the indice document count 
-    equals the JSON object count of the corresponding JSON file
+    equals the JSON object count of the corresponding JSON file. 
+    The corresponding JSON file is located within the filepath parameters path.
 
     :arg lang_leys: Languagekeys for which the check has to be satisfied.
+    :arg filepath: Location of the art_ontology_*.json language files.
     """
     es = Elasticsearch()
     for key in lang_keys:
+        # Refresh is needed because the indice stats aren't always up-to-date
         es.indices.refresh(key)
-        es_document_count = es.cat.count(index=key)
-        # ToDo: Load JSON
-        # ToDo assert json len == count
-    
+        es_document_count_dict = es.cat.count(index=key, params={"format": "json"})
+        es_document_count = int(es_document_count_dict[0]["count"])
+        file_name = filepath / str("art_ontology_" + key + ".json")
+        with open(file_name, encoding='utf-8') as input:
+            object_array = json.load(input)
+            json_object_count = len(object_array)
+            if es_document_count != json_object_count:
+                print("There is a problem with the index \"" + key + "\" the json"
+                + " object count doesn't equal the document count in the index" + 
+                " which should be the case")
+            else:
+                print("The index " + key + " seems to be created correctly")
 
 
 if __name__ == "__main__":
     create_index_for_each_language()
     swap_index_for_each_language()
+    count_check_for_each_language()
 
     # This can be used if the newly added indices aren't working 
     # and you want to go back to <languagecode>_old for example

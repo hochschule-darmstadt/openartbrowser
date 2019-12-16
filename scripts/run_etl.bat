@@ -28,4 +28,7 @@ python ..\..\..\data_manipulation\script_add_youtube_videos.py
 
 python ..\..\..\data_manipulation\split_languages.py
 
+REM Comment in if wanted
+REM python ..\..\..\upload_to_elasticsearch\elasticsearch_helper.py
+
 PAUSE

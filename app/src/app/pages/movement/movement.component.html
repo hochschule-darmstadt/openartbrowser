@@ -6,6 +6,11 @@
         <ng-container i18n="Movement label@@movement">Movement</ng-container>
       </span>
       <h2 class="mb-3 first-letter">{{ movement?.label }}</h2>
+      <div class="row" *ngIf="this.movement.videos != null" >
+        <div class="col-md-2 pr-0">
+          <p class="mr-4 mb-1 text-muted" href="#collapseArtist" (click)="toggleDetails()"> <i class="fab fa-youtube fa-2x"></i></p>
+        </div>
+      </div>
 
       <div *ngIf="movement?.abstract?.length || movement?.influenced_by?.length">
         <h4 class="mt-2 more" href="#collapseArtist" (click)="toggleDetails()">
@@ -22,6 +27,7 @@
           </div>
 
           <app-video [entity]="movement"></app-video>
+          <app-video *ngFor="let artwork of sliderItems.slice(0,10)" [entity]="artwork"></app-video>
 
           <div class="row">
             <div class="col-md-3 pr-0">

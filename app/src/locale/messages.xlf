@@ -428,33 +428,31 @@
         </context-group>
         <note priority="1" from="description">Influenced by label</note>
       </trans-unit>
-      <trans-unit id="artworks" datatype="html">
-        <source>Artworks</source>
+      <trans-unit id="toggletimeline" datatype="html">
+        <source>Timeline
+        </source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artist/artist.component.html</context>
-          <context context-type="linenumber">115</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/pages/genre/genre.component.html</context>
-          <context context-type="linenumber">33</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/pages/location/location.component.html</context>
-          <context context-type="linenumber">52</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/pages/material/material.component.html</context>
-          <context context-type="linenumber">16</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/pages/motif/motif.component.html</context>
-          <context context-type="linenumber">21</context>
+          <context context-type="linenumber">119</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/movement/movement.component.html</context>
-          <context context-type="linenumber">51</context>
+          <context context-type="linenumber">56</context>
         </context-group>
-        <note priority="1" from="description">Artworks label</note>
+        <note priority="1" from="description">Timeline toggle label</note>
+      </trans-unit>
+      <trans-unit id="toggleartworks" datatype="html">
+        <source>Artworks
+        </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artist/artist.component.html</context>
+          <context context-type="linenumber">125</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/movement/movement.component.html</context>
+          <context context-type="linenumber">62</context>
+        </context-group>
+        <note priority="1" from="description">Artworks toggle label</note>
       </trans-unit>
       <trans-unit id="artwork" datatype="html">
         <source>Artwork</source>
@@ -599,6 +597,43 @@
           <context context-type="linenumber">301</context>
         </context-group>
         <note priority="1" from="description">Related Artworks hint text</note>
+      </trans-unit>
+      <trans-unit id="artworks" datatype="html">
+        <source>Artworks</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/genre/genre.component.html</context>
+          <context context-type="linenumber">33</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/location/location.component.html</context>
+          <context context-type="linenumber">52</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/material/material.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/motif/motif.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+        <note priority="1" from="description">Artworks label</note>
+      </trans-unit>
+      <trans-unit id="slider_labels" datatype="html">
+        <source>
+                      <x id="ICU" equiv-text="{key, select, artwork {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/>
+                    </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/home/home.component.html</context>
+          <context context-type="linenumber">27</context>
+        </context-group>
+        <note priority="1" from="description">Home Slider Labels</note>
+      </trans-unit>
+      <trans-unit id="55b23cdc14ddfb2b8f63be560716952dbb384e8d" datatype="html">
+        <source>{VAR_SELECT, select, artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material} }</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/home/home.component.html</context>
+          <context context-type="linenumber">28</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="country" datatype="html">
         <source>Country</source>

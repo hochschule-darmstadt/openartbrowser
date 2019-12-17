@@ -103,15 +103,31 @@
 
             </tbody>
           </table>
-
         </div>
       </div>
     </div>
     <div class="col-sm-5 img" *ngIf="artist?.image">
-      <img class="img-fluid rounded-circle" src="{{ artist?.imageSmall }}" alt="" />
+      <img class="img-fluid rounded-circle" src="{{ artist?.imageSmall }}" alt=""/>
     </div>
   </div>
 
-  <h3 i18n="Artworks label@@artworks">Artworks</h3>
-  <app-slider [items]="sliderItems" totalArtworks="{{sliderItems.length === 200 ? artist?.absoluteRank : sliderItems.length}}"></app-slider>
+  <div class="row">
+    <ul class="nav nav-pills">
+      <li>
+        <button type="button" class="btn btn-secondary" (click)="toggleComponent()"
+                i18n="Timeline toggle label@@toggletimeline"
+                [disabled]="showTimelineNotArtworks">Timeline
+        </button>
+      </li>
+      <li>
+        <button type="button" class="btn btn-secondary" (click)="toggleComponent()"
+                i18n="Artworks toggle label@@toggleartworks"
+                [disabled]="!showTimelineNotArtworks">Artworks
+        </button>
+      </li>
+    </ul>
+    <span class="ml-1 mt-auto mb-auto">({{ sliderItems?.length }})</span>
+  </div>
+  <app-timeline *ngIf="showTimelineNotArtworks && sliderItems?.length" [artworks]="sliderItems"></app-timeline>
+  <app-slider *ngIf="(!showTimelineNotArtworks) && sliderItems?.length" [items]="sliderItems"></app-slider>
 </div>

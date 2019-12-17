@@ -29,4 +29,12 @@ python3 ../../../data_manipulation/script_add_youtube_videos.py
 python3 ../../../data_manipulation/split_languages.py
 
 # ToDo: Use in this script when error handling is implemented
-#python3 ../../../upload_to_elasticsearch/elasticsearch_helper.py
+# python3 ../../../upload_to_elasticsearch/elasticsearch_helper.py
+
+cd ../../..
+
+# Put the directory and it's files to an archive 
+# copy them to make the archive available on an nginx endpoint
+tar cfvz crawler_ouput.tar.gz crawler_output/
+
+sudo cp crawler_output.tar.gz /var/www/html

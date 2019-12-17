@@ -17,6 +17,7 @@ export class AnalyticsComponent implements OnInit {
   constructor(public analytics: Angulartics2Piwik) {
     if (analyticsEnvironment.enabled) {
       const _paq = window._paq || [];
+      _paq.push(['disableCookies']);
       _paq.push(['setTrackerUrl', analyticsEnvironment.url + 'matomo.php']);
       _paq.push(['setSiteId', analyticsEnvironment.propertyId]);
       analytics.startTracking();

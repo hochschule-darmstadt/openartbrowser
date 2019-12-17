@@ -7,6 +7,12 @@ html {
 }
 
 /* Badge */
+.badge {
+  margin-right: 4px;
+  margin-bottom: 4px;
+  text-transform: capitalize;
+}
+
 .badge:hover {
   cursor: pointer;
 }

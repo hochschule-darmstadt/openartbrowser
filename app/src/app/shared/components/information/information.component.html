@@ -1,0 +1,21 @@
+<div class="row" *ngIf="value || values?.length">
+    <div class="col-md-1">
+        <p class="mb-1 text-muted">
+            {{ label }}:
+        </p>
+    </div>
+
+    <div class="col-md-11">
+        <p *ngIf="value" class="mb-1 add-padding notchip">
+            {{ value }}
+        </p>
+
+        <p *ngIf="values?.length" class="mb-1 add-padding ">
+            <span class="badge badge-pill badge-secondary first-letter chip" *ngFor="let entity of values"
+                [routerLink]="route ? route + entity.id : null ">
+                <i *ngIf="icon" class="mr-1" [ngClass]="icon"></i>
+                {{ entity?.label }}
+            </span>
+        </p>
+    </div>
+</div>

@@ -6,7 +6,7 @@
         <ng-container i18n="Movement label@@movement">Movement</ng-container>
       </span>
       <h2 class="mb-3 first-letter">{{ movement?.label }}</h2>
-      <div class="row" *ngIf="this.movement.videos != null" >
+      <div class="row" *ngIf="movement?.videos" >
         <div class="col-md-2 pr-0">
           <p class="mr-4 mb-1 text-muted" href="#collapseArtist" (click)="toggleDetails()"> <i class="fab fa-youtube fa-2x"></i></p>
         </div>

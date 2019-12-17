@@ -133,7 +133,7 @@ def swap_index(index_name_new, index_name_current, index_name_old) -> bool:
         snapshot_name=index_current_snapshot, 
         index_name=index_name_current,
         new_index_name=index_name_old)
-    # Close old index because we not need it right now
+    # Close old index because we don't need it right now
     es.indices.close(index_name_old)
 
     # Second swap
@@ -158,14 +158,14 @@ def create_snapshot_for_index(
     index_name,
     snapshot_name,
     repository_name='openartbrowser_index_backup',
-    backup_directory='C:\\elasticsearch-7.4.2\\backup') -> None:
+    backup_directory='/var/lib/elasticsearch/backup') -> None:
     """
     :arg index_name: Index for which the snapshot should be created for.
     :arg snapshot_name: Name for the snapshot.
     :arg repository_name: Name for a repository which stores snapshots.
                           The openartbrowser repository is 'openartbrowser_index_backup'.
     :arg backup_directory: Directory in which the repository is located.
-                           The openartbrowser backup directory is C:\\elasticsearch-7.4.2\\backup
+                           The openartbrowser backup directory is /var/lib/elasticsearch/backup
                            IMPORTANT:
                            1. The directory has to exist before execution
                            2. This directory is also needed in the elasticsearch.yaml configuration file
@@ -225,7 +225,7 @@ def apply_snapshot_from_repository(
 def delete_snapshot_from_repository(
         snapshot_name,
         repository_name='openartbrowser_index_backup',
-        backup_directory='C:\\elasticsearch-7.4.2\\backup') -> None:
+        backup_directory='/var/lib/elasticsearch/backup') -> None:
     """
     Delete a snapshot from the repository.
 

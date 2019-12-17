@@ -6,7 +6,7 @@ export const elasticEnvironment = {
   serverURI: '/api'
 };
 
-export const analyticsEnvironment = window.location.href === 'cai-artbrowserstaging.fbi.h-da.de' ?
+export const analyticsEnvironment = window.location.host === 'cai-artbrowserstaging.fbi.h-da.de' ?
   { // staging
     enabled: true,
     url: 'https://openartbrowser.org/api/analytics/',

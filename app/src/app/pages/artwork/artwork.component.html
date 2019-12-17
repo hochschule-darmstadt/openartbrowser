@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container entity artwork">
   <div class="row pb-5 border-bottom" *ngIf="!imageHidden && artwork?.imageMedium">
     <div class="img-container mx-auto d-block" (click)="showModal()">
       <img class="img-fluid d-block" id="image-main" (error)="hideImage()" src="{{ artwork?.imageMedium }}" alt="" />
@@ -205,9 +205,8 @@
             </div>
           </div>
 
-
           <!-- Iconclass integration -->
-          <div *ngIf="iconclassData !== null" class="row">
+          <div *ngIf="iconclassData" class="row">
             <div class="col-md-1">
               <p class="mb-1 text-muted">Iconography: </p>
             </div>
@@ -249,14 +248,14 @@
         For each tab of the slider carousel, create a nav-tabs item to switch between the sliders
       -->
       <ul class="nav nav-tabs">
-        <ng-container *ngFor="let tab of Object.keys(artworkTabs)">
-          <li class="nav-item" *ngIf="artwork && artworkTabs[tab].items.length > 0">
-            <a class="nav-link" [ngClass]="{ active: artworkTabs[tab].active }" data-toggle="tab"
-              href="#{{ artworkTabs[tab].heading }}_tab">
-              <i class="mr-1 fa fa-{{ artworkTabs[tab].icon }}"></i>
-              <ng-container i18n="Artwork Related Artworks Tabs@@artwork_tabs">
-                {artworkTabs[tab].heading, select, all {All} motif {Motif} artist {Artist}
-                location {Location} genre {Genre} movement {Movement} material {Material} }
+        <ng-container *ngFor="let tab of artworkTabs">
+          <li class="nav-item" *ngIf="artwork && tab.items.length > 0">
+            <a class="nav-link" [ngClass]="{ active: tab.active }" data-toggle="tab"
+              href="#{{ tab.type }}_tab">
+              <i class="mr-1 fa fa-{{ tab.icon }}"></i>
+              <ng-container i18n="Entity Type Labels@@entity_labels" *ngIf="tab.type; let type">
+                {type, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location}
+                genre {Genre} movement {Movement} material {Material} }
               </ng-container>
             </a>
           </li>
@@ -268,13 +267,13 @@
         set tab as active
       -->
       <div class="tab-content">
-        <div *ngFor="let tab of Object.keys(artworkTabs)" class="tab-pane fade"
-          [ngClass]="{ 'show active': artworkTabs[tab].active }" id="{{ artworkTabs[tab].heading }}_tab">
+        <div *ngFor="let tab of artworkTabs" class="tab-pane fade"
+          [ngClass]="{ 'show active': tab.active }" id="{{ tab.type }}_tab">
 
           <!--
             Listen for an event and assign the attribute "hoveredArtwork" to the hovered artwork.
           -->
-          <app-slider (itemHover)="this.hoveredArtwork = $event" [items]="artworkTabs[tab].items"></app-slider>
+          <app-slider (itemHover)="this.hoveredArtwork = $event" [items]="tab.items"></app-slider>
 
           <!-- Collapse element for common tags -->
           <h3 class="mt-2 mb-0 more" data-toggle="collapse" href="#collapseTags" (click)="toggleCommonTags()">

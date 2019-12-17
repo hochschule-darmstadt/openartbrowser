@@ -4,31 +4,39 @@
     <body>
       <trans-unit id="entity_labels" datatype="html">
         <source>
-          <x id="ICU" equiv-text="{type, select, artwork {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/>
+          <x id="ICU" equiv-text="{type, select, all {...} artwork {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/>
         </source>
         <target state="final">
-          <x id="ICU" equiv-text="{type, select, artwork {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/>
+          <x id="ICU" equiv-text="{type, select, all {...} artwork {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/>
         </target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/pages/home/home.component.html</context>
-          <context context-type="linenumber">24</context>
-        </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/components/search/search.component.html</context>
           <context context-type="linenumber">16</context>
         </context-group>
-        <note priority="1" from="description">Entity Type Labels</note>
-      </trans-unit>
-      <trans-unit id="7aef07fe92fd10201c6e412a6fea56339edd6ead" datatype="html">
-        <source>{VAR_SELECT, select, artwork {Kunstwerk} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material} }</source>
-        <target state="final">{VAR_SELECT, select, artwork {Obra de arte} motif {Motivo} artist {Artista} location {Emplazamiento} genre {Género} movement {Movimiento} material {Matériau}}</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
+          <context context-type="linenumber">256</context>
+        </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/home/home.component.html</context>
-          <context context-type="linenumber">25</context>
+          <context context-type="linenumber">27</context>
         </context-group>
+        <note priority="1" from="description">Entity Type Labels</note>
+      </trans-unit>
+      <trans-unit id="480d33207a8003c4e3d38902d7769ac338138974" datatype="html">
+        <source>{VAR_SELECT, select, all {All} artwork {Kunstwerk} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material} }</source>
+        <target state="final">{VAR_SELECT, select, all {Todos} artwork {Obra de arte} motif {Motivo} artist {Artista} location {Emplazamiento} genre {Género} movement {Movimiento} material {Matériau}}</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/components/search/search.component.html</context>
           <context context-type="linenumber">17</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
+          <context context-type="linenumber">257</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/home/home.component.html</context>
+          <context context-type="linenumber">28</context>
         </context-group>
       </trans-unit>
       <trans-unit id="menuHome" datatype="html">
@@ -569,21 +577,7 @@
         </context-group>
         <note priority="1" from="description">Related Artworks label</note>
       </trans-unit>
-      <trans-unit id="artwork_tabs" datatype="html">
-        <source><x id="ICU" equiv-text="{artworkTabs[tab].heading, select, all {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/> </source><target state="final"><x id="ICU" equiv-text="{artworkTabs[tab].heading, select, all {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/></target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
-          <context context-type="linenumber">225</context>
-        </context-group>
-        <note priority="1" from="description">Artwork Related Artworks Tabs</note>
-      </trans-unit>
-      <trans-unit id="eb21ca9d04421e780f0b35ae6f4aa5f23f8aeaea" datatype="html">
-        <source>{VAR_SELECT, select, all {All} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material} }</source><target state="final">{VAR_SELECT, select, all {Todas} motif {Motivo} artist {Artista} location {Emplazamiento} genre {Género} movement {Movimiento} material {Matériau}}</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
-          <context context-type="linenumber">225</context>
-        </context-group>
-      </trans-unit>
+     
       <trans-unit id="related_artworks_headline_prev" datatype="html">
         <source>Common </source><target state="final">Etiquetas </target>
         <context-group purpose="location">

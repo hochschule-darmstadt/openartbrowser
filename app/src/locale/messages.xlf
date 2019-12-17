@@ -48,11 +48,15 @@
       </trans-unit>
       <trans-unit id="entity_labels" datatype="html">
         <source>
-        <x id="ICU" equiv-text="{type, select, artwork {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/>
+        <x id="ICU" equiv-text="{type, select, all {...} artwork {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/>
       </source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/components/search/search.component.html</context>
           <context context-type="linenumber">16</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
+          <context context-type="linenumber">256</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/home/home.component.html</context>
@@ -60,11 +64,15 @@
         </context-group>
         <note priority="1" from="description">Entity Type Labels</note>
       </trans-unit>
-      <trans-unit id="7aef07fe92fd10201c6e412a6fea56339edd6ead" datatype="html">
-        <source>{VAR_SELECT, select, artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material} }</source>
+      <trans-unit id="480d33207a8003c4e3d38902d7769ac338138974" datatype="html">
+        <source>{VAR_SELECT, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material} }</source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/components/search/search.component.html</context>
           <context context-type="linenumber">17</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
+          <context context-type="linenumber">257</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/home/home.component.html</context>
@@ -522,7 +530,7 @@
         <source>Dimension</source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
-          <context context-type="linenumber">228</context>
+          <context context-type="linenumber">227</context>
         </context-group>
         <note priority="1" from="description">Artwork Dimension label</note>
       </trans-unit>
@@ -530,26 +538,9 @@
         <source>Related Artworks</source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
-          <context context-type="linenumber">246</context>
+          <context context-type="linenumber">245</context>
         </context-group>
         <note priority="1" from="description">Related Artworks label</note>
-      </trans-unit>
-      <trans-unit id="artwork_tabs" datatype="html">
-        <source>
-                <x id="ICU" equiv-text="{artworkTabs[tab].heading, select, all {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/>
-              </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
-          <context context-type="linenumber">257</context>
-        </context-group>
-        <note priority="1" from="description">Artwork Related Artworks Tabs</note>
-      </trans-unit>
-      <trans-unit id="eb21ca9d04421e780f0b35ae6f4aa5f23f8aeaea" datatype="html">
-        <source>{VAR_SELECT, select, all {All} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material} }</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
-          <context context-type="linenumber">258</context>
-        </context-group>
       </trans-unit>
       <trans-unit id="related_artworks_headline_prev" datatype="html">
         <source>
@@ -557,7 +548,7 @@
             </source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
-          <context context-type="linenumber">281</context>
+          <context context-type="linenumber">280</context>
         </context-group>
         <note priority="1" from="description">Related Artworks headline text before tab name </note>
       </trans-unit>
@@ -567,7 +558,7 @@
               </source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
-          <context context-type="linenumber">285</context>
+          <context context-type="linenumber">284</context>
         </context-group>
         <note priority="1" from="description">Related Artworks headline text tab name</note>
       </trans-unit>
@@ -575,7 +566,7 @@
         <source>{VAR_SELECT, select, all {all} motif {motif} artist {artist} location {location} genre {genre} movement {movement} material {material} }</source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
-          <context context-type="linenumber">286</context>
+          <context context-type="linenumber">285</context>
         </context-group>
       </trans-unit>
       <trans-unit id="related_artworks_headline_after" datatype="html">
@@ -584,7 +575,7 @@
             </source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
-          <context context-type="linenumber">290</context>
+          <context context-type="linenumber">289</context>
         </context-group>
         <note priority="1" from="description">Related Artworks headline text after tab name </note>
       </trans-unit>
@@ -594,7 +585,7 @@
                 </source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
-          <context context-type="linenumber">301</context>
+          <context context-type="linenumber">300</context>
         </context-group>
         <note priority="1" from="description">Related Artworks hint text</note>
       </trans-unit>

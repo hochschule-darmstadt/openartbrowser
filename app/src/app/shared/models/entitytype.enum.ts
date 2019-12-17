@@ -6,5 +6,6 @@ export enum EntityType {
     LOCATION = 'location',
     MATERIAL = 'material',
     MOVEMENT = 'movement',
-    MOTIF = 'motif'
+    MOTIF = 'motif',
+    ALL = 'all'
 }

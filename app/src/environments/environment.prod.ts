@@ -14,7 +14,7 @@ export const analyticsEnvironment = window.location.href === 'cai-artbrowserstag
   } :
   { // production
     enabled: true,
-    url: '/analytics/',
+    url: '/api/analytics/',
     propertyId: '1'
   };
 

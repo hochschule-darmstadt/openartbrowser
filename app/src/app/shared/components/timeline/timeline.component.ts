@@ -330,12 +330,7 @@ export class TimelineComponent {
   }
 
   onLoadingError(item: TimelineItem) {
-    let index = this.items.findIndex(i => i.id === item.id)
-    console.log(index, item.id, item.label, this.items[index].label);
-    console.log(this.items);
     this.items.splice(this.items.findIndex(i => i.id === item.id), 1);
-    console.log(this.items);
-
     this.refreshComponent();
   }
 }

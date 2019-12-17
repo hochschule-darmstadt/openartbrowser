@@ -23,6 +23,7 @@
               class=" img_self"
               src="{{ item?.imageSmall }}"
               alt="{{ item?.label }}"
+              (error)="onLoadingError(item)"
               [ngClass]="item?.type == 'artist' ? 'rounded-circle':''"
             />
             <div class="overlay_view" [ngClass]="item?.type == 'artist' ? 'rounded-circle':''">

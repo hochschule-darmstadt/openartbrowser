@@ -328,4 +328,9 @@ export class TimelineComponent {
     // rebuild slides if slider items input changed.
     this.items.sort((a, b) => (a.date > b.date) ? 1 : -1);
   }
+
+  onLoadingError(item: TimelineItem) {
+    this.items.splice(this.items.findIndex(i => i.id === item.id), 1);
+    this.refreshComponent();
+  }
 }

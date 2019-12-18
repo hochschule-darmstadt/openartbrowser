@@ -39,10 +39,8 @@
 
             <div class="col-md-9 info">
               <p *ngIf="movement?.influenced_by?.length" class="mb-1">
-                <span *ngFor="let influence of movement?.influenced_by"
-                      class="badge badge-pill badge-secondary first-letter chip"
-                      [routerLink]="influence.type === 'artist' ? '/artist/' + influence.id : '/movement/' + influence.id">
-                  {{ influence.label }}</span>
+                  <app-badge *ngFor="let influence of movement?.influenced_by" [entity]="influence">
+                  </app-badge>
               </p>
             </div>
           </div>

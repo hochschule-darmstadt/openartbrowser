@@ -30,8 +30,8 @@ export enum EntityRoute {
 }
 
 export enum EntityIcon {
-  ARTIST = 'palette',
-  ARTWORK = 'user',
+  ARTIST ='user',
+  ARTWORK = 'palette',
   GENRE = 'tags',
   LOCATION = 'archway',
   MATERIAL = 'scroll',

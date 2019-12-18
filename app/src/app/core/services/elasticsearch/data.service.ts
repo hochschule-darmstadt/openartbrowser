@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import { HttpClient } from '@angular/common/http';
 import { Injectable, Inject, LOCALE_ID } from '@angular/core';
-import { EntityType, Artwork, ArtSearch, Entity, Iconclass } from 'src/app/shared/models/models';
+import { EntityType, Artwork, ArtSearch, Entity, Iconclass, EntityIcon, EntityRoute } from 'src/app/shared/models/models';
 import { elasticEnvironment } from 'src/environments/environment';
 import QueryBuilder from './query.builder';
 
@@ -31,6 +31,8 @@ export class DataService {
     public async findById<T>(id: string, type?: EntityType): Promise<T> {
         const response = await this.http.get<T>(this.baseUrl + '?q=id:' + id).toPromise();
         const entities = this.filterData<T>(response, type);
+        // set type specific attributes
+        entities.forEach(entity => this.setTypes(entity));
         return (!entities.length) ? null : entities[0];
     }
 
@@ -149,7 +151,10 @@ export class DataService {
      */
     private async performQuery<T>(query: QueryBuilder, url: string = this.baseUrl, type?: EntityType) {
         const response = await this.http.post<T>(url, query.build()).toPromise();
-        return this.filterData<T>(response, type);
+        const entities = this.filterData<T>(response, type);
+        // set type specific attributes
+        entities.forEach(entity => this.setTypes(entity));
+        return entities;
     }
 
     /**
@@ -182,5 +187,50 @@ export class DataService {
             entity.imageMedium = entity.image;
         }
         return entity;
+    }
+
+    /**
+     * set type specific attributes
+     * @param entity entity object
+     */
+    private setTypes(entity: any) {
+        if (entity.type)
+            switch (entity.type) {
+                case EntityType.ARTIST:
+                    entity.type = EntityType.ARTIST;
+                    entity.icon = EntityIcon.ARTIST;
+                    entity.route = EntityRoute.ARTIST;
+                    break;
+                case EntityType.ARTWORK:
+                    entity.type = EntityType.ARTWORK;
+                    entity.icon = EntityIcon.ARTWORK;
+                    entity.route = EntityRoute.ARTWORK;
+                    break;
+                case EntityType.GENRE:
+                    entity.type = EntityType.GENRE;
+                    entity.icon = EntityIcon.GENRE;
+                    entity.route = EntityRoute.GENRE;
+                    break;
+                case EntityType.LOCATION:
+                    entity.type = EntityType.LOCATION;
+                    entity.icon = EntityIcon.LOCATION;
+                    entity.route = EntityRoute.LOCATION;
+                    break;
+                case EntityType.MATERIAL:
+                    entity.type = EntityType.MATERIAL;
+                    entity.icon = EntityIcon.MATERIAL;
+                    entity.route = EntityRoute.MATERIAL;
+                    break;
+                case EntityType.MOTIF:
+                    entity.type = EntityType.MOTIF;
+                    entity.icon = EntityIcon.MOTIF;
+                    entity.route = EntityRoute.MOTIF;
+                    break;
+                case EntityType.MOVEMENT:
+                    entity.type = EntityType.MOVEMENT;
+                    entity.icon = EntityIcon.MOVEMENT;
+                    entity.route = EntityRoute.MOVEMENT;
+                    break;
+            }
     }
 }

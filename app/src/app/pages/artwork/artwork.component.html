@@ -105,7 +105,8 @@
           artwork?.genres?.length ||
           artwork?.movements?.length ||
           artwork?.materials?.length ||
-          artwork?.motifs?.length
+          artwork?.motifs?.length ||
+          (artwork?.height && artwork?.width)
         ">
 
         <h4 class="mt-2 more" aria-controls="detailsDiv" [attr.aria-expanded]="!detailsCollapsed"
@@ -210,7 +211,7 @@
           </div>
 
           <!-- Iconclass integration -->
-          <div *ngIf="iconclassData" class="row">
+          <div *ngIf="iconclassData?.length" class="row">
             <div class="col-md-1">
               <p class="mb-1 text-muted">Iconography: </p>
             </div>

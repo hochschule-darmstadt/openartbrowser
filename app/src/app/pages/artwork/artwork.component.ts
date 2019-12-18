@@ -1,12 +1,11 @@
-import { Component, OnInit, OnDestroy, HostListener, Inject, LOCALE_ID } from '@angular/core';
-import { Artwork, EntityType, Iconclass, EntityIcon } from 'src/app/shared/models/models';
-import { takeUntil } from 'rxjs/operators';
-import { ActivatedRoute } from '@angular/router';
-import { Subject } from 'rxjs';
+import {Component, OnInit, OnDestroy, HostListener, Inject, LOCALE_ID} from '@angular/core';
+import {Artwork, EntityType, Iconclass, EntityIcon} from 'src/app/shared/models/models';
+import {takeUntil} from 'rxjs/operators';
+import {ActivatedRoute} from '@angular/router';
+import {Subject} from 'rxjs';
 import * as _ from 'lodash';
-import { DataService } from 'src/app/core/services/elasticsearch/data.service';
-import { shuffle } from 'src/app/core/services/utils.service';
-import { async } from 'q';
+import {DataService} from 'src/app/core/services/elasticsearch/data.service';
+import {shuffle} from 'src/app/core/services/utils.service';
 
 /** interface for the tabs */
 interface ArtworkTab {
@@ -28,15 +27,15 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   artwork: Artwork = null;
 
   iconclassData: Array<any> | null = null;
-  locale: string = 'en';
+  locale = 'en';
 
   /**
    * whether artwork image should be hidden
    */
   imageHidden = false;
 
-  /** 
-   * @description to toggle details container. 
+  /**
+   * @description to toggle details container.
    * true if more infos are folded in.
    * initial as true (closed).
    */
@@ -48,8 +47,8 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   commonTagsCollapsed = false;
 
-  /** 
-   * @descriptionwhether artwork image viewer is active or not 
+  /**
+   * @descriptionwhether artwork image viewer is active or not
    */
   modalIsVisible = false;
 
@@ -61,15 +60,15 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   /**
    * @description for the tabs in slider/carousel.
    */
-  artworkTabs: ArtworkTab[] = []
+  artworkTabs: ArtworkTab[] = [];
 
   /**
    * @description use this to end subscription to url parameter in ngOnDestroy
    */
   private ngUnsubscribe = new Subject();
 
-  constructor(private dataService: DataService, private route: ActivatedRoute, @Inject(LOCALE_ID) locale_id: string) {
-    this.locale = locale_id.substr(0, 2);
+  constructor(private dataService: DataService, private route: ActivatedRoute, @Inject(LOCALE_ID) localeId: string) {
+    this.locale = localeId.substr(0, 2);
   }
 
   /**
@@ -108,8 +107,9 @@ export class ArtworkComponent implements OnInit, OnDestroy {
 
         if (this.artwork.iconclasses) {
           const nonEmptyIconclasses = this.artwork.iconclasses.filter((i: Iconclass) => i !== '');
-          if (!nonEmptyIconclasses.length)
+          if (!nonEmptyIconclasses.length) {
             this.iconclassData = await this.dataService.getIconclassData(nonEmptyIconclasses);
+          }
         }
       }
     });
@@ -164,9 +164,11 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       /** load related data for each tab  */
       this.artworkTabs.map(async (tab: ArtworkTab) => {
         const types = tab.type + 's';
-        if (tab.type == EntityType.ALL) return;
+        if (tab.type === EntityType.ALL) {
+          return;
+        }
 
-        // load entities 
+        // load entities
         this.dataService.findMultipleById(this.artwork[types] as any, tab.type)
           .then((artists) => {
             this.artwork[types] = artists;
@@ -200,26 +202,28 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     } else if (this.artwork.abstract.length) {
       metaNumber += 3;
     }
-    if (!this.artwork.genres.length) {
+    if (!_.isEmpty(this.artwork.genres.filter(Boolean))) {
       metaNumber += this.artwork.genres.length > 3 ? this.artwork.genres.length : 3;
     }
-    if (!this.artwork.materials.length) {
-      metaNumber += this.artwork.materials.length > 3 ? this.artwork.genres.length : 3;
+    if (!_.isEmpty(this.artwork.materials.filter(Boolean))) {
+      metaNumber += this.artwork.materials.length > 3 ? this.artwork.materials.length : 3;
     }
-    if (!this.artwork.movements.length) {
+    if (!_.isEmpty(this.artwork.movements.filter(Boolean))) {
       metaNumber += this.artwork.movements.length > 3 ? this.artwork.movements.length : 3;
     }
-    if (!this.artwork.motifs.length) {
+    if (!_.isEmpty(this.artwork.motifs.filter(Boolean))) {
       metaNumber += this.artwork.motifs.length > 3 ? this.artwork.motifs.length : 3;
     }
     if (this.artwork.height && this.artwork.width) {
       metaNumber += 3;
-    }
 
+    }
+    if (!_.isEmpty(this.artwork.iconclasses.filter(Boolean))) {
+      metaNumber += this.artwork.iconclasses.length > 3 ? this.artwork.iconclasses.length : 3;
+    }
     if (metaNumber < 10) {
       this.detailsCollapsed = false;
     }
-    console.log(this.detailsCollapsed, metaNumber)
   }
 
   /**
@@ -229,6 +233,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    * @param active Is active tab
    */
   private addTab(type: EntityType, icon: EntityIcon, active: boolean = false) {
-    this.artworkTabs.push({ active, icon, type: type, items: [] });
+    this.artworkTabs.push({active, icon, type, items: []});
   }
 }

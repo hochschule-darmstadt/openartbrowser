@@ -56,10 +56,8 @@
         -->
         <div class="col-md-11">
           <p *ngIf="artwork?.artists?.length" class="mb-1 add-padding">
-            <span class="badge badge-pill badge-secondary first-letter chip" *ngFor="let artist of artwork?.artists"
-              [routerLink]="'/artist/' + artist.id">
-              <i class="fas fa-user"></i>
-              {{ artist?.label }}</span>
+              <app-badge *ngFor="let artist of artwork?.artists" [entity]="artist">
+              </app-badge>
           </p>
         </div>
       </div>
@@ -76,11 +74,8 @@
         -->
         <div class="col-md-11">
           <p *ngIf="artwork?.locations?.length" class="mb-1 add-padding">
-            <span class="badge badge-pill badge-secondary first-letter chip" *ngFor="let location of artwork?.locations"
-              [routerLink]="'/location/' + location.id">
-              <i class="fas fa-archway"></i>
-              {{ location?.label }}
-            </span>
+            <app-badge *ngFor="let location of artwork?.locations" [entity]="location">
+            </app-badge>
           </p>
         </div>
       </div>
@@ -149,10 +144,8 @@
             -->
             <div class="col-md-11">
               <p *ngIf="artwork?.genres?.length" class="mb-1 add-padding">
-                <span class="badge badge-pill badge-secondary first-letter chip" *ngFor="let genre of artwork?.genres"
-                  [routerLink]="'/genre/' + genre.id">
-                  <i class="fas fa-tag"></i>
-                  {{ genre?.label }}</span>
+                  <app-badge *ngFor="let genre of artwork?.genres" [entity]="genre">
+                  </app-badge>
               </p>
             </div>
           </div>
@@ -168,11 +161,8 @@
             -->
             <div class="col-md-11">
               <p *ngIf="artwork?.movements?.length" class="mb-1 add-padding">
-                <span class="badge badge-pill badge-secondary first-letter chip"
-                  *ngFor="let movement of artwork?.movements" [routerLink]="'/movement/' + movement.id">
-                  <i class="fas fa-wind"></i>
-                  {{ movement?.label }}
-                </span>
+                <app-badge *ngFor="let movement of artwork?.movements" [entity]="movement">
+                </app-badge>
               </p>
             </div>
           </div>
@@ -188,12 +178,8 @@
             -->
             <div class="col-md-11">
               <p *ngIf="artwork?.materials?.length" class="mb-1 add-padding">
-
-                <span class="badge badge-pill badge-secondary first-letter chip"
-                  *ngFor="let material of artwork?.materials" [routerLink]="'/material/' + material.id">
-                  <i class="fas fa-scroll"></i>
-                  {{ material?.label }}
-                </span>
+                <app-badge *ngFor="let material of artwork?.materials" [entity]="material">
+                </app-badge>
               </p>
             </div>
           </div>
@@ -209,11 +195,8 @@
             -->
             <div class="col-md-11">
               <p *ngIf="artwork?.motifs?.length" class="mb-1 add-padding">
-                <span class="badge badge-pill badge-secondary first-letter chip" *ngFor="let motif of artwork?.motifs"
-                  [routerLink]="'/motif/' + motif.id">
-                  <i class="fas fa-image"></i>
-                  {{ motif?.label }}
-                </span>
+                <app-badge *ngFor="let motif of artwork?.motifs" [entity]="motif">
+                </app-badge>
               </p>
             </div>
           </div>

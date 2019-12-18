@@ -26,9 +26,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    * @description the entity this page is about.
    */
   artwork: Artwork = null;
-
-  iconclassData: Array<any>|null = null;
-  locale: string = 'en';
   
   /**
    * whether artwork image should be hidden
@@ -113,8 +110,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   Object = Object;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute, @Inject(LOCALE_ID) locale_id: string) {
-    this.locale = locale_id.substr(0, 2);
+  constructor(private dataService: DataService, private route: ActivatedRoute ) {
   }
 
   /**
@@ -126,17 +122,12 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       this.hoveredArtwork = null;
       const artworkId = params.get('artworkId');
       /** Use data service to fetch entity from database */
-      this.artwork = await this.dataService.findById<Artwork>(artworkId, EntityType.ARTWORK);
+      this.artwork = await this.dataService.findById<Artwork>(artworkId, EntityType.ARTWORK) as Artwork;
+
       /* Count meta data to show more on load */
       this.calculateCollapseState();
       this.resetArtworkTabs();
       this.loadDependencies();
-
-      if (this.artwork.iconclasses) {
-        const nonEmptyIconclasses = this.artwork.iconclasses.filter((i: Iconclass) => i !== '');
-        this.iconclassData = !nonEmptyIconclasses.length ? null : await this.dataService.getIconclassData(nonEmptyIconclasses);
-      }
-
     });
   }
 

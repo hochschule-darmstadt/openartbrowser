@@ -10,11 +10,12 @@ import { VideoComponent } from './components/video/video.component';
 import { InformationComponent } from './components/information/information.component';
 import { AbstractComponent } from './components/abstract/abstract.component';
 import { TitleComponent } from './components/title/title.component';
+import { IconclassComponent } from './components/iconclass/iconclass.component';
 
 /** Everything that should be used within multiple feature modules but isn't always required goes here */
 @NgModule({
-  declarations: [CarouselComponent, SlideComponent, SearchComponent, VideoComponent, InformationComponent, AbstractComponent, TitleComponent],
+  declarations: [CarouselComponent, SlideComponent, SearchComponent, VideoComponent, InformationComponent, AbstractComponent, TitleComponent, IconclassComponent],
   imports: [CommonModule, NgbModule, RouterModule, FormsModule],
-  exports: [CarouselComponent, SearchComponent, VideoComponent, InformationComponent, AbstractComponent, TitleComponent],
+  exports: [CarouselComponent, SearchComponent, VideoComponent, InformationComponent, AbstractComponent, TitleComponent, IconclassComponent],
 })
 export class SharedModule {}

@@ -8,58 +8,19 @@
     </div>
   </div>
 
-  <!--
-    Modal for page overlay when enlarging image, shown when "modalIsVisible" is set to true
-  -->
-  <div class="modal" *ngIf="modalIsVisible" id="img-modal">
-    <span class="close" (click)="closeModal()">&times;</span>
-    <!-- Zoom in and out functionality, see package ngx-image-viewer -->
-    <div class="modal-content my-auto">
-      <ngx-image-viewer [src]="[artwork?.image]" [config]="{
-          allowFullscreen: false,
-          zoomFactor: 0.1,
-          containerBackgroundColor: '#222',
-          wheelZoom: true,
-          btnShow: {
-            zoomIn: true,
-            zoomOut: true,
-            rotateClockwise: false,
-            rotateCounterClockwise: false,
-            next: false,
-            prev: false
-          }
-        }"></ngx-image-viewer>
-    </div>
-  </div>
-
-  <div class="row pt-3 pb-3 border-bottom">
+  <div class="row pt-3 pb-3 border-bottom" *ngIf="artwork">
     <div class="col-sm-12">
-      <div class="text-muted">
-        <span class="badge badge-secondary chip cursor-unset">
-          <i class="fas fa-palette"></i>
-          <ng-container i18n="Artwork label@@artwork">Artwork</ng-container>
-        </span>
-      </div>
 
-      <h2 class="mb-3 first-letter">{{ artwork?.label }}</h2>
+      <app-title [entity]="artwork"></app-title>
 
-      <app-information 
-        i18n-label="Artist label@@artist" label="Artist" 
-        [values]="artwork?.artists"
-        route="/artist/" 
-        icon="fas fa-user">
+      <app-information i18n-label="Artist label@@artist" label="Artist" [values]="artwork?.artists">
       </app-information>
 
-      <app-information 
-        i18n-label="Location label@@location" label="Location" 
-        [values]="artwork?.locations"
-        route="/location/" 
-        icon="fas fa-archway">
+      <app-information i18n-label="Location label@@location" label="Location" [values]="artwork?.locations"
+        route="/location/">
       </app-information>
 
-      <app-information 
-        i18n-label="Inception label@@inception" label="Inception" 
-        [value]="artwork?.inception">
+      <app-information i18n-label="Inception label@@inception" label="Inception" [value]="artwork?.inception">
       </app-information>
 
       <!--
@@ -81,64 +42,25 @@
 
         <div [className]="collapse ? 'collapse' : 'collapse show'" id="collapseArtwork">
 
-          <div class="row">
-            <div *ngIf="artwork?.abstract" class="col-md pr-0">
-              <span>{{ artwork?.abstract }}</span>
-              <p class="wiki-link">
-                <ng-container i18n="Detail More label@@more">More</ng-container>:&nbsp;<a
-                  href="{{ artwork?.wikipediaLink }}" target="_blank">Wikipedia</a>
-              </p>
-            </div>
-          </div>
+          <app-abstract [entity]="artwork"></app-abstract>
 
           <app-video [entity]="artwork"></app-video>
 
-          <app-information 
-            i18n-label="Genre label@@genre" label="Genre" 
-            [values]="artwork?.genres"
-            route="/genre/" 
-            icon="fas fa-tag">
+          <app-information i18n-label="Genre label@@genre" label="Genre" [values]="artwork?.genres">
           </app-information>
 
-          <app-information 
-            i18n-label="Movement label@@movement" label="Movement" 
-            [values]="artwork?.movements"
-            route="/movement/" 
-            icon="fas fa-wind">
+          <app-information i18n-label="Movement label@@movement" label="Movement" [values]="artwork?.movements">
           </app-information>
 
-          <app-information 
-            i18n-label="Material label@@material" label="Material" 
-            [values]="artwork?.materials"
-            route="/material/" 
-            icon="fas fa-scroll">
-          </app-information>
-    
-          <app-information 
-            i18n-label="Motif label@@motif" label="Motif" 
-            [values]="artwork?.motifs"
-            route="/motif/" 
-            icon="fas fa-image">
+          <app-information i18n-label="Material label@@material" label="Material" [values]="artwork?.materials">
           </app-information>
 
-          <!-- Iconclass integration -->
-          <div *ngIf="iconclassData !== null" class="row">
-            <div class="col-md-1">
-              <p class="mb-1 text-muted">Iconography: </p>
-            </div>
-            <div class="col-md-11">
-              <p *ngFor="let iconclass of iconclassData" class="mb-1 add-padding">
-                <!-- already adding the fallback to english if the language index is not found on iconclass.org -->
-                <!-- which will for example be the case with 'es' -->
-                <b>[{{iconclass.n}}] </b> {{iconclass.txt[locale]}} <br />
-                <!-- the actual language key for the first part of the expression has to be inserted still -->
-              </p>
-            </div>
-          </div>
-          <!-- Iconclass integration -->
+          <app-information i18n-label="Motif label@@motif" label="Motif" [values]="artwork?.motifs">
+          </app-information>
 
-          <app-information 
-            i18n-label="Artwork Dimension label@@dimension" label="Dimension" 
+         <app-iconclass [iconclasses]="artwork.iconclasses"></app-iconclass>
+       
+          <app-information i18n-label="Artwork Dimension label@@dimension" label="Dimension"
             [value]="artwork?.height + ' x ' + artwork?.width + 'cm'">
           </app-information>
 
@@ -267,6 +189,31 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+
+  <!--
+    Modal for page overlay when enlarging image, shown when "modalIsVisible" is set to true
+  -->
+  <div class="modal" *ngIf="modalIsVisible" id="img-modal">
+    <span class="close" (click)="closeModal()">&times;</span>
+    <!-- Zoom in and out functionality, see package ngx-image-viewer -->
+    <div class="modal-content my-auto">
+      <ngx-image-viewer [src]="[artwork?.image]" [config]="{
+          allowFullscreen: false,
+          zoomFactor: 0.1,
+          containerBackgroundColor: '#222',
+          wheelZoom: true,
+          btnShow: {
+            zoomIn: true,
+            zoomOut: true,
+            rotateClockwise: false,
+            rotateCounterClockwise: false,
+            next: false,
+            prev: false
+          }
+        }"></ngx-image-viewer>
     </div>
   </div>
 </div>

@@ -107,13 +107,14 @@
           artwork?.materials?.length ||
           artwork?.motifs?.length
         ">
-        <h4 class="mt-2 more" data-toggle="collapse" href="#collapseDetails" (click)="toggleDetails()">
-          <ng-container i18n="Detail More label@@more">More</ng-container>
-          <i *ngIf="collapseDetails" data-toggle="collapse" href="#collapseDetails" class="fas fa-chevron-down"></i>
-          <i *ngIf="!collapseDetails" data-toggle="collapse" href="#collapseDetails" class="fas fa-chevron-up"></i>
-        </h4>
 
-        <div class="collapse show"  id="collapseDetails">
+        <h4 class="mt-2 more" aria-controls="detailsDiv" [attr.aria-expanded]="!detailsCollapsed"
+          (click)="detailsCollapsed = !detailsCollapsed">
+          <ng-container i18n="Detail More label@@more">More</ng-container>
+          <i *ngIf="detailsCollapsed" class="fas fa-chevron-down"></i>
+          <i *ngIf="!detailsCollapsed" class="fas fa-chevron-up"></i>
+        </h4>
+        <div class="collapse" [ngbCollapse]="detailsCollapsed" id="detailsDiv">
           <div class="row abstract">
             <div *ngIf="artwork?.abstract" class="col-md pr-0">
               <span>{{ artwork?.abstract }}</span>
@@ -254,8 +255,7 @@
       <ul class="nav nav-tabs">
         <ng-container *ngFor="let tab of artworkTabs">
           <li class="nav-item" *ngIf="artwork && tab.items.length > 0">
-            <a class="nav-link" [ngClass]="{ active: tab.active }" data-toggle="tab"
-              href="#{{ tab.type }}_tab">
+            <a class="nav-link" [ngClass]="{ active: tab.active }" data-toggle="tab" href="#{{ tab.type }}_tab">
               <i class="mr-1 fa fa-{{ tab.icon }}"></i>
               <ng-container i18n="Entity Type Labels@@entity_labels" *ngIf="tab.type; let type">
                 {type, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location}
@@ -271,8 +271,8 @@
         set tab as active
       -->
       <div class="tab-content">
-        <div *ngFor="let tab of artworkTabs" class="tab-pane fade"
-          [ngClass]="{ 'show active': tab.active }" id="{{ tab.type }}_tab">
+        <div *ngFor="let tab of artworkTabs" class="tab-pane fade" [ngClass]="{ 'show active': tab.active }"
+          id="{{ tab.type }}_tab">
 
           <!--
             Listen for an event and assign the attribute "hoveredArtwork" to the hovered artwork.
@@ -280,7 +280,8 @@
           <app-slider (itemHover)="this.hoveredArtwork = $event" [items]="tab.items"></app-slider>
 
           <!-- Collapse element for common tags -->
-          <h3 class="mt-2 mb-0 more" data-toggle="collapse" href="#collapseTags" (click)="toggleCommonTags()">
+          <h3 class="mt-2 mb-0 more" aria-controls="commonTagsDiv" [attr.aria-expanded]="!commonTagsCollapsed"
+            (click)="commonTagsCollapsed = !commonTagsCollapsed">
             <ng-container i18n="Related Artworks headline text before tab name @@related_artworks_headline_prev">
               Common
             </ng-container>
@@ -295,11 +296,11 @@
             </ng-container>
             <span>"{{ (artwork?.label?.length > 35) ?
                 (artwork?.label | slice:0:35) + '...' : (artwork?.label) }}"</span>
-            <i *ngIf="collapseTags" data-toggle="collapse" href="#collapseTags" class="ml-2 fas fa-chevron-down"></i>
-            <i *ngIf="!collapseTags" data-toggle="collapse" href="#collapseTags" class="ml-2 fas fa-chevron-up"></i>
+            <i *ngIf="commonTagsCollapsed" class="ml-2 fas fa-chevron-down"></i>
+            <i *ngIf="!commonTagsCollapsed" class="ml-2 fas fa-chevron-up"></i>
           </h3>
 
-          <div class="collapse show" id="collapseTags">
+          <div class="collapse" [ngbCollapse]="commonTagsCollapsed" id="commonTagsDiv">
             <p class="mb-4 mt-0"><em>
                 (<ng-container i18n="Related Artworks hint text@@related_artworks_hint">
                   move the mouse over an artwork to display common tags
@@ -313,7 +314,7 @@
               associated attribute of hoveredArtwork, add the class badge-light to highlight
               the chip.
             -->
-            <span *ngIf="artwork?.motifs?.length && (tab == 'motif' || tab == 'all')" class="mb-1">
+            <span *ngIf="artwork?.motifs?.length && (tab.type == 'motif' || tab.type == 'all')" class="mb-1">
               <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
                 [ngClass]="{'badge-light': motif && hoveredArtwork?.motifs?.includes(motif.id) }"
                 *ngFor="let motif of artwork?.motifs" [routerLink]="'/motif/' + motif.id">
@@ -321,7 +322,7 @@
                 {{ motif?.label }}</span>
             </span>
 
-            <span *ngIf="artwork?.artists?.length && (tab == 'artist' || tab == 'all')" class="mb-1">
+            <span *ngIf="artwork?.artists?.length && (tab.type == 'artist' || tab.type == 'all')" class="mb-1">
               <span *ngFor="let artist of artwork?.artists"
                 [ngClass]="{'badge-light': artist && hoveredArtwork?.artists?.includes(artist.id) }"
                 class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
@@ -330,7 +331,7 @@
                 {{ artist?.label }}</span>
             </span>
 
-            <span *ngIf="artwork?.genres?.length && (tab == 'genre' || tab == 'all')" class="mb-1">
+            <span *ngIf="artwork?.genres?.length && (tab.type == 'genre' || tab.type == 'all')" class="mb-1">
               <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
                 [ngClass]="{'badge-light': genre && hoveredArtwork?.genres?.includes(genre.id) }"
                 *ngFor="let genre of artwork?.genres" [routerLink]="'/genre/' + genre.id">
@@ -338,7 +339,7 @@
                 {{ genre?.label }}</span>
             </span>
 
-            <span *ngIf="artwork?.movements?.length && (tab == 'movement' || tab == 'all')" class="mb-1">
+            <span *ngIf="artwork?.movements?.length && (tab.type == 'movement' || tab.type == 'all')" class="mb-1">
               <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
                 [ngClass]="{'badge-light': movement && hoveredArtwork?.movements?.includes(movement.id) }"
                 *ngFor="let movement of artwork?.movements" [routerLink]="'/movement/' + movement.id">
@@ -346,7 +347,7 @@
                 {{ movement?.label }}</span>
             </span>
 
-            <span *ngIf="artwork?.materials?.length && (tab == 'material' || tab == 'all')" class="mb-1">
+            <span *ngIf="artwork?.materials?.length && (tab.type == 'material' || tab.type == 'all')" class="mb-1">
               <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
                 [ngClass]="{'badge-light': material && hoveredArtwork?.materials?.includes(material.id) }"
                 *ngFor="let material of artwork?.materials" [routerLink]="'/material/' + material.id">
@@ -354,7 +355,7 @@
                 {{ material?.label }}</span>
             </span>
 
-            <span *ngIf="artwork?.locations?.length && (tab == 'location' || tab == 'all')" class=" mb-1">
+            <span *ngIf="artwork?.locations?.length && (tab.type == 'location' || tab.type == 'all')" class=" mb-1">
               <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
                 [ngClass]="{'badge-light': location && hoveredArtwork?.locations?.includes(location.id) }"
                 *ngFor="let location of artwork?.locations" [routerLink]="'/location/' + location.id">

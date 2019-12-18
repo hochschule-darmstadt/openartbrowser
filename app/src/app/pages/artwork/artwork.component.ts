@@ -35,17 +35,22 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   imageHidden = false;
 
-  /** @description to toggle details container. true if more infos are folded in */
-  collapseDetails = true;
+  /** 
+   * @description to toggle details container. 
+   * true if more infos are folded in.
+   * initial as true (closed).
+   */
+  detailsCollapsed = true;
 
   /**
    * @description to toggle common tags container.
    * initial as false (open).
    */
-  collapseTags = false;
+  commonTagsCollapsed = false;
 
-
-  /** whether artwork image viewer is active or not */
+  /** 
+   * @descriptionwhether artwork image viewer is active or not 
+   */
   modalIsVisible = false;
 
   /**
@@ -86,8 +91,8 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
       /* reset properties */
       this.artwork = this.hoveredArtwork = this.iconclassData = this.hoveredArtwork = null;
-      this.imageHidden = this.modalIsVisible = this.collapseTags = false;
-      this.collapseDetails = true;
+      this.imageHidden = this.modalIsVisible = this.commonTagsCollapsed = false;
+      this.detailsCollapsed = true;
       // clears items of all artwork tabs
       this.artworkTabs.forEach((tab: ArtworkTab) => tab.items = []);
 
@@ -147,20 +152,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @description function to toggle details container.
-   */
-  toggleDetails(): void {
-    this.collapseDetails = !this.collapseDetails;
-  }
-
-  /**
-     * @description function to toggle common tags container.
-     */
-  toggleTags(): void {
-    this.collapseTags = !this.collapseTags;
-  }
-
-  /**
    * resolves ids in artwork attributes with actual entities,
    * loads slider items and initializes slider tabs
    */
@@ -201,6 +192,8 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   private calculateCollapseState() {
     let metaNumber = 0;
+    // set defauled (closed)
+    this.detailsCollapsed = true;
 
     if (this.artwork.abstract.length > 400) {
       metaNumber += 10;
@@ -224,9 +217,9 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     }
 
     if (metaNumber < 10) {
-      this.collapseDetails = false;
+      this.detailsCollapsed = false;
     }
-    console.log(this.collapseDetails, metaNumber)
+    console.log(this.detailsCollapsed, metaNumber)
   }
 
   /**

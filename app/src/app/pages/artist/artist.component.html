@@ -32,6 +32,12 @@
         </div>
       </div>
 
+      <div class="row" *ngIf="artist?.videos" >
+        <div class="col-md-2 pr-0">
+          <p class="mr-4 mb-1 text-muted" href="#collapseArtist" (click)="toggleDetails()"> <i class="fab fa-youtube fa-2x"></i></p>
+        </div>
+      </div>
+
       <div *ngIf="
           artist?.gender ||
           artist?.citizenship ||
@@ -55,6 +61,7 @@
           </div>
 
           <app-video [entity]="artist"></app-video>
+          <app-video *ngFor="let movement of artist.movements.slice(0,1)" [entity]="movement"></app-video>
 
           <table class="table-fit">
             <tbody>

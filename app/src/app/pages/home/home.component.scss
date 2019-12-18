@@ -152,7 +152,7 @@ $color1: #00bc8c;
     transition: 0.3s ease;
     border-radius: 15px;
     i{
-      margin-right:4px;
+      margin-right: 5px;
     }
   }
 
@@ -160,6 +160,12 @@ $color1: #00bc8c;
     box-shadow: 0 0 30px 1px black;
     transition: all 0.5s ease;
     border-radius: 15px;
+
+    ::ng-deep {
+      .carousel-indicators {
+        visibility: hidden !important;
+      }
+    }
 
     &:hover {
       cursor: pointer;

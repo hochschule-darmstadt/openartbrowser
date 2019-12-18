@@ -6,5 +6,6 @@ export enum EntityIcon {
     LOCATION = 'archway',
     MATERIAL = 'scroll',
     MOVEMENT = 'wind',
-    MOTIF = 'image'
+    MOTIF = 'image',
+    ALL = 'list-ul'
 }

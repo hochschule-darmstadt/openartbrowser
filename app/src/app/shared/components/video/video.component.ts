@@ -39,6 +39,8 @@ export class VideoComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
         this.validateVideoExists(videoUrl)
           .then(exists => this.videoExists = exists);
       }
+    } else {
+      this.videoExists = false;
     }
   }
 

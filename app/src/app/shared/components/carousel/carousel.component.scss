@@ -15,3 +15,22 @@
     width: 4%;
   }
 }
+::ng-deep {
+  .custom-carousel {
+    .carousel-indicators {
+      visibility: visible !important;
+      top: -4% !important;
+      pointer-events: none !important;
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+      width: 100% !important;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+      width: 2% !important;
+    }
+  }
+}

@@ -1,6 +1,6 @@
-import { Component, Input, SimpleChanges, OnChanges, EventEmitter, Output } from '@angular/core';
-import { Entity } from '../../models/models';
-import { HostListener } from "@angular/core";
+import {Component, Input, SimpleChanges, OnChanges, EventEmitter, Output} from '@angular/core';
+import {Entity} from '../../models/models';
+import {HostListener} from "@angular/core";
 
 export interface Slide {
   /** artworks displayed on this slide */
@@ -22,7 +22,7 @@ export interface Slide {
 /**
  * In order to test the Slide component individually
  * we need a default slide that can be passed to it
- * 
+ *
  * @returns {Slide} a default slide
  */
 export function makeDefaultSlide(id: number = 0, items: Array<Entity> = []): Slide {
@@ -46,8 +46,6 @@ export class CarouselComponent implements OnChanges {
 
   /** title of this slider */
   @Input() heading: string;
-
-  @Input() totalArtworks?: number;
 
   /**  entities that should be displayed in this slider */
   @Input() items: Entity[] = [];
@@ -77,7 +75,7 @@ export class CarouselComponent implements OnChanges {
   private buildSlides(items: Entity[]): Slide[] {
     const slides: Slide[] = [];
     // There are 8 images on each slide.
-    // There are 1 image on ech slide if is  mobile
+    // There are 1 image on each slide if is  mobile
     const imagesPerSlide = (this.isMobile ? 1 : 8);
     const numberOfSlides = items.length / imagesPerSlide;
 
@@ -111,9 +109,9 @@ export class CarouselComponent implements OnChanges {
     return slides;
   }
 
-  /** delete slide based on id of the passed slide 
+  /** delete slide based on id of the passed slide
    * @param slide slide to be deleted
-  */
+   */
   deleteUnusedSlides() {
     const lastSlide = this.slides[this.slides.length - 1];
     if (lastSlide.items.length === 0) {
@@ -124,7 +122,6 @@ export class CarouselComponent implements OnChanges {
       this.slides.splice(this.slides.length - 1, 1);
     }
   }
-
 
   @HostListener('window:resize', ['$event'])
   checkIsMobile(event?) {

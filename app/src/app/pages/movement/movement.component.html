@@ -1,4 +1,4 @@
-<div class="container entity">
+<div class="container entity movement">
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7">
       <span class="badge badge-pill badge-secondary chip cursor-unset">
@@ -34,8 +34,8 @@
             <div class="col-md-9 info">
               <p *ngIf="movement?.influenced_by?.length" class="mb-1">
                 <span *ngFor="let influence of movement?.influenced_by"
-                  class="badge badge-pill badge-secondary first-letter chip"
-                  [routerLink]="influence.type === 'artist' ? '/artist/' + influence.id : '/movement/' + influence.id">
+                      class="badge badge-pill badge-secondary first-letter chip"
+                      [routerLink]="influence.type === 'artist' ? '/artist/' + influence.id : '/movement/' + influence.id">
                   {{ influence.label }}</span>
               </p>
             </div>
@@ -45,9 +45,27 @@
     </div>
 
     <div class="col-sm-5 img" *ngIf="movement?.image">
-      <img class="img-fluid rounded-circle" src="{{ movement?.imageSmall }}" alt="" />
+      <img class="img-fluid rounded-circle" src="{{ movement?.imageSmall }}" alt=""/>
     </div>
   </div>
-  <h3 i18n="Artworks label@@artworks">Artworks</h3>
-  <app-slider [items]="sliderItems"></app-slider>
+  <div class="row">
+    <ul class="nav nav-pills">
+      <li>
+        <button type="button" class="btn btn-secondary" (click)="toggleComponent()"
+                i18n="Timeline toggle label@@toggletimeline"
+                [disabled]="showTimelineNotArtworks">TIMELINE
+        </button>
+      </li>
+      <li>
+        <button type="button" class="btn btn-secondary" (click)="toggleComponent()"
+                i18n="Artworks toggle label@@toggleartworks"
+                [disabled]="!showTimelineNotArtworks">ARTWORKS
+        </button>
+      </li>
+    </ul>
+    <span class="ml-1 mt-auto mb-auto">({{ sliderItems?.length }})</span>
+  </div>
+  <app-timeline *ngIf="showTimelineNotArtworks && sliderItems?.length" [artworks]="sliderItems"
+                displayArtists="true"></app-timeline>
+  <app-slider *ngIf="(!showTimelineNotArtworks) && sliderItems?.length" [items]="sliderItems"></app-slider>
 </div>

@@ -19,7 +19,22 @@ html, body {
   margin-right: 4px;
 }
 
+hr {
+  border: 0;
+  clear: both;
+  display: block;
+  width: 100%;
+  background-color: #FFFFFF;
+  height: 1px;
+}
+
 /* Badge */
+.badge {
+  margin-right: 2px;
+  margin-bottom: 2px;
+  text-transform: capitalize;
+}
+
 .badge:hover {
   cursor: pointer;
 }
@@ -27,6 +42,19 @@ html, body {
 .badge i{
   margin-right:5px;
 }
+
+/* For highlighted common tags chips */
+.badge-light {
+  color: #444;
+  background-color: #fff;
+  opacity: 1 !important;
+}
+
+/* If not highlighted, set as transparent (opacity .4) */
+.badge-transparent {
+  opacity: .4;
+}
+
 
 /* Customize carousel  (has no power in slider.compoent.scss)*/
 .carousel-indicators {
@@ -49,3 +77,4 @@ html, body {
     width: 4%;
   }
 }
+

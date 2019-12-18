@@ -98,11 +98,6 @@
   cursor: pointer;
 }
 
-.badge {
-  margin-right: 2px;
-  margin-bottom: 2px;
-  text-transform: capitalize;
-}
 
 .nav-tabs {
   border-color: #FFFFFF;
@@ -129,17 +124,6 @@
 
 
 
-/* For highlighted common tags chips */
-.badge-light {
-  color: #444;
-  background-color: #fff;
-  opacity: 1 !important;
-}
-
-/* If not highlighted, set as transparent (opacity .4) */
-.badge-transparent {
-  opacity: .4;
-}
 
 /* Adds padding when page gets smaller to avoid overflow between information on the left and information on the right
  * changes image size

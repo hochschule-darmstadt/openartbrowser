@@ -1,9 +1,9 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, Input, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { interval, Observable, Subject } from 'rxjs';
-import { SearchService } from 'src/app/core/services/search.service';
+import { SearchService, TagItem } from 'src/app/core/services/search.service';
 import { Router } from '@angular/router';
 import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
-import { TagItem, Entity } from '../../models/models';
+import { Entity } from '../../models/models';
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 
 @Component({

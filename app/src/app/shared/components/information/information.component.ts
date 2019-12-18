@@ -12,17 +12,10 @@ export class InformationComponent implements OnInit {
   label: String;
 
   @Input()
-  icon: String;
-
-  @Input()
   value: String;
 
   @Input()
   values: Entity[];
-
-  @Input()
-  route: String;
-
 
   constructor() { }
 
@@ -39,5 +32,4 @@ export class InformationComponent implements OnInit {
       throw new TypeError("Attribute 'label' is required");
     }
   }
-
 }

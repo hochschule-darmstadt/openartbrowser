@@ -1,16 +1,17 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { ArtworkComponent } from './artwork.component';
-import { SlideComponent } from 'src/app/shared/components/carousel/slide/slide.component';
-import { CarouselComponent } from 'src/app/shared/components/carousel/carousel.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { HttpClientModule } from '@angular/common/http';
-import { ImageViewerModule } from 'ngx-image-viewer';
-import { RouterModule } from '@angular/router';
-import { DataService } from 'src/app/core/services/elasticsearch/data.service';
-import {VideoComponent} from "../../shared/components/video/video.component";
+import { ArtworkComponent } from "./artwork.component";
+import { SlideComponent } from "src/app/shared/components/carousel/slide/slide.component";
+import { CarouselComponent } from "src/app/shared/components/carousel/carousel.component";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { HttpClientModule } from "@angular/common/http";
+import { ImageViewerModule } from "ngx-image-viewer";
+import { RouterModule } from "@angular/router";
+import { DataService } from "src/app/core/services/elasticsearch/data.service";
+import { VideoComponent } from "../../shared/components/video/video.component";
+import { BadgeComponent } from "src/app/shared/components/badge/badge.component";
 
-describe('ArtworkComponent', () => {
+describe("ArtworkComponent", () => {
   let component: ArtworkComponent;
   let fixture: ComponentFixture<ArtworkComponent>;
 
@@ -25,14 +26,12 @@ describe('ArtworkComponent', () => {
       declarations: [
         ArtworkComponent,
         SlideComponent,
+        BadgeComponent,
         CarouselComponent,
         VideoComponent
       ],
-      providers: [
-        DataService,
-      ]
-    })
-    .compileComponents();
+      providers: [DataService]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -41,7 +40,7 @@ describe('ArtworkComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

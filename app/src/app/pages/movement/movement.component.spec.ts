@@ -9,6 +9,7 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {TimelineComponent} from 'src/app/shared/components/timeline/timeline.component';
 import {VideoComponent} from '../../shared/components/video/video.component';
 import {Ng5SliderModule} from 'ng5-slider';
+import { BadgeComponent } from 'src/app/shared/components/badge/badge.component';
 
 describe('MovementComponent', () => {
   let component: MovementComponent;
@@ -26,6 +27,7 @@ describe('MovementComponent', () => {
         MovementComponent,
         SlideComponent,
         TimelineComponent,
+        BadgeComponent,
         CarouselComponent,
         VideoComponent
       ],

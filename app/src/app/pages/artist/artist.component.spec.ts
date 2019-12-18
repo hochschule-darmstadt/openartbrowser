@@ -8,6 +8,7 @@ import {CarouselComponent} from 'src/app/shared/components/carousel/carousel.com
 import {DataService} from 'src/app/core/services/elasticsearch/data.service';
 import {HttpClientModule} from '@angular/common/http';
 import {VideoComponent} from '../../shared/components/video/video.component';
+import {BadgeComponent} from 'src/app/shared/components/badge/badge.component';
 import {TimelineComponent} from '../../shared/components/timeline/timeline.component';
 import {Ng5SliderModule} from 'ng5-slider';
 
@@ -28,6 +29,7 @@ describe('ArtistComponent', () => {
         SlideComponent,
         CarouselComponent,
         TimelineComponent,
+        BadgeComponent,
         VideoComponent
       ],
       providers: [

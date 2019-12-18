@@ -85,12 +85,8 @@
                   <ng-container i18n="Movement label@@movement">Movement</ng-container>:
                 </td>
                 <td>
-                  <span *ngFor="let movement of artist?.movements"
-                        class="badge badge-pill badge-secondary first-letter chip"
-                        [routerLink]="'/movement/' + movement.id">
-                    <i class="fas fa-wind"></i>
-                    {{ movement.label }}
-                  </span>
+                  <app-badge *ngFor="let movement of artist?.movements" [entity]="movement">
+                  </app-badge>
                 </td>
               </tr>
 
@@ -99,12 +95,8 @@
                   <ng-container i18n="Influenced by label@@influenced_by">Influenced by</ng-container>:
                 </td>
                 <td>
-                  <span *ngFor="let influencer of artist?.influenced_by"
-                        class="badge badge-pill badge-secondary first-letter chip"
-                        [routerLink]="'/artist/' + influencer.id">
-                    <i class="fas fa-user"></i>
-                    {{ influencer.label }}
-                  </span>
+                    <app-badge *ngFor="let influencer of artist?.influenced_by" [entity]="influencer">
+                    </app-badge>
                 </td>
               </tr>
 

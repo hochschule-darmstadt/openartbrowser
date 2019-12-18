@@ -1,3 +1,6 @@
+import { EntityType } from './entitytype.enum';
+import { EntityIcon } from './entityicon.enum';
+
 export type Iconclass = string;
 
 export interface Entity {
@@ -10,7 +13,8 @@ export interface Entity {
     imageSmall?: string;
     imageMedium?: string;
     iconclasses?: Array<Iconclass>;
-    type: string;
+    type: EntityType;
+    icon: EntityIcon;
     absoluteRank: number;
     relativeRank: number;
     videos?: string;

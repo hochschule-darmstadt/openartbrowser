@@ -4,6 +4,8 @@ import { Genre } from './genre.interface';
 import { Movement } from './movement.interface';
 import { Material } from './material.interface';
 import { Motif } from './motif.interface';
+import { EntityType } from './entitytype.enum';
+import { EntityIcon } from './entityicon.enum';
 
 export interface Artwork extends Entity {
     artists: Partial<Artist>[];
@@ -16,5 +18,6 @@ export interface Artwork extends Entity {
     country?: string;
     height?: number;
     width?: number;
-    type: 'artwork';
+    type: EntityType.ARTWORK;
+    icon: EntityIcon.ARTWORK;
 }

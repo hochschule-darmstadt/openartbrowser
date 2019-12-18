@@ -86,8 +86,8 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
       /* reset properties */
       this.artwork = this.hoveredArtwork = this.iconclassData = this.hoveredArtwork = null;
-      this.imageHidden = this.modalIsVisible = this.collapseDownTags = false;
-      this.collapse = true;
+      this.imageHidden = this.modalIsVisible = this.collapseTags = false;
+      this.collapseDetails = true;
       // clears items of all artwork tabs
       this.artworkTabs.forEach((tab: ArtworkTab) => tab.items = []);
 

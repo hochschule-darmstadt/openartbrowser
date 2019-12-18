@@ -1,7 +1,5 @@
-import { Entity } from './entity.interface';
+import { Entity, EntityType, EntityIcon, EntityRoute } from './entity.interface';
 import { Movement } from './movement.interface';
-import { EntityType } from './entitytype.enum';
-import { EntityIcon } from './entityicon.enum';
 
 export interface Artist extends Entity {
     gender?: 'male' | 'female';
@@ -14,4 +12,5 @@ export interface Artist extends Entity {
     influenced_by: Partial<Artist>[];
     type: EntityType.ARTIST;
     icon: EntityIcon.ARTIST;
+    route: EntityRoute.ARTIST;
 }

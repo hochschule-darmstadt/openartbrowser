@@ -1,11 +1,9 @@
-import { Entity } from './entity.interface';
+import { Entity, EntityType, EntityIcon, EntityRoute } from './entity.interface';
 import { Artist } from './artist.interface';
 import { Genre } from './genre.interface';
 import { Movement } from './movement.interface';
 import { Material } from './material.interface';
 import { Motif } from './motif.interface';
-import { EntityType } from './entitytype.enum';
-import { EntityIcon } from './entityicon.enum';
 
 export interface Artwork extends Entity {
     artists: Partial<Artist>[];
@@ -20,4 +18,5 @@ export interface Artwork extends Entity {
     width?: number;
     type: EntityType.ARTWORK;
     icon: EntityIcon.ARTWORK;
+    route: EntityRoute.ARTWORK;
 }

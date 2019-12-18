@@ -1,12 +1,8 @@
 
-export type Iconclass = string;
-
 export { Artist } from './artist.interface';
 export { ArtSearch } from './artsearch.interface';
 export { Artwork } from './artwork.interface';
-export { Entity } from './entity.interface';
-export { EntityIcon } from './entityicon.enum';
-export { EntityType } from './entitytype.enum';
+export { Entity, EntityIcon, EntityType, EntityRoute, Iconclass } from './entity.interface';
 export { Genre } from './genre.interface';
 export { Location } from './location.interface';
 export { Material } from './material.interface';

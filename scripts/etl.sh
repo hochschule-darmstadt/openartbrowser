@@ -4,7 +4,7 @@ set -x
 
 trap 'exit' ERR
 
-python3 Wikidata\ crawler/ArtOntologyCrawler.py -d
+python3 Wikidata\ crawler/ArtOntologyCrawler.py
 
 cd crawler_output/intermediate_files/json/
 

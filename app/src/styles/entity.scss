@@ -80,3 +80,32 @@
   font-size: 0.9em;
   opacity: 0.8;
 }
+
+.nav-tabs {
+  border-color: #FFFFFF;
+}
+
+/* When the nav-tabs is active */
+.nav-item > .nav-link.active,
+.nav-tabs > li > a.active:focus,
+.nav-tabs > li > a.active:hover,
+.nav > li > a:hover {
+  //background-color: #868e9650;
+  border-bottom-color: #222;
+  border-top-color: #FFFFFF;
+  border-left-color: #FFFFFF;
+  border-right-color: #FFFFFF;
+  background-image: linear-gradient(#868e9650, #222);
+}
+
+/* When the nav-tabs is hovered */
+.nav-tabs > li > a:hover {
+  background-color: #868e9644;
+  border-color: rgba(255, 255, 255, 0.274);
+}
+
+@media (max-width: 575px) {
+  .nav-tabs .nav-item {
+    width: 100%;
+  }
+}

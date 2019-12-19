@@ -1,12 +1,11 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {Artist, Artwork, EntityType, Movement} from 'src/app/shared/models/models';
+import {DataService} from 'src/app/core/services/elasticsearch/data.service';
 import {ActivatedRoute} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';
-
 import * as _ from 'lodash';
-import { shuffle } from 'src/app/core/services/utils.service';
-import { DataService } from 'src/app/core/services/elasticsearch/data.service';
+import {shuffle} from 'src/app/core/services/utils.service';
 
 @Component({
   selector: 'app-artist',
@@ -23,11 +22,13 @@ export class ArtistComponent implements OnInit, OnDestroy {
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {
-  }
+  /** Toggle bool for displaying either timeline or artworks carousel component */
+  showTimelineNotArtworks = true;
 
-  toggleDetails() {
-    this.collapse = !this.collapse;
+  /** a video was found */
+  videoExists = false;
+
+  constructor(private dataService: DataService, private route: ActivatedRoute) {
   }
 
   /** hook that is executed at component initialization */
@@ -41,7 +42,6 @@ export class ArtistComponent implements OnInit, OnDestroy {
       /** load slider items */
       this.dataService.findArtworksByType("artists", [this.artist.id])
         .then(artworks => this.sliderItems = shuffle(artworks));
-
       /** dereference movements  */
       this.dataService.findMultipleById(this.artist.movements as any, EntityType.MOVEMENT)
         .then(movements => this.artist.movements = movements);
@@ -53,22 +53,6 @@ export class ArtistComponent implements OnInit, OnDestroy {
       this.aggregatePictureMovementsToArtist();
       this.calculateCollapseState();
     });
-  }
-
-  /**
-   * @description shuffle the items' categories.
-   */
-  shuffle = (a: Artwork[]): Artwork[] => {
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-  }
-
-  ngOnDestroy() {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
   }
 
   /**
@@ -96,7 +80,8 @@ export class ArtistComponent implements OnInit, OnDestroy {
     });
   }
 
-  /** calculates the size of meta data item section
+  /**
+   /** calculates the size of meta data item section
    * every attribute: +3
    * if attribute is array and size > 3 -> + arraylength
    */
@@ -122,5 +107,14 @@ export class ArtistComponent implements OnInit, OnDestroy {
     if (metaNumber < 10) {
       this.collapse = false;
     }
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
+
+  toggleComponent() {
+    this.showTimelineNotArtworks = !this.showTimelineNotArtworks;
   }
 }

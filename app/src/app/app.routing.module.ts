@@ -1,11 +1,12 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { AppComponent } from './app.component';
-import { BrowserModule } from '@angular/platform-browser';
-import { CoreModule } from './core/core.module';
-import { SharedModule } from './shared/shared.module';
-import { HttpClientModule } from '@angular/common/http';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {AppComponent} from './app.component';
+import {BrowserModule} from '@angular/platform-browser';
+import {CoreModule} from './core/core.module';
+import {SharedModule} from './shared/shared.module';
+import {HttpClientModule} from '@angular/common/http';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 /** routes to our feature modules.
  * advantage of routing to modules instead of components: lazy loading.
@@ -73,8 +74,10 @@ const routes: Routes = [
     CoreModule,
     SharedModule,
     NgbModule,
-    RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' })
+    BrowserAnimationsModule,
+    RouterModule.forRoot(routes, {scrollPositionRestoration: 'enabled'})
   ],
   bootstrap: [AppComponent],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+}

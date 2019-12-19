@@ -1,7 +1,7 @@
-<div class="container entity">
+<div class="container entity location">
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7">
-      <span class="badge badge-pill badge-secondary chip cursor-unset">
+      <span class="badge badge-secondary chip">
         <i class="fas fa-archway"></i>
         <ng-container i18n="Location label@@location">Location</ng-container>
       </span>
@@ -10,7 +10,8 @@
       <div *ngIf="location?.country" class="row mt-5">
         <div class="col-md-3 pr-0">
           <p *ngIf="location?.country" class="text-muted">
-            <ng-container i18n="Country label@@country">Country</ng-container>:
+            <ng-container i18n="Country label@@country">Country</ng-container>
+            :
           </p>
         </div>
         <div class="col-md-9 pl-0 info">
@@ -20,7 +21,8 @@
       <div *ngIf="location?.website" class="row mb-3">
         <div class="col-md-3 pr-0">
           <p *ngIf="location?.website" class="text-muted">
-            <ng-container i18n="Official page label@@official_page">Official page</ng-container>:
+            <ng-container i18n="Official page label@@official_page">Official page</ng-container>
+            :
           </p>
         </div>
         <div class="col-md-9 pl-0 info">
@@ -29,22 +31,17 @@
       </div>
 
       <div *ngIf="location?.abstract">
-        <h4 class="mt-2 more" href="#collapseArtist" (click)="toggleDetails()">
-          <ng-container i18n="Detail More label@@more">More</ng-container>
-          <i *ngIf="collapse" href="#collapseArtist" class="fas fa-chevron-down"> </i>
-          <i *ngIf="!collapse" href="#collapseArtist" class="fas fa-chevron-up"> </i>
-        </h4>
-        <div [className]="collapse ? 'collapse' : 'collapse show'" id="collapseArtist">
+        <app-collapse collapse="{{ collapse }}">
           <div *ngIf="location?.abstract" class="row">
             <div class="col-md pr-0">
               <span>{{ location?.abstract }} </span>
               <p class="wiki-link"><ng-container i18n="Detail More label@@more">More</ng-container>: <a href="{{ location?.wikipediaLink }}" target="_blank">Wikipedia</a></p>
             </div>
           </div>
-        </div>
+        </app-collapse>
       </div>
     </div>
-    
+
     <div class="col-sm-5 img" *ngIf="location?.image">
       <img class="img-fluid rounded-circle" src="{{ location?.imageSmall }}" alt=""/>
     </div>

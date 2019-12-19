@@ -1,11 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { takeUntil } from 'rxjs/operators';
-import { Movement, Artwork, EntityType } from 'src/app/shared/models/models';
-import { Subject } from 'rxjs';
-import { DataService } from 'src/app/core/services/elasticsearch/data.service';
-import * as _ from 'lodash';
-import { shuffle } from 'src/app/core/services/utils.service';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {DataService} from 'src/app/core/services/elasticsearch/data.service';
+import {ActivatedRoute} from '@angular/router';
+import {takeUntil} from 'rxjs/operators';
+import {Movement, Artwork, EntityType} from 'src/app/shared/models/models';
+import {Subject} from 'rxjs';
+import * as _ from "lodash";
+import {shuffle} from 'src/app/core/services/utils.service';
 
 @Component({
   selector: 'app-movement',
@@ -24,7 +24,15 @@ export class MovementComponent implements OnInit, OnDestroy {
 
   /** Change collapse icon; true if more infos are folded in */
   collapse = true;
-  constructor(private dataService: DataService, private route: ActivatedRoute) {}
+
+  /** Toggle bool for displaying either timeline or artworks carousel component **/
+  showTimelineNotArtworks = true;
+
+  /** a video was found */
+  videoExists = false;
+
+  constructor(private dataService: DataService, private route: ActivatedRoute) {
+  }
 
   /** hook that is executed at component initialization */
   ngOnInit() {
@@ -47,10 +55,6 @@ export class MovementComponent implements OnInit, OnDestroy {
     });
   }
 
-  toggleDetails() {
-    this.collapse = !this.collapse;
-  }
-
   private calculateCollapseState() {
     let metaNumber = 0;
     if (this.movement.abstract.length > 400) {
@@ -67,5 +71,9 @@ export class MovementComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
+  }
+
+  toggleComponent() {
+    this.showTimelineNotArtworks = !this.showTimelineNotArtworks;
   }
 }

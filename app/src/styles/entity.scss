@@ -38,8 +38,8 @@
   }
 
   /* Unset cursor: pointer; badge */
-  .cursor-unset {
-    cursor: unset;
+  .cursor-heading-pill:hover {
+    cursor: default;
   }
 
   @media (max-width: 575px) {
@@ -74,4 +74,9 @@
       padding-left: 0;
     }
   }
+}
+
+.artworks-amount {
+  font-size: 0.9em;
+  opacity: 0.8;
 }

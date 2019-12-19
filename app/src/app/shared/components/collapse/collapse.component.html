@@ -1,9 +1,9 @@
-<div class="col-md row" (click)="toggleDetails()">
+<div class="col-md row more" (click)="toggleDetails()">
   <div class="mt-1 mr-1" *ngIf="showVideo">
     <p class="text-muted"><i
       class="fab fa-youtube fa-2x"></i></p>
   </div>
-  <h4 class="mt-2 more">
+  <h4 class="mt-2">
     <ng-container i18n="Detail More label@@more">More</ng-container>
     <i *ngIf="collapse" class="fas fa-chevron-down"> </i>
     <i *ngIf="!collapse" class="fas fa-chevron-up"> </i>

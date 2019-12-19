@@ -22,7 +22,7 @@ def get_ignored_by_gap_filling():
     Returns:
         [dict] -- [Dictionary containing all ignored attributes]
     """
-    return ["description"]
+    return ["description", "gender", "citizenship", "country"]
 
 def generate_langdict_arrays():
     """[Generates empty array of dictonaries, one for each language

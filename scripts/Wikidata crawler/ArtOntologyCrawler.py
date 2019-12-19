@@ -136,22 +136,13 @@ def extract_artworks(type_name, wikidata_id, languageKeys=[item[0] for item in l
         except:
             width = ""
         try:
-            sitelinks = item_dict["sitelinks"]
-            wikpedia_page = pywikibot.Page(sitelinks["enwiki"])
-
-            abstract = get_abstract(wikpedia_page.pageid)
-            wikipedia_link = wikpedia_page.full_url()
-        except:
-            abstract = ""
-            wikipedia_link = ""
-        try:
             iconclasses = list(map(lambda clm: clm.getTarget(), clm_dict["P1257"]))
         except:
             iconclasses = []
 
         #print(str(count) + " ", end='')
         dict = {"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "artists": artists, "locations": locations, "genres": genres,
-         "movements": movements, "inception": inception, "materials": materials, "motifs": motifs, "country": country, "height": height, "width": width, "abstract": abstract, "wikipediaLink": wikipedia_link, "iconclasses": iconclasses}
+         "movements": movements, "inception": inception, "materials": materials, "motifs": motifs, "country": country, "height": height, "width": width, "iconclasses": iconclasses}
 
 
         # print(classes, item, label, description, image, artists, locations, genres, movements, inception, materials, motifs,  country, height, width)
@@ -168,7 +159,15 @@ def extract_artworks(type_name, wikidata_id, languageKeys=[item[0] for item in l
                 countrylang = clm_dict["P17"][0].getTarget().get()["labels"][langkey]
             except:
                 countrylang = country
-            dict.update({"label_"+langkey: labellang, "description_"+langkey: descriptionlang, "country_"+langkey: countrylang})
+            try:
+                sitelinks = item_dict["sitelinks"]
+                wikpedia_page = pywikibot.Page(sitelinks[langkey+"wiki"])
+                abstract_lang = get_abstract(wikpedia_page.pageid, langkey)
+                wikipedia_link_lang = wikpedia_page.full_url()
+            except:
+                abstract_lang = ""
+                wikipedia_link_lang = ""
+            dict.update({"label_"+langkey: labellang, "description_"+langkey: descriptionlang, "country_"+langkey: countrylang, "abstract_"+langkey: abstract_lang, "wikipediaLink_"+langkey: wikipedia_link_lang})
         extract_dicts.append(dict)
         count += 1
 
@@ -238,16 +237,7 @@ def extract_subjects(subject_type, languageKeys=[item[0] for item in language_co
             image = clm_dict["P18"][0].getTarget().get_file_url()
         except:
             image = ""
-        try:
-            sitelinks = item_dict["sitelinks"]
-            wikpedia_page = pywikibot.Page(sitelinks["enwiki"])
-
-            abstract = get_abstract(wikpedia_page.pageid)
-            wikipedia_link = wikpedia_page.full_url()
-        except:
-            abstract = ""
-            wikipedia_link = ""
-        subject_dict = {"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "abstract": abstract, "wikipediaLink": wikipedia_link}
+        subject_dict = {"id": item.id, "classes": classes, "label": label, "description": description, "image": image}
         if subject_type == "artists":
             try:
                 gender = clm_dict["P21"][0].getTarget().get()["labels"]["en"]
@@ -335,7 +325,15 @@ def extract_subjects(subject_type, languageKeys=[item[0] for item in language_co
                 descriptionlang = item_dict["descriptions"][langkey]
             except:
                 descriptionlang =  description
-            subject_dict.update({"label_"+langkey: labellang, "description_"+langkey: descriptionlang})
+            try:
+                sitelinks = item_dict["sitelinks"]
+                wikpedia_page = pywikibot.Page(sitelinks[langkey+"wiki"])
+                abstract_lang = get_abstract(wikpedia_page.pageid, langkey)
+                wikipedia_link_lang = wikpedia_page.full_url()
+            except:
+                abstract_lang = ""
+                wikipedia_link_lang = ""
+            subject_dict.update({"label_"+langkey: labellang, "description_"+langkey: descriptionlang, "abstract_"+langkey: abstract_lang, "wikipediaLink_"+langkey: wikipedia_link_lang})
 
         # add fields that are special for different subject types
         if subject_type == "artists":
@@ -567,9 +565,9 @@ def generate_rdf():
 
 def get_fields(type_name, languageKeys=[item[0] for item in language_config_to_list()]):
 
-    fields = ["id", "classes", "label", "description", "image", "abstract", "wikipediaLink"]
+    fields = ["id", "classes", "label", "description", "image"]
     for langkey in languageKeys:
-        fields += ["label_"+langkey, "description_"+langkey]
+        fields += ["label_"+langkey, "description_"+langkey, "abstract_"+langkey, "wikipediaLink_"+langkey]
     if type_name in ["drawings", "sculptures", "paintings", "artworks"]:
         fields += ["artists", "locations", "genres", "movements", "inception",
                    "materials", "motifs", "country", "height", "width", "iconclasses"]

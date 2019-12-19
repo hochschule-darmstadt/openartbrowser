@@ -53,11 +53,10 @@ def fill_language_gaps(element, jsonobject):
             # Skip empty language data
             if not jsonobject[element + "_" + row[0]]:
                 next
-            # Assign language data to element and fill in which
-            # language is used
+            # Assign language data to element
             else:
                 jsonobject[element] = (
-                    jsonobject[element + "_" + row[0]] + " (" + row[1] + ")"
+                    jsonobject[element + "_" + row[0]]
                 )
         # Should not happen if key attributes in json are atleast existent
         except KeyError:

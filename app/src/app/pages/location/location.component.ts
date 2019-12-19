@@ -43,10 +43,6 @@ export class LocationComponent implements OnInit, OnDestroy {
     });
   }
 
-  toggleDetails() {
-    this.collapse = !this.collapse;
-  }
-
   private calculateCollapseState() {
     let metaNumber = 0;
     if (this.location.abstract.length > 400) {

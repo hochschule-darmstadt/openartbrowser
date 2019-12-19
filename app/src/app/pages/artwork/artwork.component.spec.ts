@@ -8,8 +8,9 @@ import {HttpClientModule} from '@angular/common/http';
 import {ImageViewerModule} from 'ngx-image-viewer';
 import {RouterModule} from '@angular/router';
 import {DataService} from 'src/app/core/services/elasticsearch/data.service';
-import {VideoComponent} from '../../shared/components/video/video.component';
+import {VideoComponent} from 'src/app/shared/components/video/video.component';
 import {BadgeComponent} from 'src/app/shared/components/badge/badge.component';
+import {CollapseComponent} from 'src/app/shared/components/collapse/collapse.component';
 
 describe('ArtworkComponent', () => {
   let component: ArtworkComponent;
@@ -28,7 +29,8 @@ describe('ArtworkComponent', () => {
         SlideComponent,
         BadgeComponent,
         CarouselComponent,
-        VideoComponent
+        VideoComponent,
+        CollapseComponent
       ],
       providers: [DataService]
     }).compileComponents();

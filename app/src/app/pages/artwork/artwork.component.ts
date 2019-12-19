@@ -67,6 +67,9 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   private ngUnsubscribe = new Subject();
 
+  /** a video was found */
+  videoExists = false;
+
   constructor(private dataService: DataService, private route: ActivatedRoute, @Inject(LOCALE_ID) localeId: string) {
     this.locale = localeId.substr(0, 2);
   }

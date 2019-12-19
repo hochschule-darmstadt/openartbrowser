@@ -11,11 +11,15 @@ import { InformationComponent } from './components/information/information.compo
 import { AbstractComponent } from './components/abstract/abstract.component';
 import { TitleComponent } from './components/title/title.component';
 import { IconclassComponent } from './components/iconclass/iconclass.component';
+import { BadgeComponent } from './components/badge/badge.component';
+import { TimelineComponent } from './components/timeline/timeline.component';
+import { Ng5SliderModule } from 'ng5-slider';
 
 /** Everything that should be used within multiple feature modules but isn't always required goes here */
 @NgModule({
-  declarations: [CarouselComponent, SlideComponent, SearchComponent, VideoComponent, InformationComponent, AbstractComponent, TitleComponent, IconclassComponent],
-  imports: [CommonModule, NgbModule, RouterModule, FormsModule],
-  exports: [CarouselComponent, SearchComponent, VideoComponent, InformationComponent, AbstractComponent, TitleComponent, IconclassComponent],
+  declarations: [CarouselComponent, SlideComponent, SearchComponent, VideoComponent, InformationComponent, BadgeComponent, AbstractComponent, TitleComponent, IconclassComponent],
+  imports: [CommonModule, NgbModule, RouterModule, FormsModule, Ng5SliderModule],
+  exports: [CarouselComponent, SearchComponent, VideoComponent, TimelineComponent, BadgeComponent, NgbModule, InformationComponent, AbstractComponent, TitleComponent, IconclassComponent],
 })
-export class SharedModule {}
+export class SharedModule {
+}

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import { ArtworkComponent } from './artwork.component';
 import { SlideComponent } from 'src/app/shared/components/carousel/slide/slide.component';
@@ -9,6 +9,7 @@ import { ImageViewerModule } from 'ngx-image-viewer';
 import { RouterModule } from '@angular/router';
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 import { VideoComponent } from "../../shared/components/video/video.component";
+import {BadgeComponent} from 'src/app/shared/components/badge/badge.component';
 import { InformationComponent } from "../../shared/components/information/information.component";
 
 describe('ArtworkComponent', () => {
@@ -26,15 +27,13 @@ describe('ArtworkComponent', () => {
       declarations: [
         ArtworkComponent,
         SlideComponent,
+        BadgeComponent,
         CarouselComponent,
         VideoComponent,
         InformationComponent
       ],
-      providers: [
-        DataService,
-      ]
-    })
-    .compileComponents();
+      providers: [DataService]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

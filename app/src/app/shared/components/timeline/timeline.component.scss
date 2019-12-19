@@ -1,0 +1,153 @@
+$container-height: 20em;
+
+.timeline-container {
+  margin-top: 1em;
+}
+
+::ng-deep {
+  .custom-slider {
+    .ng5-slider-tick {
+      visibility: hidden;
+
+      .ng5-slider-tick-legend {
+        visibility: visible !important;
+      }
+    }
+
+    .ng5-slider-model-value {
+      visibility: visible !important;
+    }
+
+    .ng5-slider-ceil,
+    .ng5-slider-floor {
+      display: none !important;
+    }
+
+    .ng5-slider-pointer-max {
+      pointer-events: none;
+      display: none;
+      visibility: hidden !important;
+    }
+
+    .ng5-slider-pointer:after {
+      background: #FFFFFF !important;
+    }
+
+    .ng5-slider-bubble {
+      color: #FFFFFF !important;
+    }
+  }
+}
+
+.carou {
+  margin: 3% 0 0 0;
+  display: flex;
+  flex-direction: row;
+}
+
+.carou-control {
+  position: relative;
+  width: 3%;
+  opacity: 0.4;
+  margin: 0 1em;
+  text-align: center;
+
+  &-icon {
+    position: absolute;
+    top: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+  }
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.carou-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+
+  width: 90%;
+  max-width: 90%;
+  height: $container-height+5;
+  left: -100px;
+
+}
+
+.item-container {
+  min-width: 25%;
+  // Padding between items/artworks
+  padding-left: 10px;
+  padding-right: 10px;
+  height: 100%;
+}
+
+.item {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  &-caption {
+    font-size: large;
+    max-height: 15%;
+    min-height: 2rem;
+    margin-bottom: 0.3em;
+    align-self: center;
+    margin-top: auto;
+    padding-top: 0.3em;
+  }
+}
+
+.overlay-container {
+  position: relative;
+  margin: 0 auto;
+
+  &:hover .overlay_view {
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+  }
+
+  &-caption {
+    max-height: 80%;
+  }
+}
+
+.overlay_view {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  -webkit-transform: scale(0);
+  -ms-transform: scale(0);
+  transform: scale(0);
+  -webkit-transition: 0.3s ease;
+  transition: 0.3s ease;
+  cursor: pointer;
+}
+
+.img_self {
+  cursor: pointer;
+  max-width: 100%;
+}
+
+.img_description {
+  color: white;
+  font-size: 1em;
+  position: absolute;
+  width: 90%;
+  top: 50%;
+  -webkit-transform: translate(5%, -50%);
+  -ms-transform: translate(5%, -50%);
+  transform: translate(5%, -50%);
+  text-align: center;
+}

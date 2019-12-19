@@ -1,7 +1,7 @@
 <div class="container entity artwork">
   <div class="row pb-5 border-bottom" *ngIf="!imageHidden && artwork?.imageMedium">
     <div class="img-container mx-auto d-block" (click)="showModal()">
-      <img class="img-fluid d-block" id="image-main" (error)="hideImage()" src="{{ artwork?.imageMedium }}" alt="" />
+      <img class="img-fluid d-block" id="image-main" (error)="hideImage()" src="{{ artwork?.imageMedium }}" alt=""/>
       <div class="enlarge">
         <i class="fas fa-expand" (click)="showModal()"></i>
       </div>
@@ -56,8 +56,8 @@
         -->
         <div class="col-md-11">
           <p *ngIf="artwork?.artists?.length" class="mb-1 add-padding">
-              <app-badge *ngFor="let artist of artwork?.artists" [entity]="artist">
-              </app-badge>
+            <app-badge *ngFor="let artist of artwork?.artists" [entity]="artist">
+            </app-badge>
           </p>
         </div>
       </div>
@@ -91,12 +91,6 @@
         </div>
       </div>
 
-      <div class="row" *ngIf="artwork?.videos" >
-        <div class="col-md-2 pr-0">
-          <p class="mr-4 mb-1 text-muted" href="#collapseArtist" (click)="toggleDetails()"> <i class="fab fa-youtube fa-2x"></i></p>
-        </div>
-      </div>
-
       <!--
         Check the length of attributes "genres", "movements", "materials" or "motifs", if one of them not empty
         show the collapse element
@@ -109,27 +103,23 @@
           artwork?.motifs?.length ||
           (artwork?.height && artwork?.width)
         ">
-
-        <h4 class="mt-2 more" aria-controls="detailsDiv" [attr.aria-expanded]="!detailsCollapsed"
-          (click)="detailsCollapsed = !detailsCollapsed">
-          <ng-container i18n="Detail More label@@more">More</ng-container>
-          <i *ngIf="detailsCollapsed" class="fas fa-chevron-down"></i>
-          <i *ngIf="!detailsCollapsed" class="fas fa-chevron-up"></i>
-        </h4>
-        <div class="collapse" [ngbCollapse]="detailsCollapsed" id="detailsDiv">
+        <app-collapse collapse="{{ detailsCollapsed }}"
+                      [showVideo]="videoExists">
           <div class="row abstract">
             <div *ngIf="artwork?.abstract" class="col-md pr-0">
               <span>{{ artwork?.abstract }}</span>
               <p class="wiki-link">
                 <ng-container i18n="Detail More label@@more">More</ng-container>:&nbsp;<a
-                  href="{{ artwork?.wikipediaLink }}" target="_blank">Wikipedia</a>
+                href="{{ artwork?.wikipediaLink }}" target="_blank">Wikipedia</a>
               </p>
             </div>
           </div>
 
-          <app-video [entity]="artwork"></app-video>
-          <app-video *ngFor="let artist of artwork.artists.slice(0,1)" [entity]="artist"></app-video>
-          <app-video *ngFor="let movement of artwork.movements.slice(0,1)" [entity]="movement"></app-video>
+          <app-video [entity]="artwork" (videoFound)="videoExists=$event"></app-video>
+          <app-video *ngFor="let artist of artwork.artists.slice(0,1)" [entity]="artist"
+                     (videoFound)="videoExists=$event"></app-video>
+          <app-video *ngFor="let movement of artwork.movements.slice(0,1)" [entity]="movement"
+                     (videoFound)="videoExists=$event"></app-video>
 
           <div class="row">
             <div class="col-md-1">
@@ -144,8 +134,8 @@
             -->
             <div class="col-md-11">
               <p *ngIf="artwork?.genres?.length" class="mb-1 add-padding">
-                  <app-badge *ngFor="let genre of artwork?.genres" [entity]="genre">
-                  </app-badge>
+                <app-badge *ngFor="let genre of artwork?.genres" [entity]="genre">
+                </app-badge>
               </p>
             </div>
           </div>
@@ -210,7 +200,7 @@
               <p *ngFor="let iconclass of iconclassData" class="mb-1 add-padding">
                 <!-- already adding the fallback to english if the language index is not found on iconclass.org -->
                 <!-- which will for example be the case with 'es' -->
-                <b>[{{iconclass.n}}] </b> {{iconclass.txt[locale]}} <br />
+                <b>[{{iconclass.n}}] </b> {{iconclass.txt[locale]}} <br/>
                 <!-- the actual language key for the first part of the expression has to be inserted still -->
               </p>
             </div>
@@ -231,8 +221,7 @@
               </p>
             </div>
           </div>
-        </div>
-
+        </app-collapse>
       </div>
     </div>
   </div>
@@ -251,7 +240,7 @@
               <i class="mr-1 fa fa-{{ tab.icon }}"></i>
               <ng-container i18n="Entity Type Labels@@entity_labels" *ngIf="tab.type; let type">
                 {type, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location}
-                genre {Genre} movement {Movement} material {Material} }
+                  genre {Genre} movement {Movement} material {Material} }
               </ng-container>
             </a>
           </li>
@@ -264,7 +253,7 @@
       -->
       <div class="tab-content">
         <div *ngFor="let tab of artworkTabs" class="tab-pane fade" [ngClass]="{ 'show active': tab.active }"
-          id="{{ tab.type }}_tab">
+             id="{{ tab.type }}_tab">
 
           <!--
             Listen for an event and assign the attribute "hoveredArtwork" to the hovered artwork.
@@ -273,31 +262,33 @@
 
           <!-- Collapse element for common tags -->
           <h3 class="mt-2 mb-0 more" aria-controls="commonTagsDiv" [attr.aria-expanded]="!commonTagsCollapsed"
-            (click)="commonTagsCollapsed = !commonTagsCollapsed">
+              (click)="commonTagsCollapsed = !commonTagsCollapsed">
             <ng-container i18n="Related Artworks headline text before tab name @@related_artworks_headline_prev">
               Common
             </ng-container>
             <span *ngIf="tab != 'all'">
               <ng-container i18n="Related Artworks headline text tab name@@related_artworks_headline_tab_name">
                 {tab, select, all {all} motif {motif} artist {artist}
-                location {location} genre {genre} movement {movement} material {material}}
+                  location {location} genre {genre} movement {movement} material {material}}
               </ng-container>
             </span>
             <ng-container i18n="Related Artworks headline text after tab name @@related_artworks_headline_after">
               tags with artwork
             </ng-container>
             <span>"{{ (artwork?.label?.length > 35) ?
-                (artwork?.label | slice:0:35) + '...' : (artwork?.label) }}"</span>
+              (artwork?.label | slice:0:35) + '...' : (artwork?.label) }}"</span>
             <i *ngIf="commonTagsCollapsed" class="ml-2 fas fa-chevron-down"></i>
             <i *ngIf="!commonTagsCollapsed" class="ml-2 fas fa-chevron-up"></i>
           </h3>
 
           <div class="collapse" [ngbCollapse]="commonTagsCollapsed" id="commonTagsDiv">
             <p class="mb-4 mt-0"><em>
-                (<ng-container i18n="Related Artworks hint text@@related_artworks_hint">
-                  move the mouse over an artwork to display common tags
-                </ng-container>)
-              </em></p>
+              (
+              <ng-container i18n="Related Artworks hint text@@related_artworks_hint">
+                move the mouse over an artwork to display common tags
+              </ng-container>
+              )
+            </em></p>
 
             <!--
               For all attributes of the artwork check if length the attribute is not empty and
@@ -308,49 +299,49 @@
             -->
             <span *ngIf="artwork?.motifs?.length && (tab.type == 'motif' || tab.type == 'all')" class="mb-1">
               <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
-                [ngClass]="{'badge-light': motif && hoveredArtwork?.motifs?.includes(motif.id) }"
-                *ngFor="let motif of artwork?.motifs" [routerLink]="'/motif/' + motif.id">
+                    [ngClass]="{'badge-light': motif && hoveredArtwork?.motifs?.includes(motif.id) }"
+                    *ngFor="let motif of artwork?.motifs" [routerLink]="'/motif/' + motif.id">
                 <i class="fas fa-image"></i>
                 {{ motif?.label }}</span>
             </span>
 
             <span *ngIf="artwork?.artists?.length && (tab.type == 'artist' || tab.type == 'all')" class="mb-1">
               <span *ngFor="let artist of artwork?.artists"
-                [ngClass]="{'badge-light': artist && hoveredArtwork?.artists?.includes(artist.id) }"
-                class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
-                [routerLink]="'/artist/' + artist.id">
+                    [ngClass]="{'badge-light': artist && hoveredArtwork?.artists?.includes(artist.id) }"
+                    class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
+                    [routerLink]="'/artist/' + artist.id">
                 <i class="fas fa-user"></i>
                 {{ artist?.label }}</span>
             </span>
 
             <span *ngIf="artwork?.genres?.length && (tab.type == 'genre' || tab.type == 'all')" class="mb-1">
               <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
-                [ngClass]="{'badge-light': genre && hoveredArtwork?.genres?.includes(genre.id) }"
-                *ngFor="let genre of artwork?.genres" [routerLink]="'/genre/' + genre.id">
+                    [ngClass]="{'badge-light': genre && hoveredArtwork?.genres?.includes(genre.id) }"
+                    *ngFor="let genre of artwork?.genres" [routerLink]="'/genre/' + genre.id">
                 <i class="fas fa-tag"></i>
                 {{ genre?.label }}</span>
             </span>
 
             <span *ngIf="artwork?.movements?.length && (tab.type == 'movement' || tab.type == 'all')" class="mb-1">
               <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
-                [ngClass]="{'badge-light': movement && hoveredArtwork?.movements?.includes(movement.id) }"
-                *ngFor="let movement of artwork?.movements" [routerLink]="'/movement/' + movement.id">
+                    [ngClass]="{'badge-light': movement && hoveredArtwork?.movements?.includes(movement.id) }"
+                    *ngFor="let movement of artwork?.movements" [routerLink]="'/movement/' + movement.id">
                 <i class="fas fa-wind"></i>
                 {{ movement?.label }}</span>
             </span>
 
             <span *ngIf="artwork?.materials?.length && (tab.type == 'material' || tab.type == 'all')" class="mb-1">
               <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
-                [ngClass]="{'badge-light': material && hoveredArtwork?.materials?.includes(material.id) }"
-                *ngFor="let material of artwork?.materials" [routerLink]="'/material/' + material.id">
+                    [ngClass]="{'badge-light': material && hoveredArtwork?.materials?.includes(material.id) }"
+                    *ngFor="let material of artwork?.materials" [routerLink]="'/material/' + material.id">
                 <i class="fas fa-scroll"></i>
                 {{ material?.label }}</span>
             </span>
 
             <span *ngIf="artwork?.locations?.length && (tab.type == 'location' || tab.type == 'all')" class=" mb-1">
               <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
-                [ngClass]="{'badge-light': location && hoveredArtwork?.locations?.includes(location.id) }"
-                *ngFor="let location of artwork?.locations" [routerLink]="'/location/' + location.id">
+                    [ngClass]="{'badge-light': location && hoveredArtwork?.locations?.includes(location.id) }"
+                    *ngFor="let location of artwork?.locations" [routerLink]="'/location/' + location.id">
                 <i class="fas fa-archway"></i>
                 {{ location?.label }}</span>
             </span>

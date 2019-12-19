@@ -1,7 +1,7 @@
 <div class="container entity artist">
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7">
-      <span class="badge badge-pill badge-secondary chip cursor-unset">
+      <span class="badge badge-secondary chip cursor-unset">
         <i class="fas fa-user"></i>
         <ng-container i18n="Artist label@@artist">Artist</ng-container>
       </span>
@@ -32,77 +32,64 @@
         </div>
       </div>
 
-      <div class="row" *ngIf="artist?.videos" >
-        <div class="col-md-2 pr-0">
-          <p class="mr-4 mb-1 text-muted" href="#collapseArtist" (click)="toggleDetails()"> <i class="fab fa-youtube fa-2x"></i></p>
-        </div>
-      </div>
-
-      <div *ngIf="
-          artist?.gender ||
-          artist?.citizenship ||
-          artist?.movements?.length ||
-          artist?.influenced_by?.length ||
-          artist?.abstract
-       ">
-        <h4 class="mt-2 more" href="#collapseArtist" (click)="toggleDetails()">
-          <ng-container i18n="Detail More label@@more">More</ng-container>
-          <i *ngIf="collapse" href="#collapseArtist" class="fas fa-chevron-down"> </i>
-          <i *ngIf="!collapse" href="#collapseArtist" class="fas fa-chevron-up"> </i>
-        </h4>
-
-        <div [className]="collapse ? 'collapse' : 'collapse show'" id="collapseArtist">
-
+      <div *ngIf="artist?.gender ||
+                  artist?.citizenship ||
+                  artist?.movements?.length ||
+                  artist?.influenced_by?.length ||
+                  artist?.abstract">
+        <app-collapse collapse="{{ collapse }}" [showVideo]="videoExists">
           <div class="row abstract">
             <div *ngIf="artist?.abstract" class="col-md pr-0">
               <span>{{ artist?.abstract }}</span>
-              <p class="wiki-link"><ng-container i18n="Detail More label@@more">More</ng-container>: <a href="{{ artist?.wikipediaLink }}" target="_blank">Wikipedia</a></p>
+              <p class="wiki-link">
+                <ng-container i18n="Detail More label@@more">More</ng-container>
+                : <a href="{{ artist?.wikipediaLink }}" target="_blank">Wikipedia</a></p>
             </div>
           </div>
 
-          <app-video [entity]="artist"></app-video>
-          <app-video *ngFor="let movement of artist.movements.slice(0,1)" [entity]="movement"></app-video>
+          <app-video [entity]="artist" (videoFound)="videoExists=$event"></app-video>
+          <app-video *ngFor="let movement of artist.movements.slice(0,1)" [entity]="movement"
+                     (videoFound)="videoExists=$event"></app-video>
 
           <table class="table-fit">
             <tbody>
 
-              <tr *ngIf="artist?.gender">
-                <td class="text-muted">
-                  <ng-container i18n="Artist gender label@@gender">Gender</ng-container>:
-                </td>
-                <td>{{ artist?.gender }}</td>
-              </tr>
+            <tr *ngIf="artist?.gender">
+              <td class="text-muted">
+                <ng-container i18n="Artist gender label@@gender">Gender</ng-container>:
+              </td>
+              <td>{{ artist?.gender }}</td>
+            </tr>
 
-              <tr *ngIf="artist?.citizenship">
-                <td class="text-muted">
-                  <ng-container i18n="Artist citizenship label@@citizenship">Citizenship</ng-container>:
-                </td>
-                <td>{{ artist?.citizenship }}</td>
-              </tr>
+            <tr *ngIf="artist?.citizenship">
+              <td class="text-muted">
+                <ng-container i18n="Artist citizenship label@@citizenship">Citizenship</ng-container>:
+              </td>
+              <td>{{ artist?.citizenship }}</td>
+            </tr>
 
-              <tr *ngIf="artist?.movements?.length">
-                <td class="text-muted">
-                  <ng-container i18n="Movement label@@movement">Movement</ng-container>:
-                </td>
-                <td>
-                  <app-badge *ngFor="let movement of artist?.movements" [entity]="movement">
-                  </app-badge>
-                </td>
-              </tr>
+            <tr *ngIf="artist?.movements?.length">
+              <td class="text-muted">
+                <ng-container i18n="Movement label@@movement">Movement</ng-container>:
+              </td>
+              <td>
+                <app-badge *ngFor="let movement of artist?.movements" [entity]="movement">
+                </app-badge>
+              </td>
+            </tr>
 
-              <tr *ngIf="artist?.influenced_by?.length">
-                <td class="text-muted">
-                  <ng-container i18n="Influenced by label@@influenced_by">Influenced by</ng-container>:
-                </td>
-                <td>
-                    <app-badge *ngFor="let influencer of artist?.influenced_by" [entity]="influencer">
-                    </app-badge>
-                </td>
-              </tr>
-
+            <tr *ngIf="artist?.influenced_by?.length">
+              <td class="text-muted">
+                <ng-container i18n="Influenced by label@@influenced_by">Influenced by</ng-container>:
+              </td>
+              <td>
+                <app-badge *ngFor="let influencer of artist?.influenced_by" [entity]="influencer">
+                </app-badge>
+              </td>
+            </tr>
             </tbody>
           </table>
-        </div>
+        </app-collapse>
       </div>
     </div>
     <div class="col-sm-5 img" *ngIf="artist?.image">

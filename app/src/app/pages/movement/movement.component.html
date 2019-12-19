@@ -1,51 +1,43 @@
 <div class="container entity movement">
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7">
-      <span class="badge badge-pill badge-secondary chip cursor-unset">
+      <span class="badge badge-secondary chip cursor-unset">
         <i class="fas fa-wind"></i>
         <ng-container i18n="Movement label@@movement">Movement</ng-container>
       </span>
       <h2 class="mb-3 first-letter">{{ movement?.label }}</h2>
-      <div class="row" *ngIf="movement?.videos" >
-        <div class="col-md-2 pr-0">
-          <p class="mr-4 mb-1 text-muted" href="#collapseArtist" (click)="toggleDetails()"> <i class="fab fa-youtube fa-2x"></i></p>
-        </div>
-      </div>
 
+      <app-collapse collapse="{{ collapse }}" [showVideo]="videoExists">
       <div *ngIf="movement?.abstract?.length || movement?.influenced_by?.length">
-        <h4 class="mt-2 more" href="#collapseArtist" (click)="toggleDetails()">
-          <ng-container i18n="Detail More label@@more">More</ng-container>
-          <i *ngIf="collapse" href="#collapseArtist" class="fas fa-chevron-down"> </i>
-          <i *ngIf="!collapse" href="#collapseArtist" class="fas fa-chevron-up"> </i>
-        </h4>
-        <div [className]="collapse ? 'collapse' : 'collapse show'" id="collapseArtist">
-          <div class="row">
+          <div class="row abstract">
             <div *ngIf="movement?.abstract" class="col-md pr-0">
               <span>{{ movement?.abstract }}</span>
-              <p class="wiki-link"><ng-container i18n="Detail More label@@more">More</ng-container>: <a href="{{ movement?.wikipediaLink }}" target="_blank">Wikipedia</a></p>
+              <p class="wiki-link">
+                <ng-container i18n="Detail More label@@more">More</ng-container>
+                : <a href="{{ movement?.wikipediaLink }}" target="_blank">Wikipedia</a></p>
             </div>
           </div>
 
-          <app-video [entity]="movement"></app-video>
-          <app-video *ngFor="let artwork of sliderItems.slice(0,10)" [entity]="artwork"></app-video>
+          <app-video [entity]="movement" (videoFound)="videoExists=$event"></app-video>
+          <app-video *ngFor="let artwork of sliderItems.slice(0,10)" [entity]="artwork"
+                     (videoFound)="videoExists=$event"></app-video>
 
           <div class="row">
             <div class="col-md-3 pr-0">
               <p *ngIf="movement?.influenced_by?.length" class="mb-1 text-muted">
-                 <ng-container i18n="Influenced by label@@influenced_by">Influenced by</ng-container>:
+                <ng-container i18n="Influenced by label@@influenced_by">Influenced by</ng-container>:
               </p>
             </div>
 
-
             <div class="col-md-9 info">
               <p *ngIf="movement?.influenced_by?.length" class="mb-1">
-                  <app-badge *ngFor="let influence of movement?.influenced_by" [entity]="influence">
-                  </app-badge>
+                <app-badge *ngFor="let influence of movement?.influenced_by" [entity]="influence">
+                </app-badge>
               </p>
             </div>
           </div>
         </div>
-      </div>
+      </app-collapse>
     </div>
 
     <div class="col-sm-5 img" *ngIf="movement?.image">

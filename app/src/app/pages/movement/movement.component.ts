@@ -28,6 +28,9 @@ export class MovementComponent implements OnInit, OnDestroy {
   /** Toggle bool for displaying either timeline or artworks carousel component **/
   showTimelineNotArtworks = true;
 
+  /** a video was found */
+  videoExists = false;
+
   constructor(private dataService: DataService, private route: ActivatedRoute) {
   }
 
@@ -50,10 +53,6 @@ export class MovementComponent implements OnInit, OnDestroy {
 
       this.calculateCollapseState();
     });
-  }
-
-  toggleDetails() {
-    this.collapse = !this.collapse;
   }
 
   private calculateCollapseState() {

@@ -3,6 +3,10 @@ language: node_js
 node_js:
   - "12"
 
+notifications:
+  email: false
+  slack: 'hdampse:U1CJmoQ7s8a3wIZC0Wi3wWZ7'
+
 addons:
   apt:
     sources:
@@ -24,6 +28,16 @@ jobs:
       script:
         - npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
         - echo "no backend / crawler / other tests specified"
+
+    - language: python
+      python: 3.7
+      before_install:
+        - cd scripts/
+        - python --version
+      install:
+        - pip3 install -r requirements.txt
+      script:
+        - python Wikidata\ crawler/ArtOntologyCrawler.py -d 1
 
     - stage: deploy-to-staging
       if: branch = staging AND type = push

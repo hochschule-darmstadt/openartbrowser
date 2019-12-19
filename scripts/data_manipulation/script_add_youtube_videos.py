@@ -53,7 +53,7 @@ def add_youtube_videos(
                 continue
             if qid not in videos:
                 videos[qid] = []
-            video_url = "https://www.youtube.com/embed/{}".format(yt_id)
+            video_url = "https://www.youtube-nocookie.com/embed/{}".format(yt_id)
             videos[qid].append(video_url)
 
     if len(broken_ids) > 0:

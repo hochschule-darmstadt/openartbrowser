@@ -1,18 +1,17 @@
-import {Component, OnInit, OnDestroy, HostListener} from '@angular/core';
-import {Artwork, EntityType} from 'src/app/shared/models/models';
+import {Component, OnInit, OnDestroy, HostListener, Inject, LOCALE_ID} from '@angular/core';
+import {Artwork, EntityType, Iconclass, EntityIcon} from 'src/app/shared/models/models';
 import {takeUntil} from 'rxjs/operators';
 import {ActivatedRoute} from '@angular/router';
 import {Subject} from 'rxjs';
 import * as _ from 'lodash';
-import { DataService } from 'src/app/core/services/elasticsearch/data.service';
-import { shuffle } from 'src/app/core/services/utils.service';
-import { Iconclass } from 'src/app/shared/models/entity.interface';
+import {DataService} from 'src/app/core/services/elasticsearch/data.service';
+import {shuffle} from 'src/app/core/services/utils.service';
 
 /** interface for the tabs */
 interface ArtworkTab {
-  heading: string;
+  type: EntityType;
   items: Artwork[];
-  icon: string;
+  icon: EntityIcon;
   active: boolean;
 }
 
@@ -27,27 +26,31 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   artwork: Artwork = null;
 
-  iconclassData: Array<any>|null = null;
+  iconclassData: Array<any> | null = null;
+  locale = 'en';
 
   /**
    * whether artwork image should be hidden
    */
   imageHidden = false;
 
-  /** @description to toggle details container. true if more infos are folded in */
-  collapse = true;
-
-  /** whether artwork image viewer is active or not */
-  modalIsVisible = false;
-
-  /** number of artworks tabs intialized */
-  artworkTabCounter = 0;
+  /**
+   * @description to toggle details container.
+   * true if more infos are folded in.
+   * initial as true (closed).
+   */
+  detailsCollapsed = true;
 
   /**
    * @description to toggle common tags container.
-   * initial as true (close).
+   * initial as false (open).
    */
-  collapseDownTags = true;
+  commonTagsCollapsed = false;
+
+  /**
+   * @descriptionwhether artwork image viewer is active or not
+   */
+  modalIsVisible = false;
 
   /**
    * @description to save the artwork item that is being hovered.
@@ -57,93 +60,61 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   /**
    * @description for the tabs in slider/carousel.
    */
-  artworkTabs: { [key: string]: ArtworkTab } = {
-    all: {
-      heading: 'all',
-      items: [],
-      icon: 'list-ul',
-      active: true,
-    },
-    motif: {
-      heading: 'motif',
-      items: [],
-      icon: 'image',
-      active: false,
-    },
-    artist: {
-      heading: 'artist',
-      items: [],
-      icon: 'user',
-      active: false,
-    },
-    location: {
-      heading: 'location',
-      items: [],
-      icon: 'archway',
-      active: false,
-    },
-    genre: {
-      heading: 'genre',
-      items: [],
-      icon: 'tags',
-      active: false,
-    },
-    movement: {
-      heading: 'movement',
-      items: [],
-      icon: 'wind',
-      active: false,
-    },
-    material: {
-      heading: 'material',
-      items: [],
-      icon: 'scroll',
-      active: false,
-    },
-  };
+  artworkTabs: ArtworkTab[] = [];
 
   /**
    * @description use this to end subscription to url parameter in ngOnDestroy
    */
   private ngUnsubscribe = new Subject();
 
-  /**
-   * @description to fetch object in the html.
-   */
-  Object = Object;
+  /** a video was found */
+  videoExists = false;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {}
+  constructor(private dataService: DataService, private route: ActivatedRoute, @Inject(LOCALE_ID) localeId: string) {
+    this.locale = localeId.substr(0, 2);
+  }
 
   /**
    * @description hook that is executed at component initialization
    */
   ngOnInit() {
+    // define tabs if not set
+    if (!this.artworkTabs || !this.artworkTabs.length) {
+      this.addTab(EntityType.ALL, EntityIcon.ALL, true);
+      this.addTab(EntityType.MOTIF, EntityIcon.MOTIF);
+      this.addTab(EntityType.ARTIST, EntityIcon.ARTIST);
+      this.addTab(EntityType.LOCATION, EntityIcon.LOCATION);
+      this.addTab(EntityType.GENRE, EntityIcon.GENRE);
+      this.addTab(EntityType.MOVEMENT, EntityIcon.MOVEMENT);
+      this.addTab(EntityType.MATERIAL, EntityIcon.MATERIAL);
+    }
+
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
-      this.hoveredArtwork = null;
-      const artworkId = params.get('artworkId');
+      /* reset properties */
+      this.artwork = this.hoveredArtwork = this.iconclassData = this.hoveredArtwork = null;
+      this.imageHidden = this.modalIsVisible = this.commonTagsCollapsed = false;
+      this.detailsCollapsed = true;
+      // clears items of all artwork tabs
+      this.artworkTabs.forEach((tab: ArtworkTab) => tab.items = []);
+
       /** Use data service to fetch entity from database */
+      const artworkId = params.get('artworkId');
       this.artwork = await this.dataService.findById<Artwork>(artworkId, EntityType.ARTWORK);
-      /* Count meta data to show more on load */
-      this.calculateCollapseState();
-      this.resetArtworkTabs();
-      this.loadDependencies();
 
-      if (this.artwork.iconclasses) {
-        const nonEmptyIconclasses = this.artwork.iconclasses.filter((i: Iconclass) => i !== '');
-        this.iconclassData = !nonEmptyIconclasses.length ? null : await this.dataService.getIconclassData(nonEmptyIconclasses);
+      if (this.artwork) {
+        /* Count meta data to show more on load */
+        this.calculateCollapseState();
+        /* load tabs content */
+        this.loadTabs();
+
+        if (this.artwork.iconclasses) {
+          const nonEmptyIconclasses = this.artwork.iconclasses.filter((i: Iconclass) => i !== '');
+          if (nonEmptyIconclasses.length) {
+            this.iconclassData = await this.dataService.getIconclassData(nonEmptyIconclasses);
+          }
+        }
       }
-
-    });
-  }
-
-
-  /**
-   * clears items of all artwork tabs
-   */
-  resetArtworkTabs() {
-    Object.keys(this.artworkTabs).map((key: string) => {
-      this.artworkTabs[key].items = [];
     });
   }
 
@@ -152,82 +123,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   hideImage() {
     this.imageHidden = true;
-  }
-
-  /**
-   * resolves ids in artwork attributes with actual entities,
-   * loads slider items and initializes slider tabs
-   */
-  loadDependencies() {
-    this.artworkTabCounter = 0;
-    this.resetArtworkTabs();
-    /** load artist related data */
-    if (this.artwork) {
-      this.dataService.findArtworksByType('artists', this.artwork.artists as any).then((artworks) => {
-        this.fillArtworkTab(this.artworkTabs.artist, artworks);
-      });
-      this.dataService.findMultipleById(this.artwork.artists as any, EntityType.ARTIST).then((artists) => {
-        this.artwork.artists = artists;
-      });
-
-      /** load movement related data */
-      this.dataService.findArtworksByType('movements', this.artwork.movements as any).then((artworks) => {
-        this.fillArtworkTab(this.artworkTabs.movement, artworks);
-      });
-      this.dataService.findMultipleById(this.artwork.movements as any, EntityType.MOVEMENT).then((movements) => {
-        this.artwork.movements = movements;
-      });
-
-      /** load genre related data */
-      this.dataService.findArtworksByType('genres', this.artwork.genres as any).then((artworks) => {
-        this.fillArtworkTab(this.artworkTabs.genre, artworks);
-      });
-      this.dataService.findMultipleById(this.artwork.genres as any, EntityType.GENRE).then((genres) => {
-        this.artwork.genres = genres;
-      });
-
-      /** load motif related data */
-      this.dataService.findArtworksByType('motifs', this.artwork.motifs as any).then((artworks) => {
-        this.fillArtworkTab(this.artworkTabs.motif, artworks);
-      });
-      this.dataService.findMultipleById(this.artwork.motifs as any, EntityType.MOTIF).then((motifs) => {
-        this.artwork.motifs = motifs;
-      });
-
-      /** load loaction related data */
-      this.dataService.findArtworksByType('locations', this.artwork.locations as any).then((artworks) => {
-        this.fillArtworkTab(this.artworkTabs.location, artworks);
-      });
-      this.dataService.findMultipleById(this.artwork.locations as any, EntityType.LOCATION).then((locations) => {
-        this.artwork.locations = locations;
-      });
-
-      /** load material related data */
-      this.dataService.findArtworksByType('materials', this.artwork.materials as any).then((artworks) => {
-        this.fillArtworkTab(this.artworkTabs.material, artworks);
-      });
-      this.dataService.findMultipleById(this.artwork.materials as any, EntityType.MATERIAL).then((materials) => {
-        this.artwork.materials = materials;
-      });
-    }
-  }
-
-  /**
-   * initializes an artwork tab with items,
-   * filters and shuffles main artwork out of tab items,
-   * triggers all tab item selection after all other tabs are resolved
-   * @param tab the tab that should be filled
-   * @param items the items the tab should be filled with
-   */
-  fillArtworkTab(tab: ArtworkTab, items: Artwork[]) {
-    const filtered = shuffle(items.filter((artwork) => artwork.id !== this.artwork.id));
-    if (filtered.length > 0) {
-      tab.items = filtered;
-    }
-    ++this.artworkTabCounter;
-    if (this.artworkTabCounter === 6) {
-      this.selectAllTabItems(10);
-    }
   }
 
   /**
@@ -260,31 +155,40 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @description function to fetch items into 'all' tab from others tabs.
-   * use Set to filter duplicates
-   * param will determine how many times to loop the tabs
-   * get a single artwork in each tab every time it loops (unless duplicate)
-   * shuffles the set at the end
-   * set var artworkTabs.all.items to this Set
-   * @param {number} maxAmountFromEachTab
+   * resolves ids in artwork attributes with actual entities,
+   * loads slider items and initializes slider tabs
    */
-  selectAllTabItems(maxAmountFromEachTab: number): void {
-    const items = new Map<string, Artwork>();
-    for (let index = 0; index < maxAmountFromEachTab; index++) {
-      for (const key of Object.keys(this.artworkTabs)) {
-        if (key !== 'all' && this.artworkTabs[key].items && this.artworkTabs[key].items[index]) {
-          items.set(this.artworkTabs[key].items[index].id, this.artworkTabs[key].items[index]);
-        }
-      }
-    }
-    this.artworkTabs.all.items = shuffle(Array.from(items, ([key, value]) => value));
-  }
+  private loadTabs() {
+    /** get all tab */
+    const allTab = this.artworkTabs.filter((tab: ArtworkTab) => tab.type === EntityType.ALL).pop();
 
-  /**
-   * @description function to toggle details container.
-   */
-  toggleDetails(): void {
-    this.collapse = !this.collapse;
+    /** load artist related data */
+    Promise.all(
+      /** load related data for each tab  */
+      this.artworkTabs.map(async (tab: ArtworkTab) => {
+        const types = tab.type + 's';
+        if (tab.type === EntityType.ALL) {
+          return;
+        }
+
+        // load entities
+        this.dataService.findMultipleById(this.artwork[types] as any, tab.type)
+          .then((artists) => {
+            this.artwork[types] = artists;
+          });
+        // load related artworks by type
+        return await this.dataService.findArtworksByType(types, this.artwork[types] as any)
+          .then((artworks) => {
+            // filters and shuffles main artwork out of tab items,
+            tab.items = shuffle(artworks.filter((artwork) => artwork.id !== this.artwork.id));
+            // put items into 'all' tab
+            allTab.items.push(...tab.items.slice(0, 10));
+          });
+      })
+    ).then(() =>
+      // filter duplicates and shuffles it
+      allTab.items = shuffle(Array.from(new Set(allTab.items)))
+    );
   }
 
   /** calculates the size of meta data item section
@@ -293,37 +197,45 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   private calculateCollapseState() {
     let metaNumber = 0;
-    if (this.artwork) {
-      if (this.artwork.abstract.length > 400) {
-        metaNumber += 10;
-      } else if (this.artwork.abstract.length) {
-        metaNumber += 3;
-      }
-      if (!_.isEmpty(this.artwork.genres)) {
-        metaNumber += this.artwork.genres.length > 3 ? this.artwork.genres.length : 3;
-      }
-      if (!_.isEmpty(this.artwork.materials)) {
-        metaNumber += this.artwork.materials.length > 3 ? this.artwork.genres.length : 3;
-      }
-      if (!_.isEmpty(this.artwork.movements)) {
-        metaNumber += this.artwork.movements.length > 3 ? this.artwork.movements.length : 3;
-      }
-      if (!_.isEmpty(this.artwork.motifs)) {
-        metaNumber += this.artwork.motifs.length > 3 ? this.artwork.motifs.length : 3;
-      }
-      if (this.artwork.height && this.artwork.width) {
-        metaNumber += 3;
-      }
+    // set defauled (closed)
+    this.detailsCollapsed = true;
+
+    if (this.artwork.abstract.length > 400) {
+      metaNumber += 10;
+    } else if (this.artwork.abstract.length) {
+      metaNumber += 3;
+    }
+    if (!_.isEmpty(this.artwork.genres.filter(Boolean))) {
+      metaNumber += this.artwork.genres.length > 3 ? this.artwork.genres.length : 3;
+    }
+    if (!_.isEmpty(this.artwork.materials.filter(Boolean))) {
+      metaNumber += this.artwork.materials.length > 3 ? this.artwork.materials.length : 3;
+    }
+    if (!_.isEmpty(this.artwork.movements.filter(Boolean))) {
+      metaNumber += this.artwork.movements.length > 3 ? this.artwork.movements.length : 3;
+    }
+    if (!_.isEmpty(this.artwork.motifs.filter(Boolean))) {
+      metaNumber += this.artwork.motifs.length > 3 ? this.artwork.motifs.length : 3;
+    }
+    if (this.artwork.height && this.artwork.width) {
+      metaNumber += 3;
+
+    }
+    if (!_.isEmpty(this.artwork.iconclasses.filter(Boolean))) {
+      metaNumber += this.artwork.iconclasses.length > 3 ? this.artwork.iconclasses.length : 3;
     }
     if (metaNumber < 10) {
-      this.collapse = false;
+      this.detailsCollapsed = false;
     }
   }
 
   /**
-   * @description function to toggle common tags container.
+   * Add tab to artwork tab array
+   * @param type Tab title
+   * @param icon Tab icon
+   * @param active Is active tab
    */
-  toggleCommonTags(): void {
-    this.collapseDownTags = !this.collapseDownTags;
+  private addTab(type: EntityType, icon: EntityIcon, active: boolean = false) {
+    this.artworkTabs.push({active, icon, type, items: []});
   }
 }

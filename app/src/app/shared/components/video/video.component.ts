@@ -1,7 +1,6 @@
-import {AfterViewInit, Component, Input, OnChanges, OnDestroy, OnInit} from '@angular/core';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { Entity } from '../../models/models';
-import { resolve } from 'url';
+import {AfterViewInit, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output} from '@angular/core';
+import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
+import {Entity} from '../../models/models';
 
 @Component({
   selector: 'app-video',
@@ -17,6 +16,7 @@ export class VideoComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
    */
   safeUrl: SafeResourceUrl;
 
+  @Output() videoFound = new EventEmitter<boolean>();
   videoExists = false;
 
   constructor(private sanitizer: DomSanitizer) {
@@ -37,8 +37,14 @@ export class VideoComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
       if (videoUrl) {
         this.safeUrl = this.getTrustedUrl(videoUrl);
         this.validateVideoExists(videoUrl)
-          .then(exists => this.videoExists = exists);
+          .then(exists => {
+            this.videoExists = exists;
+            this.videoFound.emit(this.videoExists);
+          });
       }
+    } else {
+      this.videoExists = false;
+      this.videoFound.emit(this.videoExists);
     }
   }
 
@@ -47,10 +53,10 @@ export class VideoComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
    */
   private validateVideoExists(youtubeVideoHref: string): Promise<boolean> {
     return new Promise((resolve: Function, reject: Function) => {
-      const regExpMatchArray = youtubeVideoHref.match('https://www.youtube.com/embed/([^/]+)');
-      if (regExpMatchArray.length === 2) {
-        const id = regExpMatchArray[1];
-        const checkURI = 'http://img.youtube.com/vi/' + id + '/mqdefault.jpg';
+      const regExpMatchArray = youtubeVideoHref.match('https://www.youtube(-nocookie)?.com/embed/([^/]+)');
+      if (regExpMatchArray.length === 3) {
+        const id = regExpMatchArray[2];
+        const checkURI = 'https://img.youtube.com/vi/' + id + '/mqdefault.jpg';
         const img = new Image();
         img.src = checkURI;
         img.onload = () => resolve(img.width !== 120);

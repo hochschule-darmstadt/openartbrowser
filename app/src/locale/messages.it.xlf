@@ -2,32 +2,41 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en" target-language="it" datatype="plaintext" original="ng2.template">
     <body>
-      <trans-unit id="slider_labels" datatype="html">
+      <trans-unit id="entity_labels" datatype="html">
         <source>
-          <x id="ICU" equiv-text="{key, select, artwork {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/>
+          <x id="ICU" equiv-text="{type, select, all {...} artwork {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/>
         </source>
         <target state="final">
-<x id="ICU" equiv-text="{key, select, artwork {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/>   </target>
+          <x id="ICU" equiv-text="{type, select, all {...} artwork {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/>
+        </target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/pages/home/home.component.html</context>
-          <context context-type="linenumber">24</context>
+          <context context-type="sourcefile">app/shared/components/search/search.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
+          <context context-type="linenumber">256</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/home/home.component.html</context>
-          <context context-type="linenumber">48</context>
+          <context context-type="linenumber">27</context>
         </context-group>
-        <note priority="1" from="description">Home Slider Labels</note>
+        <note priority="1" from="description">Entity Type Labels</note>
       </trans-unit>
-      <trans-unit id="55b23cdc14ddfb2b8f63be560716952dbb384e8d" datatype="html">
-        <source>{VAR_SELECT, select, artwork {Kunstwerk} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material} }</source>
-        <target state="final">{VAR_SELECT, select, artwork {Opera d'arte} motif {Motivo} artist {Artista} location {Collocazione} genre {Genere} movement {Movimento} material {Materiale}}</target>
+      <trans-unit id="480d33207a8003c4e3d38902d7769ac338138974" datatype="html">
+        <source>{VAR_SELECT, select, all {All} artwork {Kunstwerk} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material} }</source>
+        <target state="final">{VAR_SELECT, select, all {Tutto} artwork {Opera d'arte} motif {Motivo} artist {Artista} location {Collocazione} genre {Genere} movement {Movimento} material {Materiale}}</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/pages/home/home.component.html</context>
-          <context context-type="linenumber">25</context>
+          <context context-type="sourcefile">app/shared/components/search/search.component.html</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
+          <context context-type="linenumber">257</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/home/home.component.html</context>
-          <context context-type="linenumber">49</context>
+          <context context-type="linenumber">28</context>
         </context-group>
       </trans-unit>
       <trans-unit id="menuHome" datatype="html">
@@ -520,6 +529,22 @@
         </context-group>
         <note priority="1" from="description">Influenced by label</note>
       </trans-unit>
+      <trans-unit id="toggletimeline" datatype="html">
+        <source>Timeline</source><target state="final">Linea del tempo</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artist/artist.component.html</context>
+          <context context-type="linenumber">119</context>
+        </context-group>
+        <note priority="1" from="description">Timeline toggle label</note>
+      </trans-unit>
+      <trans-unit id="toggleartworks" datatype="html">
+        <source>Artworks</source><target state="final">Opere d'arte</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artist/artist.component.html</context>
+          <context context-type="linenumber">125</context>
+        </context-group>
+        <note priority="1" from="description">Artworks toggle label</note>
+      </trans-unit>
       <trans-unit id="artwork" datatype="html">
         <source>Artwork</source><target state="final">Opera d'arte</target>
         <context-group purpose="location">
@@ -551,21 +576,6 @@
           <context context-type="linenumber">214</context>
         </context-group>
         <note priority="1" from="description">Related Artworks label</note>
-      </trans-unit>
-      <trans-unit id="artwork_tabs" datatype="html">
-        <source><x id="ICU" equiv-text="{artworkTabs[tab].heading, select, all {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/> </source><target state="final"><x id="ICU" equiv-text="{artworkTabs[tab].heading, select, all {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/> </target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
-          <context context-type="linenumber">225</context>
-        </context-group>
-        <note priority="1" from="description">Artwork Related Artworks Tabs</note>
-      </trans-unit>
-      <trans-unit id="eb21ca9d04421e780f0b35ae6f4aa5f23f8aeaea" datatype="html">
-        <source>{VAR_SELECT, select, all {All} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material} }</source><target state="final">{VAR_SELECT, select, all {Tutte} motif {Motivo} artist {Artista} location {Collocazione} genre {Genere} movement {Movimento} material {Materiale}}</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
-          <context context-type="linenumber">225</context>
-        </context-group>
       </trans-unit>
       <trans-unit id="related_artworks_headline_prev" datatype="html">
         <source>Common </source><target state="final">Tag </target>

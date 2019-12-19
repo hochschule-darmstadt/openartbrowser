@@ -2,7 +2,10 @@
 set -eE
 set -x 
 
-trap 'exit' ERR
+WD=$(pwd)
+
+TOKEN=$(cat bot_user_oauth_token)
+trap "curl -F file=@${WD}/etl.log -F \"initial_comment=Oops! Something went wrong. Here is the log file: \" -F channels=CRGEZJVA6 -H \"Authorization: Bearer $TOKEN\" https://slack.com/api/files.upload" ERR
 
 python3 Wikidata\ crawler/ArtOntologyCrawler.py
 

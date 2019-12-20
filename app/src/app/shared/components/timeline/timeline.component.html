@@ -14,7 +14,7 @@
            [@slidePrev]="slideOutLeft ? 'out' : 'in'" (@slidePrev.start)="resetSlideAnimation()"
            *ngFor="let item of items |slice:slideStart:slideEnd"
            class="item-container">
-        <div class="item" [routerLink]="item?.type === 'artist'? ['/artist', item?.id] :['/artwork', item?.id]">
+        <a class="item" [routerLink]="item?.type === 'artist'? ['/artist', item?.id] :['/artwork', item?.id]">
           <!-- Div for centering the image -->
           <div *ngIf="item?.date" class="item-caption"></div>
           <!-- container for image and hover description -->
@@ -34,7 +34,7 @@
                [textContent]="item?.type === 'artist'? item?.description : item?.date"
                class="center item-caption">
           </div>
-        </div>
+        </a>
       </div>
     </div>
     <div class="carou-control" (click)="nextClicked()">

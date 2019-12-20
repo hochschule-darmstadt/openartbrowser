@@ -18,7 +18,7 @@
       <ngb-carousel>
         <div *ngFor="let item of category.items">
           <ng-template ngbSlide>
-            <div class="container-image" [routerLink]="['/' + category.type, item?.id]">
+            <a class="container-image" [routerLink]="['/' + category.type, item?.id]">
               <img class="image" (error)="onLoadingError(category, item)" src="{{ item?.imageSmall }}"
                 alt="{{ item?.label }}" />
               <div class="overlay">
@@ -31,7 +31,7 @@
                 </span>
                 <span class="label">{{ item?.label | titlecase }}</span>
               </div>
-            </div>
+            </a>
           </ng-template>
         </div>
       </ngb-carousel>

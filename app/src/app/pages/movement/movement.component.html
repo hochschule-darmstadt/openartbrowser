@@ -18,9 +18,9 @@
             </div>
           </div>
 
-          <app-video [entity]="movement" (videoFound)="videoExists=$event"></app-video>
+          <app-video [entity]="movement" (videoFound)="videoFound($event)"></app-video>
           <app-video *ngFor="let artwork of sliderItems.slice(0,10)" [entity]="artwork"
-                     (videoFound)="videoExists=$event"></app-video>
+                     (videoFound)="videoFound($event)"></app-video>
 
           <div class="row">
             <div class="col-md-3 pr-0">

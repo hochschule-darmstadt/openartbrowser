@@ -1,7 +1,6 @@
-import {AfterViewInit, Component, Input, OnChanges, OnDestroy, OnInit} from '@angular/core';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { Entity } from '../../models/models';
-import { resolve } from 'url';
+import {AfterViewInit, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output} from '@angular/core';
+import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
+import {Entity} from '../../models/models';
 
 @Component({
   selector: 'app-video',
@@ -17,6 +16,7 @@ export class VideoComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
    */
   safeUrl: SafeResourceUrl;
 
+  @Output() videoFound = new EventEmitter<boolean>();
   videoExists = false;
 
   constructor(private sanitizer: DomSanitizer) {
@@ -37,10 +37,14 @@ export class VideoComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
       if (videoUrl) {
         this.safeUrl = this.getTrustedUrl(videoUrl);
         this.validateVideoExists(videoUrl)
-          .then(exists => this.videoExists = exists);
+          .then(exists => {
+            this.videoExists = exists;
+            this.videoFound.emit(this.videoExists);
+          });
       }
     } else {
       this.videoExists = false;
+      this.videoFound.emit(this.videoExists);
     }
   }
 

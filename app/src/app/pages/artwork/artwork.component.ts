@@ -238,4 +238,8 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   private addTab(type: EntityType, icon: EntityIcon, active: boolean = false) {
     this.artworkTabs.push({active, icon, type, items: []});
   }
+
+  videoFound(event) {
+    this.videoExists = this.videoExists ? true : event;
+  }
 }

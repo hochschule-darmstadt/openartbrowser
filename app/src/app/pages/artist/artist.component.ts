@@ -117,4 +117,8 @@ export class ArtistComponent implements OnInit, OnDestroy {
   toggleComponent() {
     this.showTimelineNotArtworks = !this.showTimelineNotArtworks;
   }
+
+  videoFound(event) {
+    this.videoExists = this.videoExists ? true : event;
+  }
 }

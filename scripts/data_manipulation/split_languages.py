@@ -13,7 +13,7 @@ def get_language_attributes():
     Returns:
         [dict] -- [Dictionary containing all language attributes]
     """
-    return ["label", "description", "gender", "citizenship", "country"]
+    return ["label", "description", "gender", "citizenship", "country", "abstract", "wikipediaLink"]
 
 def get_ignored_by_gap_filling():
     """[Returns all attributes in crawler .csv/.json files that are ignored when applying
@@ -22,7 +22,7 @@ def get_ignored_by_gap_filling():
     Returns:
         [dict] -- [Dictionary containing all ignored attributes]
     """
-    return ["description", "gender", "citizenship", "country"]
+    return ["description", "gender", "citizenship", "country", "abstract", "wikipediaLink"]
 
 def generate_langdict_arrays():
     """[Generates empty array of dictonaries, one for each language

@@ -2,10 +2,16 @@
 set -eE
 set -x 
 
+LOCKFILE=/tmp/etl.lock
+TOKEN=$(cat bot_user_oauth_token)
 WD=$(pwd)
 
-TOKEN=$(cat bot_user_oauth_token)
-trap "curl -F file=@${WD}/etl.log -F \"initial_comment=Oops! Something went wrong. Here is the log file: \" -F channels=CRGEZJVA6 -H \"Authorization: Bearer $TOKEN\" https://slack.com/api/files.upload" ERR
+if ! mkdir $LOCKFILE 2>/dev/null; then
+	curl -X POST https://slack.com/api/chat.postMessage -H "Authorization: Bearer ${TOKEN}" -H 'Content-type: application/json' --data '{"channel":"CRGEZJVA6","text":"Error! Could not acquire lock file! It seems there is already a process running","as_user":"true"}'
+    exit 1
+fi
+
+trap "curl -F file=@${WD}/etl.log -F \"initial_comment=Oops! Something went wrong. Here is the log file: \" -F channels=CRGEZJVA6 -H \"Authorization: Bearer ${TOKEN}\" https://slack.com/api/files.upload" ERR
 
 python3 Wikidata\ crawler/ArtOntologyCrawler.py
 
@@ -44,3 +50,6 @@ cd ../../..
 tar cfvz crawler_ouput.tar.gz crawler_output/
 
 cp crawler_output.tar.gz /var/www/html
+
+rm -r $LOCKFILE
+

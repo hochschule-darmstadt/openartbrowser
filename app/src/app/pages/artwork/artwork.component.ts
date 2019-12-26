@@ -64,7 +64,8 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   private ngUnsubscribe = new Subject();
 
-
+  /** a video was found */
+  videoExists = false;
 
   constructor(private dataService: DataService, private route: ActivatedRoute) {
   }
@@ -225,5 +226,9 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   private addTab(type: EntityType, active: boolean = false) {
     this.artworkTabs.push({ active, icon: EntityIcon[type.toUpperCase()], type, items: [] });
+  }
+
+  videoFound(event) {
+    this.videoExists = this.videoExists ? true : event;
   }
 }

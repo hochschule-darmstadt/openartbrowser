@@ -8,4 +8,3 @@ apicache-py3
 *.ctrl
 *.lwp
 /.idea/
-/scripts/data_manipulation/google_dev_key.txt

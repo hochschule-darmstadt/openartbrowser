@@ -14,6 +14,7 @@ import { IconclassComponent } from './components/iconclass/iconclass.component';
 import { BadgeComponent } from './components/badge/badge.component';
 import { TimelineComponent } from './components/timeline/timeline.component';
 import { Ng5SliderModule } from 'ng5-slider';
+import { CollapseComponent } from './components/collapse/collapse.component';
 
 /** Everything that should be used within multiple feature modules but isn't always required goes here */
 @NgModule({
@@ -27,7 +28,8 @@ import { Ng5SliderModule } from 'ng5-slider';
     BadgeComponent, 
     AbstractComponent, 
     TitleComponent, 
-    IconclassComponent
+    IconclassComponent,
+	CollapseComponent
   ],
   imports: [
     CommonModule, 
@@ -46,7 +48,8 @@ import { Ng5SliderModule } from 'ng5-slider';
     InformationComponent, 
     AbstractComponent, 
     TitleComponent, 
-    IconclassComponent
+    IconclassComponent,
+	CollapseComponent
   ],
 })
 export class SharedModule {

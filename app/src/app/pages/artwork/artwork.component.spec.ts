@@ -10,6 +10,7 @@ import { RouterModule } from '@angular/router';
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 import { VideoComponent } from "../../shared/components/video/video.component";
 import {BadgeComponent} from 'src/app/shared/components/badge/badge.component';
+import {CollapseComponent} from 'src/app/shared/components/collapse/collapse.component';
 import { InformationComponent } from "../../shared/components/information/information.component";
 
 describe('ArtworkComponent', () => {
@@ -30,6 +31,7 @@ describe('ArtworkComponent', () => {
         BadgeComponent,
         CarouselComponent,
         VideoComponent,
+        CollapseComponent,
         InformationComponent
       ],
       providers: [DataService]

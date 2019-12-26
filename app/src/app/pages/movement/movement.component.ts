@@ -28,6 +28,9 @@ export class MovementComponent implements OnInit, OnDestroy {
   /** Toggle bool for displaying either timeline or artworks carousel component **/
   showTimelineNotArtworks = true;
 
+  /** a video was found */
+  videoExists = false;
+
   constructor(private dataService: DataService, private route: ActivatedRoute) {
   }
 
@@ -52,10 +55,6 @@ export class MovementComponent implements OnInit, OnDestroy {
     });
   }
 
-  toggleDetails() {
-    this.collapse = !this.collapse;
-  }
-
   private calculateCollapseState() {
     let metaNumber = 0;
     if (this.movement.abstract.length > 400) {
@@ -76,5 +75,9 @@ export class MovementComponent implements OnInit, OnDestroy {
 
   toggleComponent() {
     this.showTimelineNotArtworks = !this.showTimelineNotArtworks;
+  }
+
+  videoFound(event) {
+    this.videoExists = this.videoExists ? true : event;
   }
 }

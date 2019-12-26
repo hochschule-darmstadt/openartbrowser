@@ -22,14 +22,13 @@ export class ArtistComponent implements OnInit, OnDestroy {
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();
 
-  /** Toggle bool for displaying either timeline or artworks carousel component **/
+  /** Toggle bool for displaying either timeline or artworks carousel component */
   showTimelineNotArtworks = true;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {
-  }
+  /** a video was found */
+  videoExists = false;
 
-  toggleDetails() {
-    this.collapse = !this.collapse;
+  constructor(private dataService: DataService, private route: ActivatedRoute) {
   }
 
   /** hook that is executed at component initialization */
@@ -117,5 +116,9 @@ export class ArtistComponent implements OnInit, OnDestroy {
 
   toggleComponent() {
     this.showTimelineNotArtworks = !this.showTimelineNotArtworks;
+  }
+
+  videoFound(event) {
+    this.videoExists = this.videoExists ? true : event;
   }
 }

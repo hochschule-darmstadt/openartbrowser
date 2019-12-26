@@ -42,21 +42,14 @@
           artwork?.motifs?.length ||
           (artwork?.height && artwork?.width)
         ">
-
-        <h4 class="mt-2 more" aria-controls="detailsDiv" [attr.aria-expanded]="!detailsCollapsed"
-          (click)="detailsCollapsed = !detailsCollapsed">
-          <ng-container i18n="Detail More label@@more">More</ng-container>
-          <i *ngIf="detailsCollapsed" class="fas fa-chevron-down"></i>
-          <i *ngIf="!detailsCollapsed" class="fas fa-chevron-up"></i>
-        </h4>
-
-        <div class="collapse" [ngbCollapse]="detailsCollapsed" id="detailsDiv">
+        <app-collapse collapse="{{ detailsCollapsed }}" [showVideo]="videoExists">
 
           <app-abstract [entity]="artwork"></app-abstract>
-
-          <app-video [entity]="artwork"></app-video>
-          <app-video *ngFor="let artist of artwork.artists.slice(0,1)" [entity]="artist"></app-video>
-          <app-video *ngFor="let movement of artwork.movements.slice(0,1)" [entity]="movement"></app-video>
+          
+          <app-video *ngFor="let artist of artwork.artists.slice(0,1)" [entity]="artist"
+            (videoFound)="videoFound($event)"></app-video>
+          <app-video *ngFor="let movement of artwork.movements.slice(0,1)" [entity]="movement"
+            (videoFound)="videoFound($event)"></app-video>
 
           <app-information i18n-label="Genre label@@genre" label="Genre" [values]="artwork?.genres">
           </app-information>
@@ -76,7 +69,7 @@
             [value]="artwork?.height + ' x ' + artwork?.width + 'cm'">
           </app-information>
 
-        </div>
+        </app-collapse>
       </div>
     </div>
   </div>
@@ -131,16 +124,18 @@
               tags with artwork
             </ng-container>
             <span>"{{ (artwork?.label?.length > 35) ?
-                (artwork?.label | slice:0:35) + '...' : (artwork?.label) }}"</span>
+              (artwork?.label | slice:0:35) + '...' : (artwork?.label) }}"</span>
             <i *ngIf="commonTagsCollapsed" class="ml-2 fas fa-chevron-down"></i>
             <i *ngIf="!commonTagsCollapsed" class="ml-2 fas fa-chevron-up"></i>
           </h3>
 
           <div class="collapse" [ngbCollapse]="commonTagsCollapsed" id="commonTagsDiv">
             <p class="mb-4 mt-0"><em>
-                (<ng-container i18n="Related Artworks hint text@@related_artworks_hint">
+                (
+                <ng-container i18n="Related Artworks hint text@@related_artworks_hint">
                   move the mouse over an artwork to display common tags
-                </ng-container>)
+                </ng-container>
+                )
               </em></p>
 
             <!--

@@ -16,14 +16,13 @@
       <app-information i18n-label="Artist label@@artist" label="Artist" [values]="artwork?.artists">
       </app-information>
 
-      <app-information i18n-label="Location label@@location" label="Location" [values]="artwork?.locations"
-        route="/location/">
+      <app-information i18n-label="Location label@@location" label="Location" [values]="artwork?.locations">
       </app-information>
 
       <app-information i18n-label="Inception label@@inception" label="Inception" [value]="artwork?.inception">
       </app-information>
 
-      <div class="row" *ngIf="artwork?.videos" >
+      <div class="row" *ngIf="artwork?.videos">
         <div class="col-md-2 pr-0">
           <p class="mr-4 mb-1 text-muted" href="#collapseArtist" (click)="detailsCollapsed = !detailsCollapsed">
             <i class="fab fa-youtube fa-2x"></i>
@@ -71,8 +70,8 @@
           <app-information i18n-label="Motif label@@motif" label="Motif" [values]="artwork?.motifs">
           </app-information>
 
-         <app-iconclass [iconclasses]="artwork.iconclasses"></app-iconclass>
-       
+          <app-iconclass [iconclasses]="artwork.iconclasses"></app-iconclass>
+
           <app-information i18n-label="Artwork Dimension label@@dimension" label="Dimension"
             [value]="artwork?.height + ' x ' + artwork?.width + 'cm'">
           </app-information>

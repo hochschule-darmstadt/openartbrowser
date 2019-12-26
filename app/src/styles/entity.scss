@@ -12,6 +12,22 @@
     max-height: 20em;
   }
 
+  table.table-fit {
+    td{
+      padding-bottom: 0.5em;
+      padding-right: 2em;
+      vertical-align: top;
+      text-align: left;
+    }
+    @media (max-width: 992px) {
+      td{
+        display:block;
+        box-sizing:border-box;
+        clear:both
+      }  
+    }
+  }
+  
   .more {
     cursor: pointer;
 

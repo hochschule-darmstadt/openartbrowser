@@ -1,11 +1,8 @@
 <div class="container entity artist">
   <div class="row mb-5 border-bottom pb-5">
-    <div class="col-sm-7">
-      <span class="badge badge-pill badge-secondary chip cursor-unset">
-        <i class="fas fa-user"></i>
-        <ng-container i18n="Artist label@@artist">Artist</ng-container>
-      </span>
-      <h2 class="mb-3">{{ artist?.label }}</h2>
+    <div class="col-sm-7" *ngIf="artist">
+
+      <app-title [entity]="artist"></app-title>
 
       <div class="row">
         <div class="col-md-2 pr-0">

@@ -11,11 +11,7 @@
         </p>
 
         <p *ngIf="values?.length" class="mb-1 add-padding ">
-            <span class="badge badge-pill badge-secondary first-letter chip" *ngFor="let entity of values"
-                [routerLink]="entity.route + entity.id ">
-                <i *ngIf="entity?.icon" class="mr-1" class="fas fa-{{ entity?.icon }}"></i>
-                {{ entity?.label }}
-            </span>
+            <app-badge *ngFor="let entity of values" [entity]="entity"></app-badge>
         </p>
     </div>
 </div>

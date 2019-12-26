@@ -1,4 +1,4 @@
-import { Entity, EntityType, EntityIcon, EntityRoute } from './entity.interface';
+import { Entity, EntityType } from './entity.interface';
 import { Artist } from './artist.interface';
 import { Genre } from './genre.interface';
 import { Movement } from './movement.interface';
@@ -17,6 +17,4 @@ export interface Artwork extends Entity {
     height?: number;
     width?: number;
     type: EntityType.ARTWORK;
-    icon: EntityIcon.ARTWORK;
-    route: EntityRoute.ARTWORK;
 }

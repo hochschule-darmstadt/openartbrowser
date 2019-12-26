@@ -1,7 +1,5 @@
-import { Entity, EntityType, EntityIcon, EntityRoute } from './entity.interface';
+import { Entity, EntityType } from './entity.interface';
 
 export interface Motif extends Entity {
     type: EntityType.MOTIF;
-    icon: EntityIcon.MOTIF;
-    route: EntityRoute.MOTIF;
 }

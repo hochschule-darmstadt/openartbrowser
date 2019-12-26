@@ -17,9 +17,37 @@ import { Ng5SliderModule } from 'ng5-slider';
 
 /** Everything that should be used within multiple feature modules but isn't always required goes here */
 @NgModule({
-  declarations: [CarouselComponent, SlideComponent, SearchComponent, VideoComponent, InformationComponent, BadgeComponent, AbstractComponent, TitleComponent, IconclassComponent],
-  imports: [CommonModule, NgbModule, RouterModule, FormsModule, Ng5SliderModule],
-  exports: [CarouselComponent, SearchComponent, VideoComponent, TimelineComponent, BadgeComponent, NgbModule, InformationComponent, AbstractComponent, TitleComponent, IconclassComponent],
+  declarations: [
+    CarouselComponent, 
+    SlideComponent, 
+    SearchComponent, 
+    VideoComponent, 
+    TimelineComponent,
+    InformationComponent, 
+    BadgeComponent, 
+    AbstractComponent, 
+    TitleComponent, 
+    IconclassComponent
+  ],
+  imports: [
+    CommonModule, 
+    NgbModule, 
+    RouterModule, 
+    FormsModule, 
+    Ng5SliderModule
+  ],
+  exports: [
+    CarouselComponent, 
+    SearchComponent, 
+    VideoComponent, 
+    TimelineComponent, 
+    BadgeComponent, 
+    NgbModule, 
+    InformationComponent, 
+    AbstractComponent, 
+    TitleComponent, 
+    IconclassComponent
+  ],
 })
 export class SharedModule {
 }

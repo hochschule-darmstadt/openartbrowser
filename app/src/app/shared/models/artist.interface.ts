@@ -1,4 +1,4 @@
-import { Entity, EntityType, EntityIcon, EntityRoute } from './entity.interface';
+import { Entity, EntityType } from './entity.interface';
 import { Movement } from './movement.interface';
 
 export interface Artist extends Entity {
@@ -11,6 +11,4 @@ export interface Artist extends Entity {
     movements: Partial<Movement>[];
     influenced_by: Partial<Artist>[];
     type: EntityType.ARTIST;
-    icon: EntityIcon.ARTIST;
-    route: EntityRoute.ARTIST;
 }

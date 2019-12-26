@@ -11,7 +11,7 @@ export interface Entity {
   iconclasses?: Array<Iconclass>;
   type: EntityType;
   icon: EntityIcon;
-  route: EntityRoute;
+  route: string;
   absoluteRank: number;
   relativeRank: number;
   videos?: string;
@@ -19,27 +19,8 @@ export interface Entity {
 
 export type Iconclass = string;
 
-export enum EntityRoute {
-  ARTIST = '/artist/',
-  ARTWORK = '/artwork/',
-  GENRE = '/genre/',
-  LOCATION = '/location/',
-  MATERIAL = '/material/',
-  MOVEMENT = '/movement/',
-  MOTIF = '/motif/'
-}
-
-export enum EntityIcon {
-  ARTIST ='user',
-  ARTWORK = 'palette',
-  GENRE = 'tags',
-  LOCATION = 'archway',
-  MATERIAL = 'scroll',
-  MOVEMENT = 'wind',
-  MOTIF = 'image'
-}
-
 export enum EntityType {
+  ALL = "all",
   ARTIST = 'artist',
   ARTWORK = 'artwork',
   GENRE = 'genre',
@@ -47,4 +28,15 @@ export enum EntityType {
   MATERIAL = 'material',
   MOVEMENT = 'movement',
   MOTIF = 'motif'
+}
+
+export enum EntityIcon {
+  ALL = "fa-list-ul",
+  ARTIST = "fa-user",
+  ARTWORK = "fa-image",
+  MOVEMENT = "fa-wind",
+  LOCATION = "fa-archway",
+  MOTIF = "fa-image",
+  GENRE = "fa-tag",
+  MATERIAL = "fa-scroll"
 }

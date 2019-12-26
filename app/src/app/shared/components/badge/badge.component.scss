@@ -11,3 +11,10 @@ $color1: #00bc8c;
   border-top-color: $color1;
   border-bottom-color: $color1;
 }
+
+.tooltip .tooltip-inner {
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+}

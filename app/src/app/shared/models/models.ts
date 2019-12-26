@@ -2,7 +2,7 @@
 export { Artist } from './artist.interface';
 export { ArtSearch } from './artsearch.interface';
 export { Artwork } from './artwork.interface';
-export { Entity, EntityIcon, EntityType, EntityRoute, Iconclass } from './entity.interface';
+export { Entity, EntityIcon, EntityType, Iconclass } from './entity.interface';
 export { Genre } from './genre.interface';
 export { Location } from './location.interface';
 export { Material } from './material.interface';

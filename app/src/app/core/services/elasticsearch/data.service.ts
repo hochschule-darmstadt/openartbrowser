@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import { HttpClient } from '@angular/common/http';
 import { Injectable, Inject, LOCALE_ID } from '@angular/core';
-import { EntityType, Artwork, ArtSearch, Entity, Iconclass, EntityIcon, EntityRoute } from 'src/app/shared/models/models';
+import { EntityType, Artwork, ArtSearch, Entity, Iconclass, EntityIcon } from 'src/app/shared/models/models';
 import { elasticEnvironment } from 'src/environments/environment';
 import QueryBuilder from './query.builder';
 
@@ -137,8 +137,8 @@ export class DataService {
      * @param iconclasses an Array of Iconclasses to retrieve
      * @returns an Array containing the iconclassData to the respective Iconclass
      */
-    public async getIconclassData(iconclasses:Array<Iconclass>): Promise<any> {
-        return await Promise.all(iconclasses.map(async (key:Iconclass) =>
+    public async getIconclassData(iconclasses: Array<Iconclass>): Promise<any> {
+        return await Promise.all(iconclasses.map(async (key: Iconclass) =>
             await this.http.get(`https://openartbrowser.org/api/iconclass/${key}.json`).toPromise()
         ));
     }
@@ -194,43 +194,9 @@ export class DataService {
      * @param entity entity object
      */
     private setTypes(entity: any) {
-        if (entity.type)
-            switch (entity.type) {
-                case EntityType.ARTIST:
-                    entity.type = EntityType.ARTIST;
-                    entity.icon = EntityIcon.ARTIST;
-                    entity.route = EntityRoute.ARTIST;
-                    break;
-                case EntityType.ARTWORK:
-                    entity.type = EntityType.ARTWORK;
-                    entity.icon = EntityIcon.ARTWORK;
-                    entity.route = EntityRoute.ARTWORK;
-                    break;
-                case EntityType.GENRE:
-                    entity.type = EntityType.GENRE;
-                    entity.icon = EntityIcon.GENRE;
-                    entity.route = EntityRoute.GENRE;
-                    break;
-                case EntityType.LOCATION:
-                    entity.type = EntityType.LOCATION;
-                    entity.icon = EntityIcon.LOCATION;
-                    entity.route = EntityRoute.LOCATION;
-                    break;
-                case EntityType.MATERIAL:
-                    entity.type = EntityType.MATERIAL;
-                    entity.icon = EntityIcon.MATERIAL;
-                    entity.route = EntityRoute.MATERIAL;
-                    break;
-                case EntityType.MOTIF:
-                    entity.type = EntityType.MOTIF;
-                    entity.icon = EntityIcon.MOTIF;
-                    entity.route = EntityRoute.MOTIF;
-                    break;
-                case EntityType.MOVEMENT:
-                    entity.type = EntityType.MOVEMENT;
-                    entity.icon = EntityIcon.MOVEMENT;
-                    entity.route = EntityRoute.MOVEMENT;
-                    break;
-            }
+        if (entity.type) {
+            entity.route = `/${entity.type}/${entity.id}`;
+            entity.icon = EntityIcon[entity.type.toUpperCase()];
+        }
     }
 }

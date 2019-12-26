@@ -10,7 +10,7 @@ export class TitleComponent implements OnInit {
 
   @Input()
   entity: Entity;
-
+ 
   constructor() { }
 
   ngOnInit() {

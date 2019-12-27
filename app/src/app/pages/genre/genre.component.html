@@ -1,21 +1,14 @@
 <div class="container entity genre">
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7">
-      <span class="badge badge-secondary chip cursor-unset">
-        <i class="fas fa-tag"></i>
-        <ng-container i18n="Genre label@@genre">Genre</ng-container>
-        </span>
-      <h2 class="mb-3 first-letter">{{ genre?.label }}</h2>
+      
+      <app-title [entity]="genre"></app-title>
+
       <div class="mb-3 mt-5"></div>
 
       <div *ngIf="genre?.abstract">
         <app-collapse collapse="{{ collapse }}">
-          <div class="row">
-            <div *ngIf="genre?.abstract" class="col-md pr-0">
-              <span>{{ genre?.abstract }}</span>
-              <p class="wiki-link"><ng-container i18n="Detail More label@@more">More</ng-container>:&nbsp;<a href="{{ genre?.wikipediaLink }}" target="_blank">Wikipedia</a></p>
-            </div>
-          </div>
+          <app-abstract [entity]="genre"></app-abstract>
         </app-collapse>
       </div>
     </div>

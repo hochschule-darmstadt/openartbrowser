@@ -11,6 +11,9 @@ import {VideoComponent} from 'src/app/shared/components/video/video.component';
 import {Ng5SliderModule} from 'ng5-slider';
 import {BadgeComponent} from 'src/app/shared/components/badge/badge.component';
 import {CollapseComponent} from 'src/app/shared/components/collapse/collapse.component';
+import { InformationComponent } from 'src/app/shared/components/information/information.component';
+import { TitleComponent } from 'src/app/shared/components/title/title.component';
+import { AbstractComponent } from 'src/app/shared/components/abstract/abstract.component';
 
 describe('MovementComponent', () => {
   let component: MovementComponent;
@@ -30,6 +33,9 @@ describe('MovementComponent', () => {
         TimelineComponent,
         BadgeComponent,
         CarouselComponent,
+        AbstractComponent,
+        TitleComponent,
+        InformationComponent,
         VideoComponent,
         CollapseComponent
       ],

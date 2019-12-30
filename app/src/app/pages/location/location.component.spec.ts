@@ -8,6 +8,9 @@ import {HttpClientModule} from '@angular/common/http';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {DataService} from 'src/app/core/services/elasticsearch/data.service';
 import {CollapseComponent} from 'src/app/shared/components/collapse/collapse.component';
+import { AbstractComponent } from 'src/app/shared/components/abstract/abstract.component';
+import { InformationComponent } from 'src/app/shared/components/information/information.component';
+import { TitleComponent } from 'src/app/shared/components/title/title.component';
 
 describe('LocationComponent', () => {
   let component: LocationComponent;
@@ -24,7 +27,10 @@ describe('LocationComponent', () => {
         LocationComponent,
         SlideComponent,
         CarouselComponent,
-        CollapseComponent
+        CollapseComponent,
+        AbstractComponent,
+        TitleComponent,
+        InformationComponent
       ],
       providers: [
         DataService,

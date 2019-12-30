@@ -8,9 +8,8 @@ import { Entity } from '../../models/models';
 })
 export class TitleComponent implements OnInit {
 
-  @Input()
-  entity: Entity;
- 
+  @Input() entity: Entity;
+
   constructor() { }
 
   ngOnInit() {

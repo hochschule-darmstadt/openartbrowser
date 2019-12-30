@@ -29,7 +29,7 @@ import { CollapseComponent } from './components/collapse/collapse.component';
     AbstractComponent, 
     TitleComponent, 
     IconclassComponent,
-	CollapseComponent
+	  CollapseComponent
   ],
   imports: [
     CommonModule, 
@@ -49,7 +49,7 @@ import { CollapseComponent } from './components/collapse/collapse.component';
     AbstractComponent, 
     TitleComponent, 
     IconclassComponent,
-	CollapseComponent
+	  CollapseComponent
   ],
 })
 export class SharedModule {

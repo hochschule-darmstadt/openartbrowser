@@ -1,6 +1,6 @@
 <div class="container entity location">
   <div class="row mb-5 border-bottom pb-5">
-    <div class="col-sm-7">
+    <div class="col-sm-7"  *ngIf="location">
       <app-title [entity]="location"></app-title>
 
       <app-information i18n-label="Country label@@country" label="Country" [value]="location?.country">

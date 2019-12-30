@@ -24,10 +24,10 @@ import { CollapseComponent } from './components/collapse/collapse.component';
     SearchComponent, 
     VideoComponent, 
     TimelineComponent,
-    InformationComponent, 
     BadgeComponent, 
-    AbstractComponent, 
     TitleComponent, 
+    InformationComponent, 
+    AbstractComponent, 
     IconclassComponent,
 	  CollapseComponent
   ],
@@ -45,9 +45,9 @@ import { CollapseComponent } from './components/collapse/collapse.component';
     TimelineComponent, 
     BadgeComponent, 
     NgbModule, 
+    TitleComponent, 
     InformationComponent, 
     AbstractComponent, 
-    TitleComponent, 
     IconclassComponent,
 	  CollapseComponent
   ],

@@ -133,8 +133,6 @@ def swap_index(index_name_new, index_name_current, index_name_old) -> bool:
         snapshot_name=index_current_snapshot, 
         index_name=index_name_current,
         new_index_name=index_name_old)
-    # Close old index because we don't need it right now
-    es.indices.close(index_name_old)
 
     # Second swap
     # Apply index_new_snapshot on index_current

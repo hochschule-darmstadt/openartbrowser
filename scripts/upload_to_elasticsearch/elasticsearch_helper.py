@@ -172,7 +172,8 @@ def create_snapshot_for_index(
                                - Following entry in elasticsearch.yml required:
                                path.repo: ["path_to_folder"]
     """
-    es = Elasticsearch()
+    # Increase timeout because creating snapshots had exceeded the default timeout of 10 seconds
+    es = Elasticsearch(timeout=30) 
 
     try:
         # Check if repository already was created

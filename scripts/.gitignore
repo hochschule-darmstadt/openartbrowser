@@ -5,3 +5,4 @@ crawler_output
 /data_manipulation/google_dev_key.txt
 etl.log
 bot_user_oauth_token
+crawler_output.tar.gz

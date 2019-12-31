@@ -14,6 +14,7 @@ import { CollapseComponent } from 'src/app/shared/components/collapse/collapse.c
 import { InformationComponent } from "../../shared/components/information/information.component";
 import { AbstractComponent } from 'src/app/shared/components/abstract/abstract.component';
 import { TitleComponent } from 'src/app/shared/components/title/title.component';
+import { IconclassComponent } from 'src/app/shared/components/iconclass/iconclass.component';
 
 describe('ArtworkComponent', () => {
   let component: ArtworkComponent;
@@ -37,7 +38,8 @@ describe('ArtworkComponent', () => {
         InformationComponent,
         VideoComponent,
         CollapseComponent,
-        InformationComponent
+        InformationComponent,
+        IconclassComponent
       ],
       providers: [DataService]
     }).compileComponents();

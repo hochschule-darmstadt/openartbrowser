@@ -32,6 +32,7 @@ describe('MovementComponent', () => {
         SlideComponent,
         TimelineComponent,
         BadgeComponent,
+        BadgeComponent,
         CarouselComponent,
         AbstractComponent,
         TitleComponent,

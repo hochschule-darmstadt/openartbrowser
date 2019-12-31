@@ -11,6 +11,7 @@ import {CollapseComponent} from 'src/app/shared/components/collapse/collapse.com
 import { AbstractComponent } from 'src/app/shared/components/abstract/abstract.component';
 import { InformationComponent } from 'src/app/shared/components/information/information.component';
 import { TitleComponent } from 'src/app/shared/components/title/title.component';
+import { BadgeComponent } from 'src/app/shared/components/badge/badge.component';
 
 describe('LocationComponent', () => {
   let component: LocationComponent;
@@ -28,6 +29,7 @@ describe('LocationComponent', () => {
         SlideComponent,
         CarouselComponent,
         CollapseComponent,
+        BadgeComponent,
         AbstractComponent,
         TitleComponent,
         InformationComponent

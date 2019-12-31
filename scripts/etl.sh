@@ -47,7 +47,7 @@ cd ../../..
 
 # Put the directory and it's files to an archive 
 # copy them to make the archive available on an nginx endpoint
-tar cfvz crawler_ouput.tar.gz crawler_output/
+tar cfvz crawler_output.tar.gz crawler_output/
 
 cp crawler_output.tar.gz /var/www/html
 

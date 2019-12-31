@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BadgeComponent } from './badge.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 describe('BadgeComponent', () => {
   let component: BadgeComponent;
@@ -7,9 +8,8 @@ describe('BadgeComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BadgeComponent ],
-      providers: [        
-      ]
+      imports: [ NgbModule ],
+      declarations: [ BadgeComponent ]
     }).compileComponents();
   }));
 

@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { IconclassComponent } from './iconclass.component';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 
 describe('IconclassComponent', () => {
   let component: IconclassComponent;
@@ -8,7 +9,8 @@ describe('IconclassComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ IconclassComponent ]
+      declarations: [ IconclassComponent ],
+      providers: [ DataService]
     })
     .compileComponents();
   }));

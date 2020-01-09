@@ -13,6 +13,8 @@ fi
 
 trap "curl -F file=@${WD}/etl.log -F \"initial_comment=Oops! Something went wrong. Here is the log file: \" -F channels=CRGEZJVA6 -H \"Authorization: Bearer ${TOKEN}\" https://slack.com/api/files.upload" ERR
 
+./install_etl.sh
+
 python3 Wikidata\ crawler/ArtOntologyCrawler.py
 
 cd crawler_output/intermediate_files/json/

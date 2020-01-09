@@ -180,6 +180,12 @@ def create_snapshot_for_index(
         es.snapshot.create_repository(repository=repository_name, body={
                                       "type": "fs", "settings": {"location": backup_directory}})
     if es.indices.exists(index=index_name):
+        try:
+            # Check if this snapshot was deleted if not remove it
+            es.snapshot.get(repository=repository_name, snapshot=snapshot_name)
+            delete_snapshot_from_repository(snapshot_name)
+        except:
+            pass
         es.snapshot.create(repository=repository_name,
                            snapshot=snapshot_name, 
                            body={"indices": index_name},

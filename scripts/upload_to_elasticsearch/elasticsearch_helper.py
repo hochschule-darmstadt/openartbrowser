@@ -233,7 +233,8 @@ def delete_snapshot_from_repository(
     :arg backup_directory: Directory in which the repository is located.
                            See create_snapshot_for_index for more information on that.
     """
-    es = Elasticsearch()
+    # Increase timeout because deleting snapshots had exceeded the default timeout of 10 seconds
+    es = Elasticsearch(timeout=30)
 
     try:
         # Check if repository already was created
@@ -243,7 +244,10 @@ def delete_snapshot_from_repository(
                                       "type": "fs", "settings": {"location": backup_directory}})
     try:
         es.snapshot.delete(repository=repository_name, 
-                           snapshot=snapshot_name)
+                           snapshot=snapshot_name,
+                           params={
+                               "wait_for_completion": "true",
+                           })
     except Exception as e:
         print("There was a problem deleting the snapshot:")
         print(str(e))

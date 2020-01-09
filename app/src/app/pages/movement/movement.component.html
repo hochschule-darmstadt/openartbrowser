@@ -8,7 +8,7 @@
       <h2 class="mb-3 first-letter">{{ movement?.label }}</h2>
 
       <app-collapse collapse="{{ collapse }}" [showVideo]="videoExists">
-      <div *ngIf="movement?.abstract?.length || movement?.influenced_by?.length">
+      <div *ngIf="movement?.abstract?.length || movement?.influenced_by?.length || movement?.videos">
           <div class="row abstract">
             <div *ngIf="movement?.abstract" class="col-md pr-0">
               <span>{{ movement?.abstract }}</span>

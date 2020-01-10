@@ -28,7 +28,9 @@ export class BadgeComponent implements OnInit {
       : this.entity.description
         ? this.entity.description
         : null;
-    this.tooltip.trim();
+    if (this.tooltip) {
+      this.tooltip.trim();
+    }
 
     if (this.tooltip && this.tooltip.length >= this.tooltipBreakLimit) {
       let substr_to = this.tooltip.indexOf(".", this.tooltipBreakLimit);

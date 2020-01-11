@@ -47,9 +47,9 @@
             </div>
           </div>
 
-          <app-video [entity]="artist" (videoFound)="videoExists=$event"></app-video>
+          <app-video [entity]="artist" (videoFound)="videoFound($event)"></app-video>
           <app-video *ngFor="let movement of artist.movements.slice(0,1)" [entity]="movement"
-                     (videoFound)="videoExists=$event"></app-video>
+                     (videoFound)="videoFound($event)"></app-video>
 
           <table class="table-fit">
             <tbody>

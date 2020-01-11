@@ -150,15 +150,15 @@ def extract_artworks(type_name, wikidata_id, languageKeys=[item[0] for item in l
             try:
                 labellang = item_dict["labels"][langkey]
             except:
-                labellang = label
+                labellang = ""
             try:
                 descriptionlang = item_dict["descriptions"][langkey]
             except:
-                descriptionlang =  description
+                descriptionlang =  ""
             try:
                 countrylang = clm_dict["P17"][0].getTarget().get()["labels"][langkey]
             except:
-                countrylang = country
+                countrylang = ""
             try:
                 sitelinks = item_dict["sitelinks"]
                 wikpedia_page = pywikibot.Page(sitelinks[langkey+"wiki"])
@@ -276,11 +276,11 @@ def extract_subjects(subject_type, languageKeys=[item[0] for item in language_co
                 try:
                     genderlang = clm_dict["P21"][0].getTarget().get()["labels"][langkey]
                 except:
-                    genderlang = gender
+                    genderlang = ""
                 try:
                     citizenshiplang = clm_dict["P27"][0].getTarget().get()["labels"][langkey]
                 except:
-                    citizenshiplang = citizenship
+                    citizenshiplang = ""
                 subject_dict.update({"gender_"+langkey: genderlang, "citizenship_"+langkey: citizenshiplang})
 
         if subject_type == "movements":
@@ -298,7 +298,7 @@ def extract_subjects(subject_type, languageKeys=[item[0] for item in language_co
                 try:
                     countrylang = clm_dict["P17"][0].getTarget().get()["labels"][langkey]
                 except:
-                    countrylang = country
+                    countrylang = ""
                 subject_dict.update({"country_"+langkey: countrylang})
             try:
                 website = clm_dict["P856"][0].getTarget()
@@ -320,11 +320,11 @@ def extract_subjects(subject_type, languageKeys=[item[0] for item in language_co
             try:
                 labellang = item_dict["labels"][langkey]
             except:
-                labellang = label
+                labellang = ""
             try:
                 descriptionlang = item_dict["descriptions"][langkey]
             except:
-                descriptionlang =  description
+                descriptionlang =  ""
             try:
                 sitelinks = item_dict["sitelinks"]
                 wikpedia_page = pywikibot.Page(sitelinks[langkey+"wiki"])
@@ -432,11 +432,11 @@ def extract_class(cls, class_dict, repo, languageKeys=[item[0] for item in langu
             try:
                 labellang = item_dict["labels"][langkey]
             except:
-                labellang = label
+                labellang = ""
             try:
                 descriptionlang = item_dict["descriptions"][langkey]
             except:
-                descriptionlang = description
+                descriptionlang = ""
             class_dict[cls].update({"label_"+langkey: labellang, "description_"+langkey: descriptionlang})
         for superclass in subclass_of:
             extract_class(superclass, class_dict, repo)

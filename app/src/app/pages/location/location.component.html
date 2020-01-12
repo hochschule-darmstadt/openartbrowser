@@ -1,11 +1,18 @@
-<div class="container">
+<div class="container entity location">
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7">
-      <span class="badge badge-pill badge-secondary chip cursor-unset"><i class="fas fa-archway"></i> Location</span>
+      <span class="badge badge-secondary chip">
+        <i class="fas fa-archway"></i>
+        <ng-container i18n="Location label@@location">Location</ng-container>
+      </span>
       <h2 class="mb-3 first-letter">{{ location?.label }}</h2>
+
       <div *ngIf="location?.country" class="row mt-5">
         <div class="col-md-3 pr-0">
-          <p *ngIf="location?.country" class="text-muted">Country:</p>
+          <p *ngIf="location?.country" class="text-muted">
+            <ng-container i18n="Country label@@country">Country</ng-container>
+            :
+          </p>
         </div>
         <div class="col-md-9 pl-0 info">
           <p *ngIf="location?.country" class="first-letter">{{location?.country}}</p>
@@ -13,32 +20,32 @@
       </div>
       <div *ngIf="location?.website" class="row mb-3">
         <div class="col-md-3 pr-0">
-          <p *ngIf="location?.website" class="text-muted">Official page:</p>
+          <p *ngIf="location?.website" class="text-muted">
+            <ng-container i18n="Official page label@@official_page">Official page</ng-container>
+            :
+          </p>
         </div>
         <div class="col-md-9 pl-0 info">
           <p *ngIf="location?.website"><a href="{{location?.website}}" target="_blank">{{location?.label}}</a></p>
         </div>
       </div>
+
       <div *ngIf="location?.abstract">
-        <h4 class="mt-2 more" href="#collapseArtist" (click)="toggleDetails()">
-          More
-          <i *ngIf="collapse" href="#collapseArtist" class="fas fa-chevron-down"> </i>
-          <i *ngIf="!collapse" href="#collapseArtist" class="fas fa-chevron-up"> </i>
-        </h4>
-        <div [className]="collapse ? 'collapse' : 'collapse show'" id="collapseArtist">
+        <app-collapse collapse="{{ collapse }}">
           <div *ngIf="location?.abstract" class="row">
             <div class="col-md pr-0">
               <span>{{ location?.abstract }} </span>
-              <p class="wiki-link">More: <a href="{{ location?.wikipediaLink }}" target="_blank">Wikipedia</a></p>
+              <p class="wiki-link"><ng-container i18n="Detail More label@@more">More</ng-container>: <a href="{{ location?.wikipediaLink }}" target="_blank">Wikipedia</a></p>
             </div>
           </div>
-        </div>
+        </app-collapse>
       </div>
     </div>
+
     <div class="col-sm-5 img" *ngIf="location?.image">
       <img class="img-fluid rounded-circle" src="{{ location?.imageSmall }}" alt=""/>
     </div>
   </div>
-
-  <app-slider [items]="sliderItems" heading="Artworks"></app-slider>
+  <h3 i18n="Artworks label@@artworks">Artworks</h3>
+  <app-slider [items]="sliderItems"></app-slider>
 </div>

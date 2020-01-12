@@ -1,0 +1,77 @@
+/************************************
+    Style For Entity Components
+************************************/
+
+.entity {
+
+  .img {
+    text-align: center;
+  }
+
+  img {
+    max-height: 20em;
+  }
+
+  .collapse-element {
+    display: none;
+
+    &-show {
+      display: inherit;
+    }
+  }
+
+  .more {
+    cursor: pointer;
+
+    i {
+      margin-left: 5px;
+    }
+  }
+
+  .abstract > div {
+    text-align: justify;
+  }
+
+  .wiki-link {
+    white-space: nowrap;
+    float: right;
+  }
+
+  /* Unset cursor: pointer; badge */
+  .cursor-unset {
+    cursor: unset;
+  }
+
+  @media (max-width: 575px) {
+    &:not(.artwork) > .row:first-child {
+      flex-direction: column-reverse;
+
+      img {
+        margin-bottom: 3rem;
+      }
+    }
+  }
+
+  /* Makes chip and regular text look good together: adds and removes padding on different screen sizes */
+  @media (min-width: 992px) {
+    .info {
+      margin-left: -2em;
+    }
+
+    /*pl-1*/
+    .notchip {
+      padding-left: 0.25rem;
+    }
+  }
+
+  @media (max-width: 992px) {
+    .info {
+      margin-left: 1em;
+    }
+
+    /*pl-0*/
+    .notchip {
+      padding-left: 0;
+    }
+  }
+}

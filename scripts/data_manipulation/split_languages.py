@@ -13,7 +13,16 @@ def get_language_attributes():
     Returns:
         [dict] -- [Dictionary containing all language attributes]
     """
-    return ["label", "description", "gender", "citizenship", "country"]
+    return ["label", "description", "gender", "citizenship", "country", "abstract", "wikipediaLink"]
+
+def get_ignored_by_gap_filling():
+    """[Returns all attributes in crawler .csv/.json files that are ignored when applying
+    gap filling algorithm for missing language data]
+
+    Returns:
+        [dict] -- [Dictionary containing all ignored attributes]
+    """
+    return ["description", "gender", "citizenship", "country", "abstract", "wikipediaLink"]
 
 def generate_langdict_arrays():
     """[Generates empty array of dictonaries, one for each language
@@ -44,11 +53,10 @@ def fill_language_gaps(element, jsonobject):
             # Skip empty language data
             if not jsonobject[element + "_" + row[0]]:
                 next
-            # Assign language data to element and fill in which
-            # language is used
+            # Assign language data to element
             else:
                 jsonobject[element] = (
-                    jsonobject[element + "_" + row[0]] + " (" + row[1] + ")"
+                    jsonobject[element + "_" + row[0]]
                 )
         # Should not happen if key attributes in json are atleast existent
         except KeyError:
@@ -79,12 +87,14 @@ def modify_langdict(langdict, jsonobject, langkey):
     """
     # Language keys that need language specific handling
     lang_attributes = get_language_attributes()
+    ignored_attributes = get_ignored_by_gap_filling()
     tempjson = jsonobject.copy()
     delete_keys = []
     for element in lang_attributes:
         try:
-            if not tempjson[element + "_" + langkey]:  # Check if lang data is empty
-                tempjson = fill_language_gaps(element, tempjson)
+            #Check if element has language data and if attribute needs to be ignored by gap filling
+            if not tempjson[element + "_" + langkey] and not element in ignored_attributes: 
+                    tempjson = fill_language_gaps(element, tempjson)
             else:
                 tempjson[element] = tempjson[element + "_" + langkey]
             # Using dictionary comprehension to find keys for deletion later

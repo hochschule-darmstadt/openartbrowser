@@ -3,5 +3,18 @@ export const environment = {
 };
 
 export const elasticEnvironment = {
-  serverURI: '/api/_search'
+  serverURI: '/api'
 };
+
+export const analyticsEnvironment = window.location.host === 'cai-artbrowserstaging.fbi.h-da.de' ?
+  { // staging
+    enabled: true,
+    url: 'https://openartbrowser.org/api/analytics/',
+    propertyId: '3'
+  } :
+  { // production
+    enabled: true,
+    url: '/api/analytics/',
+    propertyId: '1'
+  };
+

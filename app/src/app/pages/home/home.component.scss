@@ -19,15 +19,14 @@ $color1: #00bc8c;
 }
 
 /** Styling for the title & search div */
-.container-content {
+.container-search {
   width: 80%;
-
-  @media (min-width: 0px) and (max-width: 376px) {
-    width: 100%;
-  }
 
   @media (min-width: 377px) and (max-width: 576px) {
     width: 90%;
+  }
+  @media (min-width: 0px) and (max-width: 376px) {
+    width: 100%;
   }
 
   margin-left: auto;
@@ -35,6 +34,13 @@ $color1: #00bc8c;
   margin-top: 0;
   margin-bottom: 6rem;
   position: relative;
+
+  @media (min-width: 577px) and (max-width: 767px) {
+    margin-bottom: 4rem;
+  }
+  @media (min-width: 0px) and (max-width: 576px) {
+    margin-bottom: 1em;
+  }
 
   .logo {
     width: 100%;
@@ -49,17 +55,14 @@ $color1: #00bc8c;
       @media (min-width: 768px) and (max-width: 991px) {
         font-size: 3vh;
       }
-
       @media (min-width: 577px) and (max-width: 767px) {
         font-size: 3vh;
         padding-top: 0;
       }
-
       @media (min-width: 377px) and (max-width: 576px) {
         font-size: 1.5vh;
         padding-top: 0;
       }
-
       @media (min-width: 0px) and (max-width: 376px) {
         font-size: 1.5vh;
         padding-top: 0;
@@ -74,30 +77,19 @@ $color1: #00bc8c;
       @media (min-width: 768px) and (max-width: 991px) {
         font-size: 9vh;
       }
-
       @media (min-width: 577px) and (max-width: 767px) {
         font-size: 7vh;
       }
-
       @media (min-width: 377px) and (max-width: 576px) {
         font-size: 5vh;
       }
-
       @media (min-width: 0px) and (max-width: 376px) {
         font-size: 4vh;
       }
     }
-
-    @media (min-width: 577px) and (max-width: 767px) {
-      margin-bottom: 4rem;
-    }
-
-    @media (min-width: 0px) and (max-width: 576px) {
-      margin-bottom: 1em;
-    }
   }
 
-  .contr {
+  .search-control {
     width: 90%;
     margin: auto;
 
@@ -118,12 +110,10 @@ $color1: #00bc8c;
     height: 2.5rem;
     font-size: 1.1rem;
   }
-
   @media (min-width: 377px) and (max-width: 576px) {
     height: 2rem;
     font-size: 1rem;
   }
-
   @media (min-width: 0px) and (max-width: 376px) {
     height: 2rem;
     font-size: 0.8rem;
@@ -161,12 +151,21 @@ $color1: #00bc8c;
     -webkit-transition: 0.3s ease;
     transition: 0.3s ease;
     border-radius: 15px;
+    i{
+      margin-right: 5px;
+    }
   }
 
   ngb-carousel {
     box-shadow: 0 0 30px 1px black;
     transition: all 0.5s ease;
     border-radius: 15px;
+
+    ::ng-deep {
+      .carousel-indicators {
+        visibility: hidden !important;
+      }
+    }
 
     &:hover {
       cursor: pointer;

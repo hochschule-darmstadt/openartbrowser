@@ -1,9 +1,11 @@
+
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { DataService } from 'src/app/core/services/data.service';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { Material, Artwork, EntityType } from 'src/app/shared/models/models';
 import { Subject } from 'rxjs';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
+import { shuffle } from 'src/app/core/services/utils.service';
 
 @Component({
   selector: 'app-material',
@@ -20,7 +22,7 @@ export class MaterialComponent implements OnInit, OnDestroy {
   /** Related artworks */
   sliderItems: Artwork[] = [];
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {}
+  constructor(private dataService: DataService, private route: ActivatedRoute) { }
 
   /** hook that is executed at component initialization */
   ngOnInit() {
@@ -32,23 +34,10 @@ export class MaterialComponent implements OnInit, OnDestroy {
       this.material = await this.dataService.findById<Material>(materialId, EntityType.MATERIAL);
 
       /** load slider items */
-      this.dataService.findArtworksByMaterials([this.material.id]).then((artworks) => {
-        this.sliderItems = this.shuffle(artworks);
-      });
+      this.dataService.findArtworksByType("materials", [this.material.id])
+        .then(artworks => this.sliderItems = shuffle(artworks));
     });
   }
-
-  /**
-   * @description shuffle the items' categories.
-   * @memberof ArtworkComponent
-   */
-  shuffle = (a: Artwork[]): Artwork[] => {
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-  };
 
   ngOnDestroy() {
     this.ngUnsubscribe.next();

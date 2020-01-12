@@ -1,16 +1,24 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, Input, ChangeDetectorRef } from '@angular/core';
-import { interval, Observable, Subject } from 'rxjs';
-import { DataService } from 'src/app/core/services/data.service';
-import { Router } from '@angular/router';
-import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
-import { TagItem, Entity } from '../../models/models';
+import {
+  AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild
+} from '@angular/core';
+import {interval, Observable, Subject} from 'rxjs';
+import {SearchService} from 'src/app/core/services/search.service';
+import {DataService} from 'src/app/core/services/elasticsearch/data.service';
+import {Router} from '@angular/router';
+import {debounceTime, switchMap, takeUntil} from 'rxjs/operators';
+import {Entity, EntityType, TagItem} from '../../models/models';
 
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
+  providers: [SearchService]
 })
 export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
+
+  @ViewChild('input', {static: false})
+  inputRef: ElementRef;
+
   /** input for search component */
   searchInput: string;
 
@@ -21,15 +29,11 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input()
   isHeaderSearch = false;
 
-  /** String value binding the placeholder in the searchbar */
-  placeholderText: string;
-
   /** Array of all placeholder values */
   placeholderArray: string[] = [
-    'Search for something...',
-    'Try "Mona Lisa"',
-    'Try "Vincent van Gogh"',
-    'Try "Renaissance"',
+    '"Mona Lisa"',
+    '"Vincent van Gogh"',
+    '"Renaissance"',
   ];
 
   /** Counter of placeholderArray */
@@ -44,16 +48,21 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();
 
-  constructor(private dataService: DataService, private router: Router, private cdRef: ChangeDetectorRef) {}
+  constructor(
+    private dataService: DataService,
+    private searchService: SearchService,
+    private router: Router,
+    private cdRef: ChangeDetectorRef) {
+  }
 
   ngOnInit() {
-    this.dataService.$searchItems.pipe(takeUntil(this.ngUnsubscribe)).subscribe((items) => {
+    this.searchService.$searchItems.pipe(takeUntil(this.ngUnsubscribe)).subscribe((items) => {
       this.searchItems = items;
     });
   }
 
   ngAfterViewInit() {
-    this.placeholderText = this.placeholderArray[0];
+    this.placeholderArray.unshift(this.inputRef.nativeElement.placeholder);
     const inv = interval(8000);
     inv.pipe(takeUntil(this.ngUnsubscribe)).subscribe((val) => this.changePlaceholdertext());
     this.cdRef.detectChanges();
@@ -66,11 +75,8 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /** Change the text inside the placeholder */
   public changePlaceholdertext() {
-    ++this.counter;
-    if (this.counter === this.placeholderArray.length) {
-      this.counter = 0;
-    }
-    this.placeholderText = this.placeholderArray[this.counter];
+    this.counter = ++this.counter % this.placeholderArray.length;
+    this.inputRef.nativeElement.placeholder = this.placeholderArray[this.counter];
   }
 
   /**
@@ -85,7 +91,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
    * search for entities with specified search term
    * sort search results by relativeRank, type, position of the term within the search result.
    * select 10 out of all results that should be shown
-   * @param text: search term
+   * @param text$: search term
    */
   public search = (text$: Observable<string>) =>
     text$.pipe(
@@ -94,71 +100,66 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
         if (term === '') {
           return [];
         }
-        let entities = await this.dataService.findEntitiesByLabelText(term.toLowerCase());
-        entities = entities
-          .filter((v) => v.label.toLowerCase().indexOf(term.toLowerCase()) > -1)
-          .sort(
-            (a, b): any => {
-              let rankA = a.relativeRank;
-              let rankB = b.relativeRank;
-              const typeA = a.type;
-              const typeB = b.type;
-              const aPos = a.label.toLowerCase().indexOf(term.toLowerCase());
-              const bPos = b.label.toLowerCase().indexOf(term.toLowerCase());
+        let entities = await this.dataService.findByLabel(term.toLowerCase());
+        entities = entities.filter((v) => v.label.toLowerCase().indexOf(term.toLowerCase()) > -1);
 
-              if (typeB < typeA) {
-                return 1;
-              } else if (typeA < typeB) {
-                return -1;
-              }
-              // factor 2 for initial position
-              if (aPos === 0) {
-                rankA *= 2;
-              }
-              if (bPos === 0) {
-                rankB *= 2;
-              }
-              // factor 0.5 for non-whitespace in front
-              if (
-                aPos > 0 &&
-                a.label
-                  .toLowerCase()
-                  .charAt(aPos - 1)
-                  .match(/\S/)
-              ) {
-                rankA *= 0.5;
-              }
-              if (
-                bPos > 0 &&
-                b.label
-                  .toLowerCase()
-                  .charAt(bPos - 1)
-                  .match(/\S/)
-              ) {
-                rankA *= 0.5;
-              }
-              return rankB > rankA ? 1 : rankB < rankA ? -1 : 0;
-            }
-          );
+        // sort results by rank and modify rank by whether it starts with search term
+        entities = this.sortSearchResultsByRank(entities, term);
+        // select best results of each group
         entities = this.selectSearchResults(entities);
-        entities = entities.sort(
-          (a: Entity, b: Entity): number => {
-            if (a.type === 'artwork') {
-              return b.type === 'artwork' ? 0 : -1;
-            } else if (b.type === 'artwork') {
-              return a.type === 'artwork' ? 0 : 1;
-            } else if (a.type < b.type) {
-              return -1;
-            } else if (a.type === b.type) {
-              return 0;
-            } else if (a.type > b.type) {
-              return 1;
-            }
-          }
-        );
+        // sort results again, after selection sorted them statically
+        entities = this.sortSearchResultsByRank(entities, term);
+        // group results by type, group with result of highest modified rank starts
+        entities = this.groupSearchResultsByType(entities);
+
         return this.searchInput ? entities : [];
       })
     );
+
+  /** sort search items by rank and whether results starts with search term
+   * @param entities results which should be sorted
+   */
+  sortSearchResultsByRank(entities: Entity[], term: string): Entity[] {
+    let sortedEntities = entities;
+    sortedEntities.sort(
+        (a, b): any => {
+        let rankA = a.relativeRank;
+        let rankB = b.relativeRank;
+        const aPos = a.label.toLowerCase().indexOf(term.toLowerCase());
+        const bPos = b.label.toLowerCase().indexOf(term.toLowerCase());
+
+        // factor 2 for initial position
+        if (aPos === 0) {
+          rankA *= 2;
+        }
+        if (bPos === 0) {
+          rankB *= 2;
+        }
+        // factor 0.5 for non-whitespace in front
+        if (
+          aPos > 0 &&
+        a.label
+        .toLowerCase()
+        .charAt(aPos - 1)
+        .match(/\S/)
+        ) {
+          rankA *= 0.5;
+        }
+        if (
+        bPos > 0 &&
+        b.label
+        .toLowerCase()
+        .charAt(bPos - 1)
+        .match(/\S/)
+        ) {
+          rankA *= 0.5;
+        }
+        return rankB > rankA ? 1 : rankB < rankA ? -1 : 0;
+      }
+    );
+    return sortedEntities;
+  }
+
 
   /** select up to 10 results from entities, distributes over all categories
    * @param entities results out of which should be selected
@@ -173,31 +174,31 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     const locations = [];
     for (const ent of entities) {
       switch (ent.type) {
-        case 'artwork': {
+        case EntityType.ARTWORK: {
           artworks.push(ent);
           break;
         }
-        case 'artist': {
+        case EntityType.ARTIST: {
           artists.push(ent);
           break;
         }
-        case 'material': {
+        case EntityType.MATERIAL: {
           materials.push(ent);
           break;
         }
-        case 'genre': {
+        case EntityType.GENRE: {
           genre.push(ent);
           break;
         }
-        case 'motif': {
+        case EntityType.MOTIF: {
           motifs.push(ent);
           break;
         }
-        case 'movement': {
+        case EntityType.MOVEMENT: {
           movements.push(ent);
           break;
         }
-        case 'location': {
+        case EntityType.LOCATION: {
           locations.push(ent);
           break;
         }
@@ -227,6 +228,28 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     return newEntities.concat(restItems).splice(0, 10);
   }
 
+  /** resort search items so items of same type are grouped together
+   * @param entities results which should be resorted
+   */
+  groupSearchResultsByType(entities: Entity[]): Entity[] {
+    let types = [];
+      entities.forEach(function (entity) {
+        if (!types.includes(entity.type)) {
+          types.push(entity.type);
+        }
+      });
+
+    let entitiesResorted = [];
+    types.forEach(function (type) {
+      entities.forEach(function (entity) {
+        if (entity.type == type) {
+          entitiesResorted.push(entity);
+        }
+      });
+    });
+    return entitiesResorted;
+  }
+
   /** build query params for search result url */
   buildQueryParams() {
     const params = {
@@ -240,27 +263,27 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     };
     for (const item of this.searchItems) {
       switch (item.type) {
-        case 'artist': {
+        case EntityType.ARTIST: {
           params.artist.push(item.id);
           break;
         }
-        case 'movement': {
+        case EntityType.MOVEMENT: {
           params.movement.push(item.id);
           break;
         }
-        case 'genre': {
+        case EntityType.GENRE: {
           params.genre.push(item.id);
           break;
         }
-        case 'material': {
+        case EntityType.MATERIAL: {
           params.material.push(item.id);
           break;
         }
-        case 'motif': {
+        case EntityType.MOTIF: {
           params.motif.push(item.id);
           break;
         }
-        case 'location': {
+        case EntityType.LOCATION: {
           params.location.push(item.id);
           break;
         }
@@ -293,13 +316,13 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     }, 300);
 
     this.searchInput = '';
-    if ($event.item.type === 'artwork') {
+    if ($event.item.type === EntityType.ARTWORK) {
       const url = `/artwork/${$event.item.id}`;
       $event.preventDefault();
       this.router.navigate([url]);
       return;
     } else {
-      this.dataService.addSearchTag({
+      this.searchService.addSearchTag({
         label: $event.item.label,
         type: $event.item.type,
         id: $event.item.id,
@@ -323,7 +346,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
       this.router.navigate([url]);
       return;
     }
-    this.router.navigate(['/search'], { queryParams: this.buildQueryParams() });
+    this.router.navigate(['/search'], {queryParams: this.buildQueryParams()});
     return;
   }
 
@@ -337,7 +360,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
     if (this.searchInput) {
-      this.dataService.addSearchTag({
+      this.searchService.addSearchTag({
         label: this.searchInput,
         type: null,
         id: null,
@@ -349,7 +372,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /** remove chip from search bar */
   public removeTag(item: TagItem) {
-    this.dataService.removeSearchTag(item);
+    this.searchService.removeSearchTag(item);
   }
 
   /**
@@ -365,13 +388,13 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   /** remove newest chip */
   public removeNewestTag() {
     if (this.searchInput === '' && this.rmTag) {
-      this.dataService.removeSearchTag(this.searchItems[this.searchItems.length - 1]);
+      this.searchService.removeSearchTag(this.searchItems[this.searchItems.length - 1]);
     }
     this.rmTag = false;
   }
 
   /** remove all chips */
   public clearAllTags() {
-    this.dataService.clearSearchTags();
+    this.searchService.clearSearchTags();
   }
 }

@@ -7,7 +7,13 @@ export const environment = {
 };
 
 export const elasticEnvironment = {
-  serverURI: '/api/_search'
+  serverURI: '/api'
+};
+
+export const analyticsEnvironment = {
+  enabled: false,
+  url: 'https://openartbrowser.org/api/analytics/',
+  propertyId: '2'
 };
 
 /*

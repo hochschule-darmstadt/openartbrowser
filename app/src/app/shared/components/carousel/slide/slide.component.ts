@@ -1,7 +1,6 @@
-import { Component, Input, Output, EventEmitter, AfterViewInit, ElementRef } from '@angular/core';
-import { Entity } from 'src/app/shared/models/models';
-import { DataService } from 'src/app/core/services/data.service';
-import { Slide, makeDefaultSlide } from '../slider.component';
+import {Component, Input, Output, EventEmitter, AfterViewInit, ElementRef} from '@angular/core';
+import {Entity} from 'src/app/shared/models/models';
+import {Slide, makeDefaultSlide} from '../carousel.component';
 
 /**
  * a slide of the slider.
@@ -25,14 +24,15 @@ export class SlideComponent implements AfterViewInit {
   @Output()
   deleteUnusedSlides: EventEmitter<void> = new EventEmitter<void>();
 
-  constructor(public dataService: DataService, private el: ElementRef) {}
+  constructor(private el: ElementRef) {
+  }
 
   ngAfterViewInit() {
     if (window && 'IntersectionObserver' in window) {
       const obs = new IntersectionObserver(
         (entries) => {
           /** check whether any element of the slide is currently visible on screen */
-          entries.forEach(({ isIntersecting }) => {
+          entries.forEach(({isIntersecting}) => {
             if (isIntersecting) {
               /** enable image loading for this slide, the next slide and the previous slide if slide is visible */
               this.slide.loadContent = true;
@@ -46,7 +46,7 @@ export class SlideComponent implements AfterViewInit {
             }
           });
         },
-        { rootMargin: '100%' }
+        {rootMargin: '100%'}
       );
       obs.observe(this.el.nativeElement);
     } else {

@@ -1,35 +1,34 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {Artist, Artwork, EntityType, Movement} from 'src/app/shared/models/models';
-import {DataService} from 'src/app/core/services/data.service';
+import {DataService} from 'src/app/core/services/elasticsearch/data.service';
 import {ActivatedRoute} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';
 import * as _ from 'lodash';
+import {shuffle} from 'src/app/core/services/utils.service';
 
 @Component({
   selector: 'app-artist',
   templateUrl: './artist.component.html',
   styleUrls: ['./artist.component.scss'],
 })
-
 export class ArtistComponent implements OnInit, OnDestroy {
+  /** The entity this page is about */
+  artist: Artist = null;
+  /** Related artworks */
+  sliderItems: Artwork[] = [];
+  /** Change collapse icon; true if more infos are folded in */
+  collapse = true;
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();
 
-  /** The entity this page is about */
-  artist: Artist = null;
+  /** Toggle bool for displaying either timeline or artworks carousel component */
+  showTimelineNotArtworks = true;
 
-  /** Related artworks */
-  sliderItems: Artwork[] = [];
-
-  /** Change collapse icon; true if more infos are folded in */
-  collapse = true;
+  /** a video was found */
+  videoExists = false;
 
   constructor(private dataService: DataService, private route: ActivatedRoute) {
-  }
-
-  toggleDetails() {
-    this.collapse = !this.collapse;
   }
 
   /** hook that is executed at component initialization */
@@ -41,36 +40,48 @@ export class ArtistComponent implements OnInit, OnDestroy {
       this.artist = await this.dataService.findById<Artist>(artistId, EntityType.ARTIST);
 
       /** load slider items */
-      this.dataService.findArtworksByArtists([this.artist.id]).then((artworks) => {
-        this.sliderItems = this.shuffle(artworks);
-      });
+      this.dataService.findArtworksByType("artists", [this.artist.id])
+        .then(artworks => this.sliderItems = shuffle(artworks));
       /** dereference movements  */
-      this.dataService.findMultipleById(this.artist.movements as any, EntityType.MOVEMENT).then((movements) => {
-        this.artist.movements = movements;
-      });
+      this.dataService.findMultipleById(this.artist.movements as any, EntityType.MOVEMENT)
+        .then(movements => this.artist.movements = movements);
       /** dereference influenced_bys */
-      this.dataService.findMultipleById(this.artist.influenced_by as any, EntityType.ARTIST).then((influences) => {
-        this.artist.influenced_by = influences;
-      });
+      this.dataService.findMultipleById(this.artist.influenced_by as any, EntityType.ARTIST)
+        .then(influences => this.artist.influenced_by = influences);
 
       /* Count meta data to show more on load */
-
+      this.aggregatePictureMovementsToArtist();
       this.calculateCollapseState();
     });
   }
 
   /**
-   * @description shuffle the items' categories.
+   * Get all movements from the artworks of an artist and add them to the artist movements.
+   * Since the first query only gives back the movement id and not the complete movement object,
+   * it needs to be queried again to get the corresponding movement object.
+   * Since the movements are added as arrays of arrays the deletion of duplicate movements is done at the end.
    */
-  shuffle = (a: Artwork[]): Artwork[] => {
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
+  private aggregatePictureMovementsToArtist() {
+    const allMovements: Partial<Movement>[] = [];
+    this.dataService.findArtworksByType("artists", [this.artist.id]).then((artworks) => {
+      artworks.forEach(artwork => {
+        artwork.movements.forEach(movement => {
+          if (movement !== '') {
+            allMovements.push(movement);
+          }
+        });
+      });
+      this.dataService.findMultipleById(allMovements as any, EntityType.MOVEMENT).then((movements) => {
+        movements.forEach(movement => {
+          this.artist.movements.push(movement);
+        });
+        this.artist.movements = _.uniqWith(this.artist.movements, _.isEqual);
+      });
+    });
   }
 
-  /** calculates the size of meta data item section
+  /**
+   /** calculates the size of meta data item section
    * every attribute: +3
    * if attribute is array and size > 3 -> + arraylength
    */
@@ -101,5 +112,13 @@ export class ArtistComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
+  }
+
+  toggleComponent() {
+    this.showTimelineNotArtworks = !this.showTimelineNotArtworks;
+  }
+
+  videoFound(event) {
+    this.videoExists = this.videoExists ? true : event;
   }
 }

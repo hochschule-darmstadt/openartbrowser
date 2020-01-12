@@ -1,12 +1,13 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { LocationComponent } from './location.component';
-import { SlideComponent } from 'src/app/shared/components/slider/slide/slide.component';
-import { SliderComponent } from 'src/app/shared/components/slider/slider.component';
-import { DataService } from 'src/app/core/services/data.service';
-import { RouterModule } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import {LocationComponent} from './location.component';
+import {SlideComponent} from 'src/app/shared/components/carousel/slide/slide.component';
+import {CarouselComponent} from 'src/app/shared/components/carousel/carousel.component';
+import {RouterModule} from '@angular/router';
+import {HttpClientModule} from '@angular/common/http';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {DataService} from 'src/app/core/services/elasticsearch/data.service';
+import {CollapseComponent} from 'src/app/shared/components/collapse/collapse.component';
 
 describe('LocationComponent', () => {
   let component: LocationComponent;
@@ -22,13 +23,14 @@ describe('LocationComponent', () => {
       declarations: [
         LocationComponent,
         SlideComponent,
-        SliderComponent,
+        CarouselComponent,
+        CollapseComponent
       ],
       providers: [
         DataService,
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

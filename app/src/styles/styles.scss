@@ -1,0 +1,93 @@
+/************************************
+    Global Style Properties
+************************************/
+
+html, body {
+  height: 100%;
+}
+
+*:focus {
+  outline: transparent;
+}
+
+.first-letter::first-letter {
+  text-transform: uppercase;
+}
+
+.chip {
+  font-size: 1em;
+  margin-right: 4px;
+}
+
+hr {
+  border: 0;
+  clear: both;
+  display: block;
+  width: 100%;
+  background-color: #FFFFFF;
+  height: 1px;
+}
+
+/* Badge */
+.badge {
+  margin-right: 2px;
+  margin-bottom: 2px;
+  text-transform: capitalize;
+}
+
+.badge:hover {
+  cursor: pointer;
+}
+
+.badge i{
+  margin-right:5px;
+}
+
+/* For highlighted common tags chips */
+.badge-light {
+  color: #444;
+  background-color: #fff;
+  opacity: 1 !important;
+}
+
+/* If not highlighted, set as transparent (opacity .4) */
+.badge-transparent {
+  opacity: .4;
+}
+
+
+/* Customize carousel  (has no power in slider.compoent.scss)*/
+.carousel-indicators {
+  visibility: hidden;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  width: 100%;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  width: 2%;
+}
+
+@media (max-width: 575px) {
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: 4%;
+  }
+}
+
+/* collapse animation */
+.collapse, .collapse.show {
+  display: block !important;
+  transition: all .25s ease-in-out;
+}
+.collapse {
+ opacity: 0;
+ height: 0;
+}
+.collapse.show {
+  opacity: 1;
+  height: 100%;
+}

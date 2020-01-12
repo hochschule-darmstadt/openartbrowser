@@ -1,10 +1,11 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
-import {DataService} from 'src/app/core/services/data.service';
+import {DataService} from 'src/app/core/services/elasticsearch/data.service';
 import {ActivatedRoute} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
 import {Movement, Artwork, EntityType} from 'src/app/shared/models/models';
 import {Subject} from 'rxjs';
-import * as _ from 'lodash';
+import * as _ from "lodash";
+import {shuffle} from 'src/app/core/services/utils.service';
 
 @Component({
   selector: 'app-movement',
@@ -24,6 +25,12 @@ export class MovementComponent implements OnInit, OnDestroy {
   /** Change collapse icon; true if more infos are folded in */
   collapse = true;
 
+  /** Toggle bool for displaying either timeline or artworks carousel component **/
+  showTimelineNotArtworks = true;
+
+  /** a video was found */
+  videoExists = false;
+
   constructor(private dataService: DataService, private route: ActivatedRoute) {
   }
 
@@ -37,31 +44,15 @@ export class MovementComponent implements OnInit, OnDestroy {
       this.movement = await this.dataService.findById<Movement>(movementId, EntityType.MOVEMENT);
 
       /** load slider items */
-      await this.dataService.findArtworksByMovements([this.movement.id]).then((artworks) => {
-        this.sliderItems = this.shuffle(artworks);
-      });
+      await this.dataService.findArtworksByType("movements", [this.movement.id])
+        .then(artworks => this.sliderItems = shuffle(artworks));
 
       /** dereference influenced_bys  */
-      this.dataService.findMultipleById(this.movement.influenced_by as any, EntityType.ARTIST).then((influences) => {
-        this.movement.influenced_by = influences;
-      });
+      this.dataService.findMultipleById(this.movement.influenced_by as any, EntityType.ARTIST)
+        .then(influences => this.movement.influenced_by = influences);
+
       this.calculateCollapseState();
     });
-  }
-
-  /**
-   * @description shuffle the items' categories.
-   */
-  shuffle = (a: Artwork[]): Artwork[] => {
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-  }
-
-  toggleDetails() {
-    this.collapse = !this.collapse;
   }
 
   private calculateCollapseState() {
@@ -80,5 +71,13 @@ export class MovementComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
+  }
+
+  toggleComponent() {
+    this.showTimelineNotArtworks = !this.showTimelineNotArtworks;
+  }
+
+  videoFound(event) {
+    this.videoExists = this.videoExists ? true : event;
   }
 }

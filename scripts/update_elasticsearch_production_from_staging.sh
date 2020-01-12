@@ -1,6 +1,6 @@
 #!/bin/sh
-if [ $(id -u) -ne 0 ] then :
-	echo "The script must be executed with sudo rights"
+if [ $(id -u) -ne 0 ] 
+	then echo "The script must be executed with sudo rights"
 	exit 1
 fi
 # Get crawler_output from staging

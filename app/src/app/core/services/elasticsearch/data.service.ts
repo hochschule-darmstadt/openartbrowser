@@ -194,7 +194,7 @@ export class DataService {
      * @param entity entity object
      */
     private setTypes(entity: any) {
-        if (entity.type) {
+        if (entity.type && entity.id) {
             entity.route = `/${entity.type}/${entity.id}`;
             entity.icon = EntityIcon[entity.type.toUpperCase()];
         }

@@ -19,8 +19,8 @@
         </a>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownLanguage">
           <ng-container *ngFor="let lang of languages; let i = index">
-            <a class="dropdown-item" href="/{{lang.code}}{{path}}" [ngClass]="{'active': locale == lang.code}"
-               angulartics2On="click" angularticsCategory="Language" [angularticsAction]="lang.code" >
+            <a class="dropdown-item" href="/{{lang.code}}{{path}}" [ngClass]="{active: locale == lang.code}"
+               angulartics2On="click" angularticsCategory="Language" [attr.angularticsAction]="lang.name" >
               {{lang.name}}
             </a>
             <div *ngIf="i !== (languages.length-1)" class="dropdown-divider"></div>

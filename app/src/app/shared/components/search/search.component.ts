@@ -114,10 +114,13 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
         // group results by type, group with result of highest modified rank starts
         entities = this.groupSearchResultsByType(entities);
 
-        this.angulartics2.eventTrack.next({
-          action: 'trackSiteSearch',
-          properties: { category: 'Auto suggest', keyword: term, searchCount: entities.length },
-        });
+        // Track if search had no results
+        if (entities.length === 0) {
+          this.angulartics2.eventTrack.next({
+            action: 'trackSiteSearch',
+            properties: { category: 'Auto suggest', keyword: term, searchCount: 0 },
+          });
+        }
 
         return this.searchInput ? entities : [];
       })
@@ -322,11 +325,22 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
       this.preventSearch = false;
     }, 300);
 
+    const term = this.searchInput;
     this.searchInput = '';
     if ($event.item.type === EntityType.ARTWORK) {
       const url = `/artwork/${$event.item.id}`;
       $event.preventDefault();
       this.router.navigate([url]);
+      // Track search keyword
+      this.angulartics2.eventTrack.next({
+        action: 'trackSiteSearch',
+        properties: { category: 'Auto suggest', keyword: term },
+      });
+      // Track navigation
+      this.angulartics2.eventTrack.next({
+        action: 'Search suggestion',
+        properties: { category: 'Navigation' },
+      });
       return;
     } else {
       this.searchService.addSearchTag({

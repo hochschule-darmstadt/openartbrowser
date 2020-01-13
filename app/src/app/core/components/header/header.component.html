@@ -18,15 +18,13 @@
           <h3><i class="fas fa-globe-americas"></i></h3>
         </a>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownLanguage">
-          <a class="dropdown-item" href="/en{{path}}" [ngClass]="{'active': locale == 'en'}">English</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="/de{{path}}" [ngClass]="{'active': locale == 'de'}">Deutsch</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="/fr{{path}}" [ngClass]="{'active': locale == 'fr'}">Français</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="/es{{path}}" [ngClass]="{'active': locale == 'es'}">Español</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="/it{{path}}" [ngClass]="{'active': locale == 'it'}">Italiano</a>
+          <ng-container *ngFor="let lang of languages; let i = index">
+            <a class="dropdown-item" href="/{{lang.code}}{{path}}" [ngClass]="{'active': locale == lang.code}"
+               angulartics2On="click" angularticsCategory="Language" [angularticsAction]="lang.code" >
+              {{lang.name}}
+            </a>
+            <div *ngIf="i !== (languages.length-1)" class="dropdown-divider"></div>
+          </ng-container>
         </div>
       </li>
       <li class="nav-item dropdown flex-shrink-0">

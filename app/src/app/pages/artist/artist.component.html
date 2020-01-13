@@ -21,9 +21,11 @@
 
           <app-abstract [entity]="artist"></app-abstract>
 
+          <div class="video">
           <app-video [entity]="artist" (videoFound)="videoFound($event)"></app-video>
           <app-video *ngFor="let movement of artist.movements.slice(0,1)" [entity]="movement"
             (videoFound)="videoFound($event)"></app-video>
+          </div>
 
           <table class="table-fit">
             <tbody>

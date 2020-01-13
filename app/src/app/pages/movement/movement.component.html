@@ -13,9 +13,11 @@
 
           <app-abstract [entity]="movement"></app-abstract>
 
+        <div class="video">
           <app-video [entity]="movement" (videoFound)="videoFound($event)"></app-video>
           <app-video *ngFor="let artwork of sliderItems.slice(0,10)" [entity]="artwork"
             (videoFound)="videoFound($event)"></app-video>
+        </div>
 
           <app-information i18n-label="Influenced by label@@influenced_by" label="Influenced by"
             [values]="movement?.influenced_by">

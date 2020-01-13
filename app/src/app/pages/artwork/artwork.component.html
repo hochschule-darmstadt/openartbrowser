@@ -46,10 +46,13 @@
 
           <app-abstract [entity]="artwork"></app-abstract>
           
+          <div class="video">
+          <app-video [entity]="artwork" (videoFound)="videoFound($event)"></app-video>
           <app-video *ngFor="let artist of artwork.artists.slice(0,1)" [entity]="artist"
             (videoFound)="videoFound($event)"></app-video>
           <app-video *ngFor="let movement of artwork.movements.slice(0,1)" [entity]="movement"
             (videoFound)="videoFound($event)"></app-video>
+          </div>
 
           <app-information i18n-label="Genre label@@genre" label="Genre" [values]="artwork?.genres">
           </app-information>

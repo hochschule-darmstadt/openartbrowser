@@ -1,0 +1,26 @@
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { BadgeComponent } from './badge.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { RouterModule } from '@angular/router';
+
+describe('BadgeComponent', () => {
+  let component: BadgeComponent;
+  let fixture: ComponentFixture<BadgeComponent>;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: [ NgbModule,  RouterModule.forRoot([])],
+      declarations: [ BadgeComponent ]
+    }).compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(BadgeComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

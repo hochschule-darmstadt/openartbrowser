@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-collapse',
@@ -17,7 +17,7 @@ export class CollapseComponent implements OnInit {
   ngOnInit() {
   }
 
-  toggleDetails() {
+  toggle() {
     this.collapse = !this.collapse;
   }
 }

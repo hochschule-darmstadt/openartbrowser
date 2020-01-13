@@ -1,18 +1,42 @@
-export type Iconclass = string;
 
 export interface Entity {
-    id: string;
-    label?: string;
-    description?: string;
-    abstract?: string;
-    wikipediaLink?: string;
-    image?: string;
-    imageSmall?: string;
-    imageMedium?: string;
-    iconclasses?: Array<Iconclass>;
-    type: string;
-    absoluteRank: number;
-    relativeRank: number;
-    videos?: string;
-  }
-  
+  id: string;
+  label?: string;
+  description?: string;
+  abstract?: string;
+  wikipediaLink?: string;
+  image?: string;
+  imageSmall?: string;
+  imageMedium?: string;
+  iconclasses?: Array<Iconclass>;
+  type: EntityType;
+  icon: EntityIcon;
+  route: string;
+  absoluteRank: number;
+  relativeRank: number;
+  videos?: string;
+}
+
+export type Iconclass = string;
+
+export enum EntityType {
+  ALL = "all",
+  ARTIST = 'artist',
+  ARTWORK = 'artwork',
+  GENRE = 'genre',
+  LOCATION = 'location',
+  MATERIAL = 'material',
+  MOVEMENT = 'movement',
+  MOTIF = 'motif'
+}
+
+export enum EntityIcon {
+  ALL = "fa-list-ul",
+  ARTIST = "fa-user",
+  ARTWORK = "fa-image",
+  MOVEMENT = "fa-wind",
+  LOCATION = "fa-archway",
+  MOTIF = "fa-image",
+  GENRE = "fa-tag",
+  MATERIAL = "fa-scroll"
+}

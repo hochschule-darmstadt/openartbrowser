@@ -1,4 +1,4 @@
-import { Entity } from './entity.interface';
+import { Entity, EntityType } from './entity.interface';
 import { Artist } from './artist.interface';
 import { Genre } from './genre.interface';
 import { Movement } from './movement.interface';
@@ -16,5 +16,5 @@ export interface Artwork extends Entity {
     country?: string;
     height?: number;
     width?: number;
-    type: 'artwork';
+    type: EntityType.ARTWORK;
 }

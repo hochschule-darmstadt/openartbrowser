@@ -7,6 +7,7 @@ import {DataService} from 'src/app/core/services/elasticsearch/data.service';
 import {Router} from '@angular/router';
 import {debounceTime, switchMap, takeUntil} from 'rxjs/operators';
 import {Entity, EntityType, TagItem} from '../../models/models';
+import {Angulartics2} from 'angulartics2';
 
 @Component({
   selector: 'app-search',
@@ -52,7 +53,8 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     private dataService: DataService,
     private searchService: SearchService,
     private router: Router,
-    private cdRef: ChangeDetectorRef) {
+    private cdRef: ChangeDetectorRef,
+    private angulartics2: Angulartics2) {
   }
 
   ngOnInit() {
@@ -111,6 +113,11 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
         entities = this.sortSearchResultsByRank(entities, term);
         // group results by type, group with result of highest modified rank starts
         entities = this.groupSearchResultsByType(entities);
+
+        this.angulartics2.eventTrack.next({
+          action: 'trackSiteSearch',
+          properties: { category: 'Auto suggest', keyword: term, searchCount: entities.length },
+        });
 
         return this.searchInput ? entities : [];
       })

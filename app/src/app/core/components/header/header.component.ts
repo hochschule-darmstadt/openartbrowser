@@ -1,6 +1,5 @@
 import { Component, OnInit, LOCALE_ID, Inject } from '@angular/core';
 import { Router } from '@angular/router';
-import {Angulartics2} from "angulartics2";
 
 @Component({
   selector: 'app-header',
@@ -19,7 +18,7 @@ export class HeaderComponent implements OnInit {
     {code: 'it', name: 'Italiano'},
   ];
 
-  constructor(private router: Router, @Inject(LOCALE_ID) protected localeId: string, private angulartics2: Angulartics2) {
+  constructor(private router: Router, @Inject(LOCALE_ID) protected localeId: string) {
     /**
      * Set the variable path to router url
      * every time the url changed.

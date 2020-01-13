@@ -11,7 +11,7 @@ export const elasticEnvironment = {
 };
 
 export const analyticsEnvironment = {
-  enabled: true,
+  enabled: false,
   url: 'https://openartbrowser.org/api/analytics/',
   propertyId: '2'
 };

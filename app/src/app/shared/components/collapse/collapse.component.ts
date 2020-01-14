@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {Angulartics2} from 'angulartics2';
 
 @Component({
   selector: 'app-collapse',
@@ -11,7 +12,7 @@ export class CollapseComponent implements OnInit {
 
   @Input('showVideo') showVideo = false;
 
-  constructor() {
+  constructor(private angulartics2: Angulartics2) {
   }
 
   ngOnInit() {

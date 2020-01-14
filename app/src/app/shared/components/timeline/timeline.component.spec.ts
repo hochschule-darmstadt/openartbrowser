@@ -7,6 +7,7 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {TimelineComponent} from './timeline.component';
 import {Ng5SliderModule} from 'ng5-slider';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { EntityType, EntityIcon } from '../../models/models';
 
 describe('SliderComponent', () => {
   let component: TimelineComponent;
@@ -46,7 +47,9 @@ describe('SliderComponent', () => {
        id: 'Q18578798',
        label: 'The Execution of the Four Crowned Martyrs',
        description: 'painting by Niccolò di Pietro Gerini',
-       type: 'artwork',
+       type: EntityType.ARTWORK,
+       icon: EntityIcon.ARTWORK,
+       route: "",
        absoluteRank: 37,
        relativeRank: 0.9795063116489386,
        date: 1300
@@ -55,7 +58,9 @@ describe('SliderComponent', () => {
        id: 'Q549172',
        label: 'Flight into Egypt',
        description: 'fresco by Giotto',
-       type: 'artwork',
+       type: EntityType.ARTWORK,
+       icon: EntityIcon.ARTWORK,
+       route: "",
        absoluteRank: 46,
        relativeRank: 0.9944890206318238,
        date: 1305
@@ -64,7 +69,9 @@ describe('SliderComponent', () => {
        id: 'Q979440',
        label: 'Annunciation with St. Margaret and St. Ansanus',
        description: 'painting by Simone Martini and Lippo Memmi',
-       type: 'artwork',
+       type: EntityType.ARTWORK,
+       icon: EntityIcon.ARTWORK,
+       route: "",
        absoluteRank: 36,
        relativeRank: 0.9762525340301427,
        date: 1333
@@ -74,7 +81,9 @@ describe('SliderComponent', () => {
        label: 'Head of Christ',
        description: 'sculpture by Jaume Cascalls',
        abstract: 'The Head of Christ is a Jesus head conserved at the National Art Museum of Catalonia.',
-       type: 'artwork',
+       type: EntityType.ARTWORK,
+       icon: EntityIcon.ARTWORK,
+       route: "",
        absoluteRank: 21,
        relativeRank: 0.22987683344390347,
        date: 1352,

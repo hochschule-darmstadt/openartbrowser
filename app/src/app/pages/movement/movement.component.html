@@ -1,49 +1,37 @@
 <div class="container entity movement">
   <div class="row mb-5 border-bottom pb-5">
-    <div class="col-sm-7">
-      <span class="badge badge-secondary chip cursor-unset">
-        <i class="fas fa-wind"></i>
-        <ng-container i18n="Movement label@@movement">Movement</ng-container>
-      </span>
-      <h2 class="mb-3 first-letter">{{ movement?.label }}</h2>
+    <div class="col-sm-7" *ngIf="movement">
+      
+      <app-title [entity]="movement"></app-title>
+      
+      <div *ngIf="
+          movement?.abstract?.length ||
+          movement?.influenced_by?.length
+        ">
+        <app-collapse collapse="{{ collapse }}" [showVideo]="videoExists">
 
-      <app-collapse collapse="{{ collapse }}" [showVideo]="videoExists">
-      <div *ngIf="movement?.abstract?.length || movement?.influenced_by?.length || movement?.videos">
-          <div class="row abstract">
-            <div *ngIf="movement?.abstract" class="col-md pr-0">
-              <span>{{ movement?.abstract }}</span>
-              <p class="wiki-link">
-                <ng-container i18n="Detail More label@@more">More</ng-container>
-                : <a href="{{ movement?.wikipediaLink }}" target="_blank">Wikipedia</a></p>
-            </div>
-          </div>
+
+          <app-abstract [entity]="movement"></app-abstract>
 
         <div class="video">
           <app-video [entity]="movement" (videoFound)="videoFound($event)"></app-video>
           <app-video *ngFor="let artwork of sliderItems.slice(0,10)" [entity]="artwork"
-                     (videoFound)="videoFound($event)"></app-video>
+            (videoFound)="videoFound($event)"></app-video>
         </div>
 
-          <div class="row">
-            <div class="col-md-3 pr-0">
-              <p *ngIf="movement?.influenced_by?.length" class="mb-1 text-muted">
-                <ng-container i18n="Influenced by label@@influenced_by">Influenced by</ng-container>:
-              </p>
-            </div>
+          <app-information i18n-label="Influenced by label@@influenced_by" label="Influenced by"
+            [values]="movement?.influenced_by">
+          </app-information>
 
-            <div class="col-md-9 info">
-              <p *ngIf="movement?.influenced_by?.length" class="mb-1">
-                <app-badge *ngFor="let influence of movement?.influenced_by" [entity]="influence">
-                </app-badge>
-              </p>
-            </div>
-          </div>
-        </div>
-      </app-collapse>
+          <app-information i18n-label="Inception label@@inception" label="Inception" [value]="artwork?.inception">
+          </app-information>
+
+        </app-collapse>
+      </div>
     </div>
 
     <div class="col-sm-5 img" *ngIf="movement?.image">
-      <img class="img-fluid rounded-circle" src="{{ movement?.imageSmall }}" alt=""/>
+      <img class="img-fluid rounded-circle" src="{{ movement?.imageSmall }}" alt="" />
     </div>
   </div>
 
@@ -51,20 +39,18 @@
     <ul class="nav nav-pills">
       <li>
         <button type="button" class="btn btn-secondary" (click)="toggleComponent()"
-                i18n="Timeline toggle label@@toggletimeline"
-                [disabled]="showTimelineNotArtworks">TIMELINE
+          i18n="Timeline toggle label@@toggletimeline" [disabled]="showTimelineNotArtworks">TIMELINE
         </button>
       </li>
       <li>
         <button type="button" class="btn btn-secondary" (click)="toggleComponent()"
-                i18n="Artworks toggle label@@toggleartworks"
-                [disabled]="!showTimelineNotArtworks">ARTWORKS
+          i18n="Artworks toggle label@@toggleartworks" [disabled]="!showTimelineNotArtworks">ARTWORKS
         </button>
       </li>
     </ul>
     <span class="ml-1 mt-auto mb-auto">({{ sliderItems?.length }})</span>
   </div>
-  <app-timeline *ngIf="showTimelineNotArtworks && sliderItems?.length" [artworks]="sliderItems"
-                displayArtists="true"></app-timeline>
+  <app-timeline *ngIf="showTimelineNotArtworks && sliderItems?.length" [artworks]="sliderItems" displayArtists="true">
+  </app-timeline>
   <app-slider *ngIf="(!showTimelineNotArtworks) && sliderItems?.length" [items]="sliderItems"></app-slider>
 </div>

@@ -1,4 +1,4 @@
-import { Entity } from './entity.interface';
+import { Entity, EntityType } from './entity.interface';
 
 export interface Location extends Entity {
     country?: string;
@@ -6,5 +6,5 @@ export interface Location extends Entity {
     part_of: Partial<Location>[];
     lat?: string;
     lon?: string;
-    type: 'location';
+    type: EntityType.LOCATION;
 }

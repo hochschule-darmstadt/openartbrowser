@@ -1,14 +1,17 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { Entity } from "../../models/models";
+import { Component, OnInit, Input } from '@angular/core';
+import { Entity } from '../../models/models';
 
 @Component({
-  selector: "app-badge",
-  templateUrl: "./badge.component.html",
-  styleUrls: ["./badge.component.scss"]
+  selector: 'app-abstract',
+  templateUrl: './abstract.component.html',
+  styleUrls: ['./abstract.component.scss']
 })
-export class BadgeComponent implements OnInit {
+export class AbstractComponent implements OnInit {
+
   @Input()
   entity: Entity;
+
+  constructor() { }
 
   ngOnInit() {
     this.checkRequiredFields();

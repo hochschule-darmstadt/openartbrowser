@@ -1,16 +1,20 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {ArtworkComponent} from './artwork.component';
-import {SlideComponent} from 'src/app/shared/components/carousel/slide/slide.component';
-import {CarouselComponent} from 'src/app/shared/components/carousel/carousel.component';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {HttpClientModule} from '@angular/common/http';
-import {ImageViewerModule} from 'ngx-image-viewer';
-import {RouterModule} from '@angular/router';
-import {DataService} from 'src/app/core/services/elasticsearch/data.service';
-import {VideoComponent} from 'src/app/shared/components/video/video.component';
-import {BadgeComponent} from 'src/app/shared/components/badge/badge.component';
-import {CollapseComponent} from 'src/app/shared/components/collapse/collapse.component';
+import { ArtworkComponent } from './artwork.component';
+import { SlideComponent } from 'src/app/shared/components/carousel/slide/slide.component';
+import { CarouselComponent } from 'src/app/shared/components/carousel/carousel.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { HttpClientModule } from '@angular/common/http';
+import { ImageViewerModule } from 'ngx-image-viewer';
+import { RouterModule } from '@angular/router';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
+import { VideoComponent } from "../../shared/components/video/video.component";
+import { BadgeComponent } from 'src/app/shared/components/badge/badge.component';
+import { CollapseComponent } from 'src/app/shared/components/collapse/collapse.component';
+import { InformationComponent } from "../../shared/components/information/information.component";
+import { AbstractComponent } from 'src/app/shared/components/abstract/abstract.component';
+import { TitleComponent } from 'src/app/shared/components/title/title.component';
+import { IconclassComponent } from 'src/app/shared/components/iconclass/iconclass.component';
 
 describe('ArtworkComponent', () => {
   let component: ArtworkComponent;
@@ -29,8 +33,13 @@ describe('ArtworkComponent', () => {
         SlideComponent,
         BadgeComponent,
         CarouselComponent,
+        AbstractComponent,
+        TitleComponent,
+        InformationComponent,
         VideoComponent,
-        CollapseComponent
+        CollapseComponent,
+        InformationComponent,
+        IconclassComponent
       ],
       providers: [DataService]
     }).compileComponents();

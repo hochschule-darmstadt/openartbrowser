@@ -1,4 +1,5 @@
-<span class="badge badge-pill badge-secondary first-letter chip"
+<span *ngIf="entity"
+      class="badge badge-pill badge-secondary first-letter chip"
       tooltipClass="tooltip"
       ngbTooltip="{{ tooltip }}"
       [routerLink]="[redirectUrl]"

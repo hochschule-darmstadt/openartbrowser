@@ -10,14 +10,6 @@ export class HeaderComponent implements OnInit {
   public path: string = "";
   public locale: string = ""
 
-  public languages = [
-    {code: 'en', name: 'English'},
-    {code: 'de', name: 'Deutsch'},
-    {code: 'fr', name: 'Français'},
-    {code: 'es', name: 'Español'},
-    {code: 'it', name: 'Italiano'},
-  ];
-
   constructor(private router: Router, @Inject(LOCALE_ID) protected localeId: string) {
     /**
      * Set the variable path to router url

@@ -18,18 +18,20 @@ export class BadgeComponent implements OnInit {
   tooltipBreakLimit: number = 150;
 
   ngOnInit() {
-    this.icon = icons[this.entity.type] || "fa-user";
-    this.redirectUrl = `/${this.entity.type}/${this.entity.id}` || "/";
-    this.label = this.entity.label || "";
+    if (this.entity){
+      this.icon = icons[this.entity.type] || "fa-user";
+      this.redirectUrl = `/${this.entity.type}/${this.entity.id}` || "/";
+      this.label = this.entity.label || "";
 
-    // display the abstract or description; break after defined char limit
-    this.tooltip = this.entity.abstract
-      ? this.entity.abstract
-      : this.entity.description
-        ? this.entity.description
-        : null;
-    if (this.tooltip) {
-      this.tooltip.trim();
+      // display the abstract or description; break after defined char limit
+      this.tooltip = this.entity.abstract
+        ? this.entity.abstract
+        : this.entity.description
+          ? this.entity.description
+          : null;
+      if (this.tooltip) {
+        this.tooltip.trim();
+      }
     }
 
     if (this.tooltip && this.tooltip.length >= this.tooltipBreakLimit) {

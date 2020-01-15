@@ -15,6 +15,9 @@ addons:
       - google-chrome-stable
       - sshpass
 
+before_install:
+  - sudo apt-get update
+
 cache:
   directories:
     - ./app/node_modules

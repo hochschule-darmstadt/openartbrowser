@@ -229,6 +229,9 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   }
 
   videoFound(event) {
-    this.videoExists = this.videoExists ? true : event;
+    const that = this;
+    setTimeout(() => {
+      that.videoExists = event;
+    }, 50);
   }
 }

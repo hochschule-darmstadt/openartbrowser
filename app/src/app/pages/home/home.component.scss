@@ -185,6 +185,7 @@ $color1: #00bc8c;
   }
 
   .container-image {
+    display: block;
     height: 15rem;
     width: 100%;
     overflow: hidden;
@@ -222,6 +223,15 @@ $color1: #00bc8c;
     transform: translate(-50%, 0);
     text-align: center;
   }
+
+  a {
+    color: white;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
 }
 
 /** Style for generated ngbcarousel **/
@@ -235,3 +245,4 @@ $color1: #00bc8c;
     cursor: default;
   }
 }
+

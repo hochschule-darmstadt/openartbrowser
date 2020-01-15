@@ -141,52 +141,52 @@
               the chip.
             -->
             <span *ngIf="artwork?.motifs?.length && (tab.type == 'motif' || tab.type == 'all')" class="mb-1">
-              <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
+              <a class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
                 [ngClass]="{'badge-light': motif && hoveredArtwork?.motifs?.includes(motif.id) }"
                 *ngFor="let motif of artwork?.motifs" [routerLink]="'/motif/' + motif.id">
                 <i class="fas fa-image"></i>
-                {{ motif?.label }}</span>
+                {{ motif?.label }}</a>
             </span>
 
             <span *ngIf="artwork?.artists?.length && (tab.type == 'artist' || tab.type == 'all')" class="mb-1">
-              <span *ngFor="let artist of artwork?.artists"
+              <a *ngFor="let artist of artwork?.artists"
                 [ngClass]="{'badge-light': artist && hoveredArtwork?.artists?.includes(artist.id) }"
                 class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
                 [routerLink]="'/artist/' + artist.id">
                 <i class="fas fa-user"></i>
-                {{ artist?.label }}</span>
+                {{ artist?.label }}</a>
             </span>
 
             <span *ngIf="artwork?.genres?.length && (tab.type == 'genre' || tab.type == 'all')" class="mb-1">
-              <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
+              <a class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
                 [ngClass]="{'badge-light': genre && hoveredArtwork?.genres?.includes(genre.id) }"
                 *ngFor="let genre of artwork?.genres" [routerLink]="'/genre/' + genre.id">
                 <i class="fas fa-tag"></i>
-                {{ genre?.label }}</span>
+                {{ genre?.label }}</a>
             </span>
 
             <span *ngIf="artwork?.movements?.length && (tab.type == 'movement' || tab.type == 'all')" class="mb-1">
-              <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
+              <a class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
                 [ngClass]="{'badge-light': movement && hoveredArtwork?.movements?.includes(movement.id) }"
                 *ngFor="let movement of artwork?.movements" [routerLink]="'/movement/' + movement.id">
                 <i class="fas fa-wind"></i>
-                {{ movement?.label }}</span>
+                {{ movement?.label }}</a>
             </span>
 
             <span *ngIf="artwork?.materials?.length && (tab.type == 'material' || tab.type == 'all')" class="mb-1">
-              <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
+              <a class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
                 [ngClass]="{'badge-light': material && hoveredArtwork?.materials?.includes(material.id) }"
                 *ngFor="let material of artwork?.materials" [routerLink]="'/material/' + material.id">
                 <i class="fas fa-scroll"></i>
-                {{ material?.label }}</span>
+                {{ material?.label }}</a>
             </span>
 
             <span *ngIf="artwork?.locations?.length && (tab.type == 'location' || tab.type == 'all')" class=" mb-1">
-              <span class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
+              <a class="badge badge-pill badge-secondary badge-transparent chip mr-1 mb-1"
                 [ngClass]="{'badge-light': location && hoveredArtwork?.locations?.includes(location.id) }"
                 *ngFor="let location of artwork?.locations" [routerLink]="'/location/' + location.id">
                 <i class="fas fa-archway"></i>
-                {{ location?.label }}</span>
+                {{ location?.label }}</a>
             </span>
           </div>
         </div>

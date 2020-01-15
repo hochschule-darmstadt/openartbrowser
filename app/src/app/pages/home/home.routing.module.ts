@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home.component';
 import { SharedModule } from '../../shared/shared.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import {Angulartics2Module} from 'angulartics2';
 
 const homeRoutes: Routes = [
   {
@@ -14,7 +15,7 @@ const homeRoutes: Routes = [
 
 @NgModule({
   declarations: [HomeComponent],
-  imports: [CommonModule, SharedModule, RouterModule.forChild(homeRoutes), NgbModule],
+    imports: [CommonModule, SharedModule, RouterModule.forChild(homeRoutes), NgbModule, Angulartics2Module],
   exports: [HomeComponent],
 })
 export class HomeRoutingModule {}

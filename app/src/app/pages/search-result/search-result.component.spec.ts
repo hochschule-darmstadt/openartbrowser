@@ -7,6 +7,7 @@ import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientModule } from '@angular/common/http';
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
+import {Angulartics2RouterlessModule} from 'angulartics2/routerlessmodule';
 
 describe('SearchResultComponent', () => {
   let component: SearchResultComponent;
@@ -17,7 +18,8 @@ describe('SearchResultComponent', () => {
       imports: [
         NgbModule,
         HttpClientModule,
-        RouterModule.forRoot([])
+        RouterModule.forRoot([]),
+        Angulartics2RouterlessModule.forRoot()
       ],
       declarations: [
         SearchResultComponent,

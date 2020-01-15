@@ -20,6 +20,22 @@
     }
   }
 
+  table.table-fit {
+    td{
+      padding-bottom: 0.5em;
+      padding-right: 2em;
+      vertical-align: top;
+      text-align: left;
+    }
+    @media (max-width: 992px) {
+      td{
+        display:block;
+        box-sizing:border-box;
+        clear:both
+      }  
+    }
+  }
+  
   .more {
     cursor: pointer;
 
@@ -72,6 +88,27 @@
     /*pl-0*/
     .notchip {
       padding-left: 0;
+    }
+  }
+
+  /** badge tooltip */
+
+  $color1: #00bc8c;
+  .tooltip{
+    .tooltip-inner {
+      font-size: 100%;
+      border-style: solid;
+      border-color: $color1;
+      display: -webkit-box;
+      -webkit-line-clamp: 6;
+      -webkit-box-orient: vertical;  
+      overflow: hidden;
+      padding: 0.25rem 0.5rem 0.25rem 0.5rem;
+    }
+
+    .arrow::before {
+      border-top-color: $color1;
+      border-bottom-color: $color1;
     }
   }
 }

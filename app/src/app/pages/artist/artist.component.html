@@ -1,36 +1,16 @@
 <div class="container entity artist">
   <div class="row mb-5 border-bottom pb-5">
-    <div class="col-sm-7">
-      <span class="badge badge-secondary chip cursor-heading-pill">
-        <i class="fas fa-user"></i>
-        <ng-container i18n="Artist label@@artist">Artist</ng-container>
-      </span>
-      <h2 class="mb-3">{{ artist?.label }}</h2>
+    <div class="col-sm-7" *ngIf="artist">
 
-      <div class="row">
-        <div class="col-md-2 pr-0">
-          <p *ngIf="artist?.date_of_birth || artist?.place_of_birth" class="mb-1 text-muted">
-            <ng-container i18n="Born infos label@@born">Born</ng-container>:
-          </p>
-        </div>
-        <div class="col-md-10 pl-0 info">
-          <p *ngIf="artist?.date_of_birth || artist?.place_of_birth" class="mb-1">
-            {{ artist?.date_of_birth }} {{ artist?.place_of_birth ? ' in ' + artist?.place_of_birth : '' }}
-          </p>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-2 pr-0">
-          <p *ngIf="artist?.date_of_death || artist?.place_of_death" class="mr-4 mb-1 text-muted">
-            <ng-container i18n="Died infos label@@died">Died</ng-container>:
-          </p>
-        </div>
-        <div class="col-md-10 pl-0 info">
-          <p *ngIf="artist?.date_of_death || artist?.place_of_death" class="mb-1">
-            {{ artist?.date_of_death }} {{ artist?.place_of_death ? ' in ' + artist.place_of_death : '' }}
-          </p>
-        </div>
-      </div>
+      <app-title [entity]="artist"></app-title>
+
+      <app-information i18n-label="Born infos label@@born" label="Born"
+        [value]="artist?.date_of_birth + (artist?.place_of_birth) ? ' in ' + artist?.place_of_birth : ''">
+      </app-information>
+
+      <app-information i18n-label="Died infos label@@died" label="Died"
+        [value]="artist?.date_of_death + (artist?.place_of_death) ? ' in ' + artist.place_of_death : ''">
+      </app-information>
 
       <div *ngIf="artist?.gender ||
                   artist?.citizenship ||
@@ -38,62 +18,58 @@
                   artist?.influenced_by?.length ||
                   artist?.abstract">
         <app-collapse collapse="{{ collapse }}" [showVideo]="videoExists">
-          <div class="row abstract">
-            <div *ngIf="artist?.abstract" class="col-md pr-0">
-              <span>{{ artist?.abstract }}</span>
-              <p class="wiki-link">
-                <ng-container i18n="Detail More label@@more">More</ng-container>
-                : <a href="{{ artist?.wikipediaLink }}" target="_blank">Wikipedia</a></p>
-            </div>
-          </div>
 
-          <app-video [entity]="artist" (videoFound)="videoExists=$event"></app-video>
+          <app-abstract [entity]="artist"></app-abstract>
+
+          <div class="video">
+          <app-video [entity]="artist" (videoFound)="videoFound($event)"></app-video>
           <app-video *ngFor="let movement of artist.movements.slice(0,1)" [entity]="movement"
-                     (videoFound)="videoExists=$event"></app-video>
+            (videoFound)="videoFound($event)"></app-video>
+          </div>
 
           <table class="table-fit">
             <tbody>
 
-            <tr *ngIf="artist?.gender">
-              <td class="text-muted">
-                <ng-container i18n="Artist gender label@@gender">Gender</ng-container>:
-              </td>
-              <td>{{ artist?.gender }}</td>
-            </tr>
+              <tr *ngIf="artist?.gender">
+                <td class="text-muted">
+                  <ng-container i18n="Artist gender label@@gender">Gender</ng-container>:
+                </td>
+                <td>{{ artist?.gender }}</td>
+              </tr>
 
-            <tr *ngIf="artist?.citizenship">
-              <td class="text-muted">
-                <ng-container i18n="Artist citizenship label@@citizenship">Citizenship</ng-container>:
-              </td>
-              <td>{{ artist?.citizenship }}</td>
-            </tr>
+              <tr *ngIf="artist?.citizenship">
+                <td class="text-muted">
+                  <ng-container i18n="Artist citizenship label@@citizenship">Citizenship</ng-container>:
+                </td>
+                <td>{{ artist?.citizenship }}</td>
+              </tr>
 
-            <tr *ngIf="artist?.movements?.length">
-              <td class="text-muted">
-                <ng-container i18n="Movement label@@movement">Movement</ng-container>:
-              </td>
-              <td>
-                <app-badge *ngFor="let movement of artist?.movements" [entity]="movement">
-                </app-badge>
-              </td>
-            </tr>
+              <tr *ngIf="artist?.movements?.length">
+                <td class="text-muted">
+                  <ng-container i18n="Movement label@@movement">Movement</ng-container>:
+                </td>
+                <td>
+                  <app-badge *ngFor="let movement of artist?.movements" [entity]="movement">
+                  </app-badge>
+                </td>
+              </tr>
 
-            <tr *ngIf="artist?.influenced_by?.length">
-              <td class="text-muted">
-                <ng-container i18n="Influenced by label@@influenced_by">Influenced by</ng-container>:
-              </td>
-              <td>
-                <app-badge *ngFor="let influencer of artist?.influenced_by" [entity]="influencer">
-                </app-badge>
-              </td>
-            </tr>
+              <tr *ngIf="artist?.influenced_by?.length">
+                <td class="text-muted">
+                  <ng-container i18n="Influenced by label@@influenced_by">Influenced by</ng-container>:
+                </td>
+                <td>
+                  <app-badge *ngFor="let influencer of artist?.influenced_by" [entity]="influencer">
+                  </app-badge>
+                </td>
+              </tr>
             </tbody>
           </table>
         </app-collapse>
       </div>
     </div>
     <div class="col-sm-5 img" *ngIf="artist?.image">
-      <img class="img-fluid rounded-circle" src="{{ artist?.imageSmall }}" alt=""/>
+      <img class="img-fluid rounded-circle" src="{{ artist?.imageSmall }}" alt="" />
     </div>
   </div>
 

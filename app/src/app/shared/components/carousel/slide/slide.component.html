@@ -5,7 +5,8 @@
     (mouseleave)="this.itemHover.emit(null)"
     class="mb-4 col-sm-3 mt-auto mb-auto item-container"
   >
-    <div *ngIf="slide.loadContent" class="item" [routerLink]="['/artwork', item?.id]">
+    <div *ngIf="slide.loadContent" class="item" [routerLink]="['/artwork', item?.id]" angulartics2On="click"
+         angularticsAction="Carousel" angularticsCategory="Navigation">
       <div class="overlay-container">
         <img
           class=" img_self"

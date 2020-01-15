@@ -1,11 +1,11 @@
-import { Component, OnInit, OnDestroy, HostListener, Inject, LOCALE_ID } from '@angular/core';
-import { Artwork, EntityType, Iconclass, EntityIcon } from 'src/app/shared/models/models';
-import { takeUntil } from 'rxjs/operators';
-import { ActivatedRoute } from '@angular/router';
-import { Subject } from 'rxjs';
+import {Component, OnInit, OnDestroy, HostListener} from '@angular/core';
+import {Artwork, EntityType, EntityIcon} from 'src/app/shared/models/models';
+import {takeUntil} from 'rxjs/operators';
+import {ActivatedRoute} from '@angular/router';
+import {Subject} from 'rxjs';
 import * as _ from 'lodash';
-import { DataService } from 'src/app/core/services/elasticsearch/data.service';
-import { shuffle } from 'src/app/core/services/utils.service';
+import {DataService} from 'src/app/core/services/elasticsearch/data.service';
+import {shuffle} from 'src/app/core/services/utils.service';
 
 /** interface for the tabs */
 interface ArtworkTab {
@@ -19,6 +19,7 @@ interface ArtworkTab {
   selector: 'app-artwork',
   templateUrl: './artwork.component.html',
   styleUrls: ['./artwork.component.scss'],
+  host: {'window:beforeunload': 'doSomething'},
 })
 export class ArtworkComponent implements OnInit, OnDestroy {
   /**
@@ -74,6 +75,10 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    * @description hook that is executed at component initialization
    */
   ngOnInit() {
+    this.route.params.subscribe(() => {
+      this.videoExists = false;
+    });
+
     // define tabs if not set
     if (!this.artworkTabs || !this.artworkTabs.length) {
       this.addTab(EntityType.ALL, true);
@@ -221,11 +226,10 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   /**
    * Add tab to artwork tab array
    * @param type Tab title
-   * @param icon Tab icon
    * @param active Is active tab
    */
   private addTab(type: EntityType, active: boolean = false) {
-    this.artworkTabs.push({ active, icon: EntityIcon[type.toUpperCase()], type, items: [] });
+    this.artworkTabs.push({active, icon: EntityIcon[type.toUpperCase()], type, items: []});
   }
 
   videoFound(event) {

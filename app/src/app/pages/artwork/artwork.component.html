@@ -22,14 +22,6 @@
       <app-information i18n-label="Inception label@@inception" label="Inception" [value]="artwork?.inception">
       </app-information>
 
-      <div class="row" *ngIf="artwork?.videos">
-        <div class="col-md-2 pr-0">
-          <p class="mr-4 mb-1 text-muted" href="#collapseArtist" (click)="detailsCollapsed = !detailsCollapsed">
-            <i class="fab fa-youtube fa-2x"></i>
-          </p>
-        </div>
-      </div>
-
       <!--
         Check the length of attributes "genres", "movements", "materials" or "motifs", if one of them not empty
         show the collapse element

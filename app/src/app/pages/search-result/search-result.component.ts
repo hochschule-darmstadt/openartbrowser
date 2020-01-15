@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
+import {Angulartics2} from 'angulartics2';
 
 /**
  * @description Interface for the search results.
@@ -42,7 +43,7 @@ export class SearchResultComponent implements OnInit, OnDestroy {
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) { }
+  constructor(private dataService: DataService, private route: ActivatedRoute, private angulartics2: Angulartics2) { }
 
   /** hook that is executed at component initialization */
   ngOnInit() {
@@ -66,6 +67,13 @@ export class SearchResultComponent implements OnInit, OnDestroy {
         this.searchResults.push(await this.getSearchResults(params.material, EntityType.MATERIAL, EntityIcon.MATERIAL));
 
       this.sliderItems = await this.getSliderItems(this.searchResults, this.searchTerms);
+
+      this.angulartics2.eventTrack.next({
+        action: 'trackSiteSearch',
+        properties: {
+          category: 'Search page', keyword: this.searchTerms.toString(), searchCount: this.sliderItems.length,
+        },
+      });
     });
   }
 

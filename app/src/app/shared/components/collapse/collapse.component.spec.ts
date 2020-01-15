@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CollapseComponent } from './collapse.component';
+import {Angulartics2RouterlessModule} from 'angulartics2/routerlessmodule';
 
 describe('CollapseComponent', () => {
   let component: CollapseComponent;
@@ -8,7 +9,8 @@ describe('CollapseComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CollapseComponent ]
+      declarations: [ CollapseComponent ],
+      imports: [Angulartics2RouterlessModule.forRoot()]
     })
     .compileComponents();
   }));

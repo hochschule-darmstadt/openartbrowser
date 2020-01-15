@@ -9,6 +9,8 @@ import { Entity } from "../../models/models";
 })
 export class BadgeComponent implements OnInit {
   @Input() entity: Entity;
+  @Input() isHoverBadge: boolean;
+  @Input() isHighlighted: boolean;
 
   icon: string;
   label: string;
@@ -18,7 +20,7 @@ export class BadgeComponent implements OnInit {
   tooltipBreakLimit: number = 150;
 
   ngOnInit() {
-    if (this.entity){
+    if (this.entity) {
       this.icon = icons[this.entity.type] || "fa-user";
       this.redirectUrl = `/${this.entity.type}/${this.entity.id}` || "/";
       this.label = this.entity.label || "";

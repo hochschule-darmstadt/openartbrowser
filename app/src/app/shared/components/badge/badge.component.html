@@ -1,8 +1,8 @@
-<span *ngIf="entity" 
-  class="badge badge-pill badge-secondary first-letter chip" 
+<a *ngIf="entity"
+  class="badge badge-pill badge-secondary first-letter chip"
   tooltipClass="tooltip"
-  ngbTooltip="{{ this.entity.abstract || this.entity.description }}" 
+  ngbTooltip="{{ this.entity.abstract || this.entity.description }}"
   [routerLink]="[entity?.route]">
   <i class="mr-1" class="fas {{ entity?.icon }}"></i>
   {{ entity?.label }}
-</span>
+</a>

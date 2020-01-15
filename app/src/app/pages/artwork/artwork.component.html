@@ -153,7 +153,7 @@
                 *ngFor="let motif of artwork?.motifs"
                 [entity]="motif"
                 [isHoverBadge]="true"
-                [isHighlighted]="motif && hoveredArtwork?.motifs?.includes(motif.id)"
+                [hoveredArtwork]="hoveredArtwork"
               >
               </app-badge>
             </span>
@@ -163,7 +163,7 @@
                 *ngFor="let artist of artwork?.artists"
                 [entity]="artist"
                 [isHoverBadge]="true"
-                [isHighlighted]="artist && hoveredArtwork?.artists?.includes(artist.id)"
+                [hoveredArtwork]="hoveredArtwork"
               >
               </app-badge>
             </span>
@@ -173,7 +173,7 @@
                 *ngFor="let genre of artwork?.genres"
                 [entity]="genre"
                 [isHoverBadge]="true"
-                [isHighlighted]="genre && hoveredArtwork?.genres?.includes(genre.id)"
+                [hoveredArtwork]="hoveredArtwork"
               >
               </app-badge>
             </span>
@@ -183,7 +183,7 @@
                 *ngFor="let movement of artwork?.movements"
                 [entity]="movement"
                 [isHoverBadge]="true"
-                [isHighlighted]="movement && hoveredArtwork?.movements?.includes(movement.id)"
+                [hoveredArtwork]="hoveredArtwork"
               >
               </app-badge>
             </span>
@@ -193,7 +193,7 @@
                 *ngFor="let material of artwork?.materials"
                 [entity]="material"
                 [isHoverBadge]="true"
-                [isHighlighted]="material && hoveredArtwork?.materials?.includes(material.id)"
+                [hoveredArtwork]="hoveredArtwork"
               >
               </app-badge>
             </span>
@@ -203,7 +203,7 @@
                 *ngFor="let location of artwork?.locations"
                 [entity]="location"
                 [isHoverBadge]="true"
-                [isHighlighted]="location && hoveredArtwork?.locations?.includes(location.id)"
+                [hoveredArtwork]="hoveredArtwork"
               >
               </app-badge>
             </span>

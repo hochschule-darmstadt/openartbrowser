@@ -4,7 +4,7 @@ import {ActivatedRoute} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
 import {Movement, Artwork, EntityType} from 'src/app/shared/models/models';
 import {Subject} from 'rxjs';
-import * as _ from "lodash";
+import * as _ from 'lodash';
 import {shuffle} from 'src/app/core/services/utils.service';
 
 @Component({
@@ -25,7 +25,7 @@ export class MovementComponent implements OnInit, OnDestroy {
   /** Change collapse icon; true if more infos are folded in */
   collapse = true;
 
-  /** Toggle bool for displaying either timeline or artworks carousel component **/
+  /** Toggle bool for displaying either timeline or artworks carousel component */
   showTimelineNotArtworks = true;
 
   /** a video was found */
@@ -36,6 +36,9 @@ export class MovementComponent implements OnInit, OnDestroy {
 
   /** hook that is executed at component initialization */
   ngOnInit() {
+    this.route.params.subscribe(() => {
+      this.videoExists = false;
+    });
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
       const movementId = params.get('movementId');
@@ -44,7 +47,7 @@ export class MovementComponent implements OnInit, OnDestroy {
       this.movement = await this.dataService.findById<Movement>(movementId, EntityType.MOVEMENT);
 
       /** load slider items */
-      await this.dataService.findArtworksByType("movements", [this.movement.id])
+      await this.dataService.findArtworksByType('movements', [this.movement.id])
         .then(artworks => this.sliderItems = shuffle(artworks));
 
       /** dereference influenced_bys  */

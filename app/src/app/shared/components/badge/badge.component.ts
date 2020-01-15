@@ -1,5 +1,5 @@
-import { Component, ViewEncapsulation, Input, OnInit } from "@angular/core";
-import { Entity } from "../../models/models";
+import { Component, ViewEncapsulation, Input, OnInit, OnChanges } from "@angular/core";
+import { Entity, Artwork } from "../../models/models";
 
 @Component({
   selector: "app-badge",
@@ -7,18 +7,21 @@ import { Entity } from "../../models/models";
   encapsulation: ViewEncapsulation.None,
   styleUrls: ["./badge.component.scss"]
 })
-export class BadgeComponent implements OnInit {
+export class BadgeComponent implements OnInit, OnChanges {
   @Input() entity: Entity;
+  @Input() isHoverBadge: boolean;
+  @Input() hoveredArtwork: Artwork;
 
   icon: string;
   label: string;
   redirectUrl: string;
   tooltip: string;
+  highlight: boolean;
 
   tooltipBreakLimit: number = 150;
 
   ngOnInit() {
-    if (this.entity){
+    if (this.entity) {
       this.icon = icons[this.entity.type] || "fa-user";
       this.redirectUrl = `/${this.entity.type}/${this.entity.id}` || "/";
       this.label = this.entity.label || "";
@@ -45,6 +48,13 @@ export class BadgeComponent implements OnInit {
         ) + " [...]";
     }
   }
+
+  ngOnChanges() {
+    if (this.isHoverBadge && this.hoveredArtwork) {
+      this.highlight = this.hoveredArtwork[this.entity.type + 's'].includes(this.entity.id);
+    }
+  }
+
 }
 
 enum icons {

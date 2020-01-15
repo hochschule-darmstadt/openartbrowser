@@ -1,5 +1,6 @@
 <a *ngIf="entity"
       class="badge badge-pill badge-secondary first-letter chip"
+      [ngClass]="{'badge-transparent': isHoverBadge, 'badge-light': highlight }"
       tooltipClass="tooltip"
       ngbTooltip="{{ tooltip }}"
       [routerLink]="[redirectUrl]"

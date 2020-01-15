@@ -8,15 +8,10 @@ notifications:
   slack: 'hdampse:U1CJmoQ7s8a3wIZC0Wi3wWZ7'
 
 addons:
+  chrome: stable
   apt:
-    sources:
-      - google-chrome
     packages:
-      - google-chrome-stable
       - sshpass
-
-before_install:
-  - sudo apt-get update
 
 cache:
   directories:

@@ -130,44 +130,14 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param entities results which should be sorted
    */
   sortSearchResultsByRank(entities: Entity[], term: string): Entity[] {
-    let sortedEntities = entities;
-    sortedEntities.sort(
-      (a, b): any => {
-        let rankA = a.relativeRank;
-        let rankB = b.relativeRank;
-        const aPos = a.label.toLowerCase().indexOf(term.toLowerCase());
-        const bPos = b.label.toLowerCase().indexOf(term.toLowerCase());
+    return entities.sort(
+      (left, right): any => {
+        const currentRankOfLeft = updateRelativeRank(left, term);
+        const currentRankOfRight =  updateRelativeRank(right, term);
 
-        // factor 2 for initial position
-        if (aPos === 0) {
-          rankA *= 2;
-        }
-        if (bPos === 0) {
-          rankB *= 2;
-        }
-        // factor 0.5 for non-whitespace in front
-        if (
-          aPos > 0 &&
-          a.label
-            .toLowerCase()
-            .charAt(aPos - 1)
-            .match(/\S/)
-        ) {
-          rankA *= 0.5;
-        }
-        if (
-          bPos > 0 &&
-          b.label
-            .toLowerCase()
-            .charAt(bPos - 1)
-            .match(/\S/)
-        ) {
-          rankA *= 0.5;
-        }
-        return rankB > rankA ? 1 : rankB < rankA ? -1 : 0;
+        return currentRankOfRight > currentRankOfLeft ? 1 : currentRankOfRight < currentRankOfLeft ? -1 : 0;
       }
     );
-    return sortedEntities;
   }
 
 
@@ -418,4 +388,20 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   public clearAllTags() {
     this.searchService.clearSearchTags();
   }
+}
+
+const hasLeadingWhiteSpace = (text, index) => text.toLowerCase().charAt(index - 1).match(/\S/)
+
+const getIndexOfTerm = (text, term) => text.toLowerCase().indexOf(term.toLowerCase())
+
+const isTermInitial = (text, term) => getIndexOfTerm(text, term) === 0
+
+const updateRelativeRank = (obj, term) => {
+  let currentRank = obj.relativeRank; 
+  if (isTermInitial(obj.label, term)) {
+    currentRank *= 2;
+  } else if (hasLeadingWhiteSpace(obj.label, getIndexOfTerm(obj.label, term))) {
+    currentRank *= 0.5;
+  }
+  return currentRank
 }

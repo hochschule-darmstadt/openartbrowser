@@ -162,7 +162,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
             .charAt(bPos - 1)
             .match(/\S/)
         ) {
-          rankA *= 0.5;
+          rankB *= 0.5;
         }
         return rankB > rankA ? 1 : rankB < rankA ? -1 : 0;
       }

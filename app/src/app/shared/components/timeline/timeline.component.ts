@@ -36,14 +36,13 @@ interface TimelineItem extends Entity {
   ],
 })
 export class TimelineComponent {
-  /**  Artworks that should be displayed in this slider */
+  /** Artworks that should be displayed in this slider */
   @Input() artworks: Artwork[] = [];
-  /**  Decide whether artists should be displayed */
+  /** Decide whether artists should be displayed */
   @Input() displayArtists: boolean = false;
 
-  /**  TimelineItems that should be displayed in this slider */
+  /** TimelineItems that should be displayed in this slider */
   items: TimelineItem[] = [];
-  //sliderItems: Artwork[];
   private periodSpan = 1;
 
   /** Specifies the amount of items displayed once at a time */
@@ -133,7 +132,10 @@ export class TimelineComponent {
       this.refreshComponent();
     }
   }
-
+  
+  /* TODO:REVIEW
+    Add method description, which describes what happens, when calling this method
+  */
   private refreshComponent() {
     if (typeof this.items !== 'undefined' && this.items.length > 0) {
       this.calculatePeriod();
@@ -142,8 +144,10 @@ export class TimelineComponent {
     }
   }
 
-  /** Calculates and sets the slider legend based on averagePeriodCount,
-   *  this influences not the amount of steps of the slider  */
+  /**
+   *  Calculates and sets the slider legend based on averagePeriodCount,
+   *  this influences not the amount of steps of the slider  
+   */
   private calculatePeriod() {
     let sliderSteps: CustomStepDefinition[] = [];
 
@@ -180,7 +184,9 @@ export class TimelineComponent {
     this.options = newOptions;
   }
 
-  /** Calculate the starting index of the displayed items relative to items */
+  /** 
+   * Calculate the starting index of the displayed items relative to items 
+   */
   private calcSlideStart() {
     /** How many of the displayed items should have a date less/equal to the slider value */
     let itemCountSmallerReference = 2;
@@ -209,11 +215,17 @@ export class TimelineComponent {
     }
   }
 
+  /* TODO:REVIEW
+    Add method description, which describes what happens, when calling this method
+  */
   private updateSliderItems() {
     this.slideEnd = this.slideStart + this.itemCountPerPeriod;
   }
 
   /** Handler for valueChange event from slider */
+  /* TODO:REVIEW
+    Add method description, which describes what happens, when calling this method
+  */
   onSliderMoved() {
     /** Check if event should happen */
     if (!this.sliderAllowEvent) {
@@ -235,6 +247,9 @@ export class TimelineComponent {
   }
 
   /** Handler for click event from control buttons */
+  /* TODO:REVIEW
+    Add method description, which describes what happens, when calling this method
+  */
   prevClicked() {
     if (this.slideStart <= 0) {
       // Return if first slide
@@ -249,6 +264,9 @@ export class TimelineComponent {
   }
 
   /** Handler for click event from control buttons */
+  /* TODO:REVIEW
+    Add method description, which describes what happens, when calling this method
+  */
   nextClicked() {
     if (this.slideEnd >= this.items.length) {
       // Return if last slide
@@ -264,6 +282,9 @@ export class TimelineComponent {
     this.updateSliderItems();
   }
 
+  /* TODO:REVIEW
+    Add method description
+  */
   resetSlideAnimation() {
     this.slideOutRight = false;
     this.slideOutLeft = false;
@@ -287,6 +308,9 @@ export class TimelineComponent {
     }))
   }
 
+  /* TODO:REVIEW
+    Add method description
+  */
   private async getArtistTimelineItems() {
     let artists: TimelineItem[] = [];
     let artistIds: Set<string> = new Set();
@@ -340,11 +364,17 @@ export class TimelineComponent {
     return artists
   }
 
+  /* TODO:REVIEW
+    Add method description
+  */
   private sortItems() {
     // rebuild slides if slider items input changed.
     this.items.sort((a, b) => (a.date > b.date) ? 1 : -1);
   }
 
+  /* TODO:REVIEW
+    Add method description
+  */
   onLoadingError(item: TimelineItem) {
     this.items.splice(this.items.findIndex(i => i.id === item.id), 1);
     this.refreshComponent();

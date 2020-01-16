@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import { HttpClient } from '@angular/common/http';
 import { Injectable, Inject, LOCALE_ID } from '@angular/core';
-import { EntityType, Artwork, ArtSearch, Entity, Iconclass } from 'src/app/shared/models/models';
+import { EntityType, Artwork, ArtSearch, Entity, Iconclass, EntityIcon } from 'src/app/shared/models/models';
 import { elasticEnvironment } from 'src/environments/environment';
 import QueryBuilder from './query.builder';
 
@@ -31,6 +31,8 @@ export class DataService {
     public async findById<T>(id: string, type?: EntityType): Promise<T> {
         const response = await this.http.get<T>(this.baseUrl + '?q=id:' + id).toPromise();
         const entities = this.filterData<T>(response, type);
+        // set type specific attributes
+        entities.forEach(entity => this.setTypes(entity));
         return (!entities.length) ? null : entities[0];
     }
 
@@ -112,7 +114,7 @@ export class DataService {
             .shouldMatch("label", `${label}`)
             .shouldWildcard("label", `${label}`)
             .sort()
-            .size(2000);
+            .size(200);
         return this.performQuery(query);
     }
 
@@ -135,8 +137,8 @@ export class DataService {
      * @param iconclasses an Array of Iconclasses to retrieve
      * @returns an Array containing the iconclassData to the respective Iconclass
      */
-    public async getIconclassData(iconclasses:Array<Iconclass>): Promise<any> {
-        return await Promise.all(iconclasses.map(async (key:Iconclass) =>
+    public async getIconclassData(iconclasses: Array<Iconclass>): Promise<any> {
+        return await Promise.all(iconclasses.map(async (key: Iconclass) =>
             await this.http.get(`https://openartbrowser.org/api/iconclass/${key}.json`).toPromise()
         ));
     }
@@ -149,7 +151,10 @@ export class DataService {
      */
     private async performQuery<T>(query: QueryBuilder, url: string = this.baseUrl, type?: EntityType) {
         const response = await this.http.post<T>(url, query.build()).toPromise();
-        return this.filterData<T>(response, type);
+        const entities = this.filterData<T>(response, type);
+        // set type specific attributes
+        entities.forEach(entity => this.setTypes(entity));
+        return entities;
     }
 
     /**
@@ -182,5 +187,16 @@ export class DataService {
             entity.imageMedium = entity.image;
         }
         return entity;
+    }
+
+    /**
+     * set type specific attributes
+     * @param entity entity object
+     */
+    private setTypes(entity: any) {
+        if (entity.type && entity.id) {
+            entity.route = `/${entity.type}/${entity.id}`;
+            entity.icon = EntityIcon[entity.type.toUpperCase()];
+        }
     }
 }

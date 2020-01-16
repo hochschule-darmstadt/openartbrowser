@@ -15,7 +15,7 @@ trap "curl -F file=@${WD}/etl.log -F \"initial_comment=Oops! Something went wron
 
 ./install_etl.sh
 
-python3 Wikidata\ crawler/ArtOntologyCrawler.py
+python3 data_extraction/art_ontology_crawler.py
 
 cd crawler_output/intermediate_files/json/
 
@@ -29,7 +29,7 @@ node ../../../data_manipulation/script_movements_rank.js
 node ../../../data_manipulation/script_motifs_rank.js 
 
 # Merges all *_rank.json files into art_ontology.json
-node --max-old-space-size=4096 ../../../data_manipulation/script_flatten_rank.js
+node --max-old-space-size=4096 ../../../data_manipulation/merge_art_data.js
 
 if [ -f ../../../crawler_output/art_ontology.json ]; then
     echo "art_ontology.json already exist in directory crawler_output. Removing ..."
@@ -39,7 +39,7 @@ fi
 # Move the generated art_ontology.json to the directory crawler_output
 mv art_ontology.json ../../../crawler_output/art_ontology.json
 
-python3 ../../../data_manipulation/script_add_youtube_videos.py
+python3 ../../../data_manipulation/add_youtube_videos.py
 
 python3 ../../../data_manipulation/split_languages.py
 

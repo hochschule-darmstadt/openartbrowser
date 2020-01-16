@@ -21,12 +21,18 @@ The versions are recommandations older versions may work.
 
 In order to install the dependencies of python and node.js run the install_etl.sh script.
 
+## Execution
+Be sure to use the [run_etl.sh](https://github.com/hochschule-darmstadt/openartbrowser/wiki/System-architecture#run_etlsh) script if you want to execute the whole etl process. Otherwise please check out the wiki sections (link below) and the readme's in this repository.
+* [Wiki ETL scripts](https://github.com/hochschule-darmstadt/openartbrowser/wiki/System-architecture#etl-scripts)
+
+If you want to update the production server use the [update_elasticsearch_production_from_staging.sh](https://github.com/hochschule-darmstadt/openartbrowser/wiki/System-architecture#update_elasticsearch_production_from_stagingsh) script. This is described in the wiki.
+
 ## Structure
 Folders and scripts are structured by their ETL task.
 
 |Folder|Task|
 |---|---|
-|Wikidata crawler|Everything related to the extraction of art data|
+|data_extraction|Everything related to the extraction of art data|
 |data_manipulation|Data transformations after the extraction|
 |upload_to_elasticsearch|Upload the extracted and transformed data to an ElasticSearch server|
 |crawler_ouput|Final and intermediate files which are generated and used by the scripts|
@@ -36,11 +42,14 @@ Folders and scripts are structured by their ETL task.
 All output is extracted to the folder crawler_output.
 The structure of this folder is following:
 * crawler_output/
-  * IntermediateSteps/
+  * intermediate_steps/
     * csv/
+      * artworks/
     * json/
-  * ArtOntology.json
-  * ArtOntology.ttl
+      * artworks/
+  * art_ontology.json
+  * art_ontology_**languagecode**.json <- for each language code in the languageconfig.csv one file named in this pattern
+  * art_ontology.ttl
 
 The important files are in the "root" folder named crawler_output.
-Everything else is in the IntermediateSteps folder and subfolders.
+Everything else is in the intermediate_steps folder and subfolders.

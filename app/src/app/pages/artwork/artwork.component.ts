@@ -1,5 +1,5 @@
-import {Component, OnInit, OnDestroy, HostListener, Inject, LOCALE_ID} from '@angular/core';
-import {Artwork, EntityType, Iconclass, EntityIcon} from 'src/app/shared/models/models';
+import {Component, OnInit, OnDestroy, HostListener} from '@angular/core';
+import {Artwork, EntityType, EntityIcon} from 'src/app/shared/models/models';
 import {takeUntil} from 'rxjs/operators';
 import {ActivatedRoute} from '@angular/router';
 import {Subject} from 'rxjs';
@@ -19,15 +19,13 @@ interface ArtworkTab {
   selector: 'app-artwork',
   templateUrl: './artwork.component.html',
   styleUrls: ['./artwork.component.scss'],
+  host: {'window:beforeunload': 'doSomething'},
 })
 export class ArtworkComponent implements OnInit, OnDestroy {
   /**
    * @description the entity this page is about.
    */
   artwork: Artwork = null;
-
-  iconclassData: Array<any> | null = null;
-  locale = 'en';
 
   /**
    * whether artwork image should be hidden
@@ -70,29 +68,32 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   /** a video was found */
   videoExists = false;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute, @Inject(LOCALE_ID) localeId: string) {
-    this.locale = localeId.substr(0, 2);
+  constructor(private dataService: DataService, private route: ActivatedRoute) {
   }
 
   /**
    * @description hook that is executed at component initialization
    */
   ngOnInit() {
+    this.route.params.subscribe(() => {
+      this.videoExists = false;
+    });
+
     // define tabs if not set
     if (!this.artworkTabs || !this.artworkTabs.length) {
-      this.addTab(EntityType.ALL, EntityIcon.ALL, true);
-      this.addTab(EntityType.MOTIF, EntityIcon.MOTIF);
-      this.addTab(EntityType.ARTIST, EntityIcon.ARTIST);
-      this.addTab(EntityType.LOCATION, EntityIcon.LOCATION);
-      this.addTab(EntityType.GENRE, EntityIcon.GENRE);
-      this.addTab(EntityType.MOVEMENT, EntityIcon.MOVEMENT);
-      this.addTab(EntityType.MATERIAL, EntityIcon.MATERIAL);
+      this.addTab(EntityType.ALL, true);
+      this.addTab(EntityType.MOTIF);
+      this.addTab(EntityType.ARTIST);
+      this.addTab(EntityType.LOCATION);
+      this.addTab(EntityType.GENRE);
+      this.addTab(EntityType.MOVEMENT);
+      this.addTab(EntityType.MATERIAL);
     }
 
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
       /* reset properties */
-      this.artwork = this.hoveredArtwork = this.iconclassData = this.hoveredArtwork = null;
+      this.artwork = this.hoveredArtwork = this.hoveredArtwork = null;
       this.imageHidden = this.modalIsVisible = this.commonTagsCollapsed = false;
       this.detailsCollapsed = true;
       // clears items of all artwork tabs
@@ -100,20 +101,13 @@ export class ArtworkComponent implements OnInit, OnDestroy {
 
       /** Use data service to fetch entity from database */
       const artworkId = params.get('artworkId');
-      this.artwork = await this.dataService.findById<Artwork>(artworkId, EntityType.ARTWORK);
+      this.artwork = await this.dataService.findById<Artwork>(artworkId, EntityType.ARTWORK) as Artwork;
 
       if (this.artwork) {
         /* Count meta data to show more on load */
         this.calculateCollapseState();
         /* load tabs content */
         this.loadTabs();
-
-        if (this.artwork.iconclasses) {
-          const nonEmptyIconclasses = this.artwork.iconclasses.filter((i: Iconclass) => i !== '');
-          if (nonEmptyIconclasses.length) {
-            this.iconclassData = await this.dataService.getIconclassData(nonEmptyIconclasses);
-          }
-        }
       }
     });
   }
@@ -232,11 +226,10 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   /**
    * Add tab to artwork tab array
    * @param type Tab title
-   * @param icon Tab icon
    * @param active Is active tab
    */
-  private addTab(type: EntityType, icon: EntityIcon, active: boolean = false) {
-    this.artworkTabs.push({active, icon, type, items: []});
+  private addTab(type: EntityType, active: boolean = false) {
+    this.artworkTabs.push({active, icon: EntityIcon[type.toUpperCase()], type, items: []});
   }
 
   videoFound(event) {

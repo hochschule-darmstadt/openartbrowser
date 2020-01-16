@@ -72,3 +72,11 @@ $container-row-height: 15em;
   transform: translate(5%, -50%);
   text-align: center;
 }
+
+a {
+  color: white;
+
+  &:hover {
+    text-decoration: none;
+  }
+}

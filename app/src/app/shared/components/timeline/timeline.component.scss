@@ -151,3 +151,11 @@ $container-height: 20em;
   transform: translate(5%, -50%);
   text-align: center;
 }
+
+a {
+  color: white;
+
+  &:hover {
+    text-decoration: none;
+  }
+}

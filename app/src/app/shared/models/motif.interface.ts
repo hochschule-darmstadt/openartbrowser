@@ -1,5 +1,5 @@
-import { Entity } from './entity.interface';
+import { Entity, EntityType } from './entity.interface';
 
 export interface Motif extends Entity {
-    type: 'motif';
+    type: EntityType.MOTIF;
 }

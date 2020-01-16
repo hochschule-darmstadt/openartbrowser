@@ -303,6 +303,10 @@ export class TimelineComponent {
       .then((artworkArtists: Artist[]) => {
         artworkArtists.forEach(artist => {
           if (artist.imageSmall && (artist.date_of_birth || artist.date_of_death) ) {
+            artist.date_of_birth = undefined;
+
+            // decide whether to use date of birth or date of death for sorting (default: date of birth)
+            // and set description accordingly
             var artistDescription;
             var artistSortDate;
             if (artist.date_of_birth && artist.date_of_death) {

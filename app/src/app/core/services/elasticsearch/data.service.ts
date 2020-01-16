@@ -114,7 +114,7 @@ export class DataService {
             .shouldMatch("label", `${label}`)
             .shouldWildcard("label", `${label}`)
             .sort()
-            .size(2000);
+            .size(200);
         return this.performQuery(query);
     }
 

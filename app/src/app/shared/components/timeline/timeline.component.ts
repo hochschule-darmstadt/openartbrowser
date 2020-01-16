@@ -302,11 +302,24 @@ export class TimelineComponent {
     await this.dataService.findMultipleById(Array.from(artistIds) as any, EntityType.ARTIST)
       .then((artworkArtists: Artist[]) => {
         artworkArtists.forEach(artist => {
-          if (artist.imageSmall && artist.date_of_birth) {
+          if (artist.imageSmall && (artist.date_of_birth || artist.date_of_death) ) {
+            var artistDescription;
+            var artistSortDate;
+            if (artist.date_of_birth && artist.date_of_death) {
+              artistDescription = artist.date_of_birth + ' - ' + artist.date_of_death;
+              artistSortDate = artist.date_of_birth;
+            } else if (artist.date_of_birth) {
+              artistDescription = '*' + artist.date_of_birth;
+              artistSortDate = artist.date_of_birth;
+            } else {
+              artistDescription = '†' + artist.date_of_death;
+              artistSortDate = artist.date_of_death;
+            }
+
             artists.push(<TimelineItem>{
               id: artist.id,
               label: artist.label,
-              description: "*" + artist.date_of_birth + " †" + artist.date_of_death,
+              description: artistDescription,
               abstract: artist.abstract,
               wikipediaLink: artist.wikipediaLink,
               image: artist.image,
@@ -315,7 +328,7 @@ export class TimelineComponent {
               type: artist.type,
               absoluteRank: artist.absoluteRank,
               relativeRank: artist.relativeRank,
-              date: artist.date_of_birth // TODO: Determine better value (and fitting description)
+              date: artistSortDate, // TODO: Determine better value (and fitting description)
             })
           }
         })

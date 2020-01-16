@@ -50,8 +50,12 @@ export class BadgeComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges() {
-    if (this.isHoverBadge && this.hoveredArtwork) {
-      this.highlight = this.hoveredArtwork[this.entity.type + 's'].includes(this.entity.id);
+    if (this.isHoverBadge) {
+      if (this.hoveredArtwork) {
+        this.highlight = this.hoveredArtwork[this.entity.type + 's'].includes(this.entity.id);
+      } else {
+        this.highlight = false;
+      }
     }
   }
 

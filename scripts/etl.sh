@@ -5,6 +5,7 @@ set -x
 LOCKFILE=/tmp/etl.lock
 TOKEN=$(cat bot_user_oauth_token)
 WD=$(pwd)
+DATE=$(date +%T_%d-%m-%Y) # German format
 
 if ! mkdir $LOCKFILE 2>/dev/null; then
 	curl -X POST https://slack.com/api/chat.postMessage -H "Authorization: Bearer ${TOKEN}" -H 'Content-type: application/json' --data '{"channel":"CRGEZJVA6","text":"Error! Could not acquire lock file! It seems there is already a process running","as_user":"true"}'
@@ -12,6 +13,8 @@ if ! mkdir $LOCKFILE 2>/dev/null; then
 fi
 
 trap "curl -F file=@${WD}/etl.log -F \"initial_comment=Oops! Something went wrong. Here is the log file: \" -F channels=CRGEZJVA6 -H \"Authorization: Bearer ${TOKEN}\" https://slack.com/api/files.upload" ERR
+
+curl -X POST https://slack.com/api/chat.postMessage -H "Authorization: Bearer ${TOKEN}" -H 'Content-type: application/json' --data '{"channel":"CRGEZJVA6","text":"The ETL-process is starting '${DATE}',"as_user":"true"}'
 
 ./install_etl.sh
 
@@ -55,3 +58,4 @@ cp crawler_output.tar.gz /var/www/html
 
 rm -r $LOCKFILE
 
+curl -F file=@${WD}/etl.log -F "initial_comment=ETL-process finished at ${DATE}. The lockfile was removed. Here is the log file" -F channels=CRGEZJVA6 -H "Authorization: Bearer ${TOKEN}" https://slack.com/api/files.upload

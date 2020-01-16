@@ -4,12 +4,12 @@
 
       <app-title [entity]="artist"></app-title>
 
-      <app-information i18n-label="Born infos label@@born" label="Born"
-        [value]="artist?.date_of_birth + (artist?.place_of_birth) ? ' in ' + artist?.place_of_birth : ''">
+      <app-information *ngIf="artist?.date_of_birth" i18n-label="Born infos label@@born" label="Born"
+                       [value]="artist?.date_of_birth + (artist?.place_of_birth ? ' in ' + artist?.place_of_birth : '')">
       </app-information>
 
-      <app-information i18n-label="Died infos label@@died" label="Died"
-        [value]="artist?.date_of_death + (artist?.place_of_death) ? ' in ' + artist.place_of_death : ''">
+      <app-information *ngIf="artist?.date_of_death" i18n-label="Died infos label@@died" label="Died"
+                       [value]="artist?.date_of_death + (artist?.place_of_death ? ' in ' + artist.place_of_death : '')">
       </app-information>
 
       <div *ngIf="artist?.gender ||

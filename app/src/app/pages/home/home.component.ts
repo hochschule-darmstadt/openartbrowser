@@ -85,13 +85,13 @@ export class HomeComponent implements OnInit {
    */
   private getSlides = async (): Promise<SliderCategory[]> => {
     const cats = [];
-    cats.push(await this.getSliderCategory<Artwork>(EntityType.ARTWORK, EntityIcon.ARTWORK));
-    cats.push(await this.getSliderCategory<Artist>(EntityType.ARTIST, EntityIcon.ARTIST));
-    cats.push(await this.getSliderCategory<Movement>(EntityType.MOVEMENT, EntityIcon.MOVEMENT));
-    cats.push(await this.getSliderCategory<Location>(EntityType.LOCATION, EntityIcon.LOCATION));
-    cats.push(await this.getSliderCategory<Material>(EntityType.MATERIAL, EntityIcon.MATERIAL));
-    cats.push(await this.getSliderCategory<Genre>(EntityType.GENRE, EntityIcon.GENRE));
-    cats.push(await this.getSliderCategory<Motif>(EntityType.MOTIF, EntityIcon.MOTIF));
+    cats.push(await this.getSliderCategory<Artwork>(EntityType.ARTWORK));
+    cats.push(await this.getSliderCategory<Artist>(EntityType.ARTIST));
+    cats.push(await this.getSliderCategory<Movement>(EntityType.MOVEMENT));
+    cats.push(await this.getSliderCategory<Location>(EntityType.LOCATION));
+    cats.push(await this.getSliderCategory<Material>(EntityType.MATERIAL));
+    cats.push(await this.getSliderCategory<Genre>(EntityType.GENRE));
+    cats.push(await this.getSliderCategory<Motif>(EntityType.MOTIF));
     return cats;
   }
 
@@ -99,9 +99,9 @@ export class HomeComponent implements OnInit {
    * @description Get categories by entity type. Return SliderCategory object.
    * @memberof HomeComponent 
    */
-  private async getSliderCategory<T>(category: EntityType, icon: EntityIcon): Promise<SliderCategory> {
+  private async getSliderCategory<T>(category: EntityType): Promise<SliderCategory> {
     const items = shuffle(await this.dataService.getCategoryItems<T>(category));
-    return { items, type: category, icon }
+    return { items, type: category, icon: EntityIcon[category.toUpperCase()] }
   }
 
   private setBackground() {

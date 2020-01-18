@@ -9,10 +9,10 @@ import { Router } from '@angular/router';
 export class HeaderComponent implements OnInit {
   public path: string = "";
   public locale: string = ""
-  
+
   constructor(private router: Router, @Inject(LOCALE_ID) protected localeId: string) {
     /**
-     * Set the variable path to router url 
+     * Set the variable path to router url
      * every time the url changed.
      */
     router.events.subscribe(val => this.path = this.router.url);

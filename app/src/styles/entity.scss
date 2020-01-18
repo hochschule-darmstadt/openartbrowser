@@ -20,6 +20,22 @@
     }
   }
 
+  table.table-fit {
+    td{
+      padding-bottom: 0.5em;
+      padding-right: 2em;
+      vertical-align: top;
+      text-align: left;
+    }
+    @media (max-width: 992px) {
+      td{
+        display:block;
+        box-sizing:border-box;
+        clear:both
+      }  
+    }
+  }
+  
   .more {
     cursor: pointer;
 
@@ -38,8 +54,8 @@
   }
 
   /* Unset cursor: pointer; badge */
-  .cursor-unset {
-    cursor: unset;
+  .cursor-heading-pill:hover {
+    cursor: default;
   }
 
   @media (max-width: 575px) {
@@ -73,5 +89,60 @@
     .notchip {
       padding-left: 0;
     }
+  }
+
+  /** badge tooltip */
+
+  $color1: #00bc8c;
+  .tooltip{
+    .tooltip-inner {
+      font-size: 100%;
+      border-style: solid;
+      border-color: $color1;
+      display: -webkit-box;
+      -webkit-line-clamp: 6;
+      -webkit-box-orient: vertical;  
+      overflow: hidden;
+      padding: 0.25rem 0.5rem 0.25rem 0.5rem;
+    }
+
+    .arrow::before {
+      border-top-color: $color1;
+      border-bottom-color: $color1;
+    }
+  }
+}
+
+.artworks-amount {
+  font-size: 0.9em;
+  opacity: 0.8;
+}
+
+.nav-tabs {
+  border-color: #FFFFFF;
+}
+
+/* When the nav-tabs is active */
+.nav-item > .nav-link.active,
+.nav-tabs > li > a.active:focus,
+.nav-tabs > li > a.active:hover,
+.nav > li > a:hover {
+  //background-color: #868e9650;
+  border-bottom-color: #222;
+  border-top-color: #FFFFFF;
+  border-left-color: #FFFFFF;
+  border-right-color: #FFFFFF;
+  background-image: linear-gradient(#868e9650, #222);
+}
+
+/* When the nav-tabs is hovered */
+.nav-tabs > li > a:hover {
+  background-color: #868e9644;
+  border-color: rgba(255, 255, 255, 0.274);
+}
+
+@media (max-width: 575px) {
+  .nav-tabs .nav-item {
+    width: 100%;
   }
 }

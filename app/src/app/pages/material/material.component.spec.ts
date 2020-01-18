@@ -7,6 +7,10 @@ import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
+import { AbstractComponent } from 'src/app/shared/components/abstract/abstract.component';
+import { TitleComponent } from 'src/app/shared/components/title/title.component';
+import { InformationComponent } from 'src/app/shared/components/information/information.component';
+import { BadgeComponent } from 'src/app/shared/components/badge/badge.component';
 
 describe('MaterialComponent', () => {
   let component: MaterialComponent;
@@ -23,6 +27,10 @@ describe('MaterialComponent', () => {
         MaterialComponent,
         SlideComponent,
         CarouselComponent,
+        AbstractComponent,
+        BadgeComponent,
+        TitleComponent,
+        InformationComponent
       ],
       providers: [
         DataService,

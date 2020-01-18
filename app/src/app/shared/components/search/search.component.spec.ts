@@ -10,6 +10,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 import { SearchService } from 'src/app/core/services/search.service';
+import {Angulartics2RouterlessModule} from 'angulartics2/routerlessmodule';
 
 describe('SearchComponent', () => {
   let component: SearchComponent;
@@ -21,7 +22,8 @@ describe('SearchComponent', () => {
         NgbModule,
         FormsModule,
         HttpClientModule,
-        RouterModule.forRoot([])
+        RouterModule.forRoot([]),
+        Angulartics2RouterlessModule.forRoot()
       ],
       declarations: [
         SearchComponent,

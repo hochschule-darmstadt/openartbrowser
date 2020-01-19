@@ -24,7 +24,7 @@ WORKDIR /app
 COPY --from=Wikicrawler /app/crawler_output/intermediate_files/json/ /app/
 #COPY --from=Wikicrawler /app/crawler_output/intermediate_files/csv/ /app/
 
-COPY ["./data_manipulation/", "/app"]
+COPY ["./data_manipulation/", "/app/"]
 
 RUN npm install
 
@@ -39,15 +39,33 @@ RUN node script_artworks_rank.js && \
     node script_motifs_rank.js && \
     node merge_art_data.js
 
+RUN ls -lah /app/
 # -----------------------------------------
 
 FROM python:3 as post_data_ranking
 
 WORKDIR /app
 
-RUN ["python", "app/data_manipulation/add_youtube_videos.py", "-d"]
-RUN ["python", "app/data_manipulation/split_languages.py", "-d"]
-RUN ["python", "app/data_manipulation/elasticsearch_helper.py", "-d"]
+# copy necessary files
+COPY --from=data_ranking /app/art_ontology.json/ /app/crawler_output/
+
+COPY ["./data_manipulation/", "/app/data_manipulation/"]
+COPY --from=Wikicrawler /app/languageconfig.csv/ /app/
+COPY --from=Wikicrawler /app/language_helper.py/ /app/
+#COPY --from=data_ranking /app/split_languages.py/ /app/data_manipulation/
+#COPY --from=data_ranking /app/add_youtube_videos.py/ /app/data_manipulation/
+#COPY --from=data_ranking /app/youtube_videos.csv/ /app/data_manipulation/
+
+COPY ["./upload_to_elasticsearch/", "/app/upload_to_elasticsearch/"]
+
+RUN ls -lah /app/
+RUN ls -lah /app/crawler_output/
+
+RUN pip install elasticsearch requests simplejson ijson
+
+RUN ["python", "data_manipulation/add_youtube_videos.py", "-d"]
+RUN ["python", "data_manipulation/split_languages.py", "-d"]
+RUN ["python", "upload_to_elasticsearch/elasticsearch_helper.py", "-d"]
 
 # -----------------------------------------
 

@@ -1,5 +1,5 @@
-import { Component, ViewEncapsulation, Input, OnInit } from "@angular/core";
-import { Entity } from "../../models/models";
+import { Component, ViewEncapsulation, Input, OnInit, OnChanges } from "@angular/core";
+import { Entity, Artwork } from "../../models/models";
 
 @Component({
   selector: "app-badge",
@@ -7,29 +7,34 @@ import { Entity } from "../../models/models";
   encapsulation: ViewEncapsulation.None,
   styleUrls: ["./badge.component.scss"]
 })
-export class BadgeComponent implements OnInit {
+export class BadgeComponent implements OnInit, OnChanges {
   @Input() entity: Entity;
+  @Input() isHoverBadge: boolean;
+  @Input() hoveredArtwork: Artwork;
 
   icon: string;
   label: string;
   redirectUrl: string;
   tooltip: string;
+  highlight: boolean;
 
   tooltipBreakLimit: number = 150;
 
   ngOnInit() {
-    this.icon = icons[this.entity.type] || "fa-user";
-    this.redirectUrl = `/${this.entity.type}/${this.entity.id}` || "/";
-    this.label = this.entity.label || "";
+    if (this.entity) {
+      this.icon = icons[this.entity.type] || "fa-user";
+      this.redirectUrl = `/${this.entity.type}/${this.entity.id}` || "/";
+      this.label = this.entity.label || "";
 
-    // display the abstract or description; break after defined char limit
-    this.tooltip = this.entity.abstract
-      ? this.entity.abstract
-      : this.entity.description
-        ? this.entity.description
-        : null;
-    if (this.tooltip) {
-      this.tooltip.trim();
+      // display the abstract or description; break after defined char limit
+      this.tooltip = this.entity.abstract
+        ? this.entity.abstract
+        : this.entity.description
+          ? this.entity.description
+          : null;
+      if (this.tooltip) {
+        this.tooltip.trim();
+      }
     }
 
     if (this.tooltip && this.tooltip.length >= this.tooltipBreakLimit) {
@@ -43,6 +48,17 @@ export class BadgeComponent implements OnInit {
         ) + " [...]";
     }
   }
+
+  ngOnChanges() {
+    if (this.isHoverBadge) {
+      if (this.hoveredArtwork) {
+        this.highlight = this.hoveredArtwork[this.entity.type + 's'].includes(this.entity.id);
+      } else {
+        this.highlight = false;
+      }
+    }
+  }
+
 }
 
 enum icons {

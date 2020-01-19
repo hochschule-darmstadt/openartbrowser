@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { CarouselComponent } from 'src/app/shared/components/carousel/carousel.component';
 import { SlideComponent } from 'src/app/shared/components/carousel/slide/slide.component';
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
+import {Angulartics2RouterlessModule} from 'angulartics2/routerlessmodule';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
@@ -21,7 +22,8 @@ describe('HomeComponent', () => {
         NgbModule,
         FormsModule,
         HttpClientModule,
-        RouterModule.forRoot([])
+        RouterModule.forRoot([]),
+        Angulartics2RouterlessModule.forRoot()
       ],
       declarations: [
         HomeComponent,

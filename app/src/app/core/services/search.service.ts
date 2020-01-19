@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
-import { TagItem } from 'src/app/shared/models/models';
 import { Subject } from 'rxjs';
+
+export interface TagItem {
+    label: string;
+    type?: string;
+    id?: string;
+}
 
 @Injectable()
 export class SearchService {

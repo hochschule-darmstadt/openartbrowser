@@ -1,4 +1,4 @@
-import { Entity } from './entity.interface';
+import { Entity, EntityType } from './entity.interface';
 import { Movement } from './movement.interface';
 
 export interface Artist extends Entity {
@@ -10,5 +10,5 @@ export interface Artist extends Entity {
     citizenship?: string;
     movements: Partial<Movement>[];
     influenced_by: Partial<Artist>[];
-    type: 'artist';
+    type: EntityType.ARTIST;
 }

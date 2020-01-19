@@ -1,12 +1,13 @@
 import {
   AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild
 } from '@angular/core';
-import {interval, Observable, Subject} from 'rxjs';
-import {SearchService} from 'src/app/core/services/search.service';
-import {DataService} from 'src/app/core/services/elasticsearch/data.service';
-import {Router} from '@angular/router';
-import {debounceTime, switchMap, takeUntil} from 'rxjs/operators';
-import {Entity, EntityType, TagItem} from '../../models/models';
+import { interval, Observable, Subject } from 'rxjs';
+import { SearchService, TagItem } from 'src/app/core/services/search.service';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
+import { Router } from '@angular/router';
+import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
+import { Entity, EntityType } from '../../models/models';
+import {Angulartics2} from 'angulartics2';
 
 @Component({
   selector: 'app-search',
@@ -16,7 +17,7 @@ import {Entity, EntityType, TagItem} from '../../models/models';
 })
 export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  @ViewChild('input', {static: false})
+  @ViewChild('input', { static: false })
   inputRef: ElementRef;
 
   /** input for search component */
@@ -52,7 +53,8 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     private dataService: DataService,
     private searchService: SearchService,
     private router: Router,
-    private cdRef: ChangeDetectorRef) {
+    private cdRef: ChangeDetectorRef,
+    private angulartics2: Angulartics2) {
   }
 
   ngOnInit() {
@@ -112,6 +114,14 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
         // group results by type, group with result of highest modified rank starts
         entities = this.groupSearchResultsByType(entities);
 
+        // Track if search had no results
+        if (entities.length === 0) {
+          this.angulartics2.eventTrack.next({
+            action: 'trackSiteSearch',
+            properties: { category: 'Auto suggest', keyword: term, searchCount: 0 },
+          });
+        }
+
         return this.searchInput ? entities : [];
       })
     );
@@ -120,44 +130,14 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param entities results which should be sorted
    */
   sortSearchResultsByRank(entities: Entity[], term: string): Entity[] {
-    let sortedEntities = entities;
-    sortedEntities.sort(
-        (a, b): any => {
-        let rankA = a.relativeRank;
-        let rankB = b.relativeRank;
-        const aPos = a.label.toLowerCase().indexOf(term.toLowerCase());
-        const bPos = b.label.toLowerCase().indexOf(term.toLowerCase());
+    return entities.sort(
+      (left, right): any => {
+        const currentRankOfLeft = updateRelativeRank(left, term);
+        const currentRankOfRight =  updateRelativeRank(right, term);
 
-        // factor 2 for initial position
-        if (aPos === 0) {
-          rankA *= 2;
-        }
-        if (bPos === 0) {
-          rankB *= 2;
-        }
-        // factor 0.5 for non-whitespace in front
-        if (
-          aPos > 0 &&
-        a.label
-        .toLowerCase()
-        .charAt(aPos - 1)
-        .match(/\S/)
-        ) {
-          rankA *= 0.5;
-        }
-        if (
-        bPos > 0 &&
-        b.label
-        .toLowerCase()
-        .charAt(bPos - 1)
-        .match(/\S/)
-        ) {
-          rankA *= 0.5;
-        }
-        return rankB > rankA ? 1 : rankB < rankA ? -1 : 0;
+        return currentRankOfRight > currentRankOfLeft ? 1 : currentRankOfRight < currentRankOfLeft ? -1 : 0;
       }
     );
-    return sortedEntities;
   }
 
 
@@ -233,11 +213,11 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   groupSearchResultsByType(entities: Entity[]): Entity[] {
     let types = [];
-      entities.forEach(function (entity) {
-        if (!types.includes(entity.type)) {
-          types.push(entity.type);
-        }
-      });
+    entities.forEach(function (entity) {
+      if (!types.includes(entity.type)) {
+        types.push(entity.type);
+      }
+    });
 
     let entitiesResorted = [];
     types.forEach(function (type) {
@@ -315,11 +295,22 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
       this.preventSearch = false;
     }, 300);
 
+    const term = this.searchInput;
     this.searchInput = '';
     if ($event.item.type === EntityType.ARTWORK) {
       const url = `/artwork/${$event.item.id}`;
       $event.preventDefault();
       this.router.navigate([url]);
+      // Track search keyword
+      this.angulartics2.eventTrack.next({
+        action: 'trackSiteSearch',
+        properties: { category: 'Auto suggest', keyword: term },
+      });
+      // Track navigation
+      this.angulartics2.eventTrack.next({
+        action: 'Search suggestion',
+        properties: { category: 'Navigation' },
+      });
       return;
     } else {
       this.searchService.addSearchTag({
@@ -346,7 +337,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
       this.router.navigate([url]);
       return;
     }
-    this.router.navigate(['/search'], {queryParams: this.buildQueryParams()});
+    this.router.navigate(['/search'], { queryParams: this.buildQueryParams() });
     return;
   }
 
@@ -397,4 +388,20 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   public clearAllTags() {
     this.searchService.clearSearchTags();
   }
+}
+
+const hasLeadingWhiteSpace = (text, index) => text.toLowerCase().charAt(index - 1).match(/\S/)
+
+const getIndexOfTerm = (text, term) => text.toLowerCase().indexOf(term.toLowerCase())
+
+const isTermInitial = (text, term) => getIndexOfTerm(text, term) === 0
+
+const updateRelativeRank = (obj, term) => {
+  let currentRank = obj.relativeRank; 
+  if (isTermInitial(obj.label, term)) {
+    currentRank *= 2;
+  } else if (hasLeadingWhiteSpace(obj.label, getIndexOfTerm(obj.label, term))) {
+    currentRank *= 0.5;
+  }
+  return currentRank
 }

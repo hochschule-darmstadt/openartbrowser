@@ -65,7 +65,22 @@ RUN pip install elasticsearch requests simplejson ijson
 
 RUN ["python", "data_manipulation/add_youtube_videos.py", "-d"]
 RUN ["python", "data_manipulation/split_languages.py", "-d"]
-RUN ["python", "upload_to_elasticsearch/elasticsearch_helper.py", "-d"]
+
+# art_ontology.json is moved to /root becasuse elasticsearch_helper.py expects the json file in the
+# home directory
+COPY ["./crawler_output/", "/root/crawler_output/"]
+
+#RUN cd /root/
+
+RUN tar cfvz crawler_output.tar.gz crawler_output/
+
+RUN ls -lah
+
+#COPY ["./crawler_output.tar.gz", "root/var/www/html/"]
+#COPY ["./crawler_output.tar.gz", "root/var/www/html/"]
+#RUN cp crawler_output.tar.gz root/var/www/html
+
+#Copy tar after elasticsearch is set up
 
 # -----------------------------------------
 
@@ -73,9 +88,11 @@ FROM docker.elastic.co/elasticsearch/elasticsearch:7.4.2
 
 WORKDIR /app
 
-RUN yum update && \
+RUN yum update -y && \
     yum install -y https://centos7.iuscommunity.org/ius-release.rpm && \
     yum install -y python36u python36u-pip
+	
+RUN python --version
 
 RUN pip3 install elasticsearch ijson requests
 
@@ -87,8 +104,8 @@ RUN mkdir /var/log/elasticsearch && \
 # copy elasticsearch config from repo into docker container
 COPY --chown=elasticsearch:elasticsearch elasticsearch.yml /usr/share/elasticsearch/config/
 
-# master_flat_rank.json is moved to /root becasuse elasticsearch_helper.py expects the json file in the
-# home directory
-COPY --from=data_ranking /app/master_flat_rank.json /root/master_flat.json
-
 COPY ["./upload_to_elasticsearch/", "/app"]
+
+#move tar.gz to created html dir
+COPY --from=post_data_ranking /app/crawler_output.tar.gz /var/www/html/
+RUN ls -lah /var/www/html

@@ -10,6 +10,10 @@ COPY ["./user-config.py", "/app"]
 COPY ["./languageconfig.csv/", "/app"]
 COPY ["./language_helper.py/", "/app"]
 
+COPY ["./user-config.py", "/app/data_extraction"]
+COPY ["./languageconfig.csv/", "/app/data_extraction"]
+COPY ["./language_helper.py/", "/app/data_extraction"]
+
 # run ArtOntologyCrawler in development mode
 RUN ["python", "/app/data_extraction/art_ontology_crawler.py", "-d"]
 RUN ls -lah /app/

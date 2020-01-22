@@ -19,4 +19,4 @@ do
 done
 
 # run elastic.py script inside the container
-docker exec elastic-dev python3 /app/elasticsearch_helper.py /master_flat.json
+docker exec elastic-dev python3 /app/elasticsearch_helper.py /art_ontology.json

@@ -1,15 +1,18 @@
-
 import json
 import datetime
 import os
 from pathlib import Path
 
-fileName = Path(__file__).parent.parent.absolute() / "art_ontology_en.json"
-def split_file_in_subtype():
-    """Split *.art_ontology_en.json in subtype(Artworks, movements, locations, materials, motifs, Artists, genres)
-    and store in multiple .json File"""
+# ToDo: Just load the art_ontology_en.json into a dictionary<name, list_of_json_objects> 
+# and iterate over this instead of splitting everything again by types and use this again in
+# the generate_rdf() function
+def split_file_in_subtype(file=Path(__file__).parent.parent.absolute() / "crawler_output" / "art_ontology_en.json"):
+    """
+    Split *.art_ontology_en.json in subtype(Artworks, movements, locations, materials, motifs, Artists, genres)
+    and store in multiple .json File
+    """
     print(datetime.datetime.now(), "Starting with", "generating json files")
-    print("filename is "+ str(fileName))
+    print("filename is " + str(file))
 
     artworks = []
     movements = []
@@ -18,7 +21,7 @@ def split_file_in_subtype():
     materials = []
     motifs = []
     artists = []
-    with open(fileName, newline="", encoding='utf-8') as input:
+    with open(file, newline="", encoding='utf-8') as input:
         with open("artworks.json", "w", newline="", encoding='utf-8') as artworksFile:
             with open("movements.json", "w", newline="", encoding='utf-8') as movementsFile:
                 with open("genres.json", "w", newline="", encoding='utf-8') as genresFile:
@@ -29,10 +32,7 @@ def split_file_in_subtype():
                                     json_data  = json.load(input)
                                     print(json_data[0])
 
-
                                     for json_object in json_data:
-
-
                                         if json_object['type'] == "artwork":
                                             artworks.append(json_object)
                                         if json_object['type'] == "movement":
@@ -55,12 +55,12 @@ def split_file_in_subtype():
                                     materialsFile.write(json.dumps(materials, ensure_ascii=False))
                                     motifsFile.write(json.dumps(motifs, ensure_ascii=False))
                                     artistsFile.write(json.dumps(artists, ensure_ascii=False))
-                                            #artistsFile.write(',')
     print(datetime.datetime.now(), "Finished with", "generating json Files")
-def generate_rdf():
-    """Generates an RDF Tutle file 'art_ontology_en.ttl' from *.json files"""
-    split_file_in_subtype()
 
+
+def generate_rdf(header=Path(__file__).parent.absolute() / "art_ontology_header.txt",
+                 ontology=Path(__file__).parent.parent.absolute() / "crawler_output" / "art_ontology_en.ttl"):
+    """Generates an RDF Turtle file 'art_ontology_en.ttl' from *.json files"""
 
     configs = {
         #'classes': {'filename': 'classes.csv', 'class': 'rdfs:Class'},
@@ -101,15 +101,18 @@ def generate_rdf():
         'lon': {'property': ':lon', 'type': 'number'},
         'subclass_of': {'property': 'rdfs:subClassOf', 'type': 'list'},
         'videos': {'property': ':videos', 'type': 'url'}
+        # ToDo: Iconclasses missing
     }
+
     quotechars = {
         'string': {'start': '"', 'end': '"'},
         'url': {'start': '<', 'end': '>'},
         'number': {'start': '', 'end': ''}
     }
+
     print(datetime.datetime.now(), "Starting with", "generating rdf")
-    with open("art_ontology_en.ttl", "w", newline="", encoding='utf-8') as output:
-        with open('art_ontology_header.txt', newline="", encoding='utf-8') as input:
+    with open(ontology, "w", newline="", encoding='utf-8') as output:
+        with open(header, newline="", encoding='utf-8') as input:
             output.write(input.read())
             for config in configs:
                 print(config)
@@ -121,40 +124,37 @@ def generate_rdf():
                         classes = json_object['classes']
                         print("classes")
                         print(classes)
-                        for cls in classes:
-                            output.write(', wd:' + cls)
+                        for c in classes:
+                            output.write(', wd:' + c)
                         for key in json_object:
                             if key in properties:
-                                tpe = properties[key]['type']
-                                if tpe in quotechars.keys():
+                                t = properties[key]['type']
+                                if t in quotechars.keys():
                                     value = json_object[key]
                                     if key == "videos":
                                         count = 0
                                         output.write( ' ;\n    ' + properties[key]['property'] + ' ')
                                         for vle in value:
                                             count += 1
-                                            output.write(quotechars[tpe]['start'] + vle + quotechars[tpe]['end'])
+                                            output.write(quotechars[t]['start'] + vle + quotechars[t]['end'])
                                             if count != len(value):
-                                                output.write( ' , ')
-
-
+                                                output.write(' , ')
                                     else:
                                         value = str(value)
                                         print("str(value)")
                                         print (value)
                                         if value != '':  # cell not empty
-                                            if tpe == 'string' and '"' in value:
+                                            if t == 'string' and '"' in value:
                                                 value = value.replace('"', "'")  # replace double quotes by single quotes
                                                 print("value")
                                                 print(value)
                                             print("value2")
                                             print(value)
                                             if key == "abstract": # abstract need a \n character in string
-                                                output.write(' ;\n    ' + properties[key]['property'] + ' ' + quotechars[tpe]['start'] + value.replace('\n', '\\n').replace('\\', '\\\\')+ quotechars[tpe]['end'])
+                                                output.write(' ;\n    ' + properties[key]['property'] + ' ' + quotechars[t]['start'] + value.replace('\n', '\\n').replace('\\', '\\\\')+ quotechars[t]['end'])
                                             else:
-                                                output.write(' ;\n    ' + properties[key]['property'] + ' ' + quotechars[tpe]['start'] + value + quotechars[tpe]['end'])
-
-                                elif tpe == 'list':
+                                                output.write(' ;\n    ' + properties[key]['property'] + ' ' + quotechars[t]['start'] + value + quotechars[t]['end'])
+                                elif t == 'list':
                                     if json_object[key] != '':  # cell not empty - should not happen
                                         ids = json_object[key]  # parses list of ids from string
                                         print("ids")
@@ -170,15 +170,15 @@ def generate_rdf():
                                                 else:
                                                     output.write( ' , ')
                                                 output.write('wd:' + id)
-
-
                                 else:
-                                    raise Exception('Unexpected type: ' + tpe)
+                                    raise Exception('Unexpected type: ' + t)
                         output.write(' .\n')
 
     print(datetime.datetime.now(), "Finished with", "generating rdf")
 
 
-
-generate_rdf()
+if __name__ == "__main__":
+    print("Generating rdf file from art_ontology_en.json in crawler_output")
+    split_file_in_subtype()
+    generate_rdf()
 

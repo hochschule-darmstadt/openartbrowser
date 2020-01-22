@@ -17,9 +17,17 @@ export class AbstractComponent implements OnInit {
     this.checkRequiredFields();
   }
 
+  /* TODO:REVIEW
+  Delete unused OnChange method
+  */
+
   ngOnChanges(changes) {
     this.checkRequiredFields();
   }
+
+  /* TODO:REVIEW
+  Add description
+  */
 
   private checkRequiredFields() {
     if (this.entity === null) {

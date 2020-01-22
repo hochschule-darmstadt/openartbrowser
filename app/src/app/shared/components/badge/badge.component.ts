@@ -20,6 +20,10 @@ export class BadgeComponent implements OnInit, OnChanges {
 
   tooltipBreakLimit: number = 150;
 
+  /* TODO:REVIEW
+  Add descriptions
+  */
+
   ngOnInit() {
     if (this.entity) {
       this.icon = icons[this.entity.type] || "fa-user";

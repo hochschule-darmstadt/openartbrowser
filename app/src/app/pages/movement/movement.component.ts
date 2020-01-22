@@ -58,6 +58,10 @@ export class MovementComponent implements OnInit, OnDestroy {
     });
   }
 
+  /* TODO:REVIEW
+    Add description for calculateCollapseState for easier understanding
+ */
+
   private calculateCollapseState() {
     let metaNumber = 0;
     if (this.movement.abstract.length > 400) {

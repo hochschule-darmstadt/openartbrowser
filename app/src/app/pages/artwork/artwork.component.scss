@@ -99,33 +99,6 @@
   cursor: pointer;
 }
 
-
-.nav-tabs {
-  border-color: #FFFFFF;
-}
-
-/* When the nav-tabs is active */
-.nav-tabs > li > a.active,
-.nav-tabs > li > a.active:focus,
-.nav-tabs > li > a.active:hover,
-.nav > li > a:hover {
-  background-color: #868e96;
-  border-color: #FFFFFF;
-}
-
-/* When the nav-tabs is hovered */
-.nav-tabs > li > a:hover {
-  background-color: #868e9644;
-  border-color: rgba(255, 255, 255, 0.274);
-}
-
-@media (max-width: 575px) {
-  .nav-tabs .nav-item { width: 100%; }
-}
-
-
-
-
 /* Adds padding when page gets smaller to avoid overflow between information on the left and information on the right
  * changes image size
 */

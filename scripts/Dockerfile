@@ -4,9 +4,9 @@ WORKDIR /app
 
 RUN pip install pywikibot
 
-COPY ["./Wikidata crawler/", "/app"]
-# run ArtOntologyCrawler in development mode
-RUN ["python", "/app/ArtOntologyCrawler.py", "-d"]
+COPY ["./data_extraction/", "/app"]
+# run art_ontology_crawler in development mode
+RUN ["python", "/app/art_ontology_crawler.py", "-d"]
 RUN ls -lah /app/
 # move all files needed by the next stage into output_data
 RUN mkdir /app/output_data && mv *.json /app/output_data && mv *.csv /app/output_data

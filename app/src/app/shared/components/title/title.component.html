@@ -1,5 +1,5 @@
 <div class="text-muted" *ngIf="entity">
-    <span class="badge badge-secondary chip cursor-unset">
+    <span class="badge badge-secondary chip cursor-heading-pill">
         <i class="fas {{ entity?.icon }}"></i>
         <ng-container i18n="Entity Type Labels@@entity_labels" *ngIf="entity.type; let type">
             {type, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location}

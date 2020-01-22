@@ -2,12 +2,14 @@
 import json
 import datetime
 import os
+from pathlib import Path
 
-fileName = os.path.dirname(os.path.abspath(__file__)) + "/art_ontology_en.json"
-def splitFile_In_Subtype():
+fileName = Path(__file__).parent.parent.absolute() / "art_ontology_en.json"
+def split_file_in_subtype():
     """Split *.art_ontology_en.json in subtype(Artworks, movements, locations, materials, motifs, Artists, genres)
     and store in multiple .json File"""
     print(datetime.datetime.now(), "Starting with", "generating json files")
+    print("filename is "+ str(fileName))
 
     artworks = []
     movements = []
@@ -56,7 +58,9 @@ def splitFile_In_Subtype():
                                             #artistsFile.write(',')
     print(datetime.datetime.now(), "Finished with", "generating json Files")
 def generate_rdf():
-    """Generates an RDF Tutle file 'ArtOntology_en.ttl' from *.json files"""
+    """Generates an RDF Tutle file 'art_ontology_en.ttl' from *.json files"""
+    split_file_in_subtype()
+
 
     configs = {
         #'classes': {'filename': 'classes.csv', 'class': 'rdfs:Class'},
@@ -104,8 +108,8 @@ def generate_rdf():
         'number': {'start': '', 'end': ''}
     }
     print(datetime.datetime.now(), "Starting with", "generating rdf")
-    with open("ArtOntology_en.ttl", "w", newline="", encoding='utf-8') as output:
-        with open('ArtOntologyHeader.txt', newline="", encoding='utf-8') as input:
+    with open("art_ontology_en.ttl", "w", newline="", encoding='utf-8') as output:
+        with open('art_ontology_header.txt', newline="", encoding='utf-8') as input:
             output.write(input.read())
             for config in configs:
                 print(config)
@@ -175,6 +179,6 @@ def generate_rdf():
     print(datetime.datetime.now(), "Finished with", "generating rdf")
 
 
-splitFile_In_Subtype()
+
 generate_rdf()
 

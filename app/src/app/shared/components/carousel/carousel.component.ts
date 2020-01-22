@@ -73,6 +73,10 @@ export class CarouselComponent implements OnChanges {
 
   /** Divide the slider items into slides. Initialize slides. */
   private buildSlides(items: Entity[]): Slide[] {
+    /* TODO:Review
+    tbd.. In the current form, this component inserts each slide as DOM object. Is this really necessary? There should
+    be a more efficient way to this.
+     */
     const slides: Slide[] = [];
     // There are 8 images on each slide.
     // There are 1 image on each slide if is  mobile

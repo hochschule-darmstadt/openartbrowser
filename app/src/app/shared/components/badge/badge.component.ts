@@ -42,6 +42,19 @@ export class BadgeComponent implements OnInit, OnChanges {
     }
 
     if (this.tooltip && this.tooltip.length >= this.tooltipBreakLimit) {
+      /* TODO:REVIEW
+      Explain what happens here.
+      */
+      /* TODO:REVIEW
+      It might be a good idea to remove everything in the tooltip that is between brackets ().
+
+      Example for the painter Delacroix:
+      Ferdinand Victor Eugène Delacroix (/ˈdɛləkrwɑː, ˌdɛləˈkrwɑː/ DEL-ə-krwah, DEL-ə-KRWAH,[1] French: [øʒɛn dəlakʁwa]; 26 April 1798 – 13 August 1863) was a French Romantic artist regarded from the outset of his career as the leader of the French Romantic school.
+
+      should be:
+      Ferdinand Victor Eugène Delacroix was a French Romantic artist regarded from the outset of his career as the leader of the French Romantic school.
+      */
+
       let substr_to = this.tooltip.indexOf(".", this.tooltipBreakLimit);
       if (substr_to < this.tooltipBreakLimit) substr_to = this.tooltip.indexOf(" ", this.tooltipBreakLimit);
       if (substr_to < this.tooltipBreakLimit) substr_to = this.tooltipBreakLimit;

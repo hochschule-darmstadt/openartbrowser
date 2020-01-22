@@ -9,20 +9,19 @@ COPY ["./data_extraction/", "/app/data_extraction"]
 COPY ["./user-config.py", "/app"]
 COPY ["./languageconfig.csv/", "/app"]
 COPY ["./language_helper.py/", "/app"]
+
 # run ArtOntologyCrawler in development mode
 RUN ["python", "/app/data_extraction/art_ontology_crawler.py", "-d"]
 RUN ls -lah /app/
-# move all files needed by the next stage into output_data
-#RUN mkdir /app/output_data && mv *.json /app/crawler_output/intermediate_files/json/ && mv *.csv /app/crawler_output/intermediate_files/csv/
 
 # ------------------------------------------------
 
 FROM node:latest as data_ranking
 
 WORKDIR /app
+
 # get files from previous stage
 COPY --from=Wikicrawler /app/crawler_output/intermediate_files/json/ /app/
-#COPY --from=Wikicrawler /app/crawler_output/intermediate_files/csv/ /app/
 
 COPY ["./data_manipulation/", "/app/"]
 
@@ -52,9 +51,6 @@ COPY --from=data_ranking /app/art_ontology.json/ /app/crawler_output/
 COPY ["./data_manipulation/", "/app/data_manipulation/"]
 COPY --from=Wikicrawler /app/languageconfig.csv/ /app/
 COPY --from=Wikicrawler /app/language_helper.py/ /app/
-#COPY --from=data_ranking /app/split_languages.py/ /app/data_manipulation/
-#COPY --from=data_ranking /app/add_youtube_videos.py/ /app/data_manipulation/
-#COPY --from=data_ranking /app/youtube_videos.csv/ /app/data_manipulation/
 
 COPY ["./upload_to_elasticsearch/", "/app/upload_to_elasticsearch/"]
 
@@ -66,21 +62,15 @@ RUN pip install elasticsearch requests simplejson ijson
 RUN ["python", "data_manipulation/add_youtube_videos.py", "-d"]
 RUN ["python", "data_manipulation/split_languages.py", "-d"]
 
-# art_ontology.json is moved to /root becasuse elasticsearch_helper.py expects the json file in the
+# art_ontology.json is moved to /root because elasticsearch_helper.py expects the json file in the
 # home directory
 COPY ["./crawler_output/", "/root/crawler_output/"]
-
-#RUN cd /root/
 
 RUN tar cfvz crawler_output.tar.gz crawler_output/
 
 RUN ls -lah
 
-#COPY ["./crawler_output.tar.gz", "root/var/www/html/"]
-#COPY ["./crawler_output.tar.gz", "root/var/www/html/"]
-#RUN cp crawler_output.tar.gz root/var/www/html
-
-#Copy tar after elasticsearch is set up
+#Copy tar to www/html dir after elasticsearch is set up
 
 # -----------------------------------------
 

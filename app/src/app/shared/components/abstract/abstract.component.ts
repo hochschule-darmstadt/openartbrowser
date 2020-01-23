@@ -18,7 +18,7 @@ export class AbstractComponent implements OnInit {
   }
 
   /* TODO:REVIEW
-  Delete unused OnChange method
+      Delete unused OnChange method
   */
 
   ngOnChanges(changes) {
@@ -26,12 +26,12 @@ export class AbstractComponent implements OnInit {
   }
 
   /* TODO:REVIEW
-  Add description
+      Add description
   */
 
   private checkRequiredFields() {
     if (this.entity === null) {
-      throw new TypeError("Attribute 'entity' is required");
+      throw new TypeError('Attribute \'entity\' is required');
     }
   }
 }

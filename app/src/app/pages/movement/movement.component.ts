@@ -59,7 +59,7 @@ export class MovementComponent implements OnInit, OnDestroy {
   }
 
   /* TODO:REVIEW
-    Add description for calculateCollapseState for easier understanding
+      Add description for calculateCollapseState for easier understanding
  */
 
   private calculateCollapseState() {

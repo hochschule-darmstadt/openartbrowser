@@ -1,6 +1,6 @@
 import {Component, Input, SimpleChanges, OnChanges, EventEmitter, Output} from '@angular/core';
 import {Entity} from '../../models/models';
-import {HostListener} from "@angular/core";
+import {HostListener} from '@angular/core';
 
 export interface Slide {
   /** artworks displayed on this slide */
@@ -74,8 +74,8 @@ export class CarouselComponent implements OnChanges {
   /** Divide the slider items into slides. Initialize slides. */
   private buildSlides(items: Entity[]): Slide[] {
     /* TODO:Review
-    tbd.. In the current form, this component inserts each slide as DOM object. Is this really necessary? There should
-    be a more efficient way to this.
+        tbd.. In the current form, this component inserts each slide as DOM object. Is this really necessary? There should
+        be a more efficient way to this.
      */
     const slides: Slide[] = [];
     // There are 8 images on each slide.

@@ -1,12 +1,12 @@
 import {
   AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild
 } from '@angular/core';
-import { interval, Observable, Subject } from 'rxjs';
-import { SearchService, TagItem } from 'src/app/core/services/search.service';
-import { DataService } from 'src/app/core/services/elasticsearch/data.service';
-import { Router } from '@angular/router';
-import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
-import { Entity, EntityType } from '../../models/models';
+import {interval, Observable, Subject} from 'rxjs';
+import {SearchService, TagItem} from 'src/app/core/services/search.service';
+import {DataService} from 'src/app/core/services/elasticsearch/data.service';
+import {Router} from '@angular/router';
+import {debounceTime, switchMap, takeUntil} from 'rxjs/operators';
+import {Entity, EntityType} from '../../models/models';
 import {Angulartics2} from 'angulartics2';
 
 @Component({
@@ -17,7 +17,7 @@ import {Angulartics2} from 'angulartics2';
 })
 export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  @ViewChild('input', { static: false })
+  @ViewChild('input', {static: false})
   inputRef: ElementRef;
 
   /** input for search component */
@@ -118,7 +118,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
         if (entities.length === 0) {
           this.angulartics2.eventTrack.next({
             action: 'trackSiteSearch',
-            properties: { category: 'Auto suggest', keyword: term, searchCount: 0 },
+            properties: {category: 'Auto suggest', keyword: term, searchCount: 0},
           });
         }
 
@@ -334,12 +334,12 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
       // Track search keyword
       this.angulartics2.eventTrack.next({
         action: 'trackSiteSearch',
-        properties: { category: 'Auto suggest', keyword: term },
+        properties: {category: 'Auto suggest', keyword: term},
       });
       // Track navigation
       this.angulartics2.eventTrack.next({
         action: 'Search suggestion',
-        properties: { category: 'Navigation' },
+        properties: {category: 'Navigation'},
       });
       return;
     } else {
@@ -356,18 +356,24 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   /** perform search with the current chips.
    * if there is exactly one entity chip, redirect to that entity page.
    * if there is more than 1 chip or the chip is a term, redirect to search result page.
-   **/
+   */
   performSearch() {
     if (this.searchItems.length === 0) {
       return;
     }
     const item = this.searchItems[0];
     if (this.searchItems.length === 1 && item.type) {
-      let url = `/${item.type}/${item.id}`;
+      const url = `/${item.type}/${item.id}`;
+      /** TODO:REVIEW
+       *   add empty promise handler .then(() => {})
+       */
       this.router.navigate([url]);
       return;
     }
-    this.router.navigate(['/search'], { queryParams: this.buildQueryParams() });
+    /** TODO:REVIEW
+     *   add empty promise handler .then(() => {})
+     */
+    this.router.navigate(['/search'], {queryParams: this.buildQueryParams()});
     return;
   }
 
@@ -375,7 +381,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
    * perform search.
    * If search is prevented due to a select event in the slider, do nothing because
    * event is already handled in itemSelected
-   **/
+   */
   public searchTriggered() {
     if (this.preventSearch) {
       return;

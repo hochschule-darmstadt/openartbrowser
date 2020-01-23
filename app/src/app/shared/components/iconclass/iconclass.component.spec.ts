@@ -1,8 +1,8 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { IconclassComponent } from './iconclass.component';
-import { DataService } from 'src/app/core/services/elasticsearch/data.service';
-import { HttpClientModule } from '@angular/common/http';
+import {IconclassComponent} from './iconclass.component';
+import {DataService} from 'src/app/core/services/elasticsearch/data.service';
+import {HttpClientModule} from '@angular/common/http';
 
 describe('IconclassComponent', () => {
   let component: IconclassComponent;
@@ -10,11 +10,11 @@ describe('IconclassComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ HttpClientModule ],
-      declarations: [ IconclassComponent ],
-      providers: [ DataService]
+      imports: [HttpClientModule],
+      declarations: [IconclassComponent],
+      providers: [DataService]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

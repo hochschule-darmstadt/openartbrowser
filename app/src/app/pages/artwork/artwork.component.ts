@@ -75,10 +75,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    * @description hook that is executed at component initialization
    */
   ngOnInit() {
-    this.route.params.subscribe(() => {
-      this.videoExists = false;
-    });
-
     // define tabs if not set
     if (!this.artworkTabs || !this.artworkTabs.length) {
       this.addTab(EntityType.ALL, true);
@@ -93,6 +89,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
       /* reset properties */
+      this.videoExists = false;
       this.artwork = this.hoveredArtwork = this.hoveredArtwork = null;
       this.imageHidden = this.modalIsVisible = this.commonTagsCollapsed = false;
       this.detailsCollapsed = true;

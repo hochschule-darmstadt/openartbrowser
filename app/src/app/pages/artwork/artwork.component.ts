@@ -19,8 +19,7 @@ interface ArtworkTab {
 @Component({
   selector: 'app-artwork',
   templateUrl: './artwork.component.html',
-  styleUrls: ['./artwork.component.scss'],
-  host: { 'window:beforeunload': 'doSomething' },
+  styleUrls: ['./artwork.component.scss']
 })
 export class ArtworkComponent implements OnInit, OnDestroy {
 
@@ -168,11 +167,12 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     Promise.all(
       /** load related data for each tab  */
       this.artworkTabs.map(async (tab: ArtworkTab) => {
-        const types = tab.type + 's';
         if (tab.type === EntityType.ALL) {
           return;
         }
-
+        
+        const types = usePlural(tab.type);
+        
         // load entities
         this.dataService.findMultipleById(this.artwork[types] as any, tab.type)
           .then((artists) => {

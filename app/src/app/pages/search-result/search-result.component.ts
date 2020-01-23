@@ -5,6 +5,7 @@ import {takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';
 import {DataService} from 'src/app/core/services/elasticsearch/data.service';
 import {Angulartics2} from 'angulartics2';
+import { usePlural } from 'src/app/shared/models/entity.interface';
 
 /**
  * @description Interface for the search results.
@@ -101,7 +102,7 @@ export class SearchResultComponent implements OnInit, OnDestroy {
    */
   private async getSliderItems(results: SearchResult[], terms: string[]): Promise<Artwork[]> {
     const search: ArtSearch = {};
-    results.forEach(typeArray => search[typeArray.key + 's'] = typeArray.items.map((e: Entity) => e.id));
+    results.forEach(typeArray => search[usePlural(typeArray.key)] = typeArray.items.map((e: Entity) => e.id));
     return await this.dataService.searchArtworks(search, terms);
   }
 

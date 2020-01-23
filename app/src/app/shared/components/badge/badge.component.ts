@@ -1,5 +1,6 @@
 import {Component, ViewEncapsulation, Input, OnInit, OnChanges} from '@angular/core';
 import {Entity, Artwork} from '../../models/models';
+import { usePlural } from '../../models/entity.interface';
 
 @Component({
   selector: 'app-badge',
@@ -61,11 +62,10 @@ export class BadgeComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     if (this.isHoverBadge) {
+      this.highlight = false;
       if (this.hoveredArtwork) {
-        this.highlight = this.hoveredArtwork[this.entity.type + 's'].includes(this.entity.id);
-      } else {
-        this.highlight = false;
-      }
+        this.highlight = this.hoveredArtwork[usePlural(this.entity.type)].includes(this.entity.id);
+      } 
     }
   }
 

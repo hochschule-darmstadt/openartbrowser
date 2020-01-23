@@ -6,19 +6,13 @@ import {Entity} from '../../models/models';
   templateUrl: './information.component.html',
   styleUrls: ['./information.component.scss']
 })
-export class InformationComponent implements OnInit {
+export class InformationComponent {
 
-  /** TODO:REVIEW
-   *   Use string type, not String
-   */
   @Input()
-  label: String;
+  label: string;
 
-  /** TODO:REVIEW
-   *   Use string type, not String
-   */
   @Input()
-  value: String;
+  value: string;
 
   @Input()
   values: Entity[];
@@ -26,24 +20,14 @@ export class InformationComponent implements OnInit {
   constructor() {
   }
 
-  /** TODO:REVIEW
-   *   ngOnChanges is called before ngOnInit() and whenever one or more data-bound input properties change.
-   *   So there is no need to use ngOnInit to run the same code.
-   */
-  ngOnInit() {
+  ngOnChanges() {
     this.checkRequiredFields();
   }
 
-  /** TODO:REVIEW
-   *   Remove unused parameter changes
+  /**
+   * This Method is for debugging purposes.
+   * Errors will not be shown in productive state.
    */
-  ngOnChanges(changes) {
-    /** TODO:REVIEW
-     *   What happens if label is null? handle thrown error
-     */
-    this.checkRequiredFields();
-  }
-
   private checkRequiredFields() {
     if (this.label === null) {
       throw new TypeError('Attribute \'label\' is required');

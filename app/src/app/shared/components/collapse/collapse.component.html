@@ -11,6 +11,6 @@
   </h4>
 </div>
 
-<div [ngClass]="{true: 'collapse-element', false: 'collapse-element-show'}[collapse]">
+<div [ngClass]="{'collapse-element': collapse, 'collapse-element-show': !collapse}">
   <ng-content></ng-content>
 </div>

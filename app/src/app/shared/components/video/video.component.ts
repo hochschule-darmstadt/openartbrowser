@@ -56,6 +56,9 @@ export class VideoComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
    * @see https://gist.github.com/tonY1883/a3b85925081688de569b779b4657439b
    */
   private validateVideoExists(youtubeVideoHref: string): Promise<boolean> {
+    /** TODO:REVIEW
+     *    Type 'Function' should not be used. reject is not needed because it is not implemented.
+     */
     return new Promise((resolve: Function, reject: Function) => {
       const regExpMatchArray = youtubeVideoHref.match('https://www.youtube(-nocookie)?.com/embed/([^/]+)');
       if (regExpMatchArray.length === 3) {

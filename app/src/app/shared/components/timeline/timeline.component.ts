@@ -1,39 +1,42 @@
-import {Component, Input, HostListener} from '@angular/core';
-import {Artist, Artwork, Entity, EntityType} from 'src/app/shared/models/models';
-import {CustomStepDefinition, Options} from 'ng5-slider';
-import {animate, state, style, transition, trigger} from '@angular/animations';
-import {DataService} from 'src/app/core/services/elasticsearch/data.service';
+import { Component, Input, HostListener } from "@angular/core";
+import {
+  Artist,
+  Artwork,
+  Entity,
+  EntityType
+} from "src/app/shared/models/models";
+import { CustomStepDefinition, Options } from "ng5-slider";
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger
+} from "@angular/animations";
+import { DataService } from "src/app/core/services/elasticsearch/data.service";
 
 interface TimelineItem extends Entity {
   date: number; // represents the value the item is located at in the timeline
 }
 
 @Component({
-  selector: 'app-timeline',
-  templateUrl: './timeline.component.html',
-  styleUrls: ['./timeline.component.scss'],
+  selector: "app-timeline",
+  templateUrl: "./timeline.component.html",
+  styleUrls: ["./timeline.component.scss"],
   animations: [
-    trigger('slideNext', [
-      state('out', style({transform: 'translateX(7%)', opacity: 0})),
-      state('in', style({transform: 'translateX(0)', opacity: 1})),
-      transition('in => out', [
-        animate(0),
-      ]),
-      transition('out => in', [
-        animate(300),
-      ])
+    trigger("slideNext", [
+      state("out", style({ transform: "translateX(7%)", opacity: 0 })),
+      state("in", style({ transform: "translateX(0)", opacity: 1 })),
+      transition("in => out", [animate(0)]),
+      transition("out => in", [animate(300)])
     ]),
-    trigger('slidePrev', [
-      state('out', style({transform: 'translateX(-7%)', opacity: 0})),
-      state('in', style({transform: 'translateX(0)', opacity: 1})),
-      transition('in => out', [
-        animate(0),
-      ]),
-      transition('out => in', [
-        animate(300),
-      ])
+    trigger("slidePrev", [
+      state("out", style({ transform: "translateX(-7%)", opacity: 0 })),
+      state("in", style({ transform: "translateX(0)", opacity: 1 })),
+      transition("in => out", [animate(0)]),
+      transition("out => in", [animate(300)])
     ])
-  ],
+  ]
 })
 export class TimelineComponent {
   /**  Artworks that should be displayed in this slider */
@@ -80,29 +83,34 @@ export class TimelineComponent {
     showTicks: true,
     showSelectionBar: false,
     stepsArray: [],
-    getPointerColor: function () {
-      return "#00bc8c"
+    getPointerColor: function() {
+      return "#00bc8c";
     },
-    getTickColor: function () {
-      return "#FFFFFF00"
+    getTickColor: function() {
+      return "#FFFFFF00";
     },
-    customValueToPosition: function (val, minVal, maxVal) {
+    customValueToPosition: function(val, minVal, maxVal) {
       let range = maxVal - minVal;
       return (val - minVal) / range;
     },
-    customPositionToValue: function (percent, minVal, maxVal) {
+    customPositionToValue: function(percent, minVal, maxVal) {
       return percent * (maxVal - minVal) + minVal;
     }
   };
 
   /** Determine values based on screen width (responsivity) */
-  @HostListener('window:resize', ['$event'])
+  @HostListener("window:resize", ["$event"])
   onResize() {
     let screenWidth = window.innerWidth;
     /** Set itemCountPerPeriod to value between 1 and 4, depending on screen width */
-    this.itemCountPerPeriod = Math.min(4, Math.max(1, Math.floor(screenWidth / 300)));
+    this.itemCountPerPeriod = Math.min(
+      4,
+      Math.max(1, Math.floor(screenWidth / 300))
+    );
     /** decide whether reference item should be 0 or 1 */
-    this.referenceItem = +(this.itemCountPerPeriod > 1 && this.items.length > 1); // Convert bool to int, cause i can, LOL
+    this.referenceItem = +(
+      this.itemCountPerPeriod > 1 && this.items.length > 1
+    ); // Convert bool to int, cause i can, LOL
     /** Determine the amount of marked steps in the slider, depending on screen width */
     this.averagePeriodCount = Math.min(7, Math.floor(screenWidth / 125));
     this.refreshComponent();
@@ -113,7 +121,7 @@ export class TimelineComponent {
   }
 
   ngOnChanges() {
-    if (typeof this.artworks !== 'undefined' && this.artworks.length > 0) {
+    if (typeof this.artworks !== "undefined" && this.artworks.length > 0) {
       /** Clear items */
       this.items = [];
       this.buildTimelineItemsFromArtworks();
@@ -135,7 +143,7 @@ export class TimelineComponent {
   }
 
   private refreshComponent() {
-    if (typeof this.items !== 'undefined' && this.items.length > 0) {
+    if (typeof this.items !== "undefined" && this.items.length > 0) {
       this.calculatePeriod();
       this.calcSlideStart();
       this.updateSliderItems();
@@ -156,8 +164,12 @@ export class TimelineComponent {
     let reasonablePeriodDistance = 5;
     let minimumPeriodDistance = 1;
     /** Example:  30/7 = 4,28 ; 4,28 / 5 = 0,85 ; Math.max( Math.round(0.85)*5, 1) = 5 */
-    this.periodSpan = Math.max(Math.round(dateSpan / this.averagePeriodCount / reasonablePeriodDistance)
-      * reasonablePeriodDistance, minimumPeriodDistance);
+    this.periodSpan = Math.max(
+      Math.round(
+        dateSpan / this.averagePeriodCount / reasonablePeriodDistance
+      ) * reasonablePeriodDistance,
+      minimumPeriodDistance
+    );
 
     /** get the biggest multiple of periodSpan that is less than firstDate / same for lastDate */
     let firstPeriod = firstDate - (firstDate % this.periodSpan);
@@ -166,9 +178,9 @@ export class TimelineComponent {
     /** Fill the slider steps with period legends respectively steps */
     for (let i = firstPeriod; i <= lastPeriod; i++) {
       if (i % this.periodSpan === 0) {
-        sliderSteps.push({value: i, legend: "" + i});
+        sliderSteps.push({ value: i, legend: "" + i });
       } else {
-        sliderSteps.push({value: i});
+        sliderSteps.push({ value: i });
       }
     }
 
@@ -185,22 +197,31 @@ export class TimelineComponent {
     /** How many of the displayed items should have a date less/equal to the slider value */
     let itemCountSmallerReference = 2;
     /** Amount of items where date is the exact slider value */
-    let countReference = this.items.filter(item => +item.date === this.value).length;
+    let countReference = this.items.filter(item => +item.date === this.value)
+      .length;
 
     /** ReferenceIndex is the index of the first item with date equal to slider value or bigger */
     let referenceIndex: number;
     if (countReference > itemCountSmallerReference) {
       referenceIndex = this.items.findIndex(item => +item.date === this.value);
     } else {
-      let firstBiggerRef = this.items.findIndex(item => +item.date > this.value);
-      referenceIndex = firstBiggerRef > 0 ? firstBiggerRef - 1 : this.items.length - (this.itemCountPerPeriod - 1);
+      let firstBiggerRef = this.items.findIndex(
+        item => +item.date > this.value
+      );
+      referenceIndex =
+        firstBiggerRef > 0
+          ? firstBiggerRef - 1
+          : this.items.length - (this.itemCountPerPeriod - 1);
     }
 
     /** Determine start index */
     if (0 >= referenceIndex - 1 && referenceIndex <= this.items.length - 3) {
       //first slide
-      this.slideStart = 0
-    } else if (referenceIndex + (this.itemCountPerPeriod - this.referenceItem) > this.items.length) {
+      this.slideStart = 0;
+    } else if (
+      referenceIndex + (this.itemCountPerPeriod - this.referenceItem) >
+      this.items.length
+    ) {
       //last slide
       this.slideStart = this.items.length - this.itemCountPerPeriod;
     } else {
@@ -238,7 +259,7 @@ export class TimelineComponent {
   prevClicked() {
     if (this.slideStart <= 0) {
       // Return if first slide
-      return
+      return;
     }
     this.slideOutLeft = true;
     this.slideStart = Math.max(this.slideStart - this.itemCountPerPeriod, 0);
@@ -252,11 +273,14 @@ export class TimelineComponent {
   nextClicked() {
     if (this.slideEnd >= this.items.length) {
       // Return if last slide
-      return
+      return;
     }
     this.slideOutRight = true;
-    this.slideStart = Math.min(this.slideStart + (2 * this.itemCountPerPeriod),
-      this.items.length) - this.itemCountPerPeriod;
+    this.slideStart =
+      Math.min(
+        this.slideStart + 2 * this.itemCountPerPeriod,
+        this.items.length
+      ) - this.itemCountPerPeriod;
     this.value = +this.items[this.slideStart + this.referenceItem].date;
     // decide if sliderMoved-Event should be suppressed
     this.sliderAllowEvent = false;
@@ -271,38 +295,45 @@ export class TimelineComponent {
 
   /** Transform artworks into TimelineItems to display them aside with artists */
   private buildTimelineItemsFromArtworks() {
-    this.artworks.forEach(artwork => this.items.push(<TimelineItem>{
-      id: artwork.id,
-      label: artwork.label,
-      description: artwork.description,
-      abstract: artwork.abstract,
-      wikipediaLink: artwork.wikipediaLink,
-      image: artwork.image,
-      imageSmall: artwork.imageSmall,
-      imageMedium: artwork.imageMedium,
-      type: artwork.type,
-      absoluteRank: artwork.absoluteRank,
-      relativeRank: artwork.relativeRank,
-      date: artwork.inception,
-    }))
+    this.artworks.forEach(artwork =>
+      this.items.push(<TimelineItem>{
+        id: artwork.id,
+        label: artwork.label,
+        description: artwork.description,
+        abstract: artwork.abstract,
+        wikipediaLink: artwork.wikipediaLink,
+        image: artwork.image,
+        imageSmall: artwork.imageSmall,
+        imageMedium: artwork.imageMedium,
+        type: artwork.type,
+        absoluteRank: artwork.absoluteRank,
+        relativeRank: artwork.relativeRank,
+        date: artwork.inception
+      })
+    );
   }
 
   private async getArtistTimelineItems() {
     let artists: TimelineItem[] = [];
     let artistIds: Set<string> = new Set();
     /** Get the artist ids from the top 10% ranked artworks to display them aside with artworks */
-    this.artworks.sort((a, b) => a.relativeRank > b.relativeRank ? 1 : -1)
+    this.artworks
+      .sort((a, b) => (a.relativeRank > b.relativeRank ? 1 : -1))
       .slice(0, Math.max(10, Math.floor(this.artworks.length / 10))) //get top 10%
       .forEach(artwork => {
         if (artwork.artists) {
-          artwork.artists.forEach(artistId => artistIds.add(artistId + ""))
+          artwork.artists.forEach(artistId => artistIds.add(artistId + ""));
         }
       });
     /** Transform artists into Timeline items and set description */
-    await this.dataService.findMultipleById(Array.from(artistIds) as any, EntityType.ARTIST)
+    await this.dataService
+      .findMultipleById(Array.from(artistIds) as any, EntityType.ARTIST)
       .then((artworkArtists: Artist[]) => {
         artworkArtists.forEach(artist => {
-          if (artist.imageSmall && (artist.date_of_birth || artist.date_of_death) ) {
+          if (
+            artist.imageSmall &&
+            (artist.date_of_birth || artist.date_of_death)
+          ) {
             artist.date_of_birth = undefined;
 
             // decide whether to use date of birth or date of death for sorting (default: date of birth)
@@ -310,13 +341,14 @@ export class TimelineComponent {
             var artistDescription;
             var artistSortDate;
             if (artist.date_of_birth && artist.date_of_death) {
-              artistDescription = artist.date_of_birth + ' - ' + artist.date_of_death;
+              artistDescription =
+                artist.date_of_birth + " - " + artist.date_of_death;
               artistSortDate = artist.date_of_birth;
             } else if (artist.date_of_birth) {
-              artistDescription = '*' + artist.date_of_birth;
+              artistDescription = "*" + artist.date_of_birth;
               artistSortDate = artist.date_of_birth;
             } else {
-              artistDescription = '†' + artist.date_of_death;
+              artistDescription = "†" + artist.date_of_death;
               artistSortDate = artist.date_of_death;
             }
 
@@ -332,21 +364,24 @@ export class TimelineComponent {
               type: artist.type,
               absoluteRank: artist.absoluteRank,
               relativeRank: artist.relativeRank,
-              date: artistSortDate, // TODO: Determine better value (and fitting description)
-            })
+              date: artistSortDate // TODO: Determine better value (and fitting description)
+            });
           }
-        })
+        });
       });
-    return artists
+    return artists;
   }
 
   private sortItems() {
     // rebuild slides if slider items input changed.
-    this.items.sort((a, b) => (a.date > b.date) ? 1 : -1);
+    this.items.sort((a, b) => (a.date > b.date ? 1 : -1));
   }
 
   onLoadingError(item: TimelineItem) {
-    this.items.splice(this.items.findIndex(i => i.id === item.id), 1);
+    this.items.splice(
+      this.items.findIndex(i => i.id === item.id),
+      1
+    );
     this.refreshComponent();
   }
 }

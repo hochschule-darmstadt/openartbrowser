@@ -165,10 +165,7 @@ export class DataService {
    */
   private filterData<T>(data: any, filterBy?: EntityType): T[] {
     const entities: T[] = [];
-    _.each(data.hits.hits, function (val) {
-      /** TODO:REVIEW
-       *   Intended to use == ?
-       */
+    _.each(data.hits.hits, function(val) {
       if (!filterBy || (filterBy && val._source.type == filterBy)) {
         entities.push(this.addThumbnails(val._source));
       }

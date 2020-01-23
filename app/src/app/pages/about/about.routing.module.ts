@@ -4,7 +4,10 @@ import { RouterModule, Routes } from "@angular/router";
 import { SharedModule } from "../../shared/shared.module";
 import { AboutComponent } from "./about.component";
 
-const aboutRoutes: Routes = [
+/* TODO:REVIEW
+    Change variable name to aboutRoutes. Or is there anything important about the "n" in "nRoutes"?
+ */
+const aboutnRoutes: Routes = [
   {
     path: "",
     component: AboutComponent
@@ -13,7 +16,7 @@ const aboutRoutes: Routes = [
 
 @NgModule({
   declarations: [AboutComponent],
-  imports: [CommonModule, SharedModule, RouterModule.forChild(aboutRoutes)],
+  imports: [CommonModule, SharedModule, RouterModule.forChild(aboutnRoutes)],
   exports: [AboutComponent]
 })
 export class AboutRoutingModule {}

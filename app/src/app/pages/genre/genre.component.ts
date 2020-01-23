@@ -12,6 +12,16 @@ import { shuffle } from 'src/app/core/services/utils.service';
   styleUrls: ['./genre.component.scss'],
 })
 export class GenreComponent implements OnInit, OnDestroy {
+
+  /* TODO:REVIEW
+  Similiarities in every page-Component:
+  - variables: ngUnsubscribe, collapse, sliderItems, dataService, route
+  - ngOnDestroy, calculateCollapseState, ngOnInit
+  
+  1. Use Inheritance (Root-Page-Component) or Composition
+  2. Inject entity instead of genre
+  */
+
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();
 
@@ -36,7 +46,7 @@ export class GenreComponent implements OnInit, OnDestroy {
       this.genre = await this.dataService.findById<Genre>(genreId, EntityType.GENRE);
 
       /** load slider items */
-      this.dataService.findArtworksByType("genres",[this.genre.id])
+      this.dataService.findArtworksByType("genres", [this.genre.id])
         .then(artworks => this.sliderItems = shuffle(artworks));
       this.calculateCollapseState();
     });

@@ -343,7 +343,10 @@ export class TimelineComponent {
               type: artist.type,
               absoluteRank: artist.absoluteRank,
               relativeRank: artist.relativeRank,
-              date: artistSortDate, // TODO: Determine better value (and fitting description)
+              /* TODO:REVIEW
+                Determine better value (and fitting description) for artistSortDate
+              */
+              date: artistSortDate,
             } as TimelineItem);
           }
         });

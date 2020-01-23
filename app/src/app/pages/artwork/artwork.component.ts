@@ -182,7 +182,8 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     );
   }
 
-  /** calculates the size of meta data item section
+  /** Decides whether to show the 'more' section or not based on the amount of available data:
+   * calculates the size of meta data item section
    * every attribute: +3
    * if attribute is array and size > 3 -> + arraylength
    */

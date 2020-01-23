@@ -58,10 +58,11 @@ export class MovementComponent implements OnInit, OnDestroy {
     });
   }
 
-  /* TODO:REVIEW
-      Add description for calculateCollapseState for easier understanding
- */
-
+  /** Decides whether to show the 'more' section or not based on the amount of available data:
+   * calculates the size of meta data item section
+   * every attribute: +3
+   * if attribute is array and size > 3 -> + arraylength
+   */
   private calculateCollapseState() {
     let metaNumber = 0;
     if (this.movement.abstract.length > 400) {

@@ -51,6 +51,11 @@ export class GenreComponent implements OnInit, OnDestroy {
     this.collapse = !this.collapse;
   }
 
+  /** Decides whether to show the 'more' section or not based on the amount of available data:
+   * calculates the size of meta data item section
+   * every attribute: +3
+   * if attribute is array and size > 3 -> + arraylength
+   */
   private calculateCollapseState() {
     let metaNumber = 0;
     if (this.genre.abstract.length > 400) {

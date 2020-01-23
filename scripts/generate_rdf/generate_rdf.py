@@ -14,7 +14,7 @@ def generate_rdf(
 ):
     """Generates an RDF Turtle file 'art_ontology_en.ttl' from *.json files"""
 
-    print(datetime.datetime.now(), "Starting with", "generating json files")
+    print(datetime.datetime.now(), "Start reading the JSON-file")
     print("filename is " + str(file))
 
     artworks = []
@@ -27,7 +27,6 @@ def generate_rdf(
 
     with open(file, newline="", encoding="utf-8") as input:
         json_data = json.load(input)
-        print(json_data[0])
         for json_object in json_data:
             if json_object["type"] == "artwork":
                 artworks.append(json_object)
@@ -46,6 +45,8 @@ def generate_rdf(
 
     configs = {
         # ToDo: If classes should be used again they have to be loaded above
+        # They're only contained in the classes.csv 
+        # there is no JSON for classes generated
         # 'classes': {'json_array': 'classes.csv', 'class': 'rdfs:Class'},
         "movements": {"json_array": json.dumps(movements), "class": ":movement"},
         "genre": {"json_array": json.dumps(genres), "class": ":genre"},
@@ -97,7 +98,7 @@ def generate_rdf(
         with open(header, newline="", encoding="utf-8") as input:
             output.write(input.read())
             for config in configs:
-                print(config)
+                print("Generating entries for " + config)
                 output.write("\n\n# " + config + "\n\n")
                 json_data = json.loads(configs[config]["json_array"])
                 for json_object in json_data:
@@ -131,17 +132,11 @@ def generate_rdf(
                                             output.write(" , ")
                                 else:
                                     value = str(value)
-                                    print("str(value)")
-                                    print(value)
                                     if value != "":  # cell not empty
                                         if t == "string" and '"' in value:
                                             value = value.replace(
                                                 '"', "'"
                                             )  # replace double quotes by single quotes
-                                            print("value")
-                                            print(value)
-                                        print("value2")
-                                        print(value)
                                         if (
                                             key == "abstract"
                                         ):  # abstract need a \n character in string
@@ -171,10 +166,6 @@ def generate_rdf(
                                     ids = json_object[
                                         key
                                     ]  # parses list of ids from string
-                                    print("ids")
-                                    print(ids)
-                                    print("ids-length")
-                                    print(len(ids))
                                     if (
                                         len(ids) != 0 and "" not in ids
                                     ):  # list should not be empty
@@ -198,5 +189,4 @@ def generate_rdf(
 
 
 if __name__ == "__main__":
-    print("Generating rdf file from art_ontology_en.json in crawler_output")
     generate_rdf()

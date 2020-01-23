@@ -364,16 +364,11 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     const item = this.searchItems[0];
     if (this.searchItems.length === 1 && item.type) {
       const url = `/${item.type}/${item.id}`;
-      /** TODO:REVIEW
-       *   add empty promise handler .then(() => {})
-       */
-      this.router.navigate([url]);
+      this.router.navigate([url]).then(() => {});
       return;
     }
-    /** TODO:REVIEW
-     *   add empty promise handler .then(() => {})
-     */
-    this.router.navigate(['/search'], {queryParams: this.buildQueryParams()});
+
+    this.router.navigate(['/search'], {queryParams: this.buildQueryParams()}).then(() => {});
     return;
   }
 

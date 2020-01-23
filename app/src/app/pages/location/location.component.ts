@@ -12,6 +12,16 @@ import { shuffle } from 'src/app/core/services/utils.service';
   styleUrls: ['./location.component.scss'],
 })
 export class LocationComponent implements OnInit, OnDestroy {
+
+  /* TODO:REVIEW
+   Similiarities in every page-Component:
+   - variables: ngUnsubscribe, collapse, sliderItems, dataService, route
+   - ngOnDestroy, calculateCollapseState, ngOnInit
+ 
+   1. Use Inheritance (Root-Page-Component) or Composition
+   2. Inject entity instead of location
+ */
+
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();
 
@@ -43,6 +53,11 @@ export class LocationComponent implements OnInit, OnDestroy {
     });
   }
 
+  /** Decides whether to show the 'more' section or not based on the amount of available data:
+   * calculates the size of meta data item section
+   * every attribute: +3
+   * if attribute is array and size > 3 -> + arraylength
+   */
   private calculateCollapseState() {
     let metaNumber = 0;
     if (this.location.abstract.length > 400) {

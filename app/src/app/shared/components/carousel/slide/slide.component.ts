@@ -99,7 +99,3 @@ export class SlideComponent implements AfterViewInit {
     return returnedItem;
   }
 }
-
-/* TODO:REVIEW
-    Add mobile swipe slide
-*/

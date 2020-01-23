@@ -98,8 +98,16 @@ RUN mkdir /var/log/elasticsearch && \
 # copy elasticsearch config from repo into docker container
 COPY --chown=elasticsearch:elasticsearch elasticsearch.yml /usr/share/elasticsearch/config/
 
-COPY ["./upload_to_elasticsearch/", "/app"]
+#copy other necessary files
+COPY --from=post_data_ranking /app/crawler_output/ /app/crawler_output/
+COPY ["./languageconfig.csv/", "/app"]
+COPY ["./language_helper.py/", "/app"]
+COPY ["./upload_to_elasticsearch/", "/app/upload_to_elasticsearch/"]
+
 
 #move tar.gz to created html dir
 COPY --from=post_data_ranking /app/crawler_output.tar.gz /var/www/html/
+
+RUN ls -lah /app
+RUN ls -lah /app/upload_to_elasticsearch
 RUN ls -lah /var/www/html

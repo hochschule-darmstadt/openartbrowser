@@ -64,7 +64,6 @@ export class DataService {
       .minimumShouldMatch(1)
       .ofType(EntityType.ARTWORK);
     ids.forEach((id) => query.shouldMatch(usePlural(type), `${id}`));
-    console.log(query);
     return this.performQuery<Artwork>(query);
   }
 

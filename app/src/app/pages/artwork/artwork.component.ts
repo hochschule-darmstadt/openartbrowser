@@ -6,6 +6,7 @@ import {Subject} from 'rxjs';
 import * as _ from 'lodash';
 import {DataService} from 'src/app/core/services/elasticsearch/data.service';
 import {shuffle} from 'src/app/core/services/utils.service';
+import { usePlural } from 'src/app/shared/models/entity.interface';
 
 /** interface for the tabs */
 interface ArtworkTab {
@@ -168,7 +169,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
             this.artwork[types] = artists;
           });
         // load related artworks by type
-        return await this.dataService.findArtworksByType(types, this.artwork[types] as any)
+        return await this.dataService.findArtworksByType(tab.type, this.artwork[types] as any)
           .then((artworks) => {
             // filters and shuffles main artwork out of tab items,
             tab.items = shuffle(artworks.filter((artwork) => artwork.id !== this.artwork.id));

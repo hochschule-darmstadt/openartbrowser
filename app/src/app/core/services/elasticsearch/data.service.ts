@@ -4,6 +4,7 @@ import {Injectable, Inject, LOCALE_ID} from '@angular/core';
 import {EntityType, Artwork, ArtSearch, Entity, Iconclass, EntityIcon} from 'src/app/shared/models/models';
 import {elasticEnvironment} from 'src/environments/environment';
 import QueryBuilder from './query.builder';
+import { usePlural } from 'src/app/shared/models/entity.interface';
 
 /**
  * Service that handles the requests to the API
@@ -56,13 +57,14 @@ export class DataService {
    * @param type the type to search in
    * @param ids the ids to search for
    */
-  public findArtworksByType(type: string, ids: string[]): Promise<Artwork[]> {
+  public findArtworksByType(type: EntityType, ids: string[]): Promise<Artwork[]> {
     const query = new QueryBuilder()
       .size(200)
       .sort()
       .minimumShouldMatch(1)
-      .mustTerm('type', 'artwork');
-    ids.forEach((id) => query.shouldMatch(type, `${id}`));
+      .ofType(EntityType.ARTWORK);
+    ids.forEach((id) => query.shouldMatch(usePlural(type), `${id}`));
+    console.log(query);
     return this.performQuery<Artwork>(query);
   }
 

@@ -1,4 +1,3 @@
-
 export interface Entity {
   id: string;
   label?: string;
@@ -21,14 +20,17 @@ export type Iconclass = string;
 
 export enum EntityType {
   ALL = "all",
-  ARTIST = 'artist',
-  ARTWORK = 'artwork',
-  GENRE = 'genre',
-  LOCATION = 'location',
-  MATERIAL = 'material',
-  MOVEMENT = 'movement',
-  MOTIF = 'motif'
+  ARTIST = "artist",
+  ARTWORK = "artwork",
+  GENRE = "genre",
+  LOCATION = "location",
+  MATERIAL = "material",
+  MOVEMENT = "movement",
+  MOTIF = "motif"
 }
+
+export const usePlural = (type: EntityType) =>
+  type === "all" ? type : type + "s";
 
 export enum EntityIcon {
   ALL = "fa-list-ul",

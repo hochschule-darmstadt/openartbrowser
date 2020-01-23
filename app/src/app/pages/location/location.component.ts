@@ -36,7 +36,7 @@ export class LocationComponent implements OnInit, OnDestroy {
       this.location = await this.dataService.findById<Location>(locationId, EntityType.LOCATION);
 
       /** load slider items */
-      this.dataService.findArtworksByType("locations", [this.location.id])
+      this.dataService.findArtworksByType(EntityType.LOCATION, [this.location.id])
         .then(artworks => this.sliderItems = shuffle(artworks));
 
       this.calculateCollapseState();

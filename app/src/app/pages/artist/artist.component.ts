@@ -43,7 +43,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
       this.artist = await this.dataService.findById<Artist>(artistId, EntityType.ARTIST);
 
       /** load slider items */
-      this.dataService.findArtworksByType('artists', [this.artist.id])
+      this.dataService.findArtworksByType(EntityType.ARTIST, [this.artist.id])
         .then(artworks => this.sliderItems = shuffle(artworks));
       /** dereference movements  */
       this.dataService.findMultipleById(this.artist.movements as any, EntityType.MOVEMENT)
@@ -66,7 +66,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
    */
   private aggregatePictureMovementsToArtist() {
     const allMovements: Partial<Movement>[] = [];
-    this.dataService.findArtworksByType('artists', [this.artist.id]).then((artworks) => {
+    this.dataService.findArtworksByType(EntityType.ARTIST, [this.artist.id]).then((artworks) => {
       artworks.forEach(artwork => {
         artwork.movements.forEach(movement => {
           if (movement !== '') {

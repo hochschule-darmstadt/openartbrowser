@@ -49,7 +49,7 @@ describe('SliderComponent', () => {
        description: 'painting by Niccolò di Pietro Gerini',
        type: EntityType.ARTWORK,
        icon: EntityIcon.ARTWORK,
-       route: "",
+       route: '',
        absoluteRank: 37,
        relativeRank: 0.9795063116489386,
        date: 1300
@@ -60,7 +60,7 @@ describe('SliderComponent', () => {
        description: 'fresco by Giotto',
        type: EntityType.ARTWORK,
        icon: EntityIcon.ARTWORK,
-       route: "",
+       route: '',
        absoluteRank: 46,
        relativeRank: 0.9944890206318238,
        date: 1305
@@ -71,7 +71,7 @@ describe('SliderComponent', () => {
        description: 'painting by Simone Martini and Lippo Memmi',
        type: EntityType.ARTWORK,
        icon: EntityIcon.ARTWORK,
-       route: "",
+       route: '',
        absoluteRank: 36,
        relativeRank: 0.9762525340301427,
        date: 1333
@@ -83,7 +83,7 @@ describe('SliderComponent', () => {
        abstract: 'The Head of Christ is a Jesus head conserved at the National Art Museum of Catalonia.',
        type: EntityType.ARTWORK,
        icon: EntityIcon.ARTWORK,
-       route: "",
+       route: '',
        absoluteRank: 21,
        relativeRank: 0.22987683344390347,
        date: 1352,

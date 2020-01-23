@@ -1,12 +1,12 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { SearchResultComponent } from './search-result.component';
-import { SlideComponent } from 'src/app/shared/components/carousel/slide/slide.component';
-import { CarouselComponent } from 'src/app/shared/components/carousel/carousel.component';
-import { RouterModule } from '@angular/router';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { HttpClientModule } from '@angular/common/http';
-import { DataService } from 'src/app/core/services/elasticsearch/data.service';
+import {SearchResultComponent} from './search-result.component';
+import {SlideComponent} from 'src/app/shared/components/carousel/slide/slide.component';
+import {CarouselComponent} from 'src/app/shared/components/carousel/carousel.component';
+import {RouterModule} from '@angular/router';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {HttpClientModule} from '@angular/common/http';
+import {DataService} from 'src/app/core/services/elasticsearch/data.service';
 import {Angulartics2RouterlessModule} from 'angulartics2/routerlessmodule';
 
 describe('SearchResultComponent', () => {
@@ -30,7 +30,7 @@ describe('SearchResultComponent', () => {
         DataService,
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

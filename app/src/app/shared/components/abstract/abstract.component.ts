@@ -17,13 +17,20 @@ export class AbstractComponent implements OnInit {
     this.checkRequiredFields();
   }
 
+  /**
+   * Check on every change if the preconditions are met
+   * @param changes
+   */
   ngOnChanges(changes) {
     this.checkRequiredFields();
   }
 
+  /**
+   * This method checks if the required entity prop has been passed to the component
+   */
   private checkRequiredFields() {
     if (this.entity === null) {
-      throw new TypeError("Attribute 'entity' is required");
+      throw new TypeError('Attribute \'entity\' is required');
     }
   }
 }

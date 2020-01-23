@@ -57,7 +57,7 @@ export class SlideComponent implements AfterViewInit {
   /** if image of an item could not be loaded, shift succeeding items from this slide and following slides
    * one position to the left. if the last slide becomes empty during this process, delete the last slide.
    * @param item the item whose image could not be loaded
-   **/
+   */
   onLoadingError(item: Entity) {
     const removeIndex = this.slide.items.findIndex((i) => {
       return i.id === item.id;

@@ -1,9 +1,9 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { InformationComponent } from './information.component';
-import { BadgeComponent } from '../badge/badge.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { RouterModule } from '@angular/router';
+import {InformationComponent} from './information.component';
+import {BadgeComponent} from '../badge/badge.component';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {RouterModule} from '@angular/router';
 
 describe('InformationComponent', () => {
   let component: InformationComponent;
@@ -11,10 +11,10 @@ describe('InformationComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ NgbModule,  RouterModule.forRoot([])],
-      declarations: [ InformationComponent, BadgeComponent ]
+      imports: [NgbModule, RouterModule.forRoot([])],
+      declarations: [InformationComponent, BadgeComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

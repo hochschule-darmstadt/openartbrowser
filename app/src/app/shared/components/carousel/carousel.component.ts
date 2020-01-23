@@ -1,6 +1,6 @@
 import {Component, Input, SimpleChanges, OnChanges, EventEmitter, Output} from '@angular/core';
 import {Entity} from '../../models/models';
-import {HostListener} from "@angular/core";
+import {HostListener} from '@angular/core';
 
 export interface Slide {
   /** artworks displayed on this slide */

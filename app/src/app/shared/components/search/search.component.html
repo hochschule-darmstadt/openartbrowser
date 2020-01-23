@@ -7,7 +7,7 @@
       <i *ngIf="type == 'material'" class="fas fa-scroll"></i>
       <i *ngIf="type == 'movement'" class="fas fa-wind"></i>
       <i *ngIf="type == 'artist'" class="fas fa-user"></i>
-      <img *ngIf="type == 'artwork'" [src]="r?.imageSmall" class="search__result-type-thumbnail" />
+      <img *ngIf="type == 'artwork'" [src]="r?.imageSmall" class="search__result-type-thumbnail"/>
     </span>
 
     <ngb-highlight class="search__result-label" [result]="r.label" [term]="t"></ngb-highlight>
@@ -15,7 +15,7 @@
     <p class="badge badge-secondary search__result-chip">
       <ng-container i18n="Entity Type Labels@@entity_labels">
         {type, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location}
-        genre {Genre} movement {Movement} material {Material} }
+          genre {Genre} movement {Movement} material {Material} }
       </ng-container>
     </p>
   </div>

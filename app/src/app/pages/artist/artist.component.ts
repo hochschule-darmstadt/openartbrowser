@@ -1,11 +1,11 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {Artist, Artwork, EntityType, Movement} from 'src/app/shared/models/models';
-import {DataService} from 'src/app/core/services/elasticsearch/data.service';
-import {ActivatedRoute} from '@angular/router';
-import {takeUntil} from 'rxjs/operators';
-import {Subject} from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Artist, Artwork, EntityType, Movement } from 'src/app/shared/models/models';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
+import { ActivatedRoute } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import * as _ from 'lodash';
-import {shuffle} from 'src/app/core/services/utils.service';
+import { shuffle } from 'src/app/core/services/utils.service';
 
 @Component({
   selector: 'app-artist',
@@ -13,6 +13,16 @@ import {shuffle} from 'src/app/core/services/utils.service';
   styleUrls: ['./artist.component.scss'],
 })
 export class ArtistComponent implements OnInit, OnDestroy {
+
+  /* TODO:REVIEW
+    Similiarities in every page-Component:
+    - variables: ngUnsubscribe, collapse, sliderItems, dataService, route
+    - ngOnDestroy, calculateCollapseState, ngOnInit
+  
+    1. Use Inheritance (Root-Page-Component) or Composition
+    2. Inject entity instead of artist
+  */
+
   /** The entity this page is about */
   artist: Artist = null;
   /** Related artworks */
@@ -43,7 +53,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
       this.artist = await this.dataService.findById<Artist>(artistId, EntityType.ARTIST);
 
       /** load slider items */
-      this.dataService.findArtworksByType('artists', [this.artist.id])
+      this.dataService.findArtworksByType(EntityType.ARTIST, [this.artist.id])
         .then(artworks => this.sliderItems = shuffle(artworks));
       /** dereference movements  */
       this.dataService.findMultipleById(this.artist.movements as any, EntityType.MOVEMENT)
@@ -66,7 +76,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
    */
   private aggregatePictureMovementsToArtist() {
     const allMovements: Partial<Movement>[] = [];
-    this.dataService.findArtworksByType('artists', [this.artist.id]).then((artworks) => {
+    this.dataService.findArtworksByType(EntityType.ARTIST, [this.artist.id]).then((artworks) => {
       artworks.forEach(artwork => {
         artwork.movements.forEach(movement => {
           if (movement !== '') {

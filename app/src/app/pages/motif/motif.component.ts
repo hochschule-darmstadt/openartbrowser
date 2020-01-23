@@ -32,7 +32,7 @@ export class MotifComponent implements OnInit, OnDestroy {
       this.motif = await this.dataService.findById<Motif>(motifId, EntityType.MOTIF);
 
       /** load slider items */
-      await this.dataService.findArtworksByType("motifs", [this.motif.id])
+      await this.dataService.findArtworksByType(EntityType.MOTIF, [this.motif.id])
         .then(artworks => this.sliderItems = shuffle(artworks));
     });
   }

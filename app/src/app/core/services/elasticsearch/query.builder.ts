@@ -1,3 +1,5 @@
+import { EntityType } from 'src/app/shared/models/models';
+
 export interface QueryObject {
   query: {
     bool: {
@@ -137,6 +139,19 @@ export default class QueryBuilder {
   public mustTerm(key: string, value: string): QueryBuilder {
     this.queryObject.query.bool.must.push({
       term: {[key]: value}
+    });
+    return this;
+  }
+
+  /**
+   * Only search for results of the given type
+   * @param key attribute name
+   * @param value attribute value
+   * @returns QueryBuilder instance
+   */
+  public ofType(type: EntityType): QueryBuilder {
+    this.queryObject.query.bool.must.push({
+      term: {"type": type}
     });
     return this;
   }

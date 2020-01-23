@@ -46,7 +46,7 @@ export class GenreComponent implements OnInit, OnDestroy {
       this.genre = await this.dataService.findById<Genre>(genreId, EntityType.GENRE);
 
       /** load slider items */
-      this.dataService.findArtworksByType("genres", [this.genre.id])
+      this.dataService.findArtworksByType(EntityType.GENRE,[this.genre.id])
         .then(artworks => this.sliderItems = shuffle(artworks));
       this.calculateCollapseState();
     });

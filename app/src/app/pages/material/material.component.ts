@@ -34,7 +34,7 @@ export class MaterialComponent implements OnInit, OnDestroy {
       this.material = await this.dataService.findById<Material>(materialId, EntityType.MATERIAL);
 
       /** load slider items */
-      this.dataService.findArtworksByType("materials", [this.material.id])
+      this.dataService.findArtworksByType(EntityType.MATERIAL, [this.material.id])
         .then(artworks => this.sliderItems = shuffle(artworks));
     });
   }

@@ -97,15 +97,15 @@
             [attr.aria-expanded]="!commonTagsCollapsed"
             (click)="commonTagsCollapsed = !commonTagsCollapsed"
           >
-            <ng-container i18n=" Related Artworks headline text before tab name @@related_artworks_headline_prev ">
+            <ng-container i18n="Related Artworks headline text before tab name @@related_artworks_headline_prev">
               Common
             </ng-container>
             <span *ngIf="tab != 'all'">
-              <ng-container i18n=" Related Artworks headline text tab name@@related_artworks_headline_tab_name ">
+              <ng-container i18n="Related Artworks headline text tab name@@related_artworks_headline_tab_name">
                 {tab, select, all {all} motif {motif} artist {artist} location {location} genre {genre} movement {movement} material {material}}
               </ng-container>
             </span>
-            <ng-container i18n=" Related Artworks headline text after tab name @@related_artworks_headline_after ">
+            <ng-container i18n="Related Artworks headline text after tab name @@related_artworks_headline_after">
               tags with artwork
             </ng-container>
             <span>"{{ artwork?.label?.length > 35 ? (artwork?.label | slice: 0:35) + '...' : artwork?.label }}"</span>

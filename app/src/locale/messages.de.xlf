@@ -86,7 +86,8 @@
         <note priority="1" from="description">Menu Legal Notice item label</note>
       </trans-unit>
       <trans-unit id="menuDataProtection" datatype="html">
-        <source>Data Protection Declaration</source><target state="final">Datenschutzerklärung</target>
+        <source>Data Protection Declaration</source>
+        <target state="final">Datenschutzerklärung</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/core/components/header/header.component.html</context>
           <context context-type="linenumber">29</context>

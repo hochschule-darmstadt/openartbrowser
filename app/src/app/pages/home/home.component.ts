@@ -18,19 +18,18 @@ export interface SliderCategory {
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
+  styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-
   /**
-   * @description all 7 carousels in the page. 
+   * @description all 7 carousels in the page.
    * @type {QueryList<NgbCarousel>}
    * @memberof HomeComponent
    */
   @ViewChildren(NgbCarousel) carousel: QueryList<NgbCarousel>;
 
   /**
-   * @description random url image for the page background 
+   * @description random url image for the page background
    * @type {string}
    * @memberof HomeComponent
    */
@@ -49,7 +48,7 @@ export class HomeComponent implements OnInit {
    */
   categories: SliderCategory[] = [];
 
-  constructor(public dataService:DataService, ngb_config: NgbCarouselConfig) {
+  constructor(public dataService: DataService, ngb_config: NgbCarouselConfig) {
     /** set configuration of ngbCarousel */
     ngb_config.interval = 10000;
     ngb_config.keyboard = false;
@@ -81,7 +80,7 @@ export class HomeComponent implements OnInit {
 
   /**
    * @description Fetch items for each category using the service. Retrun an array of slider category items.
-   * @memberof HomeComponent 
+   * @memberof HomeComponent
    */
   private getSlides = async (): Promise<SliderCategory[]> => {
     const cats = [];
@@ -93,22 +92,21 @@ export class HomeComponent implements OnInit {
     cats.push(await this.getSliderCategory<Genre>(EntityType.GENRE));
     cats.push(await this.getSliderCategory<Motif>(EntityType.MOTIF));
     return cats;
-  }
+  };
 
   /**
    * @description Get categories by entity type. Return SliderCategory object.
-   * @memberof HomeComponent 
+   * @memberof HomeComponent
    */
   private async getSliderCategory<T>(category: EntityType): Promise<SliderCategory> {
     const items = shuffle(await this.dataService.getCategoryItems<T>(category));
-    return { items, type: category, icon: EntityIcon[category.toUpperCase()] }
+    return { items, type: category, icon: EntityIcon[category.toUpperCase()] };
   }
 
   private setBackground() {
     // assign backgroundImageUrl with a random image from one of the artworks.
-    const artworks = (this.categories && this.categories.length) ? this.categories[0].items : [];
-    if (artworks.length > 0)
-      this.backgroundImageUrl = artworks[Math.floor(Math.random() * (artworks.length))].imageMedium;
+    const artworks = this.categories && this.categories.length ? this.categories[0].items : [];
+    if (artworks.length > 0) this.backgroundImageUrl = artworks[Math.floor(Math.random() * artworks.length)].imageMedium;
   }
 
   /**

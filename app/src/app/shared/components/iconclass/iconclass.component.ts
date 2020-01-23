@@ -1,11 +1,11 @@
-import { Component, LOCALE_ID, Inject, Input, Type } from "@angular/core";
-import { Iconclass } from "../../models/models";
-import { DataService } from "src/app/core/services/elasticsearch/data.service";
+import { Component, LOCALE_ID, Inject, Input, Type } from '@angular/core';
+import { Iconclass } from '../../models/models';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 
 @Component({
-  selector: "app-iconclass",
-  templateUrl: "./iconclass.component.html",
-  styleUrls: ["./iconclass.component.scss"]
+  selector: 'app-iconclass',
+  templateUrl: './iconclass.component.html',
+  styleUrls: ['./iconclass.component.scss']
 })
 export class IconclassComponent {
   @Input()
@@ -13,12 +13,9 @@ export class IconclassComponent {
 
   iconclassData: Array<IconclassData> = [];
 
-  locale = "en";
+  locale = 'en';
 
-  constructor(
-    private dataService: DataService,
-    @Inject(LOCALE_ID) localeId: string
-  ) {
+  constructor(private dataService: DataService, @Inject(LOCALE_ID) localeId: string) {
     this.locale = localeId.substr(0, 2);
   }
 
@@ -34,13 +31,9 @@ export class IconclassComponent {
   private async loadData() {
     this.iconclassData = [];
     if (this.iconclasses) {
-      const nonEmptyIconclasses = this.iconclasses.filter(
-        (i: Iconclass) => i !== ""
-      );
+      const nonEmptyIconclasses = this.iconclasses.filter((i: Iconclass) => i !== '');
       if (nonEmptyIconclasses.length) {
-        this.iconclassData = await this.dataService.getIconclassData(
-          nonEmptyIconclasses
-        );
+        this.iconclassData = await this.dataService.getIconclassData(nonEmptyIconclasses);
       }
     }
   }

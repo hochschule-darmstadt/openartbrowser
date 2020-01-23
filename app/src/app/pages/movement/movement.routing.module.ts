@@ -7,13 +7,13 @@ import { SharedModule } from '../../shared/shared.module';
 const movementRoutes: Routes = [
   {
     path: '',
-    component: MovementComponent,
-  },
+    component: MovementComponent
+  }
 ];
 
 @NgModule({
   declarations: [MovementComponent],
   imports: [CommonModule, SharedModule, RouterModule.forChild(movementRoutes)],
-  exports: [MovementComponent],
+  exports: [MovementComponent]
 })
 export class MovementRoutingModule {}

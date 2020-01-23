@@ -22,12 +22,11 @@ interface ArtworkTab {
   styleUrls: ['./artwork.component.scss']
 })
 export class ArtworkComponent implements OnInit, OnDestroy {
-
   /* TODO:REVIEW
     Similiarities in every page-Component:
     - variables: ngUnsubscribe, collapse (here: detailsCollapsed), dataService, route
     - ngOnDestroy, calculateCollapseState, ngOnInit
-  
+
     1. Use Inheritance (Root-Page-Component) or Composition
     2. Inject entity instead of artwork
   */
@@ -78,8 +77,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   /** a video was found */
   videoExists = false;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {
-  }
+  constructor(private dataService: DataService, private route: ActivatedRoute) {}
 
   /**
    * @description hook that is executed at component initialization
@@ -97,18 +95,18 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     }
 
     /** Extract the id of entity from URL params. */
-    this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
+    this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
       /* reset properties */
       this.videoExists = false;
       this.artwork = this.hoveredArtwork = this.hoveredArtwork = null;
       this.imageHidden = this.modalIsVisible = this.commonTagsCollapsed = false;
       this.detailsCollapsed = true;
       // clears items of all artwork tabs
-      this.artworkTabs.forEach((tab: ArtworkTab) => tab.items = []);
+      this.artworkTabs.forEach((tab: ArtworkTab) => (tab.items = []));
 
       /** Use data service to fetch entity from database */
       const artworkId = params.get('artworkId');
-      this.artwork = await this.dataService.findById<Artwork>(artworkId, EntityType.ARTWORK) as Artwork;
+      this.artwork = (await this.dataService.findById<Artwork>(artworkId, EntityType.ARTWORK)) as Artwork;
 
       if (this.artwork) {
         /* Count meta data to show more on load */
@@ -170,26 +168,25 @@ export class ArtworkComponent implements OnInit, OnDestroy {
         if (tab.type === EntityType.ALL) {
           return;
         }
-        
+
         const types = usePlural(tab.type);
-        
+
         // load entities
-        this.dataService.findMultipleById(this.artwork[types] as any, tab.type)
-          .then((artists) => {
-            this.artwork[types] = artists;
-          });
+        this.dataService.findMultipleById(this.artwork[types] as any, tab.type).then(artists => {
+          this.artwork[types] = artists;
+        });
         // load related artworks by type
-        return await this.dataService.findArtworksByType(tab.type, this.artwork[types] as any)
-          .then((artworks) => {
-            // filters and shuffles main artwork out of tab items,
-            tab.items = shuffle(artworks.filter((artwork) => artwork.id !== this.artwork.id));
-            // put items into 'all' tab
-            allTab.items.push(...tab.items.slice(0, 10));
-          });
+        return await this.dataService.findArtworksByType(tab.type, this.artwork[types] as any).then(artworks => {
+          // filters and shuffles main artwork out of tab items,
+          tab.items = shuffle(artworks.filter(artwork => artwork.id !== this.artwork.id));
+          // put items into 'all' tab
+          allTab.items.push(...tab.items.slice(0, 10));
+        });
       })
-    ).then(() =>
-      // filter duplicates and shuffles it
-      allTab.items = shuffle(Array.from(new Set(allTab.items)))
+    ).then(
+      () =>
+        // filter duplicates and shuffles it
+        (allTab.items = shuffle(Array.from(new Set(allTab.items))))
     );
   }
 
@@ -222,7 +219,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     }
     if (this.artwork.height && this.artwork.width) {
       metaNumber += 3;
-
     }
     if (!_.isEmpty(this.artwork.iconclasses.filter(Boolean))) {
       metaNumber += this.artwork.iconclasses.length > 3 ? this.artwork.iconclasses.length : 3;
@@ -238,7 +234,12 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    * @param active Is active tab
    */
   private addTab(type: EntityType, active: boolean = false) {
-    this.artworkTabs.push({ active, icon: EntityIcon[type.toUpperCase()], type, items: [] });
+    this.artworkTabs.push({
+      active,
+      icon: EntityIcon[type.toUpperCase()],
+      type,
+      items: []
+    });
   }
 
   videoFound(event) {

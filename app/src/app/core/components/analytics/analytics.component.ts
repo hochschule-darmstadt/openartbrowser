@@ -1,6 +1,6 @@
-import {Component, Directive, OnInit} from '@angular/core';
+import { Component, Directive, OnInit } from '@angular/core';
 import { Angulartics2Piwik } from 'angulartics2/piwik';
-import {analyticsEnvironment} from '../../../../environments/environment';
+import { analyticsEnvironment } from '../../../../environments/environment';
 
 declare global {
   interface Window {
@@ -10,10 +10,9 @@ declare global {
 
 @Component({
   selector: 'app-analytics',
-  template: '',
+  template: ''
 })
 export class AnalyticsComponent implements OnInit {
-
   constructor(public analytics: Angulartics2Piwik) {
     if (analyticsEnvironment.enabled) {
       const _paq = window._paq || [];
@@ -24,7 +23,5 @@ export class AnalyticsComponent implements OnInit {
     }
   }
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

@@ -1,4 +1,3 @@
-
 export { Artist } from './artist.interface';
 export { ArtSearch } from './artsearch.interface';
 export { Artwork } from './artwork.interface';

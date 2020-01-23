@@ -7,15 +7,14 @@
       <i *ngIf="type == 'material'" class="fas fa-scroll"></i>
       <i *ngIf="type == 'movement'" class="fas fa-wind"></i>
       <i *ngIf="type == 'artist'" class="fas fa-user"></i>
-      <img *ngIf="type == 'artwork'" [src]="r?.imageSmall" class="search__result-type-thumbnail"/>
+      <img *ngIf="type == 'artwork'" [src]="r?.imageSmall" class="search__result-type-thumbnail" />
     </span>
 
     <ngb-highlight class="search__result-label" [result]="r.label" [term]="t"></ngb-highlight>
 
     <p class="badge badge-secondary search__result-chip">
       <ng-container i18n="Entity Type Labels@@entity_labels">
-        {type, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location}
-          genre {Genre} movement {Movement} material {Material} }
+        {type, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material} }
       </ng-container>
     </p>
   </div>
@@ -23,8 +22,7 @@
 
 <div class="search">
   <div *ngIf="searchItems.length > 0 && isHeaderSearch" class="search__header-chips">
-    <span *ngFor="let i of searchItems"
-          class="badge badge-pill badge-secondary chip search__header-chip">
+    <span *ngFor="let i of searchItems" class="badge badge-pill badge-secondary chip search__header-chip">
       <span *ngIf="i.type === 'artist'" class="fas fa-user"></span>
       <span *ngIf="i.type === 'movement'" class="fas fa-wind"></span>
       <span *ngIf="i.type === 'material'" class="fas fa-scroll"></span>

@@ -1,5 +1,5 @@
-import {Component, ViewEncapsulation, Input, OnInit, OnChanges} from '@angular/core';
-import {Entity, Artwork} from '../../models/models';
+import { Component, ViewEncapsulation, Input, OnInit, OnChanges } from '@angular/core';
+import { Entity, Artwork } from '../../models/models';
 import { usePlural } from '../../models/entity.interface';
 
 @Component({
@@ -52,11 +52,7 @@ export class BadgeComponent implements OnInit, OnChanges {
       let substrTo = this.tooltip.indexOf('.', this.tooltipBreakLimit);
       if (substrTo < this.tooltipBreakLimit) substrTo = this.tooltip.indexOf(' ', this.tooltipBreakLimit);
       if (substrTo < this.tooltipBreakLimit) substrTo = this.tooltipBreakLimit;
-      this.tooltip =
-        this.tooltip
-          .substr(0, substrTo)
-          .replace(/ *\([^)]*\) */g, "")
-        + ' [...]';
+      this.tooltip = this.tooltip.substr(0, substrTo).replace(/ *\([^)]*\) */g, '') + ' [...]';
     }
   }
 
@@ -65,10 +61,9 @@ export class BadgeComponent implements OnInit, OnChanges {
       this.highlight = false;
       if (this.hoveredArtwork) {
         this.highlight = this.hoveredArtwork[usePlural(this.entity.type)].includes(this.entity.id);
-      } 
+      }
     }
   }
-
 }
 
 enum icons {

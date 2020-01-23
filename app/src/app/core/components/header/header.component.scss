@@ -1,4 +1,4 @@
-#navbar:hover ::ng-deep .form-group{
+#navbar:hover ::ng-deep .form-group {
   width: 100%;
 }
 
@@ -9,8 +9,8 @@
   flex-wrap: wrap;
 }
 
-.dropdown{
-  .dropdown-toggle{
+.dropdown {
+  .dropdown-toggle {
     padding: 0 0.6em !important;
   }
   .dropdown-toggle::after {
@@ -20,14 +20,14 @@
     width: auto;
   }
 }
-@media (max-width: 575px){
-  .dropdown.show .dropdown-toggle { 
+@media (max-width: 575px) {
+  .dropdown.show .dropdown-toggle {
     text-align: center;
   }
 }
 
 #title {
-  h3{
+  h3 {
     font-size: 1.2em;
   }
   span {
@@ -44,8 +44,8 @@
   }
 }
 
-.dropdown .active{
-  color:#00bc8c;
+.dropdown .active {
+  color: #00bc8c;
   pointer-events: none;
 }
 
@@ -90,7 +90,6 @@
     transition: all 0.35s ease-out;
     opacity: 0 !important;
   }
-
 }
 
 #navbar:hover ::ng-deep .search__header-chips,

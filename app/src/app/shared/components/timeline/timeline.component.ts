@@ -1,8 +1,8 @@
-import {Component, Input, HostListener} from '@angular/core';
-import {Artist, Artwork, Entity, EntityType} from 'src/app/shared/models/models';
-import {CustomStepDefinition, Options} from 'ng5-slider';
-import {animate, state, style, transition, trigger} from '@angular/animations';
-import {DataService} from 'src/app/core/services/elasticsearch/data.service';
+import { Component, Input, HostListener } from '@angular/core';
+import { Artist, Artwork, Entity, EntityType } from 'src/app/shared/models/models';
+import { CustomStepDefinition, Options } from 'ng5-slider';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 
 interface TimelineItem extends Entity {
   date: number; // represents the value the item is located at in the timeline
@@ -14,26 +14,18 @@ interface TimelineItem extends Entity {
   styleUrls: ['./timeline.component.scss'],
   animations: [
     trigger('slideNext', [
-      state('out', style({transform: 'translateX(7%)', opacity: 0})),
-      state('in', style({transform: 'translateX(0)', opacity: 1})),
-      transition('in => out', [
-        animate(0),
-      ]),
-      transition('out => in', [
-        animate(300),
-      ])
+      state('out', style({ transform: 'translateX(7%)', opacity: 0 })),
+      state('in', style({ transform: 'translateX(0)', opacity: 1 })),
+      transition('in => out', [animate(0)]),
+      transition('out => in', [animate(300)])
     ]),
     trigger('slidePrev', [
-      state('out', style({transform: 'translateX(-7%)', opacity: 0})),
-      state('in', style({transform: 'translateX(0)', opacity: 1})),
-      transition('in => out', [
-        animate(0),
-      ]),
-      transition('out => in', [
-        animate(300),
-      ])
+      state('out', style({ transform: 'translateX(-7%)', opacity: 0 })),
+      state('in', style({ transform: 'translateX(0)', opacity: 1 })),
+      transition('in => out', [animate(0)]),
+      transition('out => in', [animate(300)])
     ])
-  ],
+  ]
 })
 export class TimelineComponent {
   /** Artworks that should be displayed in this slider */
@@ -160,8 +152,7 @@ export class TimelineComponent {
     const reasonablePeriodDistance = 5;
     const minimumPeriodDistance = 1;
     /** Example:  30/7 = 4,28 ; 4,28 / 5 = 0,85 ; Math.max( Math.round(0.85)*5, 1) = 5 */
-    this.periodSpan = Math.max(Math.round(dateSpan / this.averagePeriodCount / reasonablePeriodDistance)
-      * reasonablePeriodDistance, minimumPeriodDistance);
+    this.periodSpan = Math.max(Math.round(dateSpan / this.averagePeriodCount / reasonablePeriodDistance) * reasonablePeriodDistance, minimumPeriodDistance);
 
     /** get the biggest multiple of periodSpan that is less than firstDate / same for lastDate */
     const firstPeriod = firstDate - (firstDate % this.periodSpan);
@@ -170,9 +161,9 @@ export class TimelineComponent {
     /** Fill the slider steps with period legends respectively steps */
     for (let i = firstPeriod; i <= lastPeriod; i++) {
       if (i % this.periodSpan === 0) {
-        sliderSteps.push({value: i, legend: '' + i});
+        sliderSteps.push({ value: i, legend: '' + i });
       } else {
-        sliderSteps.push({value: i});
+        sliderSteps.push({ value: i });
       }
     }
 
@@ -264,8 +255,7 @@ export class TimelineComponent {
       return;
     }
     this.slideOutRight = true;
-    this.slideStart = Math.min(this.slideStart + (2 * this.itemCountPerPeriod),
-      this.items.length) - this.itemCountPerPeriod;
+    this.slideStart = Math.min(this.slideStart + 2 * this.itemCountPerPeriod, this.items.length) - this.itemCountPerPeriod;
     this.value = +this.items[this.slideStart + this.referenceItem].date;
     // decide if sliderMoved-Event should be suppressed
     this.sliderAllowEvent = false;
@@ -281,20 +271,22 @@ export class TimelineComponent {
 
   /** Transform artworks into TimelineItems to display them aside with artists */
   private buildTimelineItemsFromArtworks() {
-    this.artworks.forEach(artwork => this.items.push({
-      id: artwork.id,
-      label: artwork.label,
-      description: artwork.description,
-      abstract: artwork.abstract,
-      wikipediaLink: artwork.wikipediaLink,
-      image: artwork.image,
-      imageSmall: artwork.imageSmall,
-      imageMedium: artwork.imageMedium,
-      type: artwork.type,
-      absoluteRank: artwork.absoluteRank,
-      relativeRank: artwork.relativeRank,
-      date: artwork.inception,
-    } as TimelineItem));
+    this.artworks.forEach(artwork =>
+      this.items.push({
+        id: artwork.id,
+        label: artwork.label,
+        description: artwork.description,
+        abstract: artwork.abstract,
+        wikipediaLink: artwork.wikipediaLink,
+        image: artwork.image,
+        imageSmall: artwork.imageSmall,
+        imageMedium: artwork.imageMedium,
+        type: artwork.type,
+        absoluteRank: artwork.absoluteRank,
+        relativeRank: artwork.relativeRank,
+        date: artwork.inception
+      } as TimelineItem)
+    );
   }
 
   /** This adds artists to the timeline according to the displayed artworks. The artists get placed at their birth date */
@@ -302,7 +294,8 @@ export class TimelineComponent {
     const artists: TimelineItem[] = [];
     const artistIds: Set<string> = new Set();
     /** Get the artist ids from the top 10% ranked artworks to display them aside with artworks */
-    this.artworks.sort((a, b) => a.relativeRank > b.relativeRank ? 1 : -1)
+    this.artworks
+      .sort((a, b) => (a.relativeRank > b.relativeRank ? 1 : -1))
       .slice(0, Math.max(10, Math.floor(this.artworks.length / 10))) // get top 10%
       .forEach(artwork => {
         if (artwork.artists) {
@@ -310,59 +303,61 @@ export class TimelineComponent {
         }
       });
     /** Transform artists into Timeline items and set description */
-    await this.dataService.findMultipleById(Array.from(artistIds) as any, EntityType.ARTIST)
-      .then((artworkArtists: Artist[]) => {
-        artworkArtists.forEach(artist => {
-          if (artist.imageSmall && (artist.date_of_birth || artist.date_of_death) ) {
-            artist.date_of_birth = undefined;
+    await this.dataService.findMultipleById(Array.from(artistIds) as any, EntityType.ARTIST).then((artworkArtists: Artist[]) => {
+      artworkArtists.forEach(artist => {
+        if (artist.imageSmall && (artist.date_of_birth || artist.date_of_death)) {
+          artist.date_of_birth = undefined;
 
-            // decide whether to use date of birth or date of death for sorting (default: date of birth)
-            // and set description accordingly
-            let artistDescription;
-            let artistSortDate;
-            if (artist.date_of_birth && artist.date_of_death) {
-              artistDescription = `${artist.date_of_birth} - ${artist.date_of_death}`;
-              artistSortDate = artist.date_of_birth;
-            } else if (artist.date_of_birth) {
-              artistDescription = `*${artist.date_of_birth}`;
-              artistSortDate = artist.date_of_birth;
-            } else {
-              artistDescription = '†' + artist.date_of_death;
-              artistSortDate = artist.date_of_death;
-            }
+          // decide whether to use date of birth or date of death for sorting (default: date of birth)
+          // and set description accordingly
+          let artistDescription;
+          let artistSortDate;
+          if (artist.date_of_birth && artist.date_of_death) {
+            artistDescription = `${artist.date_of_birth} - ${artist.date_of_death}`;
+            artistSortDate = artist.date_of_birth;
+          } else if (artist.date_of_birth) {
+            artistDescription = `*${artist.date_of_birth}`;
+            artistSortDate = artist.date_of_birth;
+          } else {
+            artistDescription = '†' + artist.date_of_death;
+            artistSortDate = artist.date_of_death;
+          }
 
-            artists.push({
-              id: artist.id,
-              label: artist.label,
-              description: artistDescription,
-              abstract: artist.abstract,
-              wikipediaLink: artist.wikipediaLink,
-              image: artist.image,
-              imageSmall: artist.imageSmall,
-              imageMedium: artist.imageMedium,
-              type: artist.type,
-              absoluteRank: artist.absoluteRank,
-              relativeRank: artist.relativeRank,
-              /* TODO:REVIEW
+          artists.push({
+            id: artist.id,
+            label: artist.label,
+            description: artistDescription,
+            abstract: artist.abstract,
+            wikipediaLink: artist.wikipediaLink,
+            image: artist.image,
+            imageSmall: artist.imageSmall,
+            imageMedium: artist.imageMedium,
+            type: artist.type,
+            absoluteRank: artist.absoluteRank,
+            relativeRank: artist.relativeRank,
+            /* TODO:REVIEW
                 Determine better value (and fitting description) for artistSortDate
               */
-              date: artistSortDate,
-            } as TimelineItem);
-          }
-        });
+            date: artistSortDate
+          } as TimelineItem);
+        }
       });
+    });
     return artists;
   }
 
   /** This sorts the component items by date */
   private sortItems() {
     // rebuild slides if slider items input changed.
-    this.items.sort((a, b) => (a.date > b.date) ? 1 : -1);
+    this.items.sort((a, b) => (a.date > b.date ? 1 : -1));
   }
 
   /** Removes items from the component which cannot be displayed */
   onLoadingError(item: TimelineItem) {
-    this.items.splice(this.items.findIndex(i => i.id === item.id), 1);
+    this.items.splice(
+      this.items.findIndex(i => i.id === item.id),
+      1
+    );
     this.refreshComponent();
   }
 }

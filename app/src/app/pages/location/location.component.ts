@@ -12,6 +12,16 @@ import { shuffle } from 'src/app/core/services/utils.service';
   styleUrls: ['./location.component.scss'],
 })
 export class LocationComponent implements OnInit, OnDestroy {
+
+  /* TODO:REVIEW
+   Similiarities in every page-Component:
+   - variables: ngUnsubscribe, collapse, sliderItems, dataService, route
+   - ngOnDestroy, calculateCollapseState, ngOnInit
+ 
+   1. Use Inheritance (Root-Page-Component) or Composition
+   2. Inject entity instead of location
+ */
+
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();
 

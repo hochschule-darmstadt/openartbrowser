@@ -1,11 +1,11 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {Artist, Artwork, EntityType, Movement} from 'src/app/shared/models/models';
-import {DataService} from 'src/app/core/services/elasticsearch/data.service';
-import {ActivatedRoute} from '@angular/router';
-import {takeUntil} from 'rxjs/operators';
-import {Subject} from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Artist, Artwork, EntityType, Movement } from 'src/app/shared/models/models';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
+import { ActivatedRoute } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import * as _ from 'lodash';
-import {shuffle} from 'src/app/core/services/utils.service';
+import { shuffle } from 'src/app/core/services/utils.service';
 
 @Component({
   selector: 'app-artist',
@@ -13,6 +13,16 @@ import {shuffle} from 'src/app/core/services/utils.service';
   styleUrls: ['./artist.component.scss'],
 })
 export class ArtistComponent implements OnInit, OnDestroy {
+
+  /* TODO:REVIEW
+    Similiarities in every page-Component:
+    - variables: ngUnsubscribe, collapse, sliderItems, dataService, route
+    - ngOnDestroy, calculateCollapseState, ngOnInit
+  
+    1. Use Inheritance (Root-Page-Component) or Composition
+    2. Inject entity instead of artist
+  */
+
   /** The entity this page is about */
   artist: Artist = null;
   /** Related artworks */
@@ -83,8 +93,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
     });
   }
 
-  /** Decides whether to show the 'more' section or not based on the amount of available data:
-   * calculates the size of meta data item section
+  /** calculates the size of meta data item section
    * every attribute: +3
    * if attribute is array and size > 3 -> + arraylength
    */

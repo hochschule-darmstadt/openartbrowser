@@ -1,11 +1,11 @@
-import {Component, OnInit, OnDestroy, HostListener} from '@angular/core';
-import {Artwork, EntityType, EntityIcon} from 'src/app/shared/models/models';
-import {takeUntil} from 'rxjs/operators';
-import {ActivatedRoute} from '@angular/router';
-import {Subject} from 'rxjs';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Artwork, EntityType, EntityIcon } from 'src/app/shared/models/models';
+import { takeUntil } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
+import { Subject } from 'rxjs';
 import * as _ from 'lodash';
-import {DataService} from 'src/app/core/services/elasticsearch/data.service';
-import {shuffle} from 'src/app/core/services/utils.service';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
+import { shuffle } from 'src/app/core/services/utils.service';
 
 /** interface for the tabs */
 interface ArtworkTab {
@@ -19,9 +19,19 @@ interface ArtworkTab {
   selector: 'app-artwork',
   templateUrl: './artwork.component.html',
   styleUrls: ['./artwork.component.scss'],
-  host: {'window:beforeunload': 'doSomething'},
+  host: { 'window:beforeunload': 'doSomething' },
 })
 export class ArtworkComponent implements OnInit, OnDestroy {
+
+  /* TODO:REVIEW
+    Similiarities in every page-Component:
+    - variables: ngUnsubscribe, collapse (here: detailsCollapsed), dataService, route
+    - ngOnDestroy, calculateCollapseState, ngOnInit
+  
+    1. Use Inheritance (Root-Page-Component) or Composition
+    2. Inject entity instead of artwork
+  */
+
   /**
    * @description the entity this page is about.
    */
@@ -227,7 +237,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    * @param active Is active tab
    */
   private addTab(type: EntityType, active: boolean = false) {
-    this.artworkTabs.push({active, icon: EntityIcon[type.toUpperCase()], type, items: []});
+    this.artworkTabs.push({ active, icon: EntityIcon[type.toUpperCase()], type, items: [] });
   }
 
   videoFound(event) {

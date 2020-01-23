@@ -22,6 +22,10 @@ export class VideoComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
   constructor(private sanitizer: DomSanitizer) {
   }
 
+  /** TODO:REVIEW
+   *   Lifecycle Hooks can be removed if they are not used.
+   */
+
   ngAfterViewInit(): void {
   }
 

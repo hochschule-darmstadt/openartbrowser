@@ -26,6 +26,10 @@ export class InformationComponent implements OnInit {
   constructor() {
   }
 
+  /** TODO:REVIEW
+   *   ngOnChanges is called before ngOnInit() and whenever one or more data-bound input properties change.
+   *   So there is no need to use ngOnInit to run the same code.
+   */
   ngOnInit() {
     this.checkRequiredFields();
   }

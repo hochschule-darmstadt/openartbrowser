@@ -3,8 +3,8 @@
 import simplejson as json
 import ijson
 from pathlib import Path
-import sys
 import csv
+
 
 def get_language_attributes():
     """[Returns all attributes in crawler .csv/.json files that need
@@ -13,7 +13,16 @@ def get_language_attributes():
     Returns:
         [dict] -- [Dictionary containing all language attributes]
     """
-    return ["label", "description", "gender", "citizenship", "country", "abstract", "wikipediaLink"]
+    return [
+        "label",
+        "description",
+        "gender",
+        "citizenship",
+        "country",
+        "abstract",
+        "wikipediaLink",
+    ]
+
 
 def get_ignored_by_gap_filling():
     """[Returns all attributes in crawler .csv/.json files that are ignored when applying
@@ -22,7 +31,15 @@ def get_ignored_by_gap_filling():
     Returns:
         [dict] -- [Dictionary containing all ignored attributes]
     """
-    return ["description", "gender", "citizenship", "country", "abstract", "wikipediaLink"]
+    return [
+        "description",
+        "gender",
+        "citizenship",
+        "country",
+        "abstract",
+        "wikipediaLink",
+    ]
+
 
 def generate_langdict_arrays():
     """[Generates empty array of dictonaries, one for each language
@@ -34,6 +51,7 @@ def generate_langdict_arrays():
     """
     dictlist = [[] for x in range(len(language_config_to_list()))]
     return dictlist
+
 
 def fill_language_gaps(element, jsonobject):
     """[Fills language data into empty elements based on priority,
@@ -55,9 +73,7 @@ def fill_language_gaps(element, jsonobject):
                 next
             # Assign language data to element
             else:
-                jsonobject[element] = (
-                    jsonobject[element + "_" + row[0]]
-                )
+                jsonobject[element] = jsonobject[element + "_" + row[0]]
         # Should not happen if key attributes in json are atleast existent
         except KeyError:
             if (element == "label") or (element == "description"):
@@ -92,9 +108,12 @@ def modify_langdict(langdict, jsonobject, langkey):
     delete_keys = []
     for element in lang_attributes:
         try:
-            #Check if element has language data and if attribute needs to be ignored by gap filling
-            if not tempjson[element + "_" + langkey] and not element in ignored_attributes: 
-                    tempjson = fill_language_gaps(element, tempjson)
+            # Check if element has language data and if attribute needs to be ignored by gap filling
+            if (
+                not tempjson[element + "_" + langkey]
+                and element not in ignored_attributes
+            ):
+                tempjson = fill_language_gaps(element, tempjson)
             else:
                 tempjson[element] = tempjson[element + "_" + langkey]
             # Using dictionary comprehension to find keys for deletion later
@@ -126,13 +145,16 @@ def generate_langjson_files(name, extract_dicts):
         extract_dicts {[dict]} -- [dictionary that is written into the output file]
     """
     with open(
-        Path(__file__).resolve().parent.parent / "crawler_output" / str(name + ".json"), "w", newline="", encoding="utf-8"
+        Path(__file__).resolve().parent.parent / "crawler_output" / str(name + ".json"),
+        "w",
+        newline="",
+        encoding="utf-8",
     ) as file:
         file.write(json.dumps(extract_dicts, ensure_ascii=False))
 
 
 def language_config_to_list(
-    config_file=Path(__file__).parent.parent.absolute() / "languageconfig.csv"
+    config_file=Path(__file__).parent.parent.absolute() / "languageconfig.csv",
 ):
     """[Reads languageconfig.csv and returns array that contains its
     full contents]
@@ -148,13 +170,16 @@ def language_config_to_list(
                 languageValues.append(row)
     return languageValues
 
+
 # load languageconfig file with keys / language dicts
 language_skeleton = generate_langdict_arrays()
 language_values = language_config_to_list()
 language_keys = [item[0] for item in language_values]
 
 if __name__ == "__main__":
-    art_ontology_file = Path(__file__).resolve().parent.parent / "crawler_output" / "art_ontology.json"
+    art_ontology_file = (
+        Path(__file__).resolve().parent.parent / "crawler_output" / "art_ontology.json"
+    )
     for item in ijson.items(open(art_ontology_file, "r", encoding="utf-8"), "item"):
         i = 0
         # iterate through all language keys and write the json object
@@ -169,5 +194,7 @@ if __name__ == "__main__":
     # generate one art_ontology_<language_code> file per language defined in config file.
     # fill the contents of the respective language dicitonary arrays into the files
     while i < len(language_skeleton):
-        generate_langjson_files("art_ontology_" + language_keys[i], language_skeleton[i])
+        generate_langjson_files(
+            "art_ontology_" + language_keys[i], language_skeleton[i]
+        )
         i += 1

@@ -1,5 +1,5 @@
-import {Injectable} from '@angular/core';
-import {Subject} from 'rxjs';
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
 export interface TagItem {
   label: string;
@@ -15,22 +15,19 @@ export class SearchService {
   /** search chips as observable */
   public $searchItems: Subject<TagItem[]> = new Subject();
 
-  constructor() {
-  }
+  constructor() {}
 
   /**
    * add a new search tag to the search (displayed as chip)
    * @param tag TagItem that should be added
    */
   public addSearchTag(tag: TagItem) {
-    const existingTag = this.searchItems.filter((i) =>
-      i.id === tag.id && i.type === tag.type && i.label === tag.label
-    );
+    const existingTag = this.searchItems.filter(i => i.id === tag.id && i.type === tag.type && i.label === tag.label);
     if (existingTag.length === 0) {
       this.searchItems.push({
         label: tag.label,
         type: tag.type,
-        id: tag.id,
+        id: tag.id
       });
       this.$searchItems.next(this.searchItems);
     }
@@ -41,9 +38,7 @@ export class SearchService {
    * @param tag TagItem that should be removed
    */
   public removeSearchTag(tag: TagItem) {
-    this.searchItems = this.searchItems.filter((i) =>
-      i.id !== tag.id || i.type !== tag.type || i.label !== tag.label
-    );
+    this.searchItems = this.searchItems.filter(i => i.id !== tag.id || i.type !== tag.type || i.label !== tag.label);
     this.$searchItems.next(this.searchItems);
   }
 

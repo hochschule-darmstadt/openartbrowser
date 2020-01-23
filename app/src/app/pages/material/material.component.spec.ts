@@ -18,25 +18,10 @@ describe('MaterialComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        NgbModule,
-        HttpClientModule,
-        RouterModule.forRoot([])
-      ],
-      declarations: [
-        MaterialComponent,
-        SlideComponent,
-        CarouselComponent,
-        AbstractComponent,
-        BadgeComponent,
-        TitleComponent,
-        InformationComponent
-      ],
-      providers: [
-        DataService,
-      ]
-    })
-    .compileComponents();
+      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([])],
+      declarations: [MaterialComponent, SlideComponent, CarouselComponent, AbstractComponent, BadgeComponent, TitleComponent, InformationComponent],
+      providers: [DataService]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -1,13 +1,13 @@
 $container-row-height: 15em;
 
 .slide {
-  min-height: $container-row-height*2;
-  height: $container-row-height*2;
+  min-height: $container-row-height * 2;
+  height: $container-row-height * 2;
 }
 
 .img_self {
   display: block;
-  margin:0 auto;
+  margin: 0 auto;
   cursor: pointer;
   max-height: 100%;
   max-width: 100%;
@@ -37,7 +37,6 @@ $container-row-height: 15em;
   align-items: center;
   // Padding between items/artworks
   padding: 10px;
-
 }
 
 .overlay-container {

@@ -1,6 +1,6 @@
 #!/bin/bash
 set -eE
-set -x 
+set -x
 
 LOCKFILE=/tmp/etl.lock
 TOKEN=$(cat bot_user_oauth_token)
@@ -26,11 +26,11 @@ cd crawler_output/intermediate_files/json/
 node ../../../data_manipulation/script_artworks_rank.js
 
 node ../../../data_manipulation/script_genres_rank.js
-node ../../../data_manipulation/script_artist_rank.js 
+node ../../../data_manipulation/script_artist_rank.js
 node ../../../data_manipulation/script_locations_rank.js
-node ../../../data_manipulation/script_materials_rank.js 
-node ../../../data_manipulation/script_movements_rank.js 
-node ../../../data_manipulation/script_motifs_rank.js 
+node ../../../data_manipulation/script_materials_rank.js
+node ../../../data_manipulation/script_movements_rank.js
+node ../../../data_manipulation/script_motifs_rank.js
 
 # Merges all *_rank.json files into art_ontology.json
 node --max-old-space-size=4096 ../../../data_manipulation/merge_art_data.js
@@ -48,7 +48,7 @@ python3 ../../../upload_to_elasticsearch/elasticsearch_helper.py
 
 cd ../../..
 
-# Put the directory and it's files to an archive 
+# Put the directory and it's files to an archive
 # copy them to make the archive available on an nginx endpoint
 tar cfvz crawler_output.tar.gz crawler_output/
 

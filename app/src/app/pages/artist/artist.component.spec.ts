@@ -22,12 +22,7 @@ describe('ArtistComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        NgbModule,
-        HttpClientModule,
-        RouterModule.forRoot([]),
-        Ng5SliderModule,
-      ],
+      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([]), Ng5SliderModule],
       declarations: [
         ArtistComponent,
         SlideComponent,
@@ -40,9 +35,7 @@ describe('ArtistComponent', () => {
         VideoComponent,
         CollapseComponent
       ],
-      providers: [
-        DataService,
-      ]
+      providers: [DataService]
     }).compileComponents();
   }));
 

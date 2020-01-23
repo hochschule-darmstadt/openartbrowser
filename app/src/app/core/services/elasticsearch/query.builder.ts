@@ -5,8 +5,8 @@ export interface QueryObject {
     bool: {
       should: any[];
       must: any[];
-      minimum_should_match?: number
-    }
+      minimum_should_match?: number;
+    };
   };
   sort: any[];
   size?: number;
@@ -24,10 +24,12 @@ export default class QueryBuilder {
    * @param query predefined query
    */
   constructor(query?: QueryObject) {
-    this.queryObject = (query) ? query : {
-      query: {bool: {should: [], must: []}},
-      sort: []
-    };
+    this.queryObject = query
+      ? query
+      : {
+          query: { bool: { should: [], must: [] } },
+          sort: []
+        };
   }
 
   /**
@@ -46,7 +48,7 @@ export default class QueryBuilder {
    */
   public shouldPrefix(key: string, value: string): QueryBuilder {
     this.queryObject.query.bool.should.push({
-      prefix: {[key]: value}
+      prefix: { [key]: value }
     });
     return this;
   }
@@ -59,7 +61,7 @@ export default class QueryBuilder {
    */
   public shouldTerm(key: string, value: string): QueryBuilder {
     this.queryObject.query.bool.must.push({
-      term: {[key]: value}
+      term: { [key]: value }
     });
     return this;
   }
@@ -72,7 +74,7 @@ export default class QueryBuilder {
    */
   public shouldWildcard(key: string, value: string): QueryBuilder {
     this.queryObject.query.bool.should.push({
-      wildcard: {[key]: '*' + value + '*'}
+      wildcard: { [key]: '*' + value + '*' }
     });
     return this;
   }
@@ -85,7 +87,7 @@ export default class QueryBuilder {
    */
   public shouldMatch(key: string, value: string): QueryBuilder {
     this.queryObject.query.bool.should.push({
-      match: {[key]: value}
+      match: { [key]: value }
     });
     return this;
   }
@@ -98,7 +100,7 @@ export default class QueryBuilder {
    */
   public mustWildcard(key: string, value: string): QueryBuilder {
     this.queryObject.query.bool.must.push({
-      wildcard: {[key]: '*' + value + '*'}
+      wildcard: { [key]: '*' + value + '*' }
     });
     return this;
   }
@@ -111,7 +113,7 @@ export default class QueryBuilder {
    */
   public mustMatch(key: string, value: string): QueryBuilder {
     this.queryObject.query.bool.must.push({
-      match: {[key]: value}
+      match: { [key]: value }
     });
     return this;
   }
@@ -121,10 +123,9 @@ export default class QueryBuilder {
    * @param shoulds should options
    * @returns QueryBuilder instance
    */
-  public mustShouldMatch(shoulds: { key: string, value: string }[]): QueryBuilder {
-    const mustShould = {bool: {should: []}};
-    shoulds.forEach((should: { key: string, value: string }) =>
-      mustShould.bool.should.push({match: {[should.key]: should.value}}));
+  public mustShouldMatch(shoulds: { key: string; value: string }[]): QueryBuilder {
+    const mustShould = { bool: { should: [] } };
+    shoulds.forEach((should: { key: string; value: string }) => mustShould.bool.should.push({ match: { [should.key]: should.value } }));
 
     this.queryObject.query.bool.must.push(mustShould);
     return this;
@@ -138,7 +139,7 @@ export default class QueryBuilder {
    */
   public mustTerm(key: string, value: string): QueryBuilder {
     this.queryObject.query.bool.must.push({
-      term: {[key]: value}
+      term: { [key]: value }
     });
     return this;
   }
@@ -151,7 +152,7 @@ export default class QueryBuilder {
    */
   public ofType(type: EntityType): QueryBuilder {
     this.queryObject.query.bool.must.push({
-      term: {"type": type}
+      term: { type: type }
     });
     return this;
   }
@@ -164,7 +165,7 @@ export default class QueryBuilder {
    */
   public mustPrefix(key: string, value: string): QueryBuilder {
     this.queryObject.query.bool.must.push({
-      prefix: {[key]: value}
+      prefix: { [key]: value }
     });
     return this;
   }
@@ -186,7 +187,7 @@ export default class QueryBuilder {
    */
   public sort(order: string = 'desc'): QueryBuilder {
     this.queryObject.sort.push({
-      relativeRank: {order}
+      relativeRank: { order }
     });
     return this;
   }
@@ -206,5 +207,5 @@ export default class QueryBuilder {
    */
   public toString = (): string => {
     return JSON.stringify(this.queryObject);
-  }
+  };
 }

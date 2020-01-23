@@ -49,6 +49,3 @@
 :lat rdf:type rdf:Property .
 :lon rdf:type rdf:Property .
 :videos rdf:type rdf:Property .
-
-
-

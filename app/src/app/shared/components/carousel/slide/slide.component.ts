@@ -1,6 +1,6 @@
-import {Component, Input, Output, EventEmitter, AfterViewInit, ElementRef} from '@angular/core';
-import {Entity} from 'src/app/shared/models/models';
-import {Slide, makeDefaultSlide} from '../carousel.component';
+import { Component, Input, Output, EventEmitter, AfterViewInit, ElementRef } from '@angular/core';
+import { Entity } from 'src/app/shared/models/models';
+import { Slide, makeDefaultSlide } from '../carousel.component';
 
 /**
  * a slide of the slider.
@@ -10,7 +10,7 @@ import {Slide, makeDefaultSlide} from '../carousel.component';
 @Component({
   selector: 'app-slide',
   templateUrl: './slide.component.html',
-  styleUrls: ['./slide.component.scss'],
+  styleUrls: ['./slide.component.scss']
 })
 export class SlideComponent implements AfterViewInit {
   /** the slide that should be displayed */
@@ -24,15 +24,14 @@ export class SlideComponent implements AfterViewInit {
   @Output()
   deleteUnusedSlides: EventEmitter<void> = new EventEmitter<void>();
 
-  constructor(private el: ElementRef) {
-  }
+  constructor(private el: ElementRef) {}
 
   ngAfterViewInit() {
     if (window && 'IntersectionObserver' in window) {
       const obs = new IntersectionObserver(
-        (entries) => {
+        entries => {
           /** check whether any element of the slide is currently visible on screen */
-          entries.forEach(({isIntersecting}) => {
+          entries.forEach(({ isIntersecting }) => {
             if (isIntersecting) {
               /** enable image loading for this slide, the next slide and the previous slide if slide is visible */
               this.slide.loadContent = true;
@@ -46,7 +45,7 @@ export class SlideComponent implements AfterViewInit {
             }
           });
         },
-        {rootMargin: '100%'}
+        { rootMargin: '100%' }
       );
       obs.observe(this.el.nativeElement);
     } else {
@@ -59,7 +58,7 @@ export class SlideComponent implements AfterViewInit {
    * @param item the item whose image could not be loaded
    */
   onLoadingError(item: Entity) {
-    const removeIndex = this.slide.items.findIndex((i) => {
+    const removeIndex = this.slide.items.findIndex(i => {
       return i.id === item.id;
     });
 

@@ -2,6 +2,7 @@ from locust import HttpLocust, TaskSet, task
 
 # sends get requests with the same weight to the given URL
 
+
 class MyTaskSet(TaskSet):
     # tests for regluar page
     @task(1)

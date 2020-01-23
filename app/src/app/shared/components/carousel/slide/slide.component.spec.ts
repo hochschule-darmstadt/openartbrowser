@@ -10,16 +10,9 @@ describe('SlideComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientModule,
-        RouterModule.forRoot([])
-      ],
-      declarations: [
-        SlideComponent,
-      ],
-      providers: [
-        DataService,
-      ]
+      imports: [HttpClientModule, RouterModule.forRoot([])],
+      declarations: [SlideComponent],
+      providers: [DataService]
     }).compileComponents();
   }));
 

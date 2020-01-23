@@ -9,10 +9,9 @@ describe('AnalyticsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AnalyticsComponent ],
+      declarations: [AnalyticsComponent],
       imports: [Angulartics2RouterlessModule.forRoot()]
-    })
-    .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

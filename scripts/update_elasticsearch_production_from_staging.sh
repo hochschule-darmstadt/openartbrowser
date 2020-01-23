@@ -1,6 +1,6 @@
 #!/bin/sh
 set -eE
-set -x 
+set -x
 
 LOCKFILE=/tmp/update_production.lock
 TOKEN=$(cat bot_user_oauth_token)

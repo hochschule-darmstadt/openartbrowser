@@ -1,16 +1,16 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {SearchComponent} from './search.component';
-import {SlideComponent} from '../carousel/slide/slide.component';
-import {CarouselComponent} from '../carousel/carousel.component';
+import { SearchComponent } from './search.component';
+import { SlideComponent } from '../carousel/slide/slide.component';
+import { CarouselComponent } from '../carousel/carousel.component';
 
-import {RouterModule} from '@angular/router';
-import {HttpClientModule} from '@angular/common/http';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {FormsModule} from '@angular/forms';
-import {DataService} from 'src/app/core/services/elasticsearch/data.service';
-import {SearchService} from 'src/app/core/services/search.service';
-import {Angulartics2RouterlessModule} from 'angulartics2/routerlessmodule';
+import { RouterModule } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { FormsModule } from '@angular/forms';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
+import { SearchService } from 'src/app/core/services/search.service';
+import { Angulartics2RouterlessModule } from 'angulartics2/routerlessmodule';
 
 describe('SearchComponent', () => {
   let component: SearchComponent;
@@ -18,22 +18,9 @@ describe('SearchComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        NgbModule,
-        FormsModule,
-        HttpClientModule,
-        RouterModule.forRoot([]),
-        Angulartics2RouterlessModule.forRoot()
-      ],
-      declarations: [
-        SearchComponent,
-        SlideComponent,
-        CarouselComponent,
-      ],
-      providers: [
-        DataService,
-        SearchService
-      ]
+      imports: [NgbModule, FormsModule, HttpClientModule, RouterModule.forRoot([]), Angulartics2RouterlessModule.forRoot()],
+      declarations: [SearchComponent, SlideComponent, CarouselComponent],
+      providers: [DataService, SearchService]
     }).compileComponents();
   }));
 

@@ -18,23 +18,9 @@ describe('MotifComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        NgbModule,
-        HttpClientModule,
-        RouterModule.forRoot([])
-      ],
-      declarations: [
-        MotifComponent,
-        SlideComponent,
-        CarouselComponent,
-        AbstractComponent,
-        BadgeComponent,
-        TitleComponent,
-        InformationComponent,
-      ],
-      providers: [
-        DataService,
-      ]
+      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([])],
+      declarations: [MotifComponent, SlideComponent, CarouselComponent, AbstractComponent, BadgeComponent, TitleComponent, InformationComponent],
+      providers: [DataService]
     }).compileComponents();
   }));
 

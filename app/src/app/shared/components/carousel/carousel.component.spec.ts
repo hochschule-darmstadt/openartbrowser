@@ -12,17 +12,9 @@ describe('SliderComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        NgbModule,
-        HttpClientModule,
-        RouterModule.forRoot([])
-      ],
-      declarations: [
-        CarouselComponent,
-        SlideComponent,
-      ],
-      providers: [        
-      ]
+      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([])],
+      declarations: [CarouselComponent, SlideComponent],
+      providers: []
     }).compileComponents();
   }));
 

@@ -1,3 +1,10 @@
 <!--Loads Youtube-Video Module with a Video releated to the Artwork-->
-<iframe *ngIf="videoExists && safeUrl" [src]='safeUrl' frameborder="0" allowfullscreen
-angulartics2On="mouseover" angularticsAction="Hovered video" angularticsCategory="Video"></iframe>
+<iframe
+  *ngIf="videoExists && safeUrl"
+  [src]="safeUrl"
+  frameborder="0"
+  allowfullscreen
+  angulartics2On="mouseover"
+  angularticsAction="Hovered video"
+  angularticsCategory="Video"
+></iframe>

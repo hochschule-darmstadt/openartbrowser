@@ -1,8 +1,8 @@
 import * as _ from 'lodash';
-import {HttpClient} from '@angular/common/http';
-import {Injectable, Inject, LOCALE_ID} from '@angular/core';
-import {EntityType, Artwork, ArtSearch, Entity, Iconclass, EntityIcon} from 'src/app/shared/models/models';
-import {elasticEnvironment} from 'src/environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { Injectable, Inject, LOCALE_ID } from '@angular/core';
+import { EntityType, Artwork, ArtSearch, Entity, Iconclass, EntityIcon } from 'src/app/shared/models/models';
+import { elasticEnvironment } from 'src/environments/environment';
 import QueryBuilder from './query.builder';
 import { usePlural } from 'src/app/shared/models/entity.interface';
 
@@ -34,7 +34,7 @@ export class DataService {
     const entities = this.filterData<T>(response, type);
     // set type specific attributes
     entities.forEach(entity => this.setTypes(entity));
-    return (!entities.length) ? null : entities[0];
+    return !entities.length ? null : entities[0];
   }
 
   /**
@@ -43,12 +43,12 @@ export class DataService {
    * @param type if specified, it is assured that the returned entities have this entityType
    */
   public async findMultipleById<T>(ids: string[], type?: EntityType): Promise<T[]> {
-    const copyids = ids && ids.filter((id) => !!id);
+    const copyids = ids && ids.filter(id => !!id);
     if (!copyids || copyids.length === 0) {
       return [];
     }
     const query = new QueryBuilder().size(400);
-    copyids.forEach((id) => query.shouldMatch('id', `${id}`));
+    copyids.forEach(id => query.shouldMatch('id', `${id}`));
     return this.performQuery<T>(query, this.baseUrl, type);
   }
 
@@ -63,7 +63,7 @@ export class DataService {
       .sort()
       .minimumShouldMatch(1)
       .ofType(EntityType.ARTWORK);
-    ids.forEach((id) => query.shouldMatch(usePlural(type), `${id}`));
+    ids.forEach(id => query.shouldMatch(usePlural(type), `${id}`));
     return this.performQuery<Artwork>(query);
   }
 
@@ -100,8 +100,8 @@ export class DataService {
 
     keywords.forEach(keyword =>
       query.mustShouldMatch([
-        {key: 'label', value: keyword},
-        {key: 'description', value: keyword}
+        { key: 'label', value: keyword },
+        { key: 'description', value: keyword }
       ])
     );
     return this.performQuery(query);
@@ -140,9 +140,9 @@ export class DataService {
    * @returns an Array containing the iconclassData to the respective Iconclass
    */
   public async getIconclassData(iconclasses: Array<Iconclass>): Promise<any> {
-    return await Promise.all(iconclasses.map(async (key: Iconclass) =>
-      await this.http.get(`https://openartbrowser.org/api/iconclass/${key}.json`).toPromise()
-    ));
+    return await Promise.all(
+      iconclasses.map(async (key: Iconclass) => await this.http.get(`https://openartbrowser.org/api/iconclass/${key}.json`).toPromise())
+    );
   }
 
   /**
@@ -166,11 +166,14 @@ export class DataService {
    */
   private filterData<T>(data: any, filterBy?: EntityType): T[] {
     const entities: T[] = [];
-    _.each(data.hits.hits, function(val) {
-      if (!filterBy || (filterBy && val._source.type == filterBy)) {
-        entities.push(this.addThumbnails(val._source));
-      }
-    }.bind(this));
+    _.each(
+      data.hits.hits,
+      function(val) {
+        if (!filterBy || (filterBy && val._source.type == filterBy)) {
+          entities.push(this.addThumbnails(val._source));
+        }
+      }.bind(this)
+    );
     return entities;
   }
 
@@ -181,10 +184,8 @@ export class DataService {
   private addThumbnails(entity: Entity) {
     const prefix = 'https://upload.wikimedia.org/wikipedia/commons/';
     if (entity.image && !entity.image.endsWith('.tif') && !entity.image.endsWith('.tiff')) {
-      entity.imageSmall = entity.image.replace(prefix, prefix + 'thumb/') + '/256px-' +
-        entity.image.substring(entity.image.lastIndexOf('/') + 1);
-      entity.imageMedium = entity.image.replace(prefix, prefix + 'thumb/') + '/512px-' +
-        entity.image.substring(entity.image.lastIndexOf('/') + 1);
+      entity.imageSmall = entity.image.replace(prefix, prefix + 'thumb/') + '/256px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1);
+      entity.imageMedium = entity.image.replace(prefix, prefix + 'thumb/') + '/512px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1);
     } else {
       entity.imageSmall = entity.image;
       entity.imageMedium = entity.image;

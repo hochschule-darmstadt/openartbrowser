@@ -46,6 +46,3 @@
 :part_of rdf:type rdf:Property .
 :lat rdf:type rdf:Property .
 :lon rdf:type rdf:Property .
-
-
-

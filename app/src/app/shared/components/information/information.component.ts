@@ -1,5 +1,5 @@
-import {Component, OnInit, Input} from '@angular/core';
-import {Entity} from '../../models/models';
+import { Component, OnInit, Input } from '@angular/core';
+import { Entity } from '../../models/models';
 
 @Component({
   selector: 'app-information',
@@ -7,7 +7,6 @@ import {Entity} from '../../models/models';
   styleUrls: ['./information.component.scss']
 })
 export class InformationComponent {
-
   @Input()
   label: string;
 
@@ -17,8 +16,7 @@ export class InformationComponent {
   @Input()
   values: Entity[];
 
-  constructor() {
-  }
+  constructor() {}
 
   ngOnChanges() {
     this.checkRequiredFields();
@@ -30,7 +28,7 @@ export class InformationComponent {
    */
   private checkRequiredFields() {
     if (this.label === null) {
-      throw new TypeError('Attribute \'label\' is required');
+      throw new TypeError("Attribute 'label' is required");
     }
   }
 }

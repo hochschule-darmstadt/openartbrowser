@@ -7,11 +7,10 @@ import { Entity } from '../../models/models';
   styleUrls: ['./abstract.component.scss']
 })
 export class AbstractComponent implements OnInit {
-
   @Input()
   entity: Entity;
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
     this.checkRequiredFields();
@@ -30,7 +29,7 @@ export class AbstractComponent implements OnInit {
    */
   private checkRequiredFields() {
     if (this.entity === null) {
-      throw new TypeError('Attribute \'entity\' is required');
+      throw new TypeError("Attribute 'entity' is required");
     }
   }
 }

@@ -2,7 +2,8 @@
     Global Style Properties
 ************************************/
 
-html, body {
+html,
+body {
   height: 100%;
 }
 
@@ -24,7 +25,7 @@ hr {
   clear: both;
   display: block;
   width: 100%;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   height: 1px;
 }
 
@@ -39,8 +40,8 @@ hr {
   cursor: pointer;
 }
 
-.badge i{
-  margin-right:5px;
+.badge i {
+  margin-right: 5px;
 }
 
 /* For highlighted common tags chips */
@@ -52,9 +53,8 @@ hr {
 
 /* If not highlighted, set as transparent (opacity .4) */
 .badge-transparent {
-  opacity: .4;
+  opacity: 0.4;
 }
-
 
 /* Customize carousel  (has no power in slider.compoent.scss)*/
 .carousel-indicators {
@@ -79,13 +79,14 @@ hr {
 }
 
 /* collapse animation */
-.collapse, .collapse.show {
+.collapse,
+.collapse.show {
   display: block !important;
-  transition: all .25s ease-in-out;
+  transition: all 0.25s ease-in-out;
 }
 .collapse {
- opacity: 0;
- height: 0;
+  opacity: 0;
+  height: 0;
 }
 .collapse.show {
   opacity: 1;

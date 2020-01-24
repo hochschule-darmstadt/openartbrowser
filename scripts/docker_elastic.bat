@@ -1,4 +1,11 @@
 @echo off
+
+WHERE curl
+IF %ERRORLEVEL% NEQ 0 ( 
+    ECHO curl isn't installed but needed for this script
+    exit
+)
+
 REM remove old container
 docker rm -f elastic-dev
 

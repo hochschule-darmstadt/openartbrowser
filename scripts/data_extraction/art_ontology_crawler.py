@@ -20,7 +20,7 @@ import json
 from pathlib import Path
 
 DEV = False
-DEV_LIMIT = 20
+DEV_LIMIT = 10
 
 
 def get_abstract(page_id, language_code="en"):

@@ -38,6 +38,7 @@ Folders and scripts are structured by their ETL task.
 | data_extraction         | Everything related to the extraction of art data                         |
 | data_manipulation       | Data transformations after the extraction                                |
 | upload_to_elasticsearch | Upload the extracted and transformed data to an ElasticSearch server     |
+| generate_rdf            | Everything related to generating a rdf file (turtle format .ttl) from the crawler_output's art_ontology_en.json |
 | crawler_ouput           | Final and intermediate files which are generated and used by the scripts |
 
 ## Output
@@ -52,8 +53,8 @@ The structure of this folder is following:
     - json/
       - artworks/
   - art_ontology.json
-  - art\*ontology**\*languagecode**.json <- for each language code in the languageconfig.csv one file named in this pattern
-  - art_ontology.ttl
+  - art_ontology_**languagecode**.json <- for each language code in the languageconfig.csv one file named in this pattern
+  - art_ontology_en.ttl <- this file is only available if the generate_rdf.py script was executed, this does not happen within the run_etl.sh script because generate_rdf.py is an optional step
 
 The important files are in the "root" folder named crawler_output.
 Everything else is in the intermediate_steps folder and subfolders.

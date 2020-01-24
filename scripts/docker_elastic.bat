@@ -30,4 +30,4 @@ if errorlevel 1 (
 
 :create-indices
 REM If it's up run elasticsearch_helper.py
-docker exec elastic-dev python3 /app/upload_to_elasticsearch/elasticsearch_helper.py /app/crawler_output/art_ontology.json )
+docker exec elastic-dev python3 /app/upload_to_elasticsearch/elasticsearch_helper.py /app/crawler_output/art_ontology.json

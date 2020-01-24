@@ -1,21 +1,21 @@
 config:
-  target: "http://openartbrowser.org/"
+  target: 'http://openartbrowser.org/'
   phases:
     - duration: 60
       arrivalRate: 100
 scenarios:
   - flow:
       - get:
-          url: "/"
+          url: '/'
       - get:
-          url: "/artwork/Q683274"
+          url: '/artwork/Q683274'
       - get:
-          url: "/artwork/Q15290965"
+          url: '/artwork/Q15290965'
       - get:
-          url: "/artwork/Q1810348"
+          url: '/artwork/Q1810348'
       - get:
-          url: "/api/_search?q=id:Q659396"
+          url: '/api/_search?q=id:Q659396'
       - get:
-          url: "/api/_search?q=id:Q4882378"
+          url: '/api/_search?q=id:Q4882378'
       - get:
-          url: "/api/_search?q=id:Q1187408"
+          url: '/api/_search?q=id:Q1187408'

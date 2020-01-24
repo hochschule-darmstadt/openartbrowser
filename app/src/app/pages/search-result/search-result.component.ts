@@ -4,7 +4,8 @@ import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
-import {Angulartics2} from 'angulartics2';
+import { Angulartics2 } from 'angulartics2';
+import { usePlural } from 'src/app/shared/models/entity.interface';
 
 /**
  * @description Interface for the search results.
@@ -20,7 +21,7 @@ export interface SearchResult {
 @Component({
   selector: 'app-search-result',
   templateUrl: './search-result.component.html',
-  styleUrls: ['./search-result.component.scss'],
+  styleUrls: ['./search-result.component.scss']
 })
 export class SearchResultComponent implements OnInit, OnDestroy {
   /** Related artworks */
@@ -43,36 +44,42 @@ export class SearchResultComponent implements OnInit, OnDestroy {
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();
 
-  constructor(private dataService: DataService, private route: ActivatedRoute, private angulartics2: Angulartics2) { }
+  constructor(private dataService: DataService, private route: ActivatedRoute, private angulartics2: Angulartics2) {}
 
   /** hook that is executed at component initialization */
   ngOnInit() {
     /** Extract the search params from url query params. */
-    this.route.queryParams.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
+    this.route.queryParams.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
       /** resets search results  */
       this.searchResults = [];
-      this.searchTerms = params.term ? Array.isArray(params.term) ? params.term : [params.term] : [];
-
-      if (params.artist)
+      this.searchTerms = params.term ? (Array.isArray(params.term) ? params.term : [params.term]) : [];
+      if (params.artist) {
         this.searchResults.push(await this.getSearchResults(params.artist, EntityType.ARTIST, EntityIcon.ARTIST));
-      if (params.movement)
+      }
+      if (params.movement) {
         this.searchResults.push(await this.getSearchResults(params.movement, EntityType.MOVEMENT, EntityIcon.MOVEMENT));
-      if (params.genre)
+      }
+      if (params.genre) {
         this.searchResults.push(await this.getSearchResults(params.genre, EntityType.GENRE, EntityIcon.GENRE));
-      if (params.motif)
+      }
+      if (params.motif) {
         this.searchResults.push(await this.getSearchResults(params.motif, EntityType.MOTIF, EntityIcon.MOTIF));
-      if (params.location)
+      }
+      if (params.location) {
         this.searchResults.push(await this.getSearchResults(params.location, EntityType.LOCATION, EntityIcon.LOCATION));
-      if (params.material)
+      }
+      if (params.material) {
         this.searchResults.push(await this.getSearchResults(params.material, EntityType.MATERIAL, EntityIcon.MATERIAL));
-
+      }
       this.sliderItems = await this.getSliderItems(this.searchResults, this.searchTerms);
 
       this.angulartics2.eventTrack.next({
         action: 'trackSiteSearch',
         properties: {
-          category: 'Search page', keyword: this.searchTerms.toString(), searchCount: this.sliderItems.length,
-        },
+          category: 'Search page',
+          keyword: this.searchTerms.toString(),
+          searchCount: this.sliderItems.length
+        }
       });
     });
   }
@@ -84,8 +91,8 @@ export class SearchResultComponent implements OnInit, OnDestroy {
    * @param icon icon for SearchResult.
    */
   private async getSearchResults<T>(ids: [], type: EntityType, icon: EntityIcon): Promise<SearchResult> {
-    const items = await this.dataService.findMultipleById<T>([].concat(ids), type) as any[];
-    return { items, icon, key: type }
+    const items = (await this.dataService.findMultipleById<T>([].concat(ids), type)) as any[];
+    return { items, icon, key: type };
   }
 
   /**
@@ -96,7 +103,7 @@ export class SearchResultComponent implements OnInit, OnDestroy {
    */
   private async getSliderItems(results: SearchResult[], terms: string[]): Promise<Artwork[]> {
     const search: ArtSearch = {};
-    results.forEach(typeArray => search[typeArray.key + "s"] = typeArray.items.map((e: Entity) => e.id));
+    results.forEach(typeArray => (search[usePlural(typeArray.key)] = typeArray.items.map((e: Entity) => e.id)));
     return await this.dataService.searchArtworks(search, terms);
   }
 

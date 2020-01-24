@@ -1,6 +1,6 @@
-import {Component, Input, SimpleChanges, OnChanges, EventEmitter, Output} from '@angular/core';
-import {Entity} from '../../models/models';
-import {HostListener} from "@angular/core";
+import { Component, Input, SimpleChanges, OnChanges, EventEmitter, Output } from '@angular/core';
+import { Entity } from '../../models/models';
+import { HostListener } from '@angular/core';
 
 export interface Slide {
   /** artworks displayed on this slide */
@@ -40,10 +40,9 @@ export function makeDefaultSlide(id: number = 0, items: Array<Entity> = []): Sli
 @Component({
   selector: 'app-slider',
   templateUrl: './carousel.component.html',
-  styleUrls: ['./carousel.component.scss'],
+  styleUrls: ['./carousel.component.scss']
 })
 export class CarouselComponent implements OnChanges {
-
   /** title of this slider */
   @Input() heading: string;
 
@@ -76,7 +75,7 @@ export class CarouselComponent implements OnChanges {
     const slides: Slide[] = [];
     // There are 8 images on each slide.
     // There are 1 image on each slide if is  mobile
-    const imagesPerSlide = (this.isMobile ? 1 : 8);
+    const imagesPerSlide = this.isMobile ? 1 : 8;
     const numberOfSlides = items.length / imagesPerSlide;
 
     for (let i = 0; i < numberOfSlides; i++) {

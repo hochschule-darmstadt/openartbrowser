@@ -3,7 +3,7 @@ import csv
 
 
 def language_config_to_list(
-    config_file = Path(__file__).parent.absolute() / "languageconfig.csv"
+    config_file=Path(__file__).parent.absolute() / "languageconfig.csv",
 ):
     """[Reads languageconfig.csv and returns array that contains its
     full contents]

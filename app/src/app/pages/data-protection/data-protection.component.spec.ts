@@ -8,9 +8,8 @@ describe('DataProtectionComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DataProtectionComponent ]
-    })
-    .compileComponents();
+      declarations: [DataProtectionComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -6,27 +6,26 @@ import { Entity } from '../../models/models';
   templateUrl: './information.component.html',
   styleUrls: ['./information.component.scss']
 })
-export class InformationComponent implements OnInit {
+export class InformationComponent {
+  @Input()
+  label: string;
 
   @Input()
-  label: String;
-
-  @Input()
-  value: String;
+  value: string;
 
   @Input()
   values: Entity[];
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
+  ngOnChanges() {
     this.checkRequiredFields();
   }
 
-  ngOnChanges(changes) {
-    this.checkRequiredFields();
-  }
-
+  /**
+   * This Method is for debugging purposes.
+   * Errors will not be shown in productive state.
+   */
   private checkRequiredFields() {
     if (this.label === null) {
       throw new TypeError("Attribute 'label' is required");

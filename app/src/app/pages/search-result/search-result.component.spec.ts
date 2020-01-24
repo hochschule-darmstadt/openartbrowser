@@ -7,7 +7,7 @@ import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientModule } from '@angular/common/http';
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
-import {Angulartics2RouterlessModule} from 'angulartics2/routerlessmodule';
+import { Angulartics2RouterlessModule } from 'angulartics2/routerlessmodule';
 
 describe('SearchResultComponent', () => {
   let component: SearchResultComponent;
@@ -15,22 +15,10 @@ describe('SearchResultComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        NgbModule,
-        HttpClientModule,
-        RouterModule.forRoot([]),
-        Angulartics2RouterlessModule.forRoot()
-      ],
-      declarations: [
-        SearchResultComponent,
-        SlideComponent,
-        CarouselComponent
-      ],
-      providers: [
-        DataService,
-      ]
-    })
-    .compileComponents();
+      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([]), Angulartics2RouterlessModule.forRoot()],
+      declarations: [SearchResultComponent, SlideComponent, CarouselComponent],
+      providers: [DataService]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

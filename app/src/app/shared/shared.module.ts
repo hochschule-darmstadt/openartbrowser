@@ -15,7 +15,7 @@ import { BadgeComponent } from './components/badge/badge.component';
 import { TimelineComponent } from './components/timeline/timeline.component';
 import { Ng5SliderModule } from 'ng5-slider';
 import { CollapseComponent } from './components/collapse/collapse.component';
-import {Angulartics2Module} from 'angulartics2';
+import { Angulartics2Module } from 'angulartics2';
 
 /** Everything that should be used within multiple feature modules but isn't always required goes here */
 @NgModule({
@@ -30,16 +30,9 @@ import {Angulartics2Module} from 'angulartics2';
     InformationComponent,
     AbstractComponent,
     IconclassComponent,
-	  CollapseComponent
+    CollapseComponent
   ],
-  imports: [
-    CommonModule,
-    NgbModule,
-    RouterModule,
-    FormsModule,
-    Ng5SliderModule,
-    Angulartics2Module
-  ],
+  imports: [CommonModule, NgbModule, RouterModule, FormsModule, Ng5SliderModule, Angulartics2Module],
   exports: [
     CarouselComponent,
     SearchComponent,
@@ -51,8 +44,7 @@ import {Angulartics2Module} from 'angulartics2';
     InformationComponent,
     AbstractComponent,
     IconclassComponent,
-	  CollapseComponent
-  ],
+    CollapseComponent
+  ]
 })
-export class SharedModule {
-}
+export class SharedModule {}

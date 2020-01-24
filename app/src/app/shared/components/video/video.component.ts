@@ -1,14 +1,13 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Entity } from '../../models/models';
 
 @Component({
   selector: 'app-video',
   templateUrl: './video.component.html',
-  styleUrls: ['./video.component.scss'],
+  styleUrls: ['./video.component.scss']
 })
-export class VideoComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
-
+export class VideoComponent implements OnInit, OnChanges {
   @Input() entity: Entity;
 
   /**
@@ -19,28 +18,19 @@ export class VideoComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
   @Output() videoFound = new EventEmitter<boolean>();
   videoExists = false;
 
-  constructor(private sanitizer: DomSanitizer) {
-  }
+  constructor(private sanitizer: DomSanitizer) {}
 
-  ngAfterViewInit(): void {
-  }
-
-  ngOnDestroy(): void {
-  }
-
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   initVideo(): void {
     if (this.entity && this.entity.videos) {
       const videoUrl = Array.isArray(this.entity.videos) ? this.entity.videos.pop() : this.entity.videos;
       if (videoUrl) {
         this.safeUrl = this.getTrustedUrl(videoUrl);
-        this.validateVideoExists(videoUrl)
-          .then(exists => {
-            this.videoExists = exists;
-            this.videoFound.emit(this.videoExists);
-          });
+        this.validateVideoExists(videoUrl).then(exists => {
+          this.videoExists = exists;
+          this.videoFound.emit(this.videoExists);
+        });
       }
     } else {
       this.videoExists = false;
@@ -50,9 +40,11 @@ export class VideoComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
 
   /**
    * @see https://gist.github.com/tonY1883/a3b85925081688de569b779b4657439b
+   * Checks if video exists based on the video thumbnail. For non existent videos YT returns an error picture with a
+   * width of 120 pixels.
    */
   private validateVideoExists(youtubeVideoHref: string): Promise<boolean> {
-    return new Promise((resolve: Function, reject: Function) => {
+    return new Promise(resolve => {
       const regExpMatchArray = youtubeVideoHref.match('https://www.youtube(-nocookie)?.com/embed/([^/]+)');
       if (regExpMatchArray.length === 3) {
         const id = regExpMatchArray[2];
@@ -65,12 +57,16 @@ export class VideoComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
   }
 
   /**
-   * @description sanitizes video url
+   * @description converts url into SafeUrl object. Needed to bypass Angular cross scripting protection.
    */
   private getTrustedUrl(url: string): any {
     return url ? this.sanitizer.bypassSecurityTrustResourceUrl(url) : '';
   }
 
+  /**
+   * @description This reinitializes the video every time the entity changes. Cannot be done in ngOnInit, because
+   * Angular reuses the component instance when the entity changes.
+   */
   ngOnChanges(changes): void {
     if (changes.entity !== undefined) {
       this.initVideo();

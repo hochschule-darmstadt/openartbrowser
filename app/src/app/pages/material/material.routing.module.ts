@@ -7,13 +7,13 @@ import { SharedModule } from '../../shared/shared.module';
 const materialRoutes: Routes = [
   {
     path: '',
-    component: MaterialComponent,
-  },
+    component: MaterialComponent
+  }
 ];
 
 @NgModule({
   declarations: [MaterialComponent],
   imports: [CommonModule, SharedModule, RouterModule.forChild(materialRoutes)],
-  exports: [MaterialComponent],
+  exports: [MaterialComponent]
 })
 export class MaterialRoutingModule {}

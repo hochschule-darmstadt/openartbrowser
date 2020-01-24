@@ -10,8 +10,8 @@ input.form-control {
 
   /* Firefox 19+ */
   &::-moz-placeholder,
-  /* Firefox 18- */
-  &:-moz-placeholder, 
+    /* Firefox 18- */
+  &:-moz-placeholder,
   &:-ms-input-placeholder,
   &::-webkit-input-placeholder {
     display: none;
@@ -136,10 +136,12 @@ input.form-control {
       font-size: 0.8rem;
     }
   }
+
   .ngb-highlight {
     font-weight: 700;
     color: $color1;
   }
+
   .dropdown-menu {
     width: 100%;
   }

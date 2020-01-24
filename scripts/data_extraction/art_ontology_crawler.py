@@ -1,7 +1,8 @@
 """
-Module to crawl artwork metadata from Wikidata and store them im *.csv files and a *.ttl file (RDF).
-Can be executed in https://paws.wmflabs.org which provides Jupyter Notebooks for accessing Wikidata.
-Requires being logged in at Wikimedia
+Module to crawl artwork metadata from Wikidata and Wikipedia and store them im *.csv and *.json files.
+Is executed weekly on the staging server on tuesday 0:00.
+Requires being logged in at Wikimedia.
+This is done by the user-config.py in the scripts directory.
 
 Execute crawling using
 extract_art_ontology()
@@ -21,6 +22,7 @@ from pathlib import Path
 DEV = False
 DEV_LIMIT = 20
 
+
 def get_abstract(page_id, language_code="en"):
     """Extracts the abstract for a given page_id and language
 
@@ -28,7 +30,9 @@ def get_abstract(page_id, language_code="en"):
     language_code -- e.g. 'en', 'de', ...
     """
 
-    url = "https://{}.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&pageids={}".format(language_code, page_id)
+    url = "https://{}.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&pageids={}".format(
+        language_code, page_id
+    )
     resp = requests.get(url)
     resp_obj = json.loads(resp.text)
 
@@ -36,7 +40,7 @@ def get_abstract(page_id, language_code="en"):
 
 
 def language_config_to_list(
-    config_file=Path(__file__).parent.parent.absolute() / "languageconfig.csv"
+    config_file=Path(__file__).parent.parent.absolute() / "languageconfig.csv",
 ):
     """[Reads languageconfig.csv and returns array that contains its
     full contents]
@@ -52,7 +56,10 @@ def language_config_to_list(
                 languageValues.append(row)
     return languageValues
 
-def extract_artworks(type_name, wikidata_id, languageKeys=[item[0] for item in language_config_to_list()]):
+
+def extract_artworks(
+    type_name, wikidata_id, languageKeys=[item[0] for item in language_config_to_list()]
+):
     """Extracts artworks metadata from Wikidata and stores them in a *.csv file.
 
     type_name -- e.g., 'drawings', will be used as filename
@@ -64,7 +71,11 @@ def extract_artworks(type_name, wikidata_id, languageKeys=[item[0] for item in l
     extract_artworks('paintings', 'wd:Q3305213')
     """
     print(datetime.datetime.now(), "Starting with", type_name)
-    QUERY = 'SELECT ?item ?sitelink WHERE {SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". } ?cls wdt:P279* ' + wikidata_id + ' . ?item wdt:P31 ?cls; wdt:P18 ?image . }'
+    QUERY = (
+        'SELECT ?item ?sitelink WHERE {SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". } ?cls wdt:P279* '
+        + wikidata_id
+        + " . ?item wdt:P31 ?cls; wdt:P18 ?image . }"
+    )
     # all artworks of this type (including subtypes) with label, artist, and image
     wikidata_site = pywikibot.Site("wikidata", "wikidata")
     items = pg.WikidataSPARQLPageGenerator(QUERY, site=wikidata_site)
@@ -140,10 +151,25 @@ def extract_artworks(type_name, wikidata_id, languageKeys=[item[0] for item in l
         except:
             iconclasses = []
 
-        #print(str(count) + " ", end='')
-        dict = {"id": item.id, "classes": classes, "label": label, "description": description, "image": image, "artists": artists, "locations": locations, "genres": genres,
-         "movements": movements, "inception": inception, "materials": materials, "motifs": motifs, "country": country, "height": height, "width": width, "iconclasses": iconclasses}
-
+        # print(str(count) + " ", end='')
+        dict = {
+            "id": item.id,
+            "classes": classes,
+            "label": label,
+            "description": description,
+            "image": image,
+            "artists": artists,
+            "locations": locations,
+            "genres": genres,
+            "movements": movements,
+            "inception": inception,
+            "materials": materials,
+            "motifs": motifs,
+            "country": country,
+            "height": height,
+            "width": width,
+            "iconclasses": iconclasses,
+        }
 
         # print(classes, item, label, description, image, artists, locations, genres, movements, inception, materials, motifs,  country, height, width)
         for langkey in languageKeys:
@@ -154,20 +180,28 @@ def extract_artworks(type_name, wikidata_id, languageKeys=[item[0] for item in l
             try:
                 descriptionlang = item_dict["descriptions"][langkey]
             except:
-                descriptionlang =  ""
+                descriptionlang = ""
             try:
                 countrylang = clm_dict["P17"][0].getTarget().get()["labels"][langkey]
             except:
                 countrylang = ""
             try:
                 sitelinks = item_dict["sitelinks"]
-                wikpedia_page = pywikibot.Page(sitelinks[langkey+"wiki"])
+                wikpedia_page = pywikibot.Page(sitelinks[langkey + "wiki"])
                 abstract_lang = get_abstract(wikpedia_page.pageid, langkey)
                 wikipedia_link_lang = wikpedia_page.full_url()
             except:
                 abstract_lang = ""
                 wikipedia_link_lang = ""
-            dict.update({"label_"+langkey: labellang, "description_"+langkey: descriptionlang, "country_"+langkey: countrylang, "abstract_"+langkey: abstract_lang, "wikipediaLink_"+langkey: wikipedia_link_lang})
+            dict.update(
+                {
+                    "label_" + langkey: labellang,
+                    "description_" + langkey: descriptionlang,
+                    "country_" + langkey: countrylang,
+                    "abstract_" + langkey: abstract_lang,
+                    "wikipediaLink_" + langkey: wikipedia_link_lang,
+                }
+            )
         extract_dicts.append(dict)
         count += 1
 
@@ -176,7 +210,9 @@ def extract_artworks(type_name, wikidata_id, languageKeys=[item[0] for item in l
     return extract_dicts
 
 
-def extract_subjects(subject_type, languageKeys=[item[0] for item in language_config_to_list()]):
+def extract_subjects(
+    subject_type, languageKeys=[item[0] for item in language_config_to_list()]
+):
     """Extracts metadata from Wikidata of a certain subject type and stores them in a *.csv file
 
     subject_type -- one of 'genres', 'movements', 'materials', 'motifs', 'artists', 'locations'. Will be used as filename
@@ -194,14 +230,23 @@ def extract_subjects(subject_type, languageKeys=[item[0] for item in language_co
     """
     print(datetime.datetime.now(), "Starting with", subject_type)
     subjects = set()
-    file_names = ['paintings.csv', 'drawings.csv', 'sculptures.csv']
-    file_names = [Path.cwd() / "crawler_output" / "intermediate_files" / "csv" / "artworks" / file_name \
-        for file_name in file_names]
+    file_names = ["paintings.csv", "drawings.csv", "sculptures.csv"]
+    file_names = [
+        Path.cwd()
+        / "crawler_output"
+        / "intermediate_files"
+        / "csv"
+        / "artworks"
+        / file_name
+        for file_name in file_names
+    ]
     for file_name in file_names:
-        with open(file_name, newline="", encoding='utf-8') as file:
-            reader = csv.DictReader(file, delimiter=';', quotechar='"')
+        with open(file_name, newline="", encoding="utf-8") as file:
+            reader = csv.DictReader(file, delimiter=";", quotechar='"')
             for row in reader:
-                item_subjects = ast.literal_eval(row[subject_type])  # parses list from string
+                item_subjects = ast.literal_eval(
+                    row[subject_type]
+                )  # parses list from string
                 for subject in item_subjects:
                     subjects.add(subject)
 
@@ -237,7 +282,13 @@ def extract_subjects(subject_type, languageKeys=[item[0] for item in language_co
             image = clm_dict["P18"][0].getTarget().get_file_url()
         except:
             image = ""
-        subject_dict = {"id": item.id, "classes": classes, "label": label, "description": description, "image": image}
+        subject_dict = {
+            "id": item.id,
+            "classes": classes,
+            "label": label,
+            "description": description,
+            "image": image,
+        }
         if subject_type == "artists":
             try:
                 gender = clm_dict["P21"][0].getTarget().get()["labels"]["en"]
@@ -268,24 +319,35 @@ def extract_subjects(subject_type, languageKeys=[item[0] for item in language_co
             except:
                 movements = []
             try:
-                influenced_by = list(map(lambda clm: clm.getTarget().id, clm_dict["P737"]))
+                influenced_by = list(
+                    map(lambda clm: clm.getTarget().id, clm_dict["P737"])
+                )
             except:
                 influenced_by = []
-            
+
             for langkey in languageKeys:
                 try:
                     genderlang = clm_dict["P21"][0].getTarget().get()["labels"][langkey]
                 except:
                     genderlang = ""
                 try:
-                    citizenshiplang = clm_dict["P27"][0].getTarget().get()["labels"][langkey]
+                    citizenshiplang = (
+                        clm_dict["P27"][0].getTarget().get()["labels"][langkey]
+                    )
                 except:
                     citizenshiplang = ""
-                subject_dict.update({"gender_"+langkey: genderlang, "citizenship_"+langkey: citizenshiplang})
+                subject_dict.update(
+                    {
+                        "gender_" + langkey: genderlang,
+                        "citizenship_" + langkey: citizenshiplang,
+                    }
+                )
 
         if subject_type == "movements":
             try:
-                influenced_by = list(map(lambda clm: clm.getTarget().id, clm_dict["P737"]))
+                influenced_by = list(
+                    map(lambda clm: clm.getTarget().id, clm_dict["P737"])
+                )
             except:
                 influenced_by = []
 
@@ -296,10 +358,12 @@ def extract_subjects(subject_type, languageKeys=[item[0] for item in language_co
                 country = ""
             for langkey in languageKeys:
                 try:
-                    countrylang = clm_dict["P17"][0].getTarget().get()["labels"][langkey]
+                    countrylang = (
+                        clm_dict["P17"][0].getTarget().get()["labels"][langkey]
+                    )
                 except:
                     countrylang = ""
-                subject_dict.update({"country_"+langkey: countrylang})
+                subject_dict.update({"country_" + langkey: countrylang})
             try:
                 website = clm_dict["P856"][0].getTarget()
             except:
@@ -324,27 +388,51 @@ def extract_subjects(subject_type, languageKeys=[item[0] for item in language_co
             try:
                 descriptionlang = item_dict["descriptions"][langkey]
             except:
-                descriptionlang =  ""
+                descriptionlang = ""
             try:
                 sitelinks = item_dict["sitelinks"]
-                wikpedia_page = pywikibot.Page(sitelinks[langkey+"wiki"])
+                wikpedia_page = pywikibot.Page(sitelinks[langkey + "wiki"])
                 abstract_lang = get_abstract(wikpedia_page.pageid, langkey)
                 wikipedia_link_lang = wikpedia_page.full_url()
             except:
                 abstract_lang = ""
                 wikipedia_link_lang = ""
-            subject_dict.update({"label_"+langkey: labellang, "description_"+langkey: descriptionlang, "abstract_"+langkey: abstract_lang, "wikipediaLink_"+langkey: wikipedia_link_lang})
+            subject_dict.update(
+                {
+                    "label_" + langkey: labellang,
+                    "description_" + langkey: descriptionlang,
+                    "abstract_" + langkey: abstract_lang,
+                    "wikipediaLink_" + langkey: wikipedia_link_lang,
+                }
+            )
 
         # add fields that are special for different subject types
         if subject_type == "artists":
-            subject_dict.update({"gender": gender, "date_of_birth": date_of_birth, "date_of_death": date_of_death,
-                                 "place_of_birth": place_of_birth, "place_of_death": place_of_death,
-                                 "citizenship": citizenship, "movements": movements, "influenced_by": influenced_by})
+            subject_dict.update(
+                {
+                    "gender": gender,
+                    "date_of_birth": date_of_birth,
+                    "date_of_death": date_of_death,
+                    "place_of_birth": place_of_birth,
+                    "place_of_death": place_of_death,
+                    "citizenship": citizenship,
+                    "movements": movements,
+                    "influenced_by": influenced_by,
+                }
+            )
 
         elif subject_type == "movements":
             subject_dict.update({"influenced_by": influenced_by})
         elif subject_type == "locations":
-            subject_dict.update({"country": country, "website": website, "part_of": part_of, "lat": lat, "lon": lon})
+            subject_dict.update(
+                {
+                    "country": country,
+                    "website": website,
+                    "part_of": part_of,
+                    "lat": lat,
+                    "lon": lon,
+                }
+            )
         extract_dicts.append(subject_dict)
         count += 1
 
@@ -365,17 +453,27 @@ def extract_classes():
     print(datetime.datetime.now(), "Starting with classes")
     classes = set()
     class_dict = dict()
-    subjects = ['genres.csv', 'movements.csv', 'materials.csv', 'motifs.csv', 'artists.csv', 'locations.csv']
-    artworks = ['paintings.csv', 'drawings.csv', 'sculptures.csv']
+    subjects = [
+        "genres.csv",
+        "movements.csv",
+        "materials.csv",
+        "motifs.csv",
+        "artists.csv",
+        "locations.csv",
+    ]
+    artworks = ["paintings.csv", "drawings.csv", "sculptures.csv"]
 
     base_dir = Path.cwd() / "crawler_output" / "intermediate_files" / "csv"
-    file_names = [base_dir / subject for subject in subjects] + [base_dir / "artworks" / artwork \
-            for artwork in artworks]
+    file_names = [base_dir / subject for subject in subjects] + [
+        base_dir / "artworks" / artwork for artwork in artworks
+    ]
     for file_name in file_names:
-        with open(file_name, newline="", encoding='utf-8') as file:
-            reader = csv.DictReader(file, delimiter=';', quotechar='"')
+        with open(file_name, newline="", encoding="utf-8") as file:
+            reader = csv.DictReader(file, delimiter=";", quotechar='"')
             for row in reader:
-                item_classes = ast.literal_eval(row['classes'])  # parses list from string
+                item_classes = ast.literal_eval(
+                    row["classes"]
+                )  # parses list from string
                 for item_class in item_classes:
                     classes.add(item_class)
 
@@ -390,7 +488,7 @@ def extract_classes():
             break
         extract_class(cls, class_dict, repo)
         count += 1
-        #print(str(count) + " ", end='')
+        # print(str(count) + " ", end='')
     for cls in class_dict:
         extract_dicts.append(class_dict[cls])
 
@@ -399,14 +497,16 @@ def extract_classes():
     return extract_dicts
 
 
-def extract_class(cls, class_dict, repo, languageKeys=[item[0] for item in language_config_to_list()]):
+def extract_class(
+    cls, class_dict, repo, languageKeys=[item[0] for item in language_config_to_list()]
+):
     """Extracts metadata of a class and it superclasses from Wikidata and stores them in a dictionary
 
     cls -- ID of a Wikidata class
     class_dict -- dictionary with Wikidata ID as key and a dict of class attributes as value; will be updated
     repo -- Wikidata repository as accessed using pywikibot
     """
-    if not cls in class_dict:
+    if cls not in class_dict:
         # The try-catch-blocks have to stay because anyone can input anything on wikidata
         try:
             item = pywikibot.ItemPage(repo, cls)
@@ -427,7 +527,12 @@ def extract_class(cls, class_dict, repo, languageKeys=[item[0] for item in langu
             subclass_of = list(map(lambda clm: clm.getTarget().id, clm_dict["P279"]))
         except:
             subclass_of = []
-        class_dict[cls] = {"id": item.id, "label": label, "description": description, "subclass_of": subclass_of}
+        class_dict[cls] = {
+            "id": item.id,
+            "label": label,
+            "description": description,
+            "subclass_of": subclass_of,
+        }
         for langkey in languageKeys:
             try:
                 labellang = item_dict["labels"][langkey]
@@ -437,7 +542,12 @@ def extract_class(cls, class_dict, repo, languageKeys=[item[0] for item in langu
                 descriptionlang = item_dict["descriptions"][langkey]
             except:
                 descriptionlang = ""
-            class_dict[cls].update({"label_"+langkey: labellang, "description_"+langkey: descriptionlang})
+            class_dict[cls].update(
+                {
+                    "label_" + langkey: labellang,
+                    "description_" + langkey: descriptionlang,
+                }
+            )
         for superclass in subclass_of:
             extract_class(superclass, class_dict, repo)
 
@@ -447,152 +557,87 @@ def merge_artworks():
     """
     print(datetime.datetime.now(), "Starting with", "merging artworks")
     artworks = set()
-    file_names = ['paintings.json', 'drawings.json', 'sculptures.json']
-    file_names = [Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "artworks" / file_name \
-        for file_name in file_names]
+    file_names = ["paintings.json", "drawings.json", "sculptures.json"]
+    file_names = [
+        Path.cwd()
+        / "crawler_output"
+        / "intermediate_files"
+        / "json"
+        / "artworks"
+        / file_name
+        for file_name in file_names
+    ]
     extract_dicts = []
 
     for file_name in file_names:
-        with open(file_name, encoding='utf-8') as input:
+        with open(file_name, encoding="utf-8") as input:
             object_array = json.load(input)
             for object in object_array:
-                if not object['id'] in artworks:  # remove duplicates
-                    object['type'] = 'artwork'
+                if not object["id"] in artworks:  # remove duplicates
+                    object["type"] = "artwork"
                     extract_dicts.append(object)
-                    artworks.add(object['id'])
+                    artworks.add(object["id"])
 
     print(datetime.datetime.now(), "Finished with", "merging artworks")
     print()
     return extract_dicts
 
 
-def generate_rdf():
-    """Generates an RDF Tutle file 'art_ontology.ttl' from *.csv files generated by functions extract_artworks, extract_subjects, extract_classes and merge_artworks"""
-    print(datetime.datetime.now(), "Starting with", "generating rdf")
-
-    configs = {
-        'classes': {'filename': 'classes.csv', 'class': 'rdfs:Class'},
-        'movements': {'filename': 'movements.csv', 'class': ':movement'},
-        'genre': {'filename': 'genres.csv', 'class': ':genre'},
-        'locations': {'filename': 'locations.csv', 'class': ':location'},
-        'materials': {'filename': 'materials.csv', 'class': ':material'},
-        'motifs': {'filename': 'motifs.csv', 'class': ':motif'},
-        'persons': {'filename': 'artists.csv', 'class': ':person'},
-        'artworks': {'filename': 'artworks.csv', 'class': ':artwork'}
-    }
-    properties = {
-        'label': {'property': 'rdfs:label', 'type': 'string'},
-        'description': {'property': ':description', 'type': 'string'},
-        'image': {'property': ':image', 'type': 'url'},
-        'artists': {'property': ':artist', 'type': 'list'},
-        'locations': {'property': ':location', 'type': 'list'},
-        'genres': {'property': ':genre', 'type': 'list'},
-        'movements': {'property': ':movement', 'type': 'list'},
-        'inception': {'property': ':inception', 'type': 'number'},
-        'materials': {'property': ':material', 'type': 'list'},
-        'motifs': {'property': ':motifs', 'type': 'list'},
-        'country': {'property': ':country', 'type': 'string'},
-        'height': {'property': ':height', 'type': 'number'},
-        'width': {'property': ':width', 'type': 'number'},
-        'gender': {'property': ':gender', 'type': 'string'},
-        'date_of_birth': {'property': ':date_of_birth', 'type': 'number'},
-        'date_of_death': {'property': ':date_of_death', 'type': 'number'},
-        'place_of_birth': {'property': ':place_of_birth', 'type': 'string'},
-        'place_of_death': {'property': ':place_of_death', 'type': 'string'},
-        'influenced_by': {'property': ':influenced_by', 'type': 'list'},
-        'website': {'property': ':website', 'type': 'url'},
-        'part_of': {'property': ':part_of', 'type': 'list'},
-        'lat': {'property': ':lat', 'type': 'number'},
-        'lon': {'property': ':lon', 'type': 'number'},
-        'subclass_of': {'property': 'rdfs:subClassOf', 'type': 'list'}
-    }
-    quotechars = {
-        'string': {'start': '"', 'end': '"'},
-        'url': {'start': '<', 'end': '>'},
-        'number': {'start': '', 'end': ''}
-    }
-
-    for config in configs:
-        configs[config]['filename'] = Path.cwd() / "crawler_output" / "intermediate_files" / "csv" / configs[config]['filename']
-
-    with open(Path.cwd() / "crawler_output" / "art_ontology.ttl", "w", newline="", encoding='utf-8') as output:
-        with open(Path(__file__).resolve().parent / 'art_ontology_header.txt', newline="", encoding='utf-8') as input:
-            output.write(input.read())  # copy header
-
-        for config in configs:
-            output.write('\n\n\n# ' + config + '\n\n')
-            with open(configs[config]['filename'], newline="", encoding='utf-8') as input:
-                # count = 0
-                reader = csv.DictReader(input, delimiter=';', quotechar='"')
-                for row in reader:
-                    # if count > 10:
-                    # continue
-                    # else:
-                    # count +=1
-                    output.write('wd:' + row['id'] + ' rdf:type ' + configs[config]['class'])
-                    if 'classes' in row:  # classes.csv has no classes column
-                        classes = ast.literal_eval(row['classes'])  # parses list of class names from string
-                        for cls in classes:
-                            output.write(', wd:' + cls)
-                    for entry in row:
-                        if entry in properties:
-                            tpe = properties[entry]['type']
-                            if tpe in quotechars.keys():
-                                value = row[entry]
-                                if value != '':  # cell not empty
-                                    if tpe == 'string' and '"' in value:
-                                        value = value.replace('"', "'")  # replace double quotes by single quotes
-                                    output.write(' ;\n    ' + properties[entry]['property'] + ' ' + quotechars[tpe]['start'] + value + quotechars[tpe]['end'])
-                            elif tpe == 'list':
-                                if row[entry] != '':  # cell not empty - should not happen
-                                    ids = ast.literal_eval(row[entry])  # parses list of ids from string
-                                    if len(ids) > 0:
-                                        first = True
-                                        output.write(' ;\n    ' + properties[entry]['property'] + ' ')
-                                        for id in ids:
-                                            if first:
-                                                first = False
-                                            else:
-                                                output.write(' , ')
-                                            output.write('wd:' + id)
-                            else:
-                                raise Exception('Unexpected type: ' + tpe)
-                    output.write(' .\n')
-
-    print(datetime.datetime.now(), "Finished with", "generating rdf")
-    print()
-
-
 def get_fields(type_name, languageKeys=[item[0] for item in language_config_to_list()]):
-
     fields = ["id", "classes", "label", "description", "image"]
     for langkey in languageKeys:
-        fields += ["label_"+langkey, "description_"+langkey, "abstract_"+langkey, "wikipediaLink_"+langkey]
+        fields += [
+            "label_" + langkey,
+            "description_" + langkey,
+            "abstract_" + langkey,
+            "wikipediaLink_" + langkey,
+        ]
     if type_name in ["drawings", "sculptures", "paintings", "artworks"]:
-        fields += ["artists", "locations", "genres", "movements", "inception",
-                   "materials", "motifs", "country", "height", "width", "iconclasses"]
+        fields += [
+            "artists",
+            "locations",
+            "genres",
+            "movements",
+            "inception",
+            "materials",
+            "motifs",
+            "country",
+            "height",
+            "width",
+            "iconclasses",
+        ]
         for langkey in languageKeys:
-            fields += ["country_"+langkey]
+            fields += ["country_" + langkey]
     elif type_name == "artists":
-        fields += ["gender", "date_of_birth", "date_of_death", "place_of_birth", "place_of_death", "citizenship", "movements", "influenced_by"]
+        fields += [
+            "gender",
+            "date_of_birth",
+            "date_of_death",
+            "place_of_birth",
+            "place_of_death",
+            "citizenship",
+            "movements",
+            "influenced_by",
+        ]
         for langkey in languageKeys:
-            fields += ["gender_"+langkey, "citizenship_"+langkey]
+            fields += ["gender_" + langkey, "citizenship_" + langkey]
     elif type_name == "movements":
         fields += ["influenced_by"]
     elif type_name == "locations":
         fields += ["country", "website", "part_of", "lat", "lon"]
         for langkey in languageKeys:
-            fields += ["country_"+langkey]
+            fields += ["country_" + langkey]
     elif type_name == "classes":
         fields = ["id", "label", "description", "subclass_of"]
         for langkey in languageKeys:
-            fields += ["label_"+langkey, "description_"+langkey]
+            fields += ["label_" + langkey, "description_" + langkey]
     return fields
+
 
 def generate_csv(name, extract_dicts, fields, filename):
     filename.parent.mkdir(parents=True, exist_ok=True)
-    with open(filename.with_suffix('.csv'), "w", newline="", encoding='utf-8') as file:
-        writer = csv.DictWriter(file, fieldnames=fields, delimiter=';', quotechar='"')
+    with open(filename.with_suffix(".csv"), "w", newline="", encoding="utf-8") as file:
+        writer = csv.DictWriter(file, fieldnames=fields, delimiter=";", quotechar='"')
         writer.writeheader()
         for extract_dict in extract_dicts:
             writer.writerow(extract_dict)
@@ -602,10 +647,12 @@ def generate_json(name, extract_dicts, filename):
     if len(extract_dicts) == 0:
         return
     filename.parent.mkdir(parents=True, exist_ok=True)
-    with open(filename.with_suffix('.json'), "w", newline="", encoding='utf-8') as file:
+    with open(filename.with_suffix(".json"), "w", newline="", encoding="utf-8") as file:
         arrayToDump = []
         for extract_dict in extract_dicts:
-            extract_dict["type"] = name[:-1] # name[:-1] removes the last character of the name
+            extract_dict["type"] = name[
+                :-1
+            ]  # name[:-1] removes the last character of the name
             arrayToDump.append(extract_dict)
         file.write(json.dumps(arrayToDump, ensure_ascii=False))
 
@@ -613,22 +660,51 @@ def generate_json(name, extract_dicts, filename):
 def extract_art_ontology():
     """Extracts *.csv files and a *.ttl file with metadata for artworks from Wikidata"""
 
-    for artwork, wd in [("drawings", "wd:Q93184"), ("sculptures", "wd:Q860861"), ("paintings", "wd:Q3305213")]:
+    for artwork, wd in [
+        ("drawings", "wd:Q93184"),
+        ("sculptures", "wd:Q860861"),
+        ("paintings", "wd:Q3305213"),
+    ]:
         extracted_artwork = extract_artworks(artwork, wd)
 
-        filename = Path.cwd() / "crawler_output" / "intermediate_files" / "csv" / "artworks" / artwork
+        filename = (
+            Path.cwd()
+            / "crawler_output"
+            / "intermediate_files"
+            / "csv"
+            / "artworks"
+            / artwork
+        )
         generate_csv(artwork, extracted_artwork, get_fields(artwork), filename)
 
-        filename = Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "artworks" / artwork
+        filename = (
+            Path.cwd()
+            / "crawler_output"
+            / "intermediate_files"
+            / "json"
+            / "artworks"
+            / artwork
+        )
         generate_json(artwork, extracted_artwork, filename)
 
-    for subject in ["genres", "movements", "materials", "motifs", "artists", "locations"]:
+    for subject in [
+        "genres",
+        "movements",
+        "materials",
+        "motifs",
+        "artists",
+        "locations",
+    ]:
         extracted_subject = extract_subjects(subject)
 
-        filename = Path.cwd() / "crawler_output" / "intermediate_files" / "csv" / subject
+        filename = (
+            Path.cwd() / "crawler_output" / "intermediate_files" / "csv" / subject
+        )
         generate_csv(subject, extracted_subject, get_fields(subject), filename)
 
-        filename = Path.cwd() / "crawler_output" / "intermediate_files" / "json" / subject
+        filename = (
+            Path.cwd() / "crawler_output" / "intermediate_files" / "json" / subject
+        )
         generate_json(subject, extracted_subject, filename)
 
     classes = "classes"
@@ -643,8 +719,6 @@ def extract_art_ontology():
 
     filename = Path.cwd() / "crawler_output" / "intermediate_files" / "json" / artworks
     generate_json(artworks, merged_artworks, filename)
-
-    generate_rdf()
 
 
 if __name__ == "__main__":

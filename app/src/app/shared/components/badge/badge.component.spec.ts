@@ -9,8 +9,8 @@ describe('BadgeComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ NgbModule,  RouterModule.forRoot([])],
-      declarations: [ BadgeComponent ]
+      imports: [NgbModule, RouterModule.forRoot([])],
+      declarations: [BadgeComponent]
     }).compileComponents();
   }));
 

@@ -10,11 +10,10 @@ describe('IconclassComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ HttpClientModule ],
-      declarations: [ IconclassComponent ],
-      providers: [ DataService]
-    })
-    .compileComponents();
+      imports: [HttpClientModule],
+      declarations: [IconclassComponent],
+      providers: [DataService]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

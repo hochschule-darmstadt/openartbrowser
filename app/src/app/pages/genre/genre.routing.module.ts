@@ -7,13 +7,13 @@ import { SharedModule } from '../../shared/shared.module';
 const genreRoutes: Routes = [
   {
     path: '',
-    component: GenreComponent,
-  },
+    component: GenreComponent
+  }
 ];
 
 @NgModule({
   declarations: [GenreComponent],
   imports: [CommonModule, SharedModule, RouterModule.forChild(genreRoutes)],
-  exports: [GenreComponent],
+  exports: [GenreComponent]
 })
 export class GenreRoutingModule {}

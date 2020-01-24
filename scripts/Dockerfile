@@ -8,15 +8,11 @@ RUN pip install pywikibot
 COPY ["./data_extraction/", "/app/data_extraction"]
 COPY ["./user-config.py", "/app"]
 COPY ["./languageconfig.csv/", "/app"]
-COPY ["./language_helper.py/", "/app"]
-
-COPY ["./user-config.py", "/app/data_extraction"]
-COPY ["./languageconfig.csv/", "/app/data_extraction"]
-COPY ["./language_helper.py/", "/app/data_extraction"]
+# Comment in if #129 language_helper.py import problem is fixed
+#COPY ["./language_helper.py/", "/app"]
 
 # run ArtOntologyCrawler in development mode
 RUN ["python", "/app/data_extraction/art_ontology_crawler.py", "-d"]
-RUN ls -lah /app/
 
 # ------------------------------------------------
 
@@ -31,8 +27,6 @@ COPY ["./data_manipulation/", "/app/"]
 
 RUN npm install
 
-RUN ls -lah /app/
-
 RUN node script_artworks_rank.js && \
     node script_genres_rank.js && \
     node script_artist_rank.js && \
@@ -42,8 +36,7 @@ RUN node script_artworks_rank.js && \
     node script_motifs_rank.js && \
     node merge_art_data.js
 
-RUN ls -lah /app/
-# -----------------------------------------
+# ------------------------------------------------
 
 FROM python:3 as post_data_ranking
 
@@ -54,29 +47,21 @@ COPY --from=data_ranking /app/art_ontology.json/ /app/crawler_output/
 
 COPY ["./data_manipulation/", "/app/data_manipulation/"]
 COPY --from=Wikicrawler /app/languageconfig.csv/ /app/
-COPY --from=Wikicrawler /app/language_helper.py/ /app/
+# Comment in if #129 language_helper.py import problem is fixed
+#COPY ["./language_helper.py/", "/app"]
 
 COPY ["./upload_to_elasticsearch/", "/app/upload_to_elasticsearch/"]
-
-RUN ls -lah /app/
-RUN ls -lah /app/crawler_output/
 
 RUN pip install elasticsearch requests simplejson ijson
 
 RUN ["python", "data_manipulation/add_youtube_videos.py", "-d"]
 RUN ["python", "data_manipulation/split_languages.py", "-d"]
 
-# art_ontology.json is moved to /root because elasticsearch_helper.py expects the json file in the
-# home directory
+# art_ontology.json is moved to /root because elasticsearch_helper.py 
+# expects the json file in the home directory
 COPY ["./crawler_output/", "/root/crawler_output/"]
 
-RUN tar cfvz crawler_output.tar.gz crawler_output/
-
-RUN ls -lah
-
-#Copy tar to www/html dir after elasticsearch is set up
-
-# -----------------------------------------
+# ------------------------------------------------
 
 FROM docker.elastic.co/elasticsearch/elasticsearch:7.4.2
 
@@ -101,13 +86,9 @@ COPY --chown=elasticsearch:elasticsearch elasticsearch.yml /usr/share/elasticsea
 #copy other necessary files
 COPY --from=post_data_ranking /app/crawler_output/ /app/crawler_output/
 COPY ["./languageconfig.csv/", "/app"]
-COPY ["./language_helper.py/", "/app"]
+# Comment in if #129 language_helper.py import problem is fixed
+#COPY ["./language_helper.py/", "/app"]
 COPY ["./upload_to_elasticsearch/", "/app/upload_to_elasticsearch/"]
-
-
-#move tar.gz to created html dir
-COPY --from=post_data_ranking /app/crawler_output.tar.gz /var/www/html/
 
 RUN ls -lah /app
 RUN ls -lah /app/upload_to_elasticsearch
-RUN ls -lah /var/www/html

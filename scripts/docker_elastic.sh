@@ -4,6 +4,7 @@
 docker rm -f elastic-dev
 
 # build container
+# use the --no-cache option if you want to completely rebuild the image
 docker build -t elastic-dev .
 
 # run container

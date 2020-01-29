@@ -76,7 +76,7 @@ echo -e "\n"
 
 echo "Classes columns / attributes"
 head -1 crawler_output/intermediate_files/csv/classes.csv | sed 's/[^;]//g' | wc -c
-echo "Classes column count"
+echo "Classes row count"
 wc -l crawler_output/intermediate_files/csv/classes.csv | awk '{print $1-1}'
 
 echo "Throttle count by server with 5 seconds"

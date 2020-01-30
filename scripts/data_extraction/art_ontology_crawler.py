@@ -6,7 +6,7 @@ This is done by the user-config.py in the scripts directory.
 
 Execute crawling using
 extract_art_ontology()
-This may take several hours.
+This may take several days.
 """
 
 import pywikibot
@@ -23,7 +23,7 @@ DEV = False
 DEV_LIMIT = 10
 
 
-def get_abstract(page_id, language_code="en"):
+def get_abstract(page_id, language_code):
     """Extracts the abstract for a given page_id and language
 
     page_id -- The wikipedia internal page id. This can be received from pywikibot pages.
@@ -42,11 +42,11 @@ def get_abstract(page_id, language_code="en"):
 def language_config_to_list(
     config_file=Path(__file__).parent.parent.absolute() / "languageconfig.csv",
 ):
-    """[Reads languageconfig.csv and returns array that contains its
-    full contents]
+    """Reads languageconfig.csv and returns array that contains its
+    full contents
 
     Returns:
-        [list] -- [contents of languageconfig.csv as list]
+        list -- contents of languageconfig.csv as list
     """
     languageValues = []
     with open(config_file, encoding="utf-8") as file:
@@ -60,15 +60,16 @@ def language_config_to_list(
 def extract_artworks(
     type_name, wikidata_id, languageKeys=[item[0] for item in language_config_to_list()]
 ):
-    """Extracts artworks metadata from Wikidata and stores them in a *.csv file.
+    """Extracts artworks metadata from Wikidata and stores them in a dictionary.
 
     type_name -- e.g., 'drawings', will be used as filename
     wikidata_id -- e.g., 'wd:Q93184' Wikidata ID of a class; all instances of this class and all subclasses with label, artist, and image will be loaded.
+    languageKeys -- e.g, list('en', 'de')
 
     Examples:
-    extract_artworks('drawings', 'wd:Q93184')
-    extract_artworks('sculptures', 'wd:Q860861')
-    extract_artworks('paintings', 'wd:Q3305213')
+    extract_artworks('drawings', 'wd:Q93184', '('en', 'de'))
+    extract_artworks('sculptures', 'wd:Q860861', '('en', 'de'))
+    extract_artworks('paintings', 'wd:Q3305213', '('en', 'de'))
     """
     print(datetime.datetime.now(), "Starting with", type_name)
     QUERY = (
@@ -213,20 +214,21 @@ def extract_artworks(
 def extract_subjects(
     subject_type, languageKeys=[item[0] for item in language_config_to_list()]
 ):
-    """Extracts metadata from Wikidata of a certain subject type and stores them in a *.csv file
+    """Extracts metadata from Wikidata of a certain subject type and stores them in a dictionary.
 
     subject_type -- one of 'genres', 'movements', 'materials', 'motifs', 'artists', 'locations'. Will be used as filename
+    languageKeys -- e.g, list('en', 'de')
 
     Precondition: Files 'paintings.csv', 'drawings.csv', 'sculptures.csv' must have been created before (function extract_artworks).
     Metadata for artworks in theses files will be stored.
 
     Examples:
-    extract_subjects('genres')
-    extract_subjects('movements')
-    extract_subjects('materials')
-    extract_subjects('motifs')
-    extract_subjects('artists')
-    extract_subjects('locations')
+    extract_subjects('genres', list('en', 'de'))
+    extract_subjects('movements', list('en', 'de'))
+    extract_subjects('materials', list('en', 'de'))
+    extract_subjects('motifs', list('en', 'de'))
+    extract_subjects('artists', list('en', 'de'))
+    extract_subjects('locations', list('en', 'de'))
     """
     print(datetime.datetime.now(), "Starting with", subject_type)
     subjects = set()
@@ -500,7 +502,7 @@ def extract_classes():
 def extract_class(
     cls, class_dict, repo, languageKeys=[item[0] for item in language_config_to_list()]
 ):
-    """Extracts metadata of a class and it superclasses from Wikidata and stores them in a dictionary
+    """Extracts metadata of a class and it superclasses from Wikidata and stores them in a dictionary.
 
     cls -- ID of a Wikidata class
     class_dict -- dictionary with Wikidata ID as key and a dict of class attributes as value; will be updated
@@ -553,7 +555,9 @@ def extract_class(
 
 
 def merge_artworks():
-    """Merges artworks from files 'paintings.json', 'drawings.json', 'sculptures.json' (function extract_artworks) and stores them in a new file artworks.json and artworks.csv
+    """ Merges artworks from files 'paintings.json', 'drawings.json', 
+        'sculptures.json' (function extract_artworks) and 
+        stores them in a dictionary.
     """
     print(datetime.datetime.now(), "Starting with", "merging artworks")
     artworks = set()
@@ -584,6 +588,7 @@ def merge_artworks():
 
 
 def get_fields(type_name, languageKeys=[item[0] for item in language_config_to_list()]):
+    """ Returns all fields / columns for a specific type, e. g. 'artworks' """
     fields = ["id", "classes", "label", "description", "image"]
     for langkey in languageKeys:
         fields += [
@@ -635,6 +640,7 @@ def get_fields(type_name, languageKeys=[item[0] for item in language_config_to_l
 
 
 def generate_csv(name, extract_dicts, fields, filename):
+    """ Generates a csv file from a dictionary """
     filename.parent.mkdir(parents=True, exist_ok=True)
     with open(filename.with_suffix(".csv"), "w", newline="", encoding="utf-8") as file:
         writer = csv.DictWriter(file, fieldnames=fields, delimiter=";", quotechar='"')
@@ -644,6 +650,7 @@ def generate_csv(name, extract_dicts, fields, filename):
 
 
 def generate_json(name, extract_dicts, filename):
+    """ Generates a JSON file from a dictionary """
     if len(extract_dicts) == 0:
         return
     filename.parent.mkdir(parents=True, exist_ok=True)
@@ -658,7 +665,7 @@ def generate_json(name, extract_dicts, filename):
 
 
 def extract_art_ontology():
-    """Extracts *.csv files and a *.ttl file with metadata for artworks from Wikidata"""
+    """ Extracts *.csv and *.JSON files for artworks from Wikidata """
 
     for artwork, wd in [
         ("drawings", "wd:Q93184"),

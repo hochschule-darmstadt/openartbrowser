@@ -8,9 +8,9 @@ WD=$(pwd)
 DATE=$(date +%T_%d-%m-%Y) # German format
 SERVERNAME=$(uname -n)
 
-trap "curl -F file=@${WD}/update_production.log -F \"initial_comment=Oops! Something went wrong while updating the production server on server ${SERVERNAME}. Here is the log file: \" -F channels=CRGEZJVA6 -H \"Authorization: Bearer ${TOKEN}\" https://slack.com/api/files.upload" ERR
+trap "curl -F file=@${WD}/update_production.log -F \"initial_comment=Oops! Something went wrong while updating the production server on server ${SERVERNAME}. Here is the log file: \" -F channels=CSY0DLRDG -H \"Authorization: Bearer ${TOKEN}\" https://slack.com/api/files.upload" ERR
 
-curl -X POST https://slack.com/api/chat.postMessage -H "Authorization: Bearer ${TOKEN}" -H 'Content-type: application/json' --data '{"channel":"CRGEZJVA6","text":"The update-production-server process is starting on server '${SERVERNAME}' current date is '${DATE}'","as_user":"true"}'
+curl -X POST https://slack.com/api/chat.postMessage -H "Authorization: Bearer ${TOKEN}" -H 'Content-type: application/json' --data '{"channel":"CSY0DLRDG","text":"The update-production-server process is starting on server '${SERVERNAME}' current date is '${DATE}'","as_user":"true"}'
 
 # Remove old archive from last run -f avoid error when file is not existing
 rm -f crawler_output.tar.gz
@@ -30,4 +30,4 @@ mv /var/www/html /var/www/html_$DATE && cp -R /var/sftp/deployment/ /var/www/htm
 rm -r $LOCKFILE
 
 FINISHED_DATE=$(date +%T_%d-%m-%Y)
-curl -F file=@${WD}/update_production.log -F "initial_comment=update-production-server process finished on server ${SERVERNAME} at ${FINISHED_DATE}. The lockfile was removed. Here is the log file" -F channels=CRGEZJVA6 -H "Authorization: Bearer ${TOKEN}" https://slack.com/api/files.upload
+curl -F file=@${WD}/update_production.log -F "initial_comment=update-production-server process finished on server ${SERVERNAME} at ${FINISHED_DATE}. The lockfile was removed. Here is the log file" -F channels=CSY0DLRDG -H "Authorization: Bearer ${TOKEN}" https://slack.com/api/files.upload

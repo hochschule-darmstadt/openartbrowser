@@ -1,13 +1,11 @@
-import {
-  AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild
-} from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { interval, Observable, Subject } from 'rxjs';
 import { SearchService, TagItem } from 'src/app/core/services/search.service';
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 import { Router } from '@angular/router';
 import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
 import { Entity, EntityType } from '../../models/models';
-import {Angulartics2} from 'angulartics2';
+import { Angulartics2 } from 'angulartics2';
 
 @Component({
   selector: 'app-search',
@@ -16,7 +14,6 @@ import {Angulartics2} from 'angulartics2';
   providers: [SearchService]
 })
 export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
-
   @ViewChild('input', { static: false })
   inputRef: ElementRef;
 
@@ -31,11 +28,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   isHeaderSearch = false;
 
   /** Array of all placeholder values */
-  placeholderArray: string[] = [
-    '"Mona Lisa"',
-    '"Vincent van Gogh"',
-    '"Renaissance"',
-  ];
+  placeholderArray: string[] = ['"Mona Lisa"', '"Vincent van Gogh"', '"Renaissance"'];
 
   /** Counter of placeholderArray */
   counter = 0;
@@ -54,11 +47,11 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     private searchService: SearchService,
     private router: Router,
     private cdRef: ChangeDetectorRef,
-    private angulartics2: Angulartics2) {
-  }
+    private angulartics2: Angulartics2
+  ) {}
 
   ngOnInit() {
-    this.searchService.$searchItems.pipe(takeUntil(this.ngUnsubscribe)).subscribe((items) => {
+    this.searchService.$searchItems.pipe(takeUntil(this.ngUnsubscribe)).subscribe(items => {
       this.searchItems = items;
     });
   }
@@ -66,7 +59,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   ngAfterViewInit() {
     this.placeholderArray.unshift(this.inputRef.nativeElement.placeholder);
     const inv = interval(8000);
-    inv.pipe(takeUntil(this.ngUnsubscribe)).subscribe((val) => this.changePlaceholdertext());
+    inv.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val => this.changePlaceholdertext());
     this.cdRef.detectChanges();
   }
 
@@ -98,12 +91,12 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   public search = (text$: Observable<string>) =>
     text$.pipe(
       debounceTime(200),
-      switchMap(async (term) => {
+      switchMap(async term => {
         if (term === '') {
           return [];
         }
         let entities = await this.dataService.findByLabel(term.toLowerCase());
-        entities = entities.filter((v) => v.label.toLowerCase().indexOf(term.toLowerCase()) > -1);
+        entities = entities.filter(v => v.label.toLowerCase().indexOf(term.toLowerCase()) > -1);
 
         // sort results by rank and modify rank by whether it starts with search term
         entities = this.sortSearchResultsByRank(entities, term);
@@ -118,7 +111,11 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
         if (entities.length === 0) {
           this.angulartics2.eventTrack.next({
             action: 'trackSiteSearch',
-            properties: { category: 'Auto suggest', keyword: term, searchCount: 0 },
+            properties: {
+              category: 'Auto suggest',
+              keyword: term,
+              searchCount: 0
+            }
           });
         }
 
@@ -130,16 +127,13 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param entities results which should be sorted
    */
   sortSearchResultsByRank(entities: Entity[], term: string): Entity[] {
-    return entities.sort(
-      (left, right): any => {
-        const currentRankOfLeft = updateRelativeRank(left, term);
-        const currentRankOfRight =  updateRelativeRank(right, term);
+    return entities.sort((left, right): any => {
+      const currentRankOfLeft = updateRelativeRank(left, term);
+      const currentRankOfRight = updateRelativeRank(right, term);
 
-        return currentRankOfRight > currentRankOfLeft ? 1 : currentRankOfRight < currentRankOfLeft ? -1 : 0;
-      }
-    );
+      return currentRankOfRight > currentRankOfLeft ? 1 : currentRankOfRight < currentRankOfLeft ? -1 : 0;
+    });
   }
-
 
   /** select up to 10 results from entities, distributes over all categories
    * @param entities results out of which should be selected
@@ -213,15 +207,15 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   groupSearchResultsByType(entities: Entity[]): Entity[] {
     let types = [];
-    entities.forEach(function (entity) {
+    entities.forEach(function(entity) {
       if (!types.includes(entity.type)) {
         types.push(entity.type);
       }
     });
 
     let entitiesResorted = [];
-    types.forEach(function (type) {
-      entities.forEach(function (entity) {
+    types.forEach(function(type) {
+      entities.forEach(function(entity) {
         if (entity.type == type) {
           entitiesResorted.push(entity);
         }
@@ -239,7 +233,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
       movement: [],
       genre: [],
       material: [],
-      location: [],
+      location: []
     };
     for (const item of this.searchItems) {
       switch (item.type) {
@@ -304,19 +298,19 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
       // Track search keyword
       this.angulartics2.eventTrack.next({
         action: 'trackSiteSearch',
-        properties: { category: 'Auto suggest', keyword: term },
+        properties: { category: 'Auto suggest', keyword: term }
       });
       // Track navigation
       this.angulartics2.eventTrack.next({
         action: 'Search suggestion',
-        properties: { category: 'Navigation' },
+        properties: { category: 'Navigation' }
       });
       return;
     } else {
       this.searchService.addSearchTag({
         label: $event.item.label,
         type: $event.item.type,
-        id: $event.item.id,
+        id: $event.item.id
       });
       $event.preventDefault();
     }
@@ -326,18 +320,19 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   /** perform search with the current chips.
    * if there is exactly one entity chip, redirect to that entity page.
    * if there is more than 1 chip or the chip is a term, redirect to search result page.
-   **/
+   */
   performSearch() {
     if (this.searchItems.length === 0) {
       return;
     }
     const item = this.searchItems[0];
     if (this.searchItems.length === 1 && item.type) {
-      let url = `/${item.type}/${item.id}`;
-      this.router.navigate([url]);
+      const url = `/${item.type}/${item.id}`;
+      this.router.navigate([url]).then(() => {});
       return;
     }
-    this.router.navigate(['/search'], { queryParams: this.buildQueryParams() });
+
+    this.router.navigate(['/search'], { queryParams: this.buildQueryParams() }).then(() => {});
     return;
   }
 
@@ -345,7 +340,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
    * perform search.
    * If search is prevented due to a select event in the slider, do nothing because
    * event is already handled in itemSelected
-   **/
+   */
   public searchTriggered() {
     if (this.preventSearch) {
       return;
@@ -354,7 +349,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
       this.searchService.addSearchTag({
         label: this.searchInput,
         type: null,
-        id: null,
+        id: null
       });
     }
     this.performSearch();
@@ -390,18 +385,22 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 }
 
-const hasLeadingWhiteSpace = (text, index) => text.toLowerCase().charAt(index - 1).match(/\S/)
+const hasLeadingWhiteSpace = (text, index) =>
+  text
+    .toLowerCase()
+    .charAt(index - 1)
+    .match(/\S/);
 
-const getIndexOfTerm = (text, term) => text.toLowerCase().indexOf(term.toLowerCase())
+const getIndexOfTerm = (text, term) => text.toLowerCase().indexOf(term.toLowerCase());
 
-const isTermInitial = (text, term) => getIndexOfTerm(text, term) === 0
+const isTermInitial = (text, term) => getIndexOfTerm(text, term) === 0;
 
 const updateRelativeRank = (obj, term) => {
-  let currentRank = obj.relativeRank; 
+  let currentRank = obj.relativeRank;
   if (isTermInitial(obj.label, term)) {
     currentRank *= 2;
   } else if (hasLeadingWhiteSpace(obj.label, getIndexOfTerm(obj.label, term))) {
     currentRank *= 0.5;
   }
-  return currentRank
-}
+  return currentRank;
+};

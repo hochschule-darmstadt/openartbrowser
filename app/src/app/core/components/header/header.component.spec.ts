@@ -10,7 +10,7 @@ import { SlideComponent } from 'src/app/shared/components/carousel/slide/slide.c
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { DataService } from '../../services/elasticsearch/data.service';
-import {Angulartics2RouterlessModule} from 'angulartics2/routerlessmodule';
+import { Angulartics2RouterlessModule } from 'angulartics2/routerlessmodule';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
@@ -18,23 +18,9 @@ describe('HeaderComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        NgbModule,
-        FormsModule,
-        HttpClientModule,
-        RouterModule.forRoot([]),
-        Angulartics2RouterlessModule.forRoot()
-      ],
-      declarations: [
-        HeaderComponent,
-        SearchComponent,
-        SearchResultComponent,
-        SlideComponent,
-        CarouselComponent
-      ],
-      providers: [
-        DataService,
-      ]
+      imports: [NgbModule, FormsModule, HttpClientModule, RouterModule.forRoot([]), Angulartics2RouterlessModule.forRoot()],
+      declarations: [HeaderComponent, SearchComponent, SearchResultComponent, SlideComponent, CarouselComponent],
+      providers: [DataService]
     }).compileComponents();
   }));
 

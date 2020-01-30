@@ -7,10 +7,9 @@ import { Entity } from '../../models/models';
   styleUrls: ['./title.component.scss']
 })
 export class TitleComponent implements OnInit {
-
   @Input() entity: Entity;
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
     this.checkRequiredFields();

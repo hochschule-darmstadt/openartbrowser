@@ -11,8 +11,7 @@
 
           <div class="col-md-9 pl-0 info" *ngIf="result?.items">
             <p class="mb-1">
-              <span *ngFor="let item of result?.items" class="badge badge-pill badge-secondary first-letter chip"
-                [routerLink]="['/' + result?.key, item?.id]">
+              <span *ngFor="let item of result?.items" class="badge badge-pill badge-secondary first-letter chip" [routerLink]="['/' + result?.key, item?.id]">
                 <i class="fas fa-{{ result?.icon }}"></i>
                 {{ item?.label }}
               </span>
@@ -42,5 +41,5 @@
       </div>
     </div>
   </div>
-  <app-slider [items]="sliderItems" heading="Artworks"> </app-slider>
+  <app-slider [items]="sliderItems" heading="Artworks"></app-slider>
 </div>

@@ -1,7 +1,6 @@
 <div *ngIf="items?.length > 0" class="timeline-container">
   <div class="custom-slider">
-    <ng5-slider id="ng5slider" [(value)]="value" [options]="options"
-                (valueChange)="onSliderMoved()"></ng5-slider>
+    <ng5-slider id="ng5slider" [(value)]="value" [options]="options" (valueChange)="onSliderMoved()"></ng5-slider>
   </div>
   <div class="carou">
     <div class="carou-control" (click)="prevClicked()">
@@ -10,31 +9,37 @@
     <!-- container for content of the carousel -->
     <div class="carou-content">
       <!-- container for all x items -->
-      <div [@slideNext]="slideOutRight ? 'out' : 'in'" (@slideNext.start)="resetSlideAnimation()"
-           [@slidePrev]="slideOutLeft ? 'out' : 'in'" (@slidePrev.start)="resetSlideAnimation()"
-           *ngFor="let item of items |slice:slideStart:slideEnd"
-           class="item-container">
-        <a class="item" [routerLink]="item?.type === 'artist'? ['/artist', item?.id] :['/artwork', item?.id]"
-        angulartics2On="click" angularticsCategory="Navigation" angularticsAction="Timeline">
+      <div
+        [@slideNext]="slideOutRight ? 'out' : 'in'"
+        (@slideNext.start)="resetSlideAnimation()"
+        [@slidePrev]="slideOutLeft ? 'out' : 'in'"
+        (@slidePrev.start)="resetSlideAnimation()"
+        *ngFor="let item of items | slice: slideStart:slideEnd"
+        class="item-container"
+      >
+        <a
+          class="item"
+          [routerLink]="item?.type === 'artist' ? ['/artist', item?.id] : ['/artwork', item?.id]"
+          angulartics2On="click"
+          angularticsCategory="Navigation"
+          angularticsAction="Timeline"
+        >
           <!-- Div for centering the image -->
           <div *ngIf="item?.date" class="item-caption"></div>
           <!-- container for image and hover description -->
-          <div class="overlay-container" [ngClass]="(item?.date)?'overlay-container-caption':''">
+          <div class="overlay-container" [ngClass]="item?.date ? 'overlay-container-caption' : ''">
             <img
               class=" img_self"
               src="{{ item?.imageSmall }}"
               alt="{{ item?.label }}"
               (error)="onLoadingError(item)"
-              [ngClass]="item?.type == 'artist' ? 'rounded-circle':''"
+              [ngClass]="item?.type == 'artist' ? 'rounded-circle' : ''"
             />
-            <div class="overlay_view" [ngClass]="item?.type == 'artist' ? 'rounded-circle':''">
+            <div class="overlay_view" [ngClass]="item?.type == 'artist' ? 'rounded-circle' : ''">
               <span class="img_description">{{ item?.label }}</span>
             </div>
           </div>
-          <div *ngIf="item?.date"
-               [textContent]="item?.type === 'artist'? item?.description : item?.date"
-               class="center item-caption">
-          </div>
+          <div *ngIf="item?.date" [textContent]="item?.type === 'artist' ? item?.description : item?.date" class="center item-caption"></div>
         </a>
       </div>
     </div>
@@ -43,4 +48,4 @@
     </div>
   </div>
 </div>
-<hr>
+<hr />

@@ -1,11 +1,12 @@
-import {Component, OnInit, OnDestroy, HostListener} from '@angular/core';
-import {Artwork, EntityType, EntityIcon} from 'src/app/shared/models/models';
-import {takeUntil} from 'rxjs/operators';
-import {ActivatedRoute} from '@angular/router';
-import {Subject} from 'rxjs';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Artwork, EntityType, EntityIcon } from 'src/app/shared/models/models';
+import { takeUntil } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
+import { Subject } from 'rxjs';
 import * as _ from 'lodash';
-import {DataService} from 'src/app/core/services/elasticsearch/data.service';
-import {shuffle} from 'src/app/core/services/utils.service';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
+import { shuffle } from 'src/app/core/services/utils.service';
+import { usePlural } from 'src/app/shared/models/entity.interface';
 
 /** interface for the tabs */
 interface ArtworkTab {
@@ -18,10 +19,18 @@ interface ArtworkTab {
 @Component({
   selector: 'app-artwork',
   templateUrl: './artwork.component.html',
-  styleUrls: ['./artwork.component.scss'],
-  host: {'window:beforeunload': 'doSomething'},
+  styleUrls: ['./artwork.component.scss']
 })
 export class ArtworkComponent implements OnInit, OnDestroy {
+  /* TODO:REVIEW
+    Similiarities in every page-Component:
+    - variables: ngUnsubscribe, collapse (here: detailsCollapsed), dataService, route
+    - ngOnDestroy, calculateCollapseState, ngOnInit
+
+    1. Use Inheritance (Root-Page-Component) or Composition
+    2. Inject entity instead of artwork
+  */
+
   /**
    * @description the entity this page is about.
    */
@@ -68,17 +77,12 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   /** a video was found */
   videoExists = false;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {
-  }
+  constructor(private dataService: DataService, private route: ActivatedRoute) {}
 
   /**
    * @description hook that is executed at component initialization
    */
   ngOnInit() {
-    this.route.params.subscribe(() => {
-      this.videoExists = false;
-    });
-
     // define tabs if not set
     if (!this.artworkTabs || !this.artworkTabs.length) {
       this.addTab(EntityType.ALL, true);
@@ -91,17 +95,18 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     }
 
     /** Extract the id of entity from URL params. */
-    this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
+    this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
       /* reset properties */
+      this.videoExists = false;
       this.artwork = this.hoveredArtwork = this.hoveredArtwork = null;
       this.imageHidden = this.modalIsVisible = this.commonTagsCollapsed = false;
       this.detailsCollapsed = true;
       // clears items of all artwork tabs
-      this.artworkTabs.forEach((tab: ArtworkTab) => tab.items = []);
+      this.artworkTabs.forEach((tab: ArtworkTab) => (tab.items = []));
 
       /** Use data service to fetch entity from database */
       const artworkId = params.get('artworkId');
-      this.artwork = await this.dataService.findById<Artwork>(artworkId, EntityType.ARTWORK) as Artwork;
+      this.artwork = (await this.dataService.findById<Artwork>(artworkId, EntityType.ARTWORK)) as Artwork;
 
       if (this.artwork) {
         /* Count meta data to show more on load */
@@ -160,32 +165,33 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     Promise.all(
       /** load related data for each tab  */
       this.artworkTabs.map(async (tab: ArtworkTab) => {
-        const types = tab.type + 's';
         if (tab.type === EntityType.ALL) {
           return;
         }
 
+        const types = usePlural(tab.type);
+
         // load entities
-        this.dataService.findMultipleById(this.artwork[types] as any, tab.type)
-          .then((artists) => {
-            this.artwork[types] = artists;
-          });
+        this.dataService.findMultipleById(this.artwork[types] as any, tab.type).then(artists => {
+          this.artwork[types] = artists;
+        });
         // load related artworks by type
-        return await this.dataService.findArtworksByType(types, this.artwork[types] as any)
-          .then((artworks) => {
-            // filters and shuffles main artwork out of tab items,
-            tab.items = shuffle(artworks.filter((artwork) => artwork.id !== this.artwork.id));
-            // put items into 'all' tab
-            allTab.items.push(...tab.items.slice(0, 10));
-          });
+        return await this.dataService.findArtworksByType(tab.type, this.artwork[types] as any).then(artworks => {
+          // filters and shuffles main artwork out of tab items,
+          tab.items = shuffle(artworks.filter(artwork => artwork.id !== this.artwork.id));
+          // put items into 'all' tab
+          allTab.items.push(...tab.items.slice(0, 10));
+        });
       })
-    ).then(() =>
-      // filter duplicates and shuffles it
-      allTab.items = shuffle(Array.from(new Set(allTab.items)))
+    ).then(
+      () =>
+        // filter duplicates and shuffles it
+        (allTab.items = shuffle(Array.from(new Set(allTab.items))))
     );
   }
 
-  /** calculates the size of meta data item section
+  /** Decides whether to show the 'more' section or not based on the amount of available data:
+   * calculates the size of meta data item section
    * every attribute: +3
    * if attribute is array and size > 3 -> + arraylength
    */
@@ -213,7 +219,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     }
     if (this.artwork.height && this.artwork.width) {
       metaNumber += 3;
-
     }
     if (!_.isEmpty(this.artwork.iconclasses.filter(Boolean))) {
       metaNumber += this.artwork.iconclasses.length > 3 ? this.artwork.iconclasses.length : 3;
@@ -229,7 +234,12 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    * @param active Is active tab
    */
   private addTab(type: EntityType, active: boolean = false) {
-    this.artworkTabs.push({active, icon: EntityIcon[type.toUpperCase()], type, items: []});
+    this.artworkTabs.push({
+      active,
+      icon: EntityIcon[type.toUpperCase()],
+      type,
+      items: []
+    });
   }
 
   videoFound(event) {

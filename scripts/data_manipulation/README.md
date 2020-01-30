@@ -1,11 +1,13 @@
 ## Requirements
 
 To install the required node.js packages for the ranking scripts use following command in this directory:
+
 > npm install
 
 This will install every need dependency (see package.json)
 
 Also the python requirements have to installed by using following command in the script directory:
+
 > pip3 install -r requirements.txt
 
 ## Execution
@@ -18,15 +20,15 @@ The execution order of the other ranking script doesn't matter
 
 > node ../data_manipulation/script_genres_rank.js
 
-> node ../data_manipulation/script_artist_rank.js 
+> node ../data_manipulation/script_artist_rank.js
 
 > node ../data_manipulation/script_locations_rank.js
 
-> node ../data_manipulation/script_materials_rank.js 
+> node ../data_manipulation/script_materials_rank.js
 
-> node ../data_manipulation/script_movements_rank.js 
+> node ../data_manipulation/script_movements_rank.js
 
-> node ../data_manipulation/script_objects_rank.js 
+> node ../data_manipulation/script_objects_rank.js
 
 The next step is merging all files into one:
 
@@ -40,6 +42,6 @@ At the end split the art_ontology.json into language files
 
 > python3 ../data_manipulation/split_languages.py
 
-All intermediate files (*.json) have to be located in /crawler_output/intermediate_files/json otherwise there will be errors.
+All intermediate files (\*.json) have to be located in /crawler_output/intermediate_files/json otherwise there will be errors.
 
 Further information can be found [here](https://github.com/hochschule-darmstadt/openartbrowser/wiki/System-architecture#data-transformation-ranking-for-elasticsearch-and-merging-intermediate-json-files)

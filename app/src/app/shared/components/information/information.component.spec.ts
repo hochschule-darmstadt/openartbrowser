@@ -11,10 +11,9 @@ describe('InformationComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ NgbModule,  RouterModule.forRoot([])],
-      declarations: [ InformationComponent, BadgeComponent ]
-    })
-    .compileComponents();
+      imports: [NgbModule, RouterModule.forRoot([])],
+      declarations: [InformationComponent, BadgeComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

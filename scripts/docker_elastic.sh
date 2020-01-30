@@ -4,6 +4,7 @@
 docker rm -f elastic-dev
 
 # build container
+# use the --no-cache option if you want to completely rebuild the image
 docker build -t elastic-dev .
 
 # run container
@@ -19,4 +20,4 @@ do
 done
 
 # run elastic.py script inside the container
-docker exec elastic-dev python3 /app/elasticsearch_helper.py /master_flat.json
+docker exec elastic-dev python3 /app/upload_to_elasticsearch/elasticsearch_helper.py /app/crawler_output/art_ontology.json

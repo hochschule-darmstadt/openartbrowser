@@ -7,13 +7,13 @@ import { ImpressComponent } from './impress.component';
 const impressRoutes: Routes = [
   {
     path: '',
-    component: ImpressComponent,
-  },
+    component: ImpressComponent
+  }
 ];
 
 @NgModule({
   declarations: [ImpressComponent],
   imports: [CommonModule, SharedModule, RouterModule.forChild(impressRoutes)],
-  exports: [ImpressComponent],
+  exports: [ImpressComponent]
 })
 export class ImpressRoutingModule {}

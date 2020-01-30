@@ -5,15 +5,16 @@
     (mouseleave)="this.itemHover.emit(null)"
     class="mb-4 col-sm-3 mt-auto mb-auto item-container"
   >
-    <a *ngIf="slide.loadContent" class="item" [routerLink]="['/artwork', item?.id]" angulartics2On="click"
-         angularticsAction="Carousel" angularticsCategory="Navigation">
+    <a
+      *ngIf="slide.loadContent"
+      class="item"
+      [routerLink]="['/artwork', item?.id]"
+      angulartics2On="click"
+      angularticsAction="Carousel"
+      angularticsCategory="Navigation"
+    >
       <div class="overlay-container">
-        <img
-          class=" img_self"
-          (error)="onLoadingError(item)"
-          src="{{ item?.imageSmall }}"
-          alt="{{ item?.label }}"
-        />
+        <img class=" img_self" (error)="onLoadingError(item)" src="{{ item?.imageSmall }}" alt="{{ item?.label }}" />
         <div class="overlay_view">
           <span class="img_description">{{ item?.label }}</span>
         </div>

@@ -1,18 +1,27 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {Artist, Artwork, EntityType, Movement} from 'src/app/shared/models/models';
-import {DataService} from 'src/app/core/services/elasticsearch/data.service';
-import {ActivatedRoute} from '@angular/router';
-import {takeUntil} from 'rxjs/operators';
-import {Subject} from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Artist, Artwork, EntityType, Movement } from 'src/app/shared/models/models';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
+import { ActivatedRoute } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import * as _ from 'lodash';
-import {shuffle} from 'src/app/core/services/utils.service';
+import { shuffle } from 'src/app/core/services/utils.service';
 
 @Component({
   selector: 'app-artist',
   templateUrl: './artist.component.html',
-  styleUrls: ['./artist.component.scss'],
+  styleUrls: ['./artist.component.scss']
 })
 export class ArtistComponent implements OnInit, OnDestroy {
+  /* TODO:REVIEW
+    Similiarities in every page-Component:
+    - variables: ngUnsubscribe, collapse, sliderItems, dataService, route
+    - ngOnDestroy, calculateCollapseState, ngOnInit
+
+    1. Use Inheritance (Root-Page-Component) or Composition
+    2. Inject entity instead of artist
+  */
+
   /** The entity this page is about */
   artist: Artist = null;
   /** Related artworks */
@@ -28,8 +37,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
   /** a video was found */
   videoExists = false;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {
-  }
+  constructor(private dataService: DataService, private route: ActivatedRoute) {}
 
   /** hook that is executed at component initialization */
   ngOnInit() {
@@ -37,20 +45,17 @@ export class ArtistComponent implements OnInit, OnDestroy {
       this.videoExists = false;
     });
     /** Extract the id of entity from URL params. */
-    this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
+    this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
       const artistId = params.get('artistId');
       /** Use data service to fetch entity from database */
       this.artist = await this.dataService.findById<Artist>(artistId, EntityType.ARTIST);
 
       /** load slider items */
-      this.dataService.findArtworksByType('artists', [this.artist.id])
-        .then(artworks => this.sliderItems = shuffle(artworks));
+      this.dataService.findArtworksByType(EntityType.ARTIST, [this.artist.id]).then(artworks => (this.sliderItems = shuffle(artworks)));
       /** dereference movements  */
-      this.dataService.findMultipleById(this.artist.movements as any, EntityType.MOVEMENT)
-        .then(movements => this.artist.movements = movements);
+      this.dataService.findMultipleById(this.artist.movements as any, EntityType.MOVEMENT).then(movements => (this.artist.movements = movements));
       /** dereference influenced_bys */
-      this.dataService.findMultipleById(this.artist.influenced_by as any, EntityType.ARTIST)
-        .then(influences => this.artist.influenced_by = influences);
+      this.dataService.findMultipleById(this.artist.influenced_by as any, EntityType.ARTIST).then(influences => (this.artist.influenced_by = influences));
 
       /* Count meta data to show more on load */
       this.aggregatePictureMovementsToArtist();
@@ -66,7 +71,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
    */
   private aggregatePictureMovementsToArtist() {
     const allMovements: Partial<Movement>[] = [];
-    this.dataService.findArtworksByType('artists', [this.artist.id]).then((artworks) => {
+    this.dataService.findArtworksByType(EntityType.ARTIST, [this.artist.id]).then(artworks => {
       artworks.forEach(artwork => {
         artwork.movements.forEach(movement => {
           if (movement !== '') {
@@ -74,7 +79,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
           }
         });
       });
-      this.dataService.findMultipleById(allMovements as any, EntityType.MOVEMENT).then((movements) => {
+      this.dataService.findMultipleById(allMovements as any, EntityType.MOVEMENT).then(movements => {
         movements.forEach(movement => {
           this.artist.movements.push(movement);
         });

@@ -15,18 +15,14 @@ import { TitleComponent } from 'src/app/shared/components/title/title.component'
 import { InformationComponent } from 'src/app/shared/components/information/information.component';
 import { AbstractComponent } from 'src/app/shared/components/abstract/abstract.component';
 
+// TODO: we might want to have tests that actually test functionality
 describe('ArtistComponent', () => {
   let component: ArtistComponent;
   let fixture: ComponentFixture<ArtistComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        NgbModule,
-        HttpClientModule,
-        RouterModule.forRoot([]),
-        Ng5SliderModule,
-      ],
+      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([]), Ng5SliderModule],
       declarations: [
         ArtistComponent,
         SlideComponent,
@@ -39,9 +35,7 @@ describe('ArtistComponent', () => {
         VideoComponent,
         CollapseComponent
       ],
-      providers: [
-        DataService,
-      ]
+      providers: [DataService]
     }).compileComponents();
   }));
 

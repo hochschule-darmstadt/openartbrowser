@@ -1,12 +1,12 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {AppComponent} from './app.component';
-import {BrowserModule} from '@angular/platform-browser';
-import {CoreModule} from './core/core.module';
-import {SharedModule} from './shared/shared.module';
-import {HttpClientModule} from '@angular/common/http';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { AppComponent } from './app.component';
+import { BrowserModule } from '@angular/platform-browser';
+import { CoreModule } from './core/core.module';
+import { SharedModule } from './shared/shared.module';
+import { HttpClientModule } from '@angular/common/http';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 /** routes to our feature modules.
  * advantage of routing to modules instead of components: lazy loading.
@@ -14,51 +14,51 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 const routes: Routes = [
   {
     path: '',
-    loadChildren: './pages/home/home.routing.module#HomeRoutingModule',
+    loadChildren: './pages/home/home.routing.module#HomeRoutingModule'
   },
   {
     path: 'impress',
-    loadChildren: './pages/impress/impress.routing.module#ImpressRoutingModule',
+    loadChildren: './pages/impress/impress.routing.module#ImpressRoutingModule'
   },
   {
     path: 'data-protection',
-    loadChildren: './pages/data-protection/data-protection.routing.module#DataProtectionRoutingModule',
+    loadChildren: './pages/data-protection/data-protection.routing.module#DataProtectionRoutingModule'
   },
   {
     path: 'about',
-    loadChildren: './pages/about/about.routing.module#AboutRoutingModule',
+    loadChildren: './pages/about/about.routing.module#AboutRoutingModule'
   },
   {
     path: 'artist/:artistId',
-    loadChildren: './pages/artist/artist.routing.module#ArtistRoutingModule',
+    loadChildren: './pages/artist/artist.routing.module#ArtistRoutingModule'
   },
   {
     path: 'artwork/:artworkId',
-    loadChildren: './pages/artwork/artwork.routing.module#ArtworkRoutingModule',
+    loadChildren: './pages/artwork/artwork.routing.module#ArtworkRoutingModule'
   },
   {
     path: 'genre/:genreId',
-    loadChildren: './pages/genre/genre.routing.module#GenreRoutingModule',
+    loadChildren: './pages/genre/genre.routing.module#GenreRoutingModule'
   },
   {
     path: 'location/:locationId',
-    loadChildren: './pages/location/location.routing.module#LocationRoutingModule',
+    loadChildren: './pages/location/location.routing.module#LocationRoutingModule'
   },
   {
     path: 'material/:materialId',
-    loadChildren: './pages/material/material.routing.module#MaterialRoutingModule',
+    loadChildren: './pages/material/material.routing.module#MaterialRoutingModule'
   },
   {
     path: 'movement/:movementId',
-    loadChildren: './pages/movement/movement.routing.module#MovementRoutingModule',
+    loadChildren: './pages/movement/movement.routing.module#MovementRoutingModule'
   },
   {
     path: 'motif/:motifId',
-    loadChildren: './pages/motif/motif.routing.module#MotifRoutingModule',
+    loadChildren: './pages/motif/motif.routing.module#MotifRoutingModule'
   },
   {
     path: 'search',
-    loadChildren: './pages/search-result/search-result.routing.module#SearchResultRoutingModule',
+    loadChildren: './pages/search-result/search-result.routing.module#SearchResultRoutingModule'
   },
   {
     path: '**',
@@ -75,9 +75,8 @@ const routes: Routes = [
     SharedModule,
     NgbModule,
     BrowserAnimationsModule,
-    RouterModule.forRoot(routes, {scrollPositionRestoration: 'enabled'})
+    RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' })
   ],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent]
 })
-export class AppRoutingModule {
-}
+export class AppRoutingModule {}

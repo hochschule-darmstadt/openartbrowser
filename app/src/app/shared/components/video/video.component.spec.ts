@@ -13,18 +13,9 @@ describe('VideoComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        NgbModule,
-        FormsModule,
-        HttpClientModule,
-        RouterModule.forRoot([])
-      ],
-      declarations: [
-        VideoComponent,
-      ],
-      providers: [
-        DataService,
-      ]
+      imports: [NgbModule, FormsModule, HttpClientModule, RouterModule.forRoot([])],
+      declarations: [VideoComponent],
+      providers: [DataService]
     }).compileComponents();
   }));
 

@@ -1,18 +1,27 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {DataService} from 'src/app/core/services/elasticsearch/data.service';
-import {ActivatedRoute} from '@angular/router';
-import {takeUntil} from 'rxjs/operators';
-import {Movement, Artwork, EntityType} from 'src/app/shared/models/models';
-import {Subject} from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
+import { ActivatedRoute } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
+import { Movement, Artwork, EntityType } from 'src/app/shared/models/models';
+import { Subject } from 'rxjs';
 import * as _ from 'lodash';
-import {shuffle} from 'src/app/core/services/utils.service';
+import { shuffle } from 'src/app/core/services/utils.service';
 
 @Component({
   selector: 'app-movement',
   templateUrl: './movement.component.html',
-  styleUrls: ['./movement.component.scss'],
+  styleUrls: ['./movement.component.scss']
 })
 export class MovementComponent implements OnInit, OnDestroy {
+  /* TODO:REVIEW
+     Similiarities in every page-Component:
+     - variables: ngUnsubscribe, collapse, sliderItems, dataService, route
+     - ngOnDestroy, calculateCollapseState, ngOnInit
+
+     1. Use Inheritance (Root-Page-Component) or Composition
+     2. Inject entity instead of movement
+   */
+
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();
 
@@ -31,8 +40,7 @@ export class MovementComponent implements OnInit, OnDestroy {
   /** a video was found */
   videoExists = false;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {
-  }
+  constructor(private dataService: DataService, private route: ActivatedRoute) {}
 
   /** hook that is executed at component initialization */
   ngOnInit() {
@@ -40,24 +48,27 @@ export class MovementComponent implements OnInit, OnDestroy {
       this.videoExists = false;
     });
     /** Extract the id of entity from URL params. */
-    this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
+    this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
       const movementId = params.get('movementId');
 
       /** Use data service to fetch entity from database */
       this.movement = await this.dataService.findById<Movement>(movementId, EntityType.MOVEMENT);
 
       /** load slider items */
-      await this.dataService.findArtworksByType('movements', [this.movement.id])
-        .then(artworks => this.sliderItems = shuffle(artworks));
+      await this.dataService.findArtworksByType(EntityType.MOVEMENT, [this.movement.id]).then(artworks => (this.sliderItems = shuffle(artworks)));
 
       /** dereference influenced_bys  */
-      this.dataService.findMultipleById(this.movement.influenced_by as any, EntityType.ARTIST)
-        .then(influences => this.movement.influenced_by = influences);
+      this.dataService.findMultipleById(this.movement.influenced_by as any, EntityType.ARTIST).then(influences => (this.movement.influenced_by = influences));
 
       this.calculateCollapseState();
     });
   }
 
+  /** Decides whether to show the 'more' section or not based on the amount of available data:
+   * calculates the size of meta data item section
+   * every attribute: +3
+   * if attribute is array and size > 3 -> + arraylength
+   */
   private calculateCollapseState() {
     let metaNumber = 0;
     if (this.movement.abstract.length > 400) {

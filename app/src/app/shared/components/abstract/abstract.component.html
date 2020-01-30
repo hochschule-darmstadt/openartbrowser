@@ -1,9 +1,8 @@
-<div class="row" *ngIf="entity?.abstract" >
-    <div class="col-md pr-0">
-      <span>{{ entity?.abstract }}</span>
-      <p class="wiki-link" *ngIf="entity?.wikipediaLink" >
-        <ng-container i18n="Detail More label@@more">More</ng-container>:&nbsp;<a
-          href="{{ entity?.wikipediaLink }}" target="_blank">Wikipedia</a>
-      </p>
-    </div>
+<div class="row" *ngIf="entity?.abstract">
+  <div class="col-md pr-0">
+    <span>{{ entity?.abstract }}</span>
+    <p class="wiki-link" *ngIf="entity?.wikipediaLink">
+      <ng-container i18n="Detail More label@@more">More</ng-container>:&nbsp;<a href="{{ entity?.wikipediaLink }}" target="_blank">Wikipedia</a>
+    </p>
   </div>
+</div>

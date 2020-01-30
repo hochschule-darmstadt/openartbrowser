@@ -9,7 +9,7 @@ TOKEN=$(cat bot_user_oauth_token)
 SERVERNAME=$(uname -n)
 
 if ! mkdir $LOCKFILE 2>/dev/null; then
-	curl -X POST https://slack.com/api/chat.postMessage -H "Authorization: Bearer ${TOKEN}" -H 'Content-type: application/json' --data '{"channel":"CRGEZJVA6","text":"Error! Could not acquire the lock file for \"updating the production server\" on server '${SERVERNAME}'! It seems there is already a process running","as_user":"true"}'
+	curl -X POST https://slack.com/api/chat.postMessage -H "Authorization: Bearer ${TOKEN}" -H 'Content-type: application/json' --data '{"channel":"CSY0DLRDG","text":"Error! Could not acquire the lock file for \"updating the production server\" on server '${SERVERNAME}'! It seems there is already a process running","as_user":"true"}'
     exit 1
 fi
 

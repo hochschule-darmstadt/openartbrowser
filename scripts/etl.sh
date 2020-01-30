@@ -8,11 +8,6 @@ WD=$(pwd)
 DATE=$(date +%T_%d-%m-%Y) # German format
 SERVERNAME=$(uname -n)
 
-if ! mkdir $LOCKFILE 2>/dev/null; then
-	curl -X POST https://slack.com/api/chat.postMessage -H "Authorization: Bearer ${TOKEN}" -H 'Content-type: application/json' --data '{"channel":"CRGEZJVA6","text":"Error! Could not acquire lock file for the ETL-process on server '${SERVERNAME}'! It seems there is already a process running","as_user":"true"}'
-    exit 1
-fi
-
 trap "curl -F file=@${WD}/etl.log -F \"initial_comment=Oops! Something went wrong while executing the ETL-process on server ${SERVERNAME}. Here is the log file: \" -F channels=CRGEZJVA6 -H \"Authorization: Bearer ${TOKEN}\" https://slack.com/api/files.upload" ERR
 
 curl -X POST https://slack.com/api/chat.postMessage -H "Authorization: Bearer ${TOKEN}" -H 'Content-type: application/json' --data '{"channel":"CRGEZJVA6","text":"The ETL-process is starting on server '${SERVERNAME}' at '${DATE}'","as_user":"true"}'
@@ -56,4 +51,5 @@ cp crawler_output.tar.gz /var/www/html
 
 rm -r $LOCKFILE
 
-curl -F file=@${WD}/etl.log -F "initial_comment=ETL-process finished on server ${SERVERNAME} at ${DATE}. The lockfile was removed. Here is the log file" -F channels=CRGEZJVA6 -H "Authorization: Bearer ${TOKEN}" https://slack.com/api/files.upload
+FINISHED_DATE=$(date +%T_%d-%m-%Y)
+curl -F file=@${WD}/etl.log -F "initial_comment=ETL-process finished on server ${SERVERNAME} at ${FINISHED_DATE}. The lockfile was removed. Here is the log file" -F channels=CRGEZJVA6 -H "Authorization: Bearer ${TOKEN}" https://slack.com/api/files.upload

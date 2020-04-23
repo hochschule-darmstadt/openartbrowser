@@ -1,7 +1,7 @@
 @ECHO OFF
 REM Batch script for executing ETL. No error handling!
 
-python ".\data_extraction\art_ontology_crawler.py"
+python ".\data_extraction\art_ontology_crawler.py" -d 10
 
 CD crawler_output\intermediate_files\json\
 

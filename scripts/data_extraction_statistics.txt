@@ -1,0 +1,93 @@
+Starting with crawling times
+2020-02-11 11:24:46.083718 Starting with drawings
+2020-02-11 15:16:21.103017 Finished with drawings
+2020-02-11 15:16:21.997779 Starting with sculptures
+2020-02-13 07:45:36.947368 Finished with sculptures
+2020-02-13 07:45:39.926689 Starting with paintings
+2020-02-14 21:41:20.131447 Finished with paintings
+2020-02-14 21:41:34.289530 Starting with genres
+2020-02-14 21:49:43.579808 Finished with genres
+2020-02-14 21:49:43.674258 Starting with movements
+2020-02-14 21:57:16.134596 Finished with movements
+2020-02-14 21:57:16.260712 Starting with materials
+2020-02-14 22:33:52.781259 Finished with materials
+2020-02-14 22:33:53.027461 Starting with motifs
+2020-02-15 12:02:01.197734 Finished with motifs
+2020-02-15 12:02:08.989813 Starting with artists
+2020-02-16 22:21:28.322651 Finished with artists
+2020-02-16 22:21:32.196530 Starting with locations
+2020-02-17 11:01:03.804766 Finished with locations
+2020-02-17 11:01:05.481357 Starting with classes
+2020-02-17 11:31:03.765530 Finished with classes
+2020-02-17 11:31:04.053617 Starting with merging artworks
+2020-02-17 11:31:20.505602 Finished with merging artworks
+Starting output file statistics
+First output is the column count of the csv
+Second output is the object count of the JSON file
+Remember to add + 1 to the JSON files since the type-attribute is added to them e. g. artwork
+Drawings columns / attributes
+41
+Drawings JSON object count
+12422
+
+
+Sculptures columns / attributes
+41
+Sculptures JSON object count
+31041
+
+
+Paintings columns / attributes
+41
+Paintings JSON object count
+142971
+
+
+Artworks columns / attributes
+41
+Artwork JSON object count
+183621
+
+
+Genres columns / attributes
+25
+Genres JSON object count
+327
+
+
+Movements columns / attributes
+26
+Movements JSON object count
+271
+
+
+Materials columns / attributes
+25
+Materials JSON object count
+736
+
+
+Motifs columns / attributes
+25
+Motifs JSON object count
+27912
+
+
+Artists columns / attributes
+43
+Artists JSON object count
+20884
+
+
+Locations columns / attributes
+35
+Locations JSON object count
+7475
+
+
+Classes columns / attributes
+14
+Classes row count
+7153
+Throttle count by server with 5 seconds
+14975

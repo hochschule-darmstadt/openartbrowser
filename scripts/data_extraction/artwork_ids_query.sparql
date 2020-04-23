@@ -1,0 +1,8 @@
+# QID: QID of an artwork category
+SELECT
+?item
+WHERE {
+    ?cls wdt:P279* $QID .
+    ?item wdt:P31 ?cls;
+    wdt:P18 ?image .
+}

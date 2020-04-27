@@ -16,7 +16,8 @@ repos:
     rev: 1.19.1
     hooks:
       - id: prettier
-        exclude: ^package\.json
+        exclude: (^package\.json|.*\.md)
+
   - repo: https://github.com/PyCQA/flake8
     rev: 3.7.9
     hooks:

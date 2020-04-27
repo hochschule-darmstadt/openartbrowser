@@ -5,7 +5,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 
 interface TimelineItem extends Entity {
-  date: number; // represents the value the item is located at in the timeline
+  date: number; // represents the value the item is located in the timeline
 }
 
 @Component({

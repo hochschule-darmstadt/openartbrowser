@@ -5,6 +5,11 @@
 family = "wikidata"
 mylang = "wikidata"
 
+# https://www.mediawiki.org/wiki/Manual:Pywikibot/User-agent
+user_agent_description = (
+    "<nowiki>https://cai-artbrowserstaging.fbi.h-da.de/</nowiki>; bernhard.humm@h-da.de"
+)
+
 # The rest is copied from https://phabricator.wikimedia.org/diffusion/PWBC/browse/master/pywikibot/config2.py
 # This is the config file reader with its default values.
 

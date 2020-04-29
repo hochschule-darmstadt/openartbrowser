@@ -151,6 +151,10 @@ def extract_artworks(
             iconclasses = list(map(lambda clm: clm.getTarget(), clm_dict["P1257"]))
         except:
             iconclasses = []
+        try:
+            main_subjects = list(map(lambda clm: clm.getTarget().id, clm_dict["P921"]))
+        except:
+            main_subjects = []
 
         # print(str(count) + " ", end='')
         dict = {
@@ -170,6 +174,7 @@ def extract_artworks(
             "height": height,
             "width": width,
             "iconclasses": iconclasses,
+            "main_subjects": main_subjects,
         }
 
         # print(classes, item, label, description, image, artists, locations, genres, movements, inception, materials, motifs,  country, height, width)
@@ -246,9 +251,14 @@ def extract_subjects(
         with open(file_name, newline="", encoding="utf-8") as file:
             reader = csv.DictReader(file, delimiter=";", quotechar='"')
             for row in reader:
-                item_subjects = ast.literal_eval(
-                    row[subject_type]
+                item_subjects = list(
+                    ast.literal_eval(row[subject_type])
                 )  # parses list from string
+                if subject_type == "motifs":
+                    main_subjects = list(ast.literal_eval(row["main_subjects"]))
+                    for main_subject in main_subjects:
+                        if main_subject not in item_subjects:
+                            item_subjects.append(main_subject)
                 for subject in item_subjects:
                     subjects.add(subject)
 
@@ -555,8 +565,8 @@ def extract_class(
 
 
 def merge_artworks():
-    """ Merges artworks from files 'paintings.json', 'drawings.json', 
-        'sculptures.json' (function extract_artworks) and 
+    """ Merges artworks from files 'paintings.json', 'drawings.json',
+        'sculptures.json' (function extract_artworks) and
         stores them in a dictionary.
     """
     print(datetime.datetime.now(), "Starting with", "merging artworks")
@@ -610,6 +620,7 @@ def get_fields(type_name, languageKeys=[item[0] for item in language_config_to_l
             "height",
             "width",
             "iconclasses",
+            "main_subjects",
         ]
         for langkey in languageKeys:
             fields += ["country_" + langkey]

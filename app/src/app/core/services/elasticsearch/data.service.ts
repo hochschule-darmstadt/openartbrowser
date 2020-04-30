@@ -1,10 +1,10 @@
 import * as _ from 'lodash';
-import { HttpClient } from '@angular/common/http';
-import { Injectable, Inject, LOCALE_ID } from '@angular/core';
-import { EntityType, Artwork, ArtSearch, Entity, Iconclass, EntityIcon } from 'src/app/shared/models/models';
-import { elasticEnvironment } from 'src/environments/environment';
+import {HttpClient} from '@angular/common/http';
+import {Injectable, Inject, LOCALE_ID} from '@angular/core';
+import {EntityType, Artwork, ArtSearch, Entity, Iconclass, EntityIcon} from 'src/app/shared/models/models';
+import {elasticEnvironment} from 'src/environments/environment';
 import QueryBuilder from './query.builder';
-import { usePlural } from 'src/app/shared/models/entity.interface';
+import {usePlural} from 'src/app/shared/models/entity.interface';
 
 /**
  * Service that handles the requests to the API
@@ -81,6 +81,20 @@ export class DataService {
   }
 
   /**
+   * Find an artwork by movement
+   * @param label artwork label
+   */
+  public findArtworksByMovement(movement: string): Promise<Artwork[]> {
+    const query = new QueryBuilder()
+      .size(20)
+      .sort()
+      .mustMatch('type', 'artwork')
+      .shouldMatch('movements', `${movement}`);
+    return this.performQuery<Artwork>(query);
+  }
+
+
+  /**
    * Returns the artworks that contain all the given arguments.
    * @param searchObj the arguments to search for.
    * @param keywords the list of words to search for.
@@ -100,8 +114,8 @@ export class DataService {
 
     keywords.forEach(keyword =>
       query.mustShouldMatch([
-        { key: 'label', value: keyword },
-        { key: 'description', value: keyword }
+        {key: 'label', value: keyword},
+        {key: 'description', value: keyword}
       ])
     );
     return this.performQuery(query);
@@ -168,7 +182,7 @@ export class DataService {
     const entities: T[] = [];
     _.each(
       data.hits.hits,
-      function(val) {
+      function (val) {
         if (!filterBy || (filterBy && val._source.type == filterBy)) {
           entities.push(this.addThumbnails(val._source));
         }

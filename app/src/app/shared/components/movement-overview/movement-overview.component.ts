@@ -1,8 +1,11 @@
-import {Component, HostListener, OnInit} from '@angular/core';
+import {AfterViewInit, Component, HostListener, OnInit} from '@angular/core';
 import {Entity} from '../../models/entity.interface';
 import {Options} from 'ng5-slider';
+import {DataService} from '../../../core/services/elasticsearch/data.service';
+import {Artwork} from '../../models/artwork.interface';
 
 interface MovementItem extends Entity {
+  artworks: Artwork[]; // holds url to thumbnail images
   start: number; // represents the value the item is located in the timeline
   end: number; // represents the value the item ends in the timeline
   width: number; // width-percentage of this item, injected into css
@@ -13,7 +16,8 @@ interface MovementItem extends Entity {
   templateUrl: './movement-overview.component.html',
   styleUrls: ['./movement-overview.component.scss']
 })
-export class MovementOverviewComponent implements OnInit {
+export class MovementOverviewComponent implements OnInit, AfterViewInit {
+  dataService: DataService;
   /** initial movements to be displayed by the component */
   movements: MovementItem[] = [];
 
@@ -29,6 +33,10 @@ export class MovementOverviewComponent implements OnInit {
   timelineStart: number;
   timelineEnd: number;
 
+  /** stores current selection to refer on it in onResize()  */
+  currentMovementId: string;
+  thumbnail: Artwork;
+
   /** Settings for slider component, which does most of the scaling for us. Sliding is obv. disabled. */
   options: Options = {
     hidePointerLabels: true,
@@ -36,12 +44,13 @@ export class MovementOverviewComponent implements OnInit {
     showTicks: true,
   };
 
-  constructor() {
+  constructor(data: DataService) {
+    this.dataService = data;
     this.onResize();
-
     // sample movements, to be removed
     this.movements.push({
       id: 'Q867769',
+      artworks: [],
       label: 'international gothic',
       start: 1143,
       end: 1450,
@@ -50,6 +59,7 @@ export class MovementOverviewComponent implements OnInit {
 
     this.movements.push({
       id: 'Q37853',
+      artworks: [],
       label: 'baroque',
       start: 1500,
       end: 1800,
@@ -58,6 +68,7 @@ export class MovementOverviewComponent implements OnInit {
 
     this.movements.push({
       id: 'Q4692',
+      artworks: [],
       label: 'renaissance',
       start: 1400,
       end: 1600,
@@ -68,13 +79,24 @@ export class MovementOverviewComponent implements OnInit {
   ngOnInit() {
     // sort movements by their inception/start
     this.movements.sort((a, b) => (a.start > b.start ? 1 : -1));
-
+    for (let i = 0; i < this.movements.length; i++) {
+      this.dataService.findArtworksByMovement(this.movements[i].id).then(artworks => {
+        this.movements[i].artworks = this.movements[i].artworks.concat(artworks);
+        console.log(this.movements, artworks);
+        this.setRandomThumbnail(this.currentMovementId);
+      });
+    }
     // find start and end of displayed period
     this.setTimeline();
     // fill this.boxes
     this.fillTimeline();
   }
 
+  ngAfterViewInit() {
+    this.currentMovementId = this.movements[0].id;
+    this.drawThumbnail(this.currentMovementId);
+    console.log(this.movements);
+  }
 
   /** Determine values based on screen width (responsivity) */
   @HostListener('window:resize', ['$event'])
@@ -82,6 +104,9 @@ export class MovementOverviewComponent implements OnInit {
     const screenWidth = window.innerWidth;
     /** Determine the amount of marked steps in the slider, depending on screen width */
     this.averagePeriodCount = Math.min(7, Math.floor(screenWidth / 125));
+    if (this.currentMovementId !== undefined) {
+      this.drawThumbnail(this.currentMovementId);
+    }
   }
 
   /** finds start and end of displayed period */
@@ -182,6 +207,51 @@ export class MovementOverviewComponent implements OnInit {
       } as MovementItem);
     }
     console.log(this.boxes);
+  }
+
+  /** draws Line between thumbnail and movement box and aligns thumbnail properly under the box */
+  private drawThumbnail(targetId) {
+    const clickedMovement = document.getElementById(targetId);
+    const x1 = clickedMovement.offsetLeft + (clickedMovement.offsetWidth / 2);
+    const y1 = clickedMovement.offsetTop + clickedMovement.offsetHeight;
+
+    const thumbnail = document.getElementById('thumbnail');
+    thumbnail.setAttribute('style',
+      'margin-left: ' + (x1 - (thumbnail.offsetWidth / 2) - 15).toString() + 'px');
+
+    const x2 = thumbnail.offsetLeft + (thumbnail.offsetWidth / 2);
+    const y2 = thumbnail.offsetTop;
+
+    const line = document.getElementById('line');
+
+    line.setAttribute('x1', x1.toString());
+    line.setAttribute('y1', y1.toString());
+    line.setAttribute('x2', x2.toString());
+    line.setAttribute('y2', y2.toString());
+  }
+
+  /** This method gets called when movement box gets clicked and calls drawThumbnail() */
+  private onClickMovementBox(event) {
+    this.currentMovementId = event.target.attributes.id.nodeValue;
+    this.setRandomThumbnail(this.currentMovementId);
+    this.drawThumbnail(this.currentMovementId);
+  }
+
+  private setRandomThumbnail(movementId) {
+    const currMovement = this.movements.find(move => move.id === movementId);
+    this.thumbnail = currMovement.artworks[Math.floor(Math.random() * currMovement.artworks.length)];
+    console.log(currMovement, this.thumbnail);
+
+  }
+
+  /** Removes items from the component which cannot be displayed */
+  onLoadingError(item: Artwork) {
+    const currMovementIndex = this.movements.findIndex(move => move.id === this.currentMovementId);
+    this.movements[currMovementIndex].artworks.splice(
+      this.movements[currMovementIndex].artworks.findIndex(i => i.id === item.id),
+      1
+    );
+    this.setRandomThumbnail(this.currentMovementId);
   }
 }
 

@@ -4,7 +4,15 @@
       .ng5-slider-tick-value {
         top: -1.5rem !important;
         visibility: visible !important;
+        cursor: default;
+        pointer-events: none;
       }
+    }
+
+    .ng5-slider-inner-tooltip {
+      cursor: default;
+      pointer-events: none;
+
     }
 
     .ng5-slider-ceil,
@@ -17,6 +25,7 @@
       display: none;
       visibility: hidden !important;
     }
+
     .ng5-slider-pointer-max {
       pointer-events: none;
       display: none;
@@ -29,8 +38,13 @@
   border: 1px solid #00bc8c;
 }
 
+.box:hover {
+  cursor: pointer;
+}
+
+
 .box-container {
-  margin: 0 15px ;
+  margin: 0 15px;
 }
 
 
@@ -44,4 +58,97 @@
 
 .scale {
   margin-bottom: 1.8rem;
+}
+
+.thumbnail-container {
+  margin-top: 3rem;
+  min-height: 15rem;
+  border: 1px solid green;
+  cursor: pointer;
+}
+
+.thumbnail {
+  height: 15rem;
+  width: 15rem;
+  border: 1px solid blue;
+  overflow: hidden;
+}
+
+.overlay-container {
+  position: relative;
+  margin: 0 auto;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+
+  &:hover .overlay_view {
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+  }
+
+  &-caption {
+    max-height: 80%;
+  }
+}
+
+.img_self {
+  cursor: pointer;
+  min-width: 100%;
+  min-height: 100%;
+  max-height: 100%;
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
+.img_description {
+  color: white;
+  font-size: 1em;
+  position: absolute;
+  width: 90%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+a {
+  color: white;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.overlay_view {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  -webkit-transform: scale(0);
+  -ms-transform: scale(0);
+  transform: scale(0);
+  -webkit-transition: 0.3s ease;
+  transition: 0.3s ease;
+  cursor: pointer;
+}
+
+
+#svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+#line {
+  stroke-width: 0.2rem;
+  stroke: rgb(255, 255, 255);
 }

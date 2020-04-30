@@ -61,7 +61,7 @@
 }
 
 .thumbnail-container {
-  margin-top: 3rem;
+  margin-top: 5rem;
   min-height: 15rem;
   border: 1px solid green;
   cursor: pointer;
@@ -148,7 +148,16 @@ a {
   pointer-events: none;
 }
 
-#line {
+.connection-line {
   stroke-width: 0.2rem;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
   stroke: rgb(255, 255, 255);
+  animation: draw 5s linear;
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
 }

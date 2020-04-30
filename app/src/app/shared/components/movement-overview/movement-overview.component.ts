@@ -183,7 +183,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
     for (row of this.boxes) {
       // for (let i = 0; i < this.boxes.length; i++) {
       // no need for this atm, but sums up duration of all movements in this row. Feeling cute, might delete later.
-      let sumRow = row.reduce((a, b) => {
+      const sumRow = row.reduce((a, b) => {
         return a + b.end - b.start;
       }, 0);
       // fill in first space
@@ -218,16 +218,34 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
     const thumbnail = document.getElementById('thumbnail');
     thumbnail.setAttribute('style',
       'margin-left: ' + (x1 - (thumbnail.offsetWidth / 2) - 15).toString() + 'px');
+    const thumbnailWidth = thumbnail.offsetWidth;
+    const thumbnailHeight = thumbnail.offsetHeight;
 
     const x2 = thumbnail.offsetLeft + (thumbnail.offsetWidth / 2);
     const y2 = thumbnail.offsetTop;
 
-    const line = document.getElementById('line');
+    /*
+    // This paths draws a line and a frame around the image. Increase stroke-dashoffset and stroke-dasharray to 2000
+    //   and uncommend path in html. Animation restart not yet working.
+    const path = document.getElementById('svgpath');
+    const pathData = `M ${x1} ${y1} L${x2} ${y2} L${x2 - thumbnailWidth / 2} ${y2}
+                      L${x2 - thumbnailWidth / 2} ${y2 + thumbnailHeight}
+                      L${x2 + thumbnailWidth / 2} ${y2 + thumbnailHeight}
+                      L${x2 + thumbnailWidth / 2} ${y2}
+                      L${x2} ${y2}Z`;
+    path.setAttribute('d', pathData);
+    */
 
+    const line = document.getElementById('line');
     line.setAttribute('x1', x1.toString());
     line.setAttribute('y1', y1.toString());
     line.setAttribute('x2', x2.toString());
     line.setAttribute('y2', y2.toString());
+
+
+    // restart css animation by removing and adding it again
+    const newLine = line.cloneNode(true);
+    line.parentNode.replaceChild(newLine, line);
   }
 
   /** This method gets called when movement box gets clicked and calls drawThumbnail() */

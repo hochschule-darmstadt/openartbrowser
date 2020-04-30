@@ -1,5 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {Entity} from '../../models/entity.interface';
+import {Options} from 'ng5-slider';
 
 interface MovementItem extends Entity {
   start: number; // represents the value the item is located in the timeline
@@ -19,12 +20,25 @@ export class MovementOverviewComponent implements OnInit {
   /** 2d array holding items to be displayed */
   boxes: MovementItem[][] = [[]];
 
+  /** Specifies the average amount of labels on the slider */
+  private averagePeriodCount: number;
+  /** Final Size of 1 period */
+  private periodSpan = 1;
+
   /** start and end of the displayed period */
   timelineStart: number;
   timelineEnd: number;
 
+  /** Settings for slider component, which does most of the scaling for us. Sliding is obv. disabled. */
+  options: Options = {
+    hidePointerLabels: true,
+    showTicksValues: true,
+    showTicks: true,
+  };
 
   constructor() {
+    this.onResize();
+
     // sample movements, to be removed
     this.movements.push({
       id: 'Q867769',
@@ -61,6 +75,15 @@ export class MovementOverviewComponent implements OnInit {
     this.fillTimeline();
   }
 
+
+  /** Determine values based on screen width (responsivity) */
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    const screenWidth = window.innerWidth;
+    /** Determine the amount of marked steps in the slider, depending on screen width */
+    this.averagePeriodCount = Math.min(7, Math.floor(screenWidth / 125));
+  }
+
   /** finds start and end of displayed period */
   private setTimeline() {
     const firstStart = Math.min.apply(Math, this.movements.map((m) => {
@@ -69,10 +92,27 @@ export class MovementOverviewComponent implements OnInit {
     const lastEnd = Math.max.apply(Math, this.movements.map((m) => {
       return m.end;
     }));
-    this.timelineStart = (firstStart - 50) - firstStart % 50;
-    this.timelineEnd = (lastEnd + 50) - lastEnd % 50;
 
-    console.log(this.timelineStart, this.timelineEnd);
+
+    const dateSpan = lastEnd - firstStart;
+    /** The period span must be either a multiple of reasonablePeriodDistance or minimumPeriodDistance */
+    const reasonablePeriodDistance = 50;
+    const minimumPeriodDistance = 1;
+    /** Example:  30/7 = 4,28 ; 4,28 / 5 = 0,85 ; Math.max( Math.round(0.85)*5, 1) = 5 */
+    this.periodSpan = Math.max(Math.round(dateSpan / this.averagePeriodCount / reasonablePeriodDistance)
+      * reasonablePeriodDistance, minimumPeriodDistance);
+    /** get the biggest multiple of firstStart that is less than firstDate / same for lastDate */
+    this.timelineStart = firstStart - (firstStart % this.periodSpan);
+    this.timelineEnd = lastEnd - (lastEnd % this.periodSpan) + this.periodSpan;
+
+    /** Set slider options */
+    const newOptions: Options = Object.assign({}, this.options);
+    newOptions.ceil = this.timelineEnd;
+    newOptions.floor = this.timelineStart;
+    newOptions.tickStep = this.periodSpan;
+    this.options = newOptions;
+
+    console.log(this.timelineStart, this.timelineEnd, this.periodSpan);
   }
 
   /** this method splits movements into different rows where they overlap and sets their widths. It adds spacers, too */

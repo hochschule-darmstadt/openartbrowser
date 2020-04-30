@@ -51,10 +51,22 @@
 
           <app-iconclass [iconclasses]="artwork.iconclasses"></app-iconclass>
 
-          <app-information i18n-label="Artwork Dimension label@@dimension" *ngIf="( artwork && (artwork.height || artwork.width))"
-            label="{{ dimensionLabel ? dimensionLabel : 'Dimension' }}" 
-            [value]="dimensionValue">
-          </app-information>
+          <div [ngSwitch]="dimensionLabel" *ngIf="(artwork && (artwork.height || artwork.width))">
+            <app-information *ngSwitchCase="'Dimension'" i18n-label="Artwork Dimension label@@dimension"
+              label="Dimension"
+              [value]="dimensionValue">
+            </app-information>
+
+            <app-information *ngSwitchCase="'Width'" i18n-label="Artwork Dimension label@@width"
+              label="Width" 
+              [value]="dimensionValue">
+            </app-information>
+
+            <app-information *ngSwitchCase="'Height'" i18n-label="Artwork Dimension label@@height"
+              label="Height" 
+              [value]="dimensionValue">
+            </app-information>
+          </div>
         </app-collapse>
       </div>
     </div>

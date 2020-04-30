@@ -51,8 +51,8 @@
 
           <app-iconclass [iconclasses]="artwork.iconclasses"></app-iconclass>
 
-          <app-information i18n-label="Artwork Dimension label@@dimension" *ngIf="( artwork && (artwork.height || artwork.width))" label="{{(artwork.height && artwork.width)?'Dimension':((artwork.height?'Height':'') + (artwork.width?'Width':''))}}" 
-          [value]="artwork?.height + (artwork.width && artwork?.height? ' x ':'') + artwork?.width + ' cm'">
+          <app-information i18n-label="Artwork Dimension label@@dimension" *ngIf="( artwork && (artwork.height || artwork.width))" label="{{dimensionLabel}}" 
+          [value]="dimensionValue">
           </app-information>
         </app-collapse>
       </div>

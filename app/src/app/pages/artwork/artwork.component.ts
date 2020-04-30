@@ -43,7 +43,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   dimensionValue: string;
 
   /**
-   * @description displays the dimensions of the artwork.
+   * @description displays the label of the artwork dimensions.
    */
   dimensionLabel: string;
 

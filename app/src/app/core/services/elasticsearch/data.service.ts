@@ -86,7 +86,7 @@ export class DataService {
    */
   public findArtworksByMovement(movement: string): Promise<Artwork[]> {
     const query = new QueryBuilder()
-      .size(20)
+      .size(5)
       .sort()
       .mustMatch('type', 'artwork')
       .shouldMatch('movements', `${movement}`);

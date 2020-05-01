@@ -217,7 +217,13 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
 
     const thumbnail = document.getElementById('thumbnail');
     thumbnail.setAttribute('style',
-      'margin-left: ' + (x1 - (thumbnail.offsetWidth / 2) - 15).toString() + 'px');
+      'margin-left: ' + (x1 - (thumbnail.offsetWidth / 2) - 15).toString() + 'px;' +
+      '-webkit-transform: scale(0); -ms-transform: scale(0); transform: scale(0); transition: 0s ease;');
+    thumbnail.setAttribute('style',
+      'margin-left: ' + (x1 - (thumbnail.offsetWidth / 2) - 15).toString() + 'px;' +
+      '-webkit-transform: scale(1); -ms-transform: scale(1); transform: scale(1); transition: 0.3s ease;');
+
+
     const thumbnailWidth = thumbnail.offsetWidth;
     const thumbnailHeight = thumbnail.offsetHeight;
 

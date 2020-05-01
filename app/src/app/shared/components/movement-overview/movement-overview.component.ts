@@ -35,6 +35,8 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
 
   /** stores current selection to refer on it in onResize()  */
   currentMovementId: string;
+  currentMovementLabel: string;
+  currentDate: string;
   thumbnail: Artwork;
 
   /** Settings for slider component, which does most of the scaling for us. Sliding is obv. disabled. */
@@ -264,8 +266,9 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
   private setRandomThumbnail(movementId) {
     const currMovement = this.movements.find(move => move.id === movementId);
     this.thumbnail = currMovement.artworks[Math.floor(Math.random() * currMovement.artworks.length)];
-    console.log(currMovement, this.thumbnail);
-
+    this.currentMovementLabel = currMovement.label;
+    this.currentDate = currMovement.start + ' - ' + currMovement.end;
+    console.log(currMovement, this.thumbnail, this.currentDate);
   }
 
   /** Removes items from the component which cannot be displayed */

@@ -27,9 +27,10 @@
             (error)="onLoadingError(thumbnail)"
           />
           <div class="overlay_view" [ngClass]="thumbnail?.type == 'artist' ? 'rounded-circle' : ''">
-            <span class="img_description">{{ thumbnail?.label }}</span>
-          </div>-50
+            <span class="img_description">{{ this.currentMovementLabel }}</span>
+          </div>
         </div>
+        <div *ngIf="this.currentDate" class="item-caption">{{this.currentDate}}</div>
       </div>
     </div>
 

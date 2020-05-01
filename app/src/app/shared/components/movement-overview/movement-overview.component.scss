@@ -153,7 +153,7 @@ a {
   stroke-dasharray: 1000;
   stroke-dashoffset: 1000;
   stroke: rgb(255, 255, 255);
-  animation: draw 3s linear;
+  animation: draw 3s linear forwards;
 }
 
 @keyframes draw {

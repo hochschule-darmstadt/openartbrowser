@@ -89,7 +89,7 @@ export class DataService {
       .size(5)
       .sort()
       .mustMatch('type', 'artwork')
-      .shouldMatch('movements', `${movement}`);
+      .mustMatch('movements', `${movement}`);
     return this.performQuery<Artwork>(query);
   }
 

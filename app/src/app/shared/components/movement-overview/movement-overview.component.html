@@ -10,12 +10,11 @@
              class="item"
              [ngClass]="movement?.label ? 'box' : ''"
              [style.width]="movement.width+'%'"
-             (click)="onClickMovementBox($event)">
+             (click)="movement.label && onClickMovementBox($event)">
           {{ movement.label | titlecase }}
         </div>
       </div>
     </div>
-
 
     <div class="thumbnail-container ">
       <div class="thumbnail" id="thumbnail">

@@ -1,6 +1,7 @@
-:host ::ng-deep {
+:host::ng-deep {
   .custom-slider {
     .ng5-slider-tick {
+      cursor: default !important;
       .ng5-slider-tick-value {
         top: -1.5rem !important;
         visibility: visible !important;
@@ -22,20 +23,14 @@
 
     .ng5-slider-pointer-min {
       pointer-events: none !important;
-      display: none !important;
       visibility: hidden !important;
     }
 
     .ng5-slider-pointer-max {
       pointer-events: none !important;
-      display: none !important;
       visibility: hidden !important;
     }
   }
-}
-
-.custom-bootgrid {
-  min-height: fit-content;
 }
 
 .box {
@@ -174,7 +169,6 @@ a {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  border: 1px solid red;
 }
 
 .connection-line {

@@ -81,13 +81,11 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     // sort movements by their inception/start
     this.movements.sort((a, b) => (a.start > b.start ? 1 : -1));
-    for (let i = 0; i < this.movements.length; i++) {
-      this.dataService.findArtworksByMovement(this.movements[i].id).then(artworks => {
-        this.movements[i].artworks = this.movements[i].artworks.concat(artworks);
-        console.log(this.movements, artworks);
-        this.setRandomThumbnail(this.currentMovementId);
-      });
-    }
+    this.currentMovementId = this.movements[0].id;
+    this.getMovementImages().then(() => {
+      this.setRandomThumbnail(this.currentMovementId);
+      console.log('after load', this.movements);
+    });
     // find start and end of displayed period
     this.setTimeline();
     // fill this.boxes
@@ -95,9 +93,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.currentMovementId = this.movements[0].id;
     this.drawThumbnail(this.currentMovementId);
-    console.log(this.movements);
   }
 
   /** Determine values based on screen width (responsivity) */
@@ -146,11 +142,12 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
   private fillTimeline() {
     this.boxes[0][0] = this.movements[0]; // first item is first to appear (top left corner)
     let rowNum = 0;
+    this.movements[0].label = this.movements[0].label.charAt(0).toUpperCase() + this.movements[0].label.slice(1);
 
     // this splits movements into different rows where they overlap (y.start < x.end)
     for (let i = 1; i < this.movements.length; i++) {
       let set = false; // set is used to check whether a row was found for an item
-
+      this.movements[i].label = this.movements[i].label.charAt(0).toUpperCase() + this.movements[i].label.slice(1);
       while (!set) {
         if (this.boxes[rowNum] === undefined) {
           // create new row if there is none
@@ -259,7 +256,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
   /** This method gets called when movement box gets clicked and calls drawThumbnail() */
   private onClickMovementBox(event) {
     const boxId = event.target.attributes.id.nodeValue;
-    if (boxId) {
+    if (boxId && boxId !== this.currentMovementId) {
       this.currentMovementId = boxId;
 
       this.setRandomThumbnail(this.currentMovementId);
@@ -267,16 +264,27 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
     }
   }
 
+  private async getMovementImages() {
+    for (let i = 0; i < this.movements.length; i++) {
+      await this.dataService.findArtworksByMovement(this.movements[i].id).then(artworks => {
+        this.movements[i].artworks = this.movements[i].artworks.concat(artworks);
+      });
+    }
+  }
+
   private setRandomThumbnail(movementId) {
-    const currMovement = this.movements.find(move => move.id === movementId);
-    this.thumbnail = currMovement.artworks[Math.floor(Math.random() * currMovement.artworks.length)];
-    this.currentMovementLabel = currMovement.label;
-    this.currentDate = currMovement.start + ' - ' + currMovement.end;
-    console.log(currMovement, this.thumbnail, this.currentDate);
+    const currMovementIndex = this.movements.findIndex(move => move.id === movementId);
+    const thumbIndex = Math.floor(Math.random() * this.movements[currMovementIndex].artworks.length - 1);
+    this.thumbnail = this.movements[currMovementIndex].artworks.splice(thumbIndex, 1)[0];
+    this.movements[currMovementIndex].artworks.push(this.thumbnail);
+    this.currentMovementLabel = this.movements[currMovementIndex].label;
+    this.currentDate = this.movements[currMovementIndex].start + ' - ' + this.movements[currMovementIndex].end;
+    console.log(this.movements[currMovementIndex], this.thumbnail, this.currentDate);
   }
 
   /** Removes items from the component which cannot be displayed */
   onLoadingError(item: Artwork) {
+    console.log('ERROR', item, this.movements);
     const currMovementIndex = this.movements.findIndex(move => move.id === this.currentMovementId);
     this.movements[currMovementIndex].artworks.splice(
       this.movements[currMovementIndex].artworks.findIndex(i => i.id === item.id),

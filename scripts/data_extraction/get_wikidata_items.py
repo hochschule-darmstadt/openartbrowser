@@ -14,7 +14,7 @@ import hashlib
 import json
 
 DEV = False
-DEV_LIMIT = 4  # Not entry but chunks of 50
+DEV_LIMIT = 1  # Not entry but chunks of 50
 
 
 def agent_header():
@@ -164,12 +164,12 @@ def artworks_request(
                 continue
         except HTTPError as http_error:
             logging.error(
-                f"Request error was fatal. Ending Crawl at {datetime.datetime.now()}. Error: {http_error}"
+                f"Request error. Time: {datetime.datetime.now()}. HTTP-Error: {http_error}. Following items couldn't be loaded: {qids}"
             )
-            exit(-1)
         except Exception as error:
-            print(f"Unknown error: {error}")
-            exit(-1)
+            print(
+                f"Unknown error. Time: {datetime.datetime.now()}. Error: {error}. Following items couldn't be loaded: {qids}"
+            )
         finally:
             t1 = time.time()
             logging.info(f"The request took {t1 - t0} seconds")
@@ -202,10 +202,10 @@ def try_get_label_or_description(entity_dict, fieldname, langkey):
 
 def try_get_dimensions(entity_dict, property_id):
     try:
-        value = entity_dict["claims"][property_id]["mainsnak"]["datavalue"]["value"][
+        value = entity_dict["claims"][property_id][0]["mainsnak"]["datavalue"]["value"][
             "amount"
         ]
-        return int(value)
+        return "" if value == "" else int(value)
     except Exception as error:
         logging.info(
             "Error on item {0}, property {1}, error {2}".format(
@@ -341,6 +341,9 @@ def extract_artworks(
             break
 
         query_result = artworks_request(chunk)
+        if "entities" not in query_result:
+            logging.warn("Skipping chunk")
+            continue
 
         for result in query_result["entities"].values():
             try:
@@ -549,8 +552,8 @@ if __name__ == "__main__":
         print("DEV MODE: on, DEV_LIM={0}".format(DEV_LIMIT))
         DEV = True
 
-    drawings = "drawings"
-    extracted_artwork = extract_artworks("drawings", "wd:Q93184")
+    drawings = "paintings"
+    extracted_artwork = extract_artworks("paintings", "wd:Q3305213")
     filename = (
         Path.cwd()
         / "crawler_output"

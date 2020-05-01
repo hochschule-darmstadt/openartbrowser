@@ -11,7 +11,7 @@
              [ngClass]="movement?.label ? 'box' : ''"
              [style.width]="movement.width+'%'"
              (click)="onClickMovementBox($event)">
-          {{movement.label}}
+          {{ movement.label | titlecase }}
         </div>
       </div>
     </div>
@@ -27,7 +27,7 @@
             (error)="onLoadingError(thumbnail)"
           />
           <div class="overlay_view" [ngClass]="thumbnail?.type == 'artist' ? 'rounded-circle' : ''">
-            <span class="img_description">{{ this.currentMovementLabel }}</span>
+            <span class="img_description">{{ this.currentMovementLabel | titlecase }}</span>
           </div>
         </div>
         <div *ngIf="this.currentDate" class="item-caption">{{this.currentDate}}</div>

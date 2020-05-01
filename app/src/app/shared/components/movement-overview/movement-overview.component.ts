@@ -258,9 +258,13 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
 
   /** This method gets called when movement box gets clicked and calls drawThumbnail() */
   private onClickMovementBox(event) {
-    this.currentMovementId = event.target.attributes.id.nodeValue;
-    this.setRandomThumbnail(this.currentMovementId);
-    this.drawThumbnail(this.currentMovementId);
+    const boxId = event.target.attributes.id.nodeValue;
+    if (boxId) {
+      this.currentMovementId = boxId;
+
+      this.setRandomThumbnail(this.currentMovementId);
+      this.drawThumbnail(this.currentMovementId);
+    }
   }
 
   private setRandomThumbnail(movementId) {

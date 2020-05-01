@@ -17,7 +17,11 @@
     </div>
 
     <div class="thumbnail-container ">
-      <div class="thumbnail" id="thumbnail">
+      <div [routerLink]="['/movement', currentMovementId]"
+      angulartics2On="click"
+      angularticsCategory="Navigation"
+      angularticsAction="Timeline"
+      class="thumbnail" id="thumbnail">
         <div class="overlay-container">
           <img
             class=" img_self"

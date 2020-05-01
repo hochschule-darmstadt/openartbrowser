@@ -47,6 +47,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
   };
 
   constructor(data: DataService) {
+
     this.dataService = data;
     this.onResize();
     // sample movements, to be removed
@@ -76,20 +77,54 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
       end: 1600,
       width: 30
     } as MovementItem);
+
+    this.movements.push({
+      id: 'Q3624153',
+      artworks: [],
+      label: 'medieval art',
+      start: 1200,
+      end: 1700,
+      width: 30
+    } as MovementItem);
+    this.movements.push({
+      id: 'Q14378',
+      artworks: [],
+      label: 'neoclassicism',
+      start: 1650,
+      end: 2000,
+      width: 30
+    } as MovementItem);
+    this.movements.push({
+      id: 'Q1122677',
+      artworks: [],
+      label: 'Modernism',
+      start: 1900,
+      end: 2010,
+      width: 30
+    } as MovementItem);
+
   }
 
   ngOnInit() {
     // sort movements by their inception/start
     this.movements.sort((a, b) => (a.start > b.start ? 1 : -1));
     this.currentMovementId = this.movements[0].id;
-    this.getMovementImages().then(() => {
+    // get all movementIds except currentMovementId
+    const movementIds = this.movements.filter(value => value.id !== this.currentMovementId).map(A => A.id);
+    // get all images if current movement first.
+    this.getMovementImages([this.currentMovementId]).then(() => {
       this.setRandomThumbnail(this.currentMovementId);
-      console.log('after load', this.movements);
+      console.log('CURRENT ID ARTWORKS SHOULD HAVE LOADED\n', this.movements[0].artworks);
+    });
+    // now get those which are not displayed
+    this.getMovementImages(movementIds).then(() => {
+      console.log('OTHER ARTWORKS SHOULD HAVE LOADED\n', this.movements.map(movementId => movementId.artworks));
     });
     // find start and end of displayed period
     this.setTimeline();
     // fill this.boxes
     this.fillTimeline();
+
   }
 
   ngAfterViewInit() {
@@ -215,31 +250,17 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
     const y1 = clickedMovement.offsetTop + clickedMovement.offsetHeight;
 
     const thumbnail = document.getElementById('thumbnail');
+    // hide thumbnail
     thumbnail.setAttribute('style',
       'margin-left: ' + (x1 - (thumbnail.offsetWidth / 2) - 15).toString() + 'px;' +
       '-webkit-transform: scale(0); -ms-transform: scale(0); transform: scale(0); transition: 0s ease;');
+    // scale up again at other location
     thumbnail.setAttribute('style',
       'margin-left: ' + (x1 - (thumbnail.offsetWidth / 2) - 15).toString() + 'px;' +
       '-webkit-transform: scale(1); -ms-transform: scale(1); transform: scale(1); transition: 0.3s ease;');
 
-
-    const thumbnailWidth = thumbnail.offsetWidth;
-    const thumbnailHeight = thumbnail.offsetHeight;
-
     const x2 = thumbnail.offsetLeft + (thumbnail.offsetWidth / 2);
     const y2 = thumbnail.offsetTop;
-
-    /*
-    // This paths draws a line and a frame around the image. Increase stroke-dashoffset and stroke-dasharray to 2000
-    //   and uncommend path in html. Animation restart not yet working.
-    const path = document.getElementById('svgpath');
-    const pathData = `M ${x1} ${y1} L${x2} ${y2} L${x2 - thumbnailWidth / 2} ${y2}
-                      L${x2 - thumbnailWidth / 2} ${y2 + thumbnailHeight}
-                      L${x2 + thumbnailWidth / 2} ${y2 + thumbnailHeight}
-                      L${x2 + thumbnailWidth / 2} ${y2}
-                      L${x2} ${y2}Z`;
-    path.setAttribute('d', pathData);
-    */
 
     const line = document.getElementById('line');
     line.setAttribute('x1', x1.toString());
@@ -247,39 +268,47 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
     line.setAttribute('x2', x2.toString());
     line.setAttribute('y2', y2.toString());
 
-
     // restart css animation by removing and adding it again
     const newLine = line.cloneNode(true);
     line.parentNode.replaceChild(newLine, line);
   }
 
   /** This method gets called when movement box gets clicked and calls drawThumbnail() */
-  private onClickMovementBox(event) {
+  onClickMovementBox(event) {
     const boxId = event.target.attributes.id.nodeValue;
     if (boxId && boxId !== this.currentMovementId) {
       this.currentMovementId = boxId;
-
       this.setRandomThumbnail(this.currentMovementId);
       this.drawThumbnail(this.currentMovementId);
     }
   }
 
-  private async getMovementImages() {
-    for (let i = 0; i < this.movements.length; i++) {
-      await this.dataService.findArtworksByMovement(this.movements[i].id).then(artworks => {
-        this.movements[i].artworks = this.movements[i].artworks.concat(artworks);
+  /** get image sample of each movement in list of ids */
+  private async getMovementImages(movementIds: string[]) {
+    for (const id of movementIds) {
+      await this.dataService.findArtworksByMovement(id).then(artworks => {
+        const mvmntIndex = this.movements.findIndex(mvmnt => mvmnt.id === id);
+        this.movements[mvmntIndex].artworks = this.movements[mvmntIndex].artworks.concat(artworks);
       });
     }
   }
 
+  /** choose random image out of artworks of current movement */
   private setRandomThumbnail(movementId) {
     const currMovementIndex = this.movements.findIndex(move => move.id === movementId);
+    if (!this.movements[currMovementIndex].artworks.length) {
+      console.error('Artworks not loaded yet!');
+      return;
+    }
+    // choose random new thumb out of first n-1
     const thumbIndex = Math.floor(Math.random() * this.movements[currMovementIndex].artworks.length - 1);
     this.thumbnail = this.movements[currMovementIndex].artworks.splice(thumbIndex, 1)[0];
+    // move thumbnail to end of list
     this.movements[currMovementIndex].artworks.push(this.thumbnail);
+
+    // TODO: move this?
     this.currentMovementLabel = this.movements[currMovementIndex].label;
     this.currentDate = this.movements[currMovementIndex].start + ' - ' + this.movements[currMovementIndex].end;
-    console.log(this.movements[currMovementIndex], this.thumbnail, this.currentDate);
   }
 
   /** Removes items from the component which cannot be displayed */

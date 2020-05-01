@@ -1,5 +1,5 @@
 # QID: QID of an artwork category
-SELECT
+SELECT DISTINCT
 ?item
 WHERE {
     ?cls wdt:P279* $QID .

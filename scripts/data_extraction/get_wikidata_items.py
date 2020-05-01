@@ -5,13 +5,20 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 from urllib.error import HTTPError
 import time
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util import Retry
 import logging
+import sys
 from pywikibot import WbTime
 import hashlib
+import json
+
+DEV = False
+DEV_LIMIT = 4  # Not entry but chunks of 50
 
 
 def agent_header():
-    return "<nowiki>https://cai-artbrowserstaging.fbi.h-da.de/</nowiki>; tilo.w.michel@stud.h-da.de"
+    return "<nowiki>https://cai-artbrowserstaging.fbi.h-da.de/; tilo.w.michel@stud.h-da.de</nowiki>"
 
 
 def language_config_to_list(
@@ -77,7 +84,7 @@ def artwork_qids(type_name, wikidata_id):
     )
     print(f"{type_name}: {len(artwork_ids)} entries")
 
-    return chunks(artwork_ids, 50)
+    return artwork_ids
 
 
 def list_to_pipe_seperated_string(l):
@@ -88,10 +95,33 @@ def add_wiki_to_string(s):
     return s + "wiki"
 
 
+def requests_retry_session(
+    retries=3, backoff_factor=0.3, status_forcelist=(500, 502, 504), session=None,
+):
+    """ Request session with retry possibility
+        Source: https://www.peterbe.com/plog/best-practice-with-retries-with-requests
+    """
+    session = session or requests.Session()
+    retry = Retry(
+        total=retries,
+        read=retries,
+        connect=retries,
+        backoff_factor=backoff_factor,
+        status_forcelist=status_forcelist,
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+    return session
+
+
 def artworks_request(
     qids,
     languageKeys=[item[0] for item in language_config_to_list()],
     props=["claims", "descriptions", "labels", "sitelinks"],
+    timeout=5,
+    sleep_time=60,
+    maxlag=10,
 ):
     """ Represents one artwork request for n-items
         The API specifies that 50 items can be loaded at once without needing additional permissions:
@@ -104,13 +134,46 @@ def artworks_request(
         "format": "json",
         "languages": list_to_pipe_seperated_string(languageKeys),
         "sitefilter": list_to_pipe_seperated_string(langkeyPlusWikiList),
-        #'maxlag': 5
+        # if the server needs more than maxlag seconds to answer
+        # the query an error response is returned
+        "maxlag": maxlag,
     }
     header = {"Content-Type": "application/json", "user_agent": agent_header()}
-    response = requests.get(
-        "https://www.wikidata.org/w/api.php", params=parameters, headers=header
-    )
-    return response.json()
+    while True:
+        try:
+            t0 = time.time()
+            response = requests_retry_session().get(
+                "https://www.wikidata.org/w/api.php",
+                params=parameters,
+                headers=header,
+                timeout=timeout,
+            )
+            logging.info(f"Response received {response.status_code}")
+            if response.status_code == 403:
+                logging.error(
+                    f"The server forbid the query. Ending Crawl at {datetime.datetime.now()}. Error: {response.status_code}"
+                )
+                exit(-1)
+            response = response.json()
+            if "error" in response:
+                logging.warning(
+                    f"The maxlag of the server exceeded ({maxlag} seconds) waiting a minute before retry. Response: {response}"
+                )
+                time.sleep(sleep_time)
+                # retry again
+                continue
+        except HTTPError as http_error:
+            logging.error(
+                f"Request error was fatal. Ending Crawl at {datetime.datetime.now()}. Error: {http_error}"
+            )
+            exit(-1)
+        except Exception as error:
+            print(f"Unknown error: {error}")
+            exit(-1)
+        finally:
+            t1 = time.time()
+            logging.info(f"The request took {t1 - t0} seconds")
+            return response
 
 
 def get_image_url_by_name(image_name) -> str:
@@ -139,11 +202,10 @@ def try_get_label_or_description(entity_dict, fieldname, langkey):
 
 def try_get_dimensions(entity_dict, property_id):
     try:
-        return int(
-            entity_dict["claims"][property_id]["mainsnak"]["datavalue"]["value"][
-                "amount"
-            ]
-        )
+        value = entity_dict["claims"][property_id]["mainsnak"]["datavalue"]["value"][
+            "amount"
+        ]
+        return int(value)
     except Exception as error:
         logging.info(
             "Error on item {0}, property {1}, error {2}".format(
@@ -159,6 +221,24 @@ def try_get_qid_reference_list(entity_dict, property_id):
         return list(
             map(
                 lambda clm: clm["mainsnak"]["datavalue"]["value"]["id"],
+                entity_dict["claims"][property_id],
+            )
+        )
+    except Exception as error:
+        logging.info(
+            "Error on item {0}, property {1}, error {2}".format(
+                entity_dict["id"], property_id, error
+            )
+        )
+        return []
+
+
+def try_get_value_list(entity_dict, property_id):
+    """ Method to extract iconclasses """
+    try:
+        return list(
+            map(
+                lambda clm: clm["mainsnak"]["datavalue"]["value"],
                 entity_dict["claims"][property_id],
             )
         )
@@ -187,11 +267,13 @@ def try_get_year_from_inception_timestamp(entity_dict, property_id):
         return ""
 
 
-def try_get_first_country_id(entity_dict, property_id):
+def try_get_first_qid(entity_dict, property_id):
     """ Method to extract the country id """
     try:
         # ToDo: resolve to label or load all country qids load them seperate and do this later
-        country = entity_dict["claims"][property_id][0]["mainsnak"]
+        country = entity_dict["claims"][property_id][0]["mainsnak"]["datavalue"][
+            "value"
+        ]["id"]
         return country
     except Exception as error:
         logging.info("Error: {0}".format(error))
@@ -200,8 +282,10 @@ def try_get_first_country_id(entity_dict, property_id):
 
 def try_get_wikipedia_link(entity_dict, langkey):
     try:
-        sitelinks = entity_dict["sitelinks"]
-        return "wikpedia_page.full_url()"
+        return "https://{0}.wikipedia.org/wiki/{1}".format(
+            langkey,
+            entity_dict["sitelinks"][f"{langkey}wiki"]["title"].replace(" ", "_"),
+        )
     except:
         return ""
 
@@ -242,28 +326,22 @@ def extract_artworks(
         "main_subject": "P921",
     }
 
-    query_results = []
     extract_dicts = []
+    chunk_count = 0
+    item_count = 0
+    artwork_ids = artwork_qids(type_name, wikidata_id)
+    artwork_id_chunks = chunks(artwork_ids, 50)
+    for chunk in artwork_id_chunks:
+        item_count += len(chunk)
+        print(f"Status of {type_name}: {item_count}/{len(artwork_ids)}")
+        if DEV and chunk_count == DEV_LIMIT:
+            logging.debug(
+                f"DEV_LIMIT of {type_name} reached. End extraction for {type_name}"
+            )
+            break
 
-    for chunk in artwork_qids(type_name, wikidata_id):
-        while True:
-            try:
-                query_result = artworks_request(chunk)
-            except HTTPError as http_error:
-                print("HTTP error: {0}".format(http_error))
-                print("Waiting for 5 seconds")
-                time.sleep(5)
-                if error.errno != 403:
-                    continue
-                else:
-                    ("Error was fatal. Ending Crawl at ", datetime.datetime.now())
-                    exit(-1)
-            except Exception as error:
-                print("Unknown error: {0}".format(error))
-            else:
-                break
+        query_result = artworks_request(chunk)
 
-        query_results.extend(query_result)
         for result in query_result["entities"].values():
             try:
                 qid = result["id"]
@@ -303,15 +381,13 @@ def extract_artworks(
             motifs = try_get_qid_reference_list(
                 result, propertyname_to_property_id["motif"]
             )
-            iconclasses = try_get_qid_reference_list(
+            iconclasses = try_get_value_list(
                 result, propertyname_to_property_id["iconclass"]
             )
             inception = try_get_year_from_inception_timestamp(
                 result, propertyname_to_property_id["inception"]
             )
-            country = try_get_first_country_id(
-                result, propertyname_to_property_id["country"]
-            )
+            country = try_get_first_qid(result, propertyname_to_property_id["country"])
             height = try_get_dimensions(result, propertyname_to_property_id["height"])
             width = try_get_dimensions(result, propertyname_to_property_id["width"])
             main_subjects = try_get_qid_reference_list(
@@ -352,10 +428,138 @@ def extract_artworks(
                     }
                 )
             extract_dicts.append(artwork_dictionary)
-
-            print(artwork_dictionary)
+        chunk_count += 1
 
     print(datetime.datetime.now(), "Finished with", type_name)
+    return extract_dicts
 
 
-extract_artworks("paintings", "wd:Q3305213")
+def extract_art_ontology():
+    """ Extracts *.csv and *.JSON files for artworks from Wikidata """
+
+    for artwork, wd in [
+        ("drawings", "wd:Q93184"),
+        ("sculptures", "wd:Q860861"),
+        ("paintings", "wd:Q3305213"),
+    ]:
+        extracted_artwork = extract_artworks(artwork, wd)
+
+        filename = (
+            Path.cwd()
+            / "crawler_output"
+            / "intermediate_files"
+            / "csv"
+            / "artworks"
+            / artwork
+        )
+        generate_csv(artwork, extracted_artwork, get_fields(artwork), filename)
+
+        filename = (
+            Path.cwd()
+            / "crawler_output"
+            / "intermediate_files"
+            / "json"
+            / "artworks"
+            / artwork
+        )
+        generate_json(artwork, extracted_artwork, filename)
+
+
+def get_fields(type_name, languageKeys=[item[0] for item in language_config_to_list()]):
+    """ Returns all fields / columns for a specific type, e. g. 'artworks' """
+    fields = ["id", "classes", "label", "description", "image"]
+    for langkey in languageKeys:
+        fields += [
+            "label_" + langkey,
+            "description_" + langkey,
+            "wikipediaLink_" + langkey,
+        ]
+    if type_name in ["drawings", "sculptures", "paintings", "artworks"]:
+        fields += [
+            "artists",
+            "locations",
+            "genres",
+            "movements",
+            "inception",
+            "materials",
+            "motifs",
+            "country",
+            "height",
+            "width",
+            "iconclasses",
+            "main_subjects",
+        ]
+        for langkey in languageKeys:
+            fields += ["country_" + langkey]
+    elif type_name == "artists":
+        fields += [
+            "gender",
+            "date_of_birth",
+            "date_of_death",
+            "place_of_birth",
+            "place_of_death",
+            "citizenship",
+            "movements",
+            "influenced_by",
+        ]
+        for langkey in languageKeys:
+            fields += ["gender_" + langkey, "citizenship_" + langkey]
+    elif type_name == "movements":
+        fields += ["influenced_by"]
+    elif type_name == "locations":
+        fields += ["country", "website", "part_of", "lat", "lon"]
+        for langkey in languageKeys:
+            fields += ["country_" + langkey]
+    elif type_name == "classes":
+        fields = ["id", "label", "description", "subclass_of"]
+        for langkey in languageKeys:
+            fields += ["label_" + langkey, "description_" + langkey]
+    return fields
+
+
+def generate_csv(name, extract_dicts, fields, filename):
+    """ Generates a csv file from a dictionary """
+    filename.parent.mkdir(parents=True, exist_ok=True)
+    with open(filename.with_suffix(".csv"), "w", newline="", encoding="utf-8") as file:
+        writer = csv.DictWriter(file, fieldnames=fields, delimiter=";", quotechar='"')
+        writer.writeheader()
+        for extract_dict in extract_dicts:
+            writer.writerow(extract_dict)
+
+
+def generate_json(name, extract_dicts, filename):
+    """ Generates a JSON file from a dictionary """
+    if len(extract_dicts) == 0:
+        return
+    filename.parent.mkdir(parents=True, exist_ok=True)
+    with open(filename.with_suffix(".json"), "w", newline="", encoding="utf-8") as file:
+        arrayToDump = []
+        for extract_dict in extract_dicts:
+            extract_dict["type"] = name[
+                :-1
+            ]  # name[:-1] removes the last character of the name
+            arrayToDump.append(extract_dict)
+        file.write(json.dumps(arrayToDump, ensure_ascii=False))
+
+
+if __name__ == "__main__":
+    if len(sys.argv) > 1 and sys.argv[1] == "-d":
+        if len(sys.argv) > 2 and sys.argv[2].isdigit():
+            DEV_LIMIT = int(sys.argv[2])
+        print("DEV MODE: on, DEV_LIM={0}".format(DEV_LIMIT))
+        DEV = True
+
+    drawings = "drawings"
+    extracted_artwork = extract_artworks("drawings", "wd:Q93184")
+    filename = (
+        Path.cwd()
+        / "crawler_output"
+        / "intermediate_files"
+        / "json"
+        / "artworks"
+        / drawings
+    )
+    generate_json(drawings, extracted_artwork, filename)
+
+    # logging.debug("Extracting Art Ontology")
+    # extract_art_ontology()

@@ -9,9 +9,7 @@ from pathlib import Path
 from requests.adapters import HTTPAdapter
 from urllib3.util import Retry
 
-json_file_path = (
-    Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "artworks"
-)
+json_file_path = Path.cwd() / "crawler_output" / "intermediate_files" / "json"
 
 
 def agent_header():
@@ -217,7 +215,7 @@ def add_wikipedia_extracts(
     logging.basicConfig(
         filename="extract_wikipedia_extracts.log", filemode="w", level=logging.DEBUG
     )
-    for filename in ["drawings", "paintings", "sculptures"]:
+    for filename in ["artworks"]:
         print(
             datetime.datetime.now(),
             "Starting extracting wikipedia extracts with",

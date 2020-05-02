@@ -14,7 +14,7 @@ import hashlib
 import json
 
 DEV = False
-DEV_LIMIT = 10  # Not entry but chunks of 50
+DEV_LIMIT = 1  # Not entry but chunks of 50
 
 
 def agent_header():
@@ -486,6 +486,17 @@ def extract_art_ontology():
         )
         generate_json(artwork, extracted_artwork, filename)
 
+    artworks = "artworks"
+    merged_artworks = merge_artworks()
+
+    filename = Path.cwd() / "crawler_output" / "intermediate_files" / "csv" / artworks
+    generate_csv(artworks, merged_artworks, get_fields(artworks) + ["type"], filename)
+
+    filename = Path.cwd() / "crawler_output" / "intermediate_files" / "json" / artworks
+    generate_json(artworks, merged_artworks, filename)
+    motifs = get_distinct_attribute_values_from_artworks("motifs", merged_artworks)
+    print(len(motifs))
+
 
 def get_fields(type_name, languageKeys=[item[0] for item in language_config_to_list()]):
     """ Returns all fields / columns for a specific type, e. g. 'artworks' """
@@ -562,6 +573,50 @@ def generate_json(name, extract_dicts, filename):
             ]  # name[:-1] removes the last character of the name
             arrayToDump.append(extract_dict)
         file.write(json.dumps(arrayToDump, ensure_ascii=False))
+
+
+def merge_artworks():
+    """ Merges artworks from files 'paintings.json', 'drawings.json',
+        'sculptures.json' (function extract_artworks) and
+        stores them in a dictionary.
+    """
+    print(datetime.datetime.now(), "Starting with", "merging artworks")
+    artworks = set()
+    file_names = ["paintings.json", "drawings.json", "sculptures.json"]
+    file_names = [
+        Path.cwd()
+        / "crawler_output"
+        / "intermediate_files"
+        / "json"
+        / "artworks"
+        / file_name
+        for file_name in file_names
+    ]
+    extract_dicts = []
+
+    for file_name in file_names:
+        with open(file_name, encoding="utf-8") as input:
+            object_array = json.load(input)
+            for object in object_array:
+                if not object["id"] in artworks:  # remove duplicates
+                    object["type"] = "artwork"
+                    extract_dicts.append(object)
+                    artworks.add(object["id"])
+
+    print(datetime.datetime.now(), "Finished with", "merging artworks")
+    print()
+    return extract_dicts
+
+
+def get_distinct_attribute_values_from_artworks(
+    attribute_name, entry_dict, is_single_value_column=False
+):
+    attribute_set = set()
+    for json_object in entry_dict:
+        if not is_single_value_column:
+            for values in json_object[attribute_name]:
+                attribute_set.add(values)
+    return attribute_set
 
 
 if __name__ == "__main__":

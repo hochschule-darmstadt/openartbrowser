@@ -14,7 +14,7 @@ import hashlib
 import json
 
 DEV = False
-DEV_LIMIT = 1  # Not entry but chunks of 50
+DEV_LIMIT = 10  # Not entry but chunks of 50
 
 
 def agent_header():
@@ -45,8 +45,8 @@ def chunks(lst, n):
         yield lst[i : i + n]
 
 
-def artwork_qids(type_name, wikidata_id):
-    """ Extracts all artwork QIDs and returns them in chunks of 50 for the API call """
+def query_artwork_qids(type_name, wikidata_id):
+    """ Extracts all artwork QIDs from the wikidata SPARQL endpoint https://query.wikidata.org/ """
     artwork_ids_filepath = Path(__file__).parent.absolute() / "artwork_ids_query.sparql"
     QID_BY_ARTWORK_TYPE_QUERY = (
         open(artwork_ids_filepath, "r", encoding="utf8")
@@ -54,14 +54,14 @@ def artwork_qids(type_name, wikidata_id):
         .replace("$QID", wikidata_id)
     )
 
-    sparql = SPARQLWrapper(
-        "https://query.wikidata.org/sparql", agent="Artworks query test"
-    )
+    sparql = SPARQLWrapper("https://query.wikidata.org/sparql", agent=agent_header())
 
     wikidata_entity_url = "http://www.wikidata.org/entity/"
 
     sparql.setQuery(QID_BY_ARTWORK_TYPE_QUERY)
     sparql.setReturnFormat(JSON)
+
+    # ToDo: refactor would be better without while True
     while True:
         try:
             query_result = sparql.query().convert()
@@ -82,7 +82,7 @@ def artwork_qids(type_name, wikidata_id):
             query_result["results"]["bindings"],
         )
     )
-    print(f"{type_name}: {len(artwork_ids)} entries")
+    print(f"{type_name}: {len(artwork_ids)} ids from SPARQL query")
 
     return artwork_ids
 
@@ -160,7 +160,7 @@ def artworks_request(
                     f"The maxlag of the server exceeded ({maxlag} seconds) waiting a minute before retry. Response: {response}"
                 )
                 time.sleep(sleep_time)
-                # retry again
+                # retry
                 continue
         except HTTPError as http_error:
             logging.error(
@@ -291,7 +291,10 @@ def try_get_wikipedia_link(entity_dict, langkey):
 
 
 def extract_artworks(
-    type_name, wikidata_id, languageKeys=[item[0] for item in language_config_to_list()]
+    type_name,
+    wikidata_id,
+    already_crawled_wikidata_items,
+    languageKeys=[item[0] for item in language_config_to_list()],
 ):
     """Extracts artworks metadata from Wikidata and stores them in a dictionary.
 
@@ -329,8 +332,18 @@ def extract_artworks(
     extract_dicts = []
     chunk_count = 0
     item_count = 0
-    artwork_ids = artwork_qids(type_name, wikidata_id)
-    artwork_id_chunks = chunks(artwork_ids, 50)
+    artwork_ids = query_artwork_qids(type_name, wikidata_id)
+
+    # Don't load items again, if they were loaded in another artwork category
+    for artwork_id in artwork_ids:
+        if artwork_id in already_crawled_wikidata_items:
+            artwork_ids.remove(artwork_id)
+
+    print(
+        f"{len(artwork_ids)} {type_name} entries are not loaded yet, starting now. Already crawled item count is {len(already_crawled_wikidata_items)}"
+    )
+    chunk_size = 50  # The chunksize 50 is allowed by the wikidata api, bigger numbers need special permissions
+    artwork_id_chunks = chunks(artwork_ids, chunk_size)
     for chunk in artwork_id_chunks:
         item_count += len(chunk)
         print(f"Status of {type_name}: {item_count}/{len(artwork_ids)}")
@@ -431,6 +444,7 @@ def extract_artworks(
                     }
                 )
             extract_dicts.append(artwork_dictionary)
+            already_crawled_wikidata_items.add(qid)
         chunk_count += 1
 
     print(datetime.datetime.now(), "Finished with", type_name)
@@ -440,12 +454,17 @@ def extract_artworks(
 def extract_art_ontology():
     """ Extracts *.csv and *.JSON files for artworks from Wikidata """
 
+    # Array of already crawled wikidata items
+    already_crawled_wikidata_items = set()
+
     for artwork, wd in [
         ("drawings", "wd:Q93184"),
         ("sculptures", "wd:Q860861"),
         ("paintings", "wd:Q3305213"),
     ]:
-        extracted_artwork = extract_artworks(artwork, wd)
+        extracted_artwork = extract_artworks(
+            artwork, wd, already_crawled_wikidata_items
+        )
 
         filename = (
             Path.cwd()
@@ -549,20 +568,8 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "-d":
         if len(sys.argv) > 2 and sys.argv[2].isdigit():
             DEV_LIMIT = int(sys.argv[2])
-        print("DEV MODE: on, DEV_LIM={0}".format(DEV_LIMIT))
-        DEV = True
+    print("DEV MODE: on, DEV_LIM={0}".format(DEV_LIMIT))
+    DEV = True
 
-    drawings = "paintings"
-    extracted_artwork = extract_artworks("paintings", "wd:Q3305213")
-    filename = (
-        Path.cwd()
-        / "crawler_output"
-        / "intermediate_files"
-        / "json"
-        / "artworks"
-        / drawings
-    )
-    generate_json(drawings, extracted_artwork, filename)
-
-    # logging.debug("Extracting Art Ontology")
-    # extract_art_ontology()
+    logging.debug("Extracting Art Ontology")
+    extract_art_ontology()

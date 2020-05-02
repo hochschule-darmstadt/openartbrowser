@@ -534,6 +534,22 @@
         </context-group>
         <note priority="1" from="description">Artwork Dimension label</note>
       </trans-unit>
+      <trans-unit id="width" datatype="html">
+        <source>Width</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
+          <context context-type="linenumber">76</context>
+        </context-group>
+        <note priority="1" from="description">Artwork Dimension-Width label</note>
+      </trans-unit>
+      <trans-unit id="height" datatype="html">
+        <source>Height</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
+          <context context-type="linenumber">76</context>
+        </context-group>
+        <note priority="1" from="description">Artwork Dimension-Height label</note>
+      </trans-unit>
       <trans-unit id="related_artworks" datatype="html">
         <source>Related Artworks</source>
         <context-group purpose="location">

@@ -17,7 +17,7 @@
     </div>
 
     <div class="thumbnail-container ">
-      <div [routerLink]="['/movement', currentMovementId]"
+      <a [routerLink]="['/movement', currentMovementId]"
       angulartics2On="click"
       angularticsCategory="Navigation"
       angularticsAction="Timeline"
@@ -34,7 +34,7 @@
           </div>
         </div>
         <div *ngIf="this.currentDate" class="item-caption">{{this.currentDate}}</div>
-      </div>
+      </a>
     </div>
 
     <svg id="svg">

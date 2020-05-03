@@ -494,7 +494,11 @@ def extract_art_ontology():
     generate_csv(artworks, merged_artworks, get_fields(artworks) + ["type"], filename)
 
     filename = Path.cwd() / "crawler_output" / "intermediate_files" / "json" / artworks
+    # TODO refactor ab hier
+
+    # Get motifs and main subjects
     motifs = get_distinct_attribute_values_from_artworks("motifs", merged_artworks)
+
     main_subjects = get_distinct_attribute_values_from_artworks(
         "motifs", merged_artworks
     )
@@ -502,10 +506,25 @@ def extract_art_ontology():
     for main_subject in main_subjects:
         if main_subject not in motifs:
             motifs_and_main_subjects.add(main_subjects)
-    print(len(motifs))
-    motifs_extracted = get_motif_and_main_subject(motifs_and_main_subjects)
+    motifs_extracted = get_subject("motifs and main subjects", motifs_and_main_subjects)
     filename = Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "motifs"
     generate_json("motif", motifs_extracted, filename)
+
+    # Get genres, materials and country labels
+    genres = get_distinct_attribute_values_from_artworks("genres", merged_artworks)
+    genres_extracted = get_subject("genres", genres)
+    filename = Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "genres"
+    generate_json("genres", genres_extracted, filename)
+
+    materials = get_distinct_attribute_values_from_artworks(
+        "materials", merged_artworks
+    )
+    materials_extracted = get_subject("materials", materials)
+    filename = (
+        Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "materials"
+    )
+    generate_json("materials", materials_extracted, filename)
+
     distinct_country_ids = get_distinct_attribute_values_from_artworks(
         "country", merged_artworks, True
     )
@@ -513,6 +532,8 @@ def extract_art_ontology():
     merged_artworks = resolve_country_id_to_label(
         merged_artworks, country_labels_extracted
     )
+
+    # Write to artworks.json
     filename = (
         Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "artworks"
     )
@@ -643,11 +664,11 @@ def get_distinct_attribute_values_from_artworks(
     return attribute_set
 
 
-def get_motif_and_main_subject(
-    qids, languageKeys=[item[0] for item in language_config_to_list()]
+def get_subject(
+    type_name, qids, languageKeys=[item[0] for item in language_config_to_list()]
 ):
-    print(datetime.datetime.now(), "Starting with motifs and main_subjects")
-    print(f"Total motifs and main subjects to extract: {len(qids)}")
+    print(datetime.datetime.now(), f"Starting with {type_name}")
+    print(f"Total {type_name} to extract: {len(qids)}")
     item_count = 0
     extract_dicts = []
     chunk_size = 50  # The chunksize 50 is allowed by the wikidata api, bigger numbers need special permissions
@@ -707,9 +728,9 @@ def get_motif_and_main_subject(
             extract_dicts.append(subject_dict)
 
         item_count += len(chunk)
-        print(f"Status of motifs and main subjects: {item_count}/{len(qids)}")
+        print(f"Status of {type_name}: {item_count}/{len(qids)}")
 
-    print(datetime.datetime.now(), "Finished with motifs and main subjects")
+    print(datetime.datetime.now(), f"Finished with {type_name}")
     return extract_dicts
 
 
@@ -785,8 +806,8 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "-d":
         if len(sys.argv) > 2 and sys.argv[2].isdigit():
             DEV_LIMIT = int(sys.argv[2])
-        print("DEV MODE: on, DEV_LIM={0}".format(DEV_LIMIT))
-        DEV = True
+    print("DEV MODE: on, DEV_LIM={0}".format(DEV_LIMIT))
+    DEV = True
 
     logging.debug("Extracting Art Ontology")
     extract_art_ontology()

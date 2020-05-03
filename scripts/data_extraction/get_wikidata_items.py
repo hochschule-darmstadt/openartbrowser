@@ -16,6 +16,24 @@ import json
 DEV = False
 DEV_LIMIT = 1  # Not entry but chunks of 50
 
+# All properties extracted from the wikidata entities mapped to their openartbrowser key-label
+propertyname_to_property_id = {
+    "image": "P18",
+    "class": "P31",  # Is called "instance of" in wikidata
+    "artist": "P170",  # Is called "creator" in wikidata
+    "location": "P276",
+    "genre": "P136",
+    "movement": "P135",
+    "inception": "P571",
+    "material": "P186",
+    "motif": "P180",  # Is called "depicts" in wikidata
+    "country": "P17",
+    "height": "P2048",
+    "width": "P2049",
+    "iconclass": "P1257",
+    "main_subject": "P921",
+}
+
 
 def agent_header():
     return "<nowiki>https://cai-artbrowserstaging.fbi.h-da.de/; tilo.w.michel@stud.h-da.de</nowiki>"
@@ -87,10 +105,6 @@ def query_artwork_qids(type_name, wikidata_id):
     return artwork_ids
 
 
-def list_to_pipe_seperated_string(l):
-    return "|".join(l)
-
-
 def add_wiki_to_string(s):
     return s + "wiki"
 
@@ -115,7 +129,7 @@ def requests_retry_session(
     return session
 
 
-def artworks_request(
+def wikidata_entity_request(
     qids,
     languageKeys=[item[0] for item in language_config_to_list()],
     props=["claims", "descriptions", "labels", "sitelinks"],
@@ -130,11 +144,12 @@ def artworks_request(
     langkeyPlusWikiList = [add_wiki_to_string(key) for key in languageKeys]
     parameters = {
         "action": "wbgetentities",
-        "ids": list_to_pipe_seperated_string(qids),
+        "ids": "|".join(qids),
         "format": "json",
-        "languages": list_to_pipe_seperated_string(languageKeys),
-        "sitefilter": list_to_pipe_seperated_string(langkeyPlusWikiList),
-        # if the server needs more than maxlag seconds to answer
+        "languages": "|".join(languageKeys),
+        "sitefilter": "|".join(langkeyPlusWikiList),
+        "props": "|".join(props),
+        # if the server needs more than maxlag seconds to process
         # the query an error response is returned
         "maxlag": maxlag,
     }
@@ -173,7 +188,9 @@ def artworks_request(
         finally:
             t1 = time.time()
             logging.info(f"The request took {t1 - t0} seconds")
-            return response
+            break
+
+    return response
 
 
 def get_image_url_by_name(image_name) -> str:
@@ -202,10 +219,9 @@ def try_get_label_or_description(entity_dict, fieldname, langkey):
 
 def try_get_dimensions(entity_dict, property_id):
     try:
-        value = entity_dict["claims"][property_id][0]["mainsnak"]["datavalue"]["value"][
+        return entity_dict["claims"][property_id][0]["mainsnak"]["datavalue"]["value"][
             "amount"
         ]
-        return "" if value == "" else int(value)
     except Exception as error:
         logging.info(
             "Error on item {0}, property {1}, error {2}".format(
@@ -311,23 +327,6 @@ def extract_artworks(
     logging.basicConfig(
         filename="extract_artworks.log", filemode="w", level=logging.DEBUG
     )
-    # All properties extracted from the artworks mapped to their label
-    propertyname_to_property_id = {
-        "image": "P18",
-        "class": "P31",  # Is called "instance of" in wikidata
-        "artist": "P170",  # Is called "creator" in wikidata
-        "location": "P276",
-        "genre": "P136",
-        "movement": "P135",
-        "inception": "P571",
-        "material": "P186",
-        "motif": "P180",  # Is called "depicts" in wikidata
-        "country": "P17",
-        "height": "P2048",
-        "width": "P2049",
-        "iconclass": "P1257",
-        "main_subject": "P921",
-    }
 
     extract_dicts = []
     chunk_count = 0
@@ -345,15 +344,13 @@ def extract_artworks(
     chunk_size = 50  # The chunksize 50 is allowed by the wikidata api, bigger numbers need special permissions
     artwork_id_chunks = chunks(artwork_ids, chunk_size)
     for chunk in artwork_id_chunks:
-        item_count += len(chunk)
-        print(f"Status of {type_name}: {item_count}/{len(artwork_ids)}")
         if DEV and chunk_count == DEV_LIMIT:
             logging.debug(
                 f"DEV_LIMIT of {type_name} reached. End extraction for {type_name}"
             )
             break
 
-        query_result = artworks_request(chunk)
+        query_result = wikidata_entity_request(chunk)
         if "entities" not in query_result:
             logging.warn("Skipping chunk")
             continue
@@ -445,6 +442,10 @@ def extract_artworks(
                 )
             extract_dicts.append(artwork_dictionary)
             already_crawled_wikidata_items.add(qid)
+
+        item_count += len(chunk)
+        print(f"Status of {type_name}: {item_count}/{len(artwork_ids)}")
+
         chunk_count += 1
 
     print(datetime.datetime.now(), "Finished with", type_name)
@@ -493,9 +494,29 @@ def extract_art_ontology():
     generate_csv(artworks, merged_artworks, get_fields(artworks) + ["type"], filename)
 
     filename = Path.cwd() / "crawler_output" / "intermediate_files" / "json" / artworks
-    generate_json(artworks, merged_artworks, filename)
     motifs = get_distinct_attribute_values_from_artworks("motifs", merged_artworks)
+    main_subjects = get_distinct_attribute_values_from_artworks(
+        "motifs", merged_artworks
+    )
+    motifs_and_main_subjects = motifs
+    for main_subject in main_subjects:
+        if main_subject not in motifs:
+            motifs_and_main_subjects.add(main_subjects)
     print(len(motifs))
+    motifs_extracted = get_motif_and_main_subject(motifs_and_main_subjects)
+    filename = Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "motifs"
+    generate_json("motif", motifs_extracted, filename)
+    distinct_country_ids = get_distinct_attribute_values_from_artworks(
+        "country", merged_artworks, True
+    )
+    country_labels_extracted = get_country_labels(distinct_country_ids)
+    merged_artworks = resolve_country_id_to_label(
+        merged_artworks, country_labels_extracted
+    )
+    filename = (
+        Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "artworks"
+    )
+    generate_json(artworks, merged_artworks, filename)
 
 
 def get_fields(type_name, languageKeys=[item[0] for item in language_config_to_list()]):
@@ -568,9 +589,7 @@ def generate_json(name, extract_dicts, filename):
     with open(filename.with_suffix(".json"), "w", newline="", encoding="utf-8") as file:
         arrayToDump = []
         for extract_dict in extract_dicts:
-            extract_dict["type"] = name[
-                :-1
-            ]  # name[:-1] removes the last character of the name
+            extract_dict["type"] = name
             arrayToDump.append(extract_dict)
         file.write(json.dumps(arrayToDump, ensure_ascii=False))
 
@@ -613,18 +632,161 @@ def get_distinct_attribute_values_from_artworks(
 ):
     attribute_set = set()
     for json_object in entry_dict:
-        if not is_single_value_column:
+        if is_single_value_column:
+            value = json_object[attribute_name]
+            if value != "":
+                attribute_set.add(value)
+        else:
             for values in json_object[attribute_name]:
                 attribute_set.add(values)
+
     return attribute_set
+
+
+def get_motif_and_main_subject(
+    qids, languageKeys=[item[0] for item in language_config_to_list()]
+):
+    print(datetime.datetime.now(), "Starting with motifs and main_subjects")
+    print(f"Total motifs and main subjects to extract: {len(qids)}")
+    item_count = 0
+    extract_dicts = []
+    chunk_size = 50  # The chunksize 50 is allowed by the wikidata api, bigger numbers need special permissions
+    motif_id_chunks = chunks(list(qids), chunk_size)
+    for chunk in motif_id_chunks:
+        query_result = wikidata_entity_request(chunk)
+
+        if "entities" not in query_result:
+            logging.warn("Skipping chunk")
+            continue
+
+        for result in query_result["entities"].values():
+            try:
+                qid = result["id"]
+            except Exception as error:
+                logging.warning("Error on qid, skipping item. Error: {0}".format(error))
+                continue
+
+            # ToDo: Extract to function
+            # How to get image url
+            # https://stackoverflow.com/questions/34393884/how-to-get-image-url-property-from-wikidata-item-by-api
+            try:
+                image = get_image_url_by_name(
+                    result["claims"][propertyname_to_property_id["image"]][0][
+                        "mainsnak"
+                    ]["datavalue"]["value"]
+                )
+            except:
+                image = ""
+            label = try_get_label_or_description(result, "labels", "en")
+            description = try_get_label_or_description(result, "descriptions", "en")
+            classes = try_get_qid_reference_list(
+                result, propertyname_to_property_id["class"]
+            )
+
+            subject_dict = {
+                "id": qid,
+                "classes": classes,
+                "label": label,
+                "description": description,
+                "image": image,
+            }
+
+            for langkey in languageKeys:
+                label_lang = try_get_label_or_description(result, "labels", langkey)
+                description_lang = try_get_label_or_description(
+                    result, "descriptions", langkey
+                )
+                wikipedia_link_lang = try_get_wikipedia_link(result, langkey)
+                subject_dict.update(
+                    {
+                        "label_" + langkey: label_lang,
+                        "description_" + langkey: description_lang,
+                        "wikipediaLink_" + langkey: wikipedia_link_lang,
+                    }
+                )
+            extract_dicts.append(subject_dict)
+
+        item_count += len(chunk)
+        print(f"Status of motifs and main subjects: {item_count}/{len(qids)}")
+
+    print(datetime.datetime.now(), "Finished with motifs and main subjects")
+    return extract_dicts
+
+
+def get_country_labels(
+    qids, languageKeys=[item[0] for item in language_config_to_list()]
+):
+    print(datetime.datetime.now(), "Starting with motifs and main_subjects")
+    print(f"Total country labels to extract: {len(qids)}")
+    item_count = 0
+    extract_dicts = []
+    chunk_size = 50  # The chunksize 50 is allowed by the wikidata api, bigger numbers need special permissions
+    country_id_chunks = chunks(list(qids), chunk_size)
+    for chunk in country_id_chunks:
+        query_result = wikidata_entity_request(
+            chunk, props=["labels"], timeout=10
+        )  # country entities take longer so timeout is increased
+
+        if "entities" not in query_result:
+            logging.warn("Skipping chunk")
+            continue
+
+        for result in query_result["entities"].values():
+            try:
+                qid = result["id"]
+            except Exception as error:
+                logging.warning("Error on qid, skipping item. Error: {0}".format(error))
+                continue
+
+            label = try_get_label_or_description(result, "labels", "en")
+            subject_dict = {
+                "id": qid,
+                "label": label,
+            }
+
+            for langkey in languageKeys:
+                label_lang = try_get_label_or_description(result, "labels", langkey)
+                subject_dict.update({"label_" + langkey: label_lang})
+            extract_dicts.append(subject_dict)
+
+        item_count += len(chunk)
+        print(f"Status of countries (labels only): {item_count}/{len(qids)}")
+
+    print(datetime.datetime.now(), "Finished with country labels")
+    return extract_dicts
+
+
+def resolve_country_id_to_label(
+    artwork_dict,
+    country_labels,
+    languageKeys=[item[0] for item in language_config_to_list()],
+):
+    # country_labels objects to qid_country_labels_dict
+    qid_country_labels_dict = {}
+    for country_label_obj in country_labels:
+        qid_country_labels_dict[country_label_obj["id"]] = country_label_obj
+
+    for artwork_object in artwork_dict:
+        if artwork_object["country"] != "":
+            property_id = artwork_object["country"]
+            artwork_object["country"] = qid_country_labels_dict[property_id]["label_en"]
+            for langkey in languageKeys:
+                artwork_object[f"country_{langkey}"] = qid_country_labels_dict[
+                    property_id
+                ][f"label_{langkey}"]
+        else:
+            for langkey in languageKeys:
+                artwork_object[f"country_{langkey}"] = ""
+
+    return artwork_dict
 
 
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "-d":
         if len(sys.argv) > 2 and sys.argv[2].isdigit():
             DEV_LIMIT = int(sys.argv[2])
-    print("DEV MODE: on, DEV_LIM={0}".format(DEV_LIMIT))
-    DEV = True
+        print("DEV MODE: on, DEV_LIM={0}".format(DEV_LIMIT))
+        DEV = True
 
     logging.debug("Extracting Art Ontology")
     extract_art_ontology()

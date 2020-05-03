@@ -9,7 +9,9 @@ from pathlib import Path
 from requests.adapters import HTTPAdapter
 from urllib3.util import Retry
 
-json_file_path = Path.cwd() / "crawler_output" / "intermediate_files" / "json"
+json_file_path = (
+    Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "artworks"
+)
 
 
 def agent_header():
@@ -119,22 +121,23 @@ def get_wikipedia_page_ids(
         finally:
             t1 = time.time()
             logging.info(f"The request took {t1 - t0} seconds")
+            break
 
-            page_normalized_titles = {x: x for x in title_indice_dictionary.keys()}
+    page_normalized_titles = {x: x for x in title_indice_dictionary.keys()}
 
-            # map index of json array to page id of wikipedia
-            item_page_id_index_dictionary = {}
-            if "normalized" in response["query"]:
-                for mapping in response["query"]["normalized"]:
-                    page_normalized_titles[mapping["to"]] = mapping["from"]
+    # map index of json array to page id of wikipedia
+    item_page_id_index_dictionary = {}
+    if "normalized" in response["query"]:
+        for mapping in response["query"]["normalized"]:
+            page_normalized_titles[mapping["to"]] = mapping["from"]
 
-            for page_id, page_info in response["query"]["pages"].items():
-                normalized_title = page_info["title"]
-                page_title = page_normalized_titles[normalized_title]
-                index = title_indice_dictionary[page_title]
-                item_page_id_index_dictionary[page_id] = index
+    for page_id, page_info in response["query"]["pages"].items():
+        normalized_title = page_info["title"]
+        page_title = page_normalized_titles[normalized_title]
+        index = title_indice_dictionary[page_title]
+        item_page_id_index_dictionary[page_id] = index
 
-            return item_page_id_index_dictionary
+    return item_page_id_index_dictionary
 
 
 def get_wikipedia_extracts(
@@ -192,21 +195,21 @@ def get_wikipedia_extracts(
         finally:
             t1 = time.time()
             logging.info(f"The request took {t1 - t0} seconds")
-            index_extract_dictionary = {}
-            for page_id, index in page_id_index_dictionary.items():
-                if int(page_id) < 0:
-                    print(
-                        "For the wikidata item {0} there was no pageid found on the {1}.wikipedia site. Therefore the extract is set to an empty string now".format(
-                            items[index]["id"], langkey
-                        )
-                    )
-                    # Return empty extract for those cases
-                    index_extract_dictionary[index] = ""
-                    continue
-                index_extract_dictionary[index] = response["query"]["pages"][page_id][
-                    "extract"
-                ]
-            return index_extract_dictionary
+            break
+
+    index_extract_dictionary = {}
+    for page_id, index in page_id_index_dictionary.items():
+        if int(page_id) < 0:
+            print(
+                "For the wikidata item {0} there was no pageid found on the {1}.wikipedia site. Therefore the extract is set to an empty string now".format(
+                    items[index]["id"], langkey
+                )
+            )
+            # Return empty extract for those cases
+            index_extract_dictionary[index] = ""
+            continue
+        index_extract_dictionary[index] = response["query"]["pages"][page_id]["extract"]
+    return index_extract_dictionary
 
 
 def add_wikipedia_extracts(
@@ -215,7 +218,7 @@ def add_wikipedia_extracts(
     logging.basicConfig(
         filename="extract_wikipedia_extracts.log", filemode="w", level=logging.DEBUG
     )
-    for filename in ["artworks"]:
+    for filename in ["drawings"]:
         print(
             datetime.datetime.now(),
             "Starting extracting wikipedia extracts with",

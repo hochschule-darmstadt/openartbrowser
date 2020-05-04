@@ -18,12 +18,13 @@
 
     <div class="thumbnail-container ">
       <a class="thumbnail" id="thumbnail"
-        [routerLink]="['/movement', currentMovementId]"
-        angulartics2On="click"
-        angularticsCategory="Navigation"
-        angularticsAction="Timeline">
+         [routerLink]="['/movement', currentMovementId]"
+         angulartics2On="click"
+         angularticsCategory="Navigation"
+         angularticsAction="Timeline">
         <div class="overlay-container">
-          <img class=" img_self"
+          <img *ngIf="thumbnail"
+               class=" img_self"
                src="{{ thumbnail?.imageMedium }}"
                alt="{{ thumbnail?.label }}"
                (error)="onLoadingError(thumbnail)"/>

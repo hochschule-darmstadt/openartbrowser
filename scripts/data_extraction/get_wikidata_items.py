@@ -7,11 +7,13 @@ import time
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util import Retry
-import logging
 import sys
 from pywikibot import WbTime
 import hashlib
 import json
+import logging
+
+logging.basicConfig(filename="extract_artworks.log", filemode="w", level=logging.DEBUG)
 
 DEV = False
 DEV_LIMIT = 1  # Not entry but chunks of 50
@@ -25,7 +27,7 @@ propertyname_to_property_id = {
     "genre": "P136",
     "movement": "P135",
     "inception": "P571",
-    "material": "P186",
+    "material": "P186",  # Is called "material used" in wikidata
     "motif": "P180",  # Is called "depicts" in wikidata
     "country": "P17",
     "height": "P2048",
@@ -141,6 +143,7 @@ def wikidata_entity_request(
         The API specifies that 50 items can be loaded at once without needing additional permissions:
         https://www.wikidata.org/w/api.php?action=help&modules=wbgetentities
     """
+    initial_timeout = timeout
     langkeyPlusWikiList = [add_wiki_to_string(key) for key in languageKeys]
     parameters = {
         "action": "wbgetentities",
@@ -175,21 +178,41 @@ def wikidata_entity_request(
                     f"The maxlag of the server exceeded ({maxlag} seconds) waiting a minute before retry. Response: {response}"
                 )
                 time.sleep(sleep_time)
-                # retry
                 continue
+            else:
+                break  # wenn die response richtig aussieht dann aus der schleife springen
         except HTTPError as http_error:
             logging.error(
                 f"Request error. Time: {datetime.datetime.now()}. HTTP-Error: {http_error}. Following items couldn't be loaded: {qids}"
             )
+            time.sleep(sleep_time)
+            sleep_time *= 2  # increase sleep time if this happens again
+            continue
+        except NameError as nameError:
+            logging.error(
+                f"Request error. Time: {datetime.datetime.now()}. Name-Error: {nameError}. Following items couldn't be loaded: {qids}"
+            )
+            logging.error(
+                "The request's response wasn't defined. Something went wrong (see above). Sleeping for one minute and doubling the timeout. After that retry the request"
+            )
+            time.sleep(sleep_time)
+            timeout *= 2
+            if timeout >= initial_timeout * 8:
+                logging.error(
+                    "The server doesn't respond to this request. Skipping chunk"
+                )
+                return ""
+            else:
+                continue
         except Exception as error:
             print(
                 f"Unknown error. Time: {datetime.datetime.now()}. Error: {error}. Following items couldn't be loaded: {qids}"
             )
-        finally:
-            t1 = time.time()
-            logging.info(f"The request took {t1 - t0} seconds")
-            break
+            time.sleep(sleep_time)
+            continue
 
+    t1 = time.time()
+    logging.info(f"The request took {t1 - t0} seconds")
     return response
 
 
@@ -324,9 +347,6 @@ def extract_artworks(
     extract_artworks('paintings', 'wd:Q3305213', '('en', 'de'))
     """
     print(datetime.datetime.now(), "Starting with", type_name)
-    logging.basicConfig(
-        filename="extract_artworks.log", filemode="w", level=logging.DEBUG
-    )
 
     extract_dicts = []
     chunk_count = 0
@@ -500,7 +520,7 @@ def extract_art_ontology():
     motifs = get_distinct_attribute_values_from_artworks("motifs", merged_artworks)
 
     main_subjects = get_distinct_attribute_values_from_artworks(
-        "motifs", merged_artworks
+        "main_subjects", merged_artworks
     )
     motifs_and_main_subjects = motifs
     for main_subject in main_subjects:
@@ -806,8 +826,8 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "-d":
         if len(sys.argv) > 2 and sys.argv[2].isdigit():
             DEV_LIMIT = int(sys.argv[2])
-    print("DEV MODE: on, DEV_LIM={0}".format(DEV_LIMIT))
-    DEV = True
+        print("DEV MODE: on, DEV_LIM={0}".format(DEV_LIMIT))
+        DEV = True
 
     logging.debug("Extracting Art Ontology")
     extract_art_ontology()

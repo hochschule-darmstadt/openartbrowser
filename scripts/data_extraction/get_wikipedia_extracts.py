@@ -106,20 +106,24 @@ def get_wikipedia_page_ids(
                     f"The maxlag of the server exceeded ({maxlag} seconds) waiting a minute before retry. Response: {response}"
                 )
                 time.sleep(sleep_time)
-                # retry
                 continue
+            else:
+                break
         except HTTPError as http_error:
             logging.error(
                 f"Request error. Time: {datetime.datetime.now()}. HTTP-Error: {http_error}. Following items couldn't be loaded: {title_indice_dictionary.keys()}"
             )
+            time.sleep(sleep_time)
+            continue
         except Exception as error:
             print(
                 f"Unknown error. Time: {datetime.datetime.now()}. Error: {error}. Following items couldn't be loaded: {title_indice_dictionary.keys()}"
             )
+            time.sleep(sleep_time)
+            continue
         finally:
             t1 = time.time()
             logging.info(f"The request took {t1 - t0} seconds")
-            break
 
     page_normalized_titles = {x: x for x in title_indice_dictionary.keys()}
 
@@ -245,6 +249,11 @@ def add_wikipedia_extracts(
                     item_indices_with_wiki_link_for_lang, chunk_size
                 )
                 extracted_count = 0
+                # Fill json objects without wikilink to an abstract with empty key-value pairs (could be removed if frontend is adjusted)
+                for j in range(len(items)):
+                    if j not in item_indices_with_wiki_link_for_lang:
+                        items[j][f"abstract_{key}"] = ""
+
                 for chunk in item_indices_chunks:
                     # Get PageIds from URL https://en.wikipedia.org/w/api.php?action=query&titles=Jean_Wauquelin_presenting_his_'Chroniques_de_Hainaut'_to_Philip_the_Good
                     page_id_indices_dictionary = get_wikipedia_page_ids(
@@ -257,10 +266,7 @@ def add_wikipedia_extracts(
                     # add extracted abstracts to json objects
                     for i in chunk:
                         items[i][f"abstract_{key}"] = rawResponse[i]
-                    # Fill json objects without wikilink to an abstract with empty key-value pairs (could be removed if frontend is adjusted)
-                    for j in range(len(items)):
-                        if j not in item_indices_with_wiki_link_for_lang:
-                            items[j][f"abstract_{key}"] = ""
+
                     extracted_count += len(chunk)
                     print(
                         f"Extracts for {filename} and language {key} status: {extracted_count}/{len(item_indices_with_wiki_link_for_lang)}"

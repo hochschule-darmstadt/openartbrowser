@@ -2,6 +2,7 @@
   .custom-slider {
     .ng5-slider-tick {
       cursor: default !important;
+
       .ng5-slider-tick-value {
         top: -1.5rem !important;
         visibility: visible !important;
@@ -82,13 +83,14 @@
 
 .thumbnail-container {
   margin-top: 5rem;
-  min-height: 15rem;
+  height: 15rem;
 }
 
-.thumbnail {
-  display: block;
-  height: 20rem;
-  width: 15rem;
+.thumb_item {
+  height: 100%;
+  max-width: 15rem;
+  display: flex;
+  justify-content: center;
   overflow: hidden;
   cursor: pointer;
 
@@ -99,13 +101,17 @@
   }
 }
 
+.thumbnail {
+  width: fit-content;
+  height: 100%;
+}
+
 .overlay-container {
+  display: block;
   position: relative;
   margin: 0 auto;
   height: 90%;
-  width: 100%;
   text-align: center;
-
 
   &-caption {
     max-height: 80%;
@@ -114,7 +120,7 @@
 
 .img_self {
   cursor: pointer;
-  min-width: 100%;
+
   min-height: 100%;
   max-height: 100%;
   margin-left: 50%;

@@ -17,30 +17,28 @@
     </div>
 
     <div class="thumbnail-container ">
-      <a [routerLink]="['/movement', currentMovementId]"
-      angulartics2On="click"
-      angularticsCategory="Navigation"
-      angularticsAction="Timeline"
-      class="thumbnail" id="thumbnail">
-        <div class="overlay-container">
-          <img
-            class=" img_self"
-            src="{{ thumbnail?.imageMedium }}"
-            alt="{{ thumbnail?.label }}"
-            (error)="onLoadingError(thumbnail)"
-          />
-          <div class="overlay_view" [ngClass]="thumbnail?.type == 'artist' ? 'rounded-circle' : ''">
-            <span class="img_description">{{ this.currentMovementLabel | titlecase }}</span>
+      <div class="thumb_item" id="thumbnail">
+        <a class="overlay-container"
+           [routerLink]="['/movement', currentMovementId]"
+           angulartics2On="click"
+           angularticsCategory="Navigation"
+           angularticsAction="Timeline">
+          <div class="thumbnail">
+            <img class=" img_self"
+                 src="{{ thumbnail?.imageMedium }}"
+                 alt="{{ thumbnail?.label }}"
+                 (error)="onLoadingError(thumbnail)"/>
+            <div class="overlay_view" [ngClass]="thumbnail?.type == 'artist' ? 'rounded-circle' : ''">
+              <span class="img_description">{{ this.currentMovementLabel | titlecase }}</span>
+            </div>
           </div>
-        </div>
-        <div *ngIf="this.currentDate" class="item-caption">{{this.currentDate}}</div>
-      </a>
+          <div *ngIf="this.currentDate" class="item-caption">{{this.currentDate}}</div>
+        </a>
+      </div>
     </div>
 
     <svg id="svg">
       <line id="line" class="connection-line"/>
-      <!--<path id="svgpath" class="connection-line" stroke="white" stroke-width="0.2rem" fill="none"/>-->
     </svg>
-
   </div>
 </div>

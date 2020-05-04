@@ -16,7 +16,7 @@ import logging
 logging.basicConfig(filename="extract_artworks.log", filemode="w", level=logging.DEBUG)
 
 DEV = False
-DEV_LIMIT = 1  # Not entry but chunks of 50
+DEV_LIMIT = 4  # Not entry but chunks of 50
 
 # All properties extracted from the wikidata entities mapped to their openartbrowser key-label
 propertyname_to_property_id = {
@@ -34,6 +34,13 @@ propertyname_to_property_id = {
     "width": "P2049",
     "iconclass": "P1257",
     "main_subject": "P921",
+    "influenced_by": "P737",
+    "gender": "P21",  # Is called "sex or gender" in wikidata
+    "date_of_birth": "P569",
+    "date_of_death": "P570",
+    "place_of_birth": "P19",
+    "place_of_death": "P20",
+    "citizenship": "P27",  # Is called "country of citizenship" in wikidata
 }
 
 
@@ -290,7 +297,7 @@ def try_get_value_list(entity_dict, property_id):
         return []
 
 
-def try_get_year_from_inception_timestamp(entity_dict, property_id):
+def try_get_year_from_property_timestamp(entity_dict, property_id):
     """ Method to extract the year from an inception timestamp """
     try:
         timestr = entity_dict["claims"][property_id][0]["mainsnak"]["datavalue"][
@@ -417,7 +424,7 @@ def extract_artworks(
             iconclasses = try_get_value_list(
                 result, propertyname_to_property_id["iconclass"]
             )
-            inception = try_get_year_from_inception_timestamp(
+            inception = try_get_year_from_property_timestamp(
                 result, propertyname_to_property_id["inception"]
             )
             country = try_get_first_qid(result, propertyname_to_property_id["country"])
@@ -525,17 +532,18 @@ def extract_art_ontology():
     motifs_and_main_subjects = motifs
     for main_subject in main_subjects:
         if main_subject not in motifs:
-            motifs_and_main_subjects.add(main_subjects)
+            motifs_and_main_subjects.add(main_subject)
     motifs_extracted = get_subject("motifs and main subjects", motifs_and_main_subjects)
     filename = Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "motifs"
     generate_json("motif", motifs_extracted, filename)
 
-    # Get genres, materials and country labels
+    # Get genres
     genres = get_distinct_attribute_values_from_artworks("genres", merged_artworks)
     genres_extracted = get_subject("genres", genres)
     filename = Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "genres"
-    generate_json("genres", genres_extracted, filename)
+    generate_json("genre", genres_extracted, filename)
 
+    # Get materials
     materials = get_distinct_attribute_values_from_artworks(
         "materials", merged_artworks
     )
@@ -543,8 +551,31 @@ def extract_art_ontology():
     filename = (
         Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "materials"
     )
-    generate_json("materials", materials_extracted, filename)
+    generate_json("material", materials_extracted, filename)
 
+    # Get movements
+    movements = get_distinct_attribute_values_from_artworks(
+        "movements", merged_artworks
+    )
+    movements_extracted = get_subject("movement", movements)
+    filename = (
+        Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "movements"
+    )
+    generate_json("movement", movements_extracted, filename)
+
+    # Get artists
+    artists = get_distinct_attribute_values_from_artworks("artists", merged_artworks)
+    artists_extracted = get_subject("artists", artists)
+    filename = Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "artists"
+    generate_json("artist", artists_extracted, filename)
+
+    # TODO Get locations
+    # TODO Get classes
+
+    # TODO Get classes
+
+    # TODO Resolve labels and langlabels for attributes in artworks: gender, place of birth, place of death, citizenship
+    # Get country labels
     distinct_country_ids = get_distinct_attribute_values_from_artworks(
         "country", merged_artworks, True
     )
@@ -684,6 +715,93 @@ def get_distinct_attribute_values_from_artworks(
     return attribute_set
 
 
+def try_map_response_to_subject(
+    response, type_name, languageKeys=[item[0] for item in language_config_to_list()]
+):
+    """
+    Maps the default attributes which every subject has:
+    qid, image, label, description, classes, wikipediaLink (including language specific attributes)
+    """
+    try:
+        qid = response["id"]
+    except Exception as error:
+        logging.warning("Error on qid, skipping item. Error: {0}".format(error))
+        return None
+
+    # ToDo: Extract to function
+    # How to get image url
+    # https://stackoverflow.com/questions/34393884/how-to-get-image-url-property-from-wikidata-item-by-api
+    try:
+        image = get_image_url_by_name(
+            response["claims"][propertyname_to_property_id["image"]][0]["mainsnak"][
+                "datavalue"
+            ]["value"]
+        )
+    except:
+        image = ""
+    label = try_get_label_or_description(response, "labels", "en")
+    description = try_get_label_or_description(response, "descriptions", "en")
+    classes = try_get_qid_reference_list(response, propertyname_to_property_id["class"])
+
+    subject_dict = {
+        "id": qid,
+        "classes": classes,
+        "label": label,
+        "description": description,
+        "image": image,
+    }
+
+    for langkey in languageKeys:
+        label_lang = try_get_label_or_description(response, "labels", langkey)
+        description_lang = try_get_label_or_description(
+            response, "descriptions", langkey
+        )
+        wikipedia_link_lang = try_get_wikipedia_link(response, langkey)
+        subject_dict.update(
+            {
+                "label_" + langkey: label_lang,
+                "description_" + langkey: description_lang,
+                "wikipediaLink_" + langkey: wikipedia_link_lang,
+            }
+        )
+
+    return subject_dict
+
+
+def try_map_response_to_artist(response):
+    gender = try_get_first_qid(response, propertyname_to_property_id["gender"])
+    date_of_birth = try_get_year_from_property_timestamp(
+        response, propertyname_to_property_id["date_of_birth"]
+    )
+    date_of_death = try_get_year_from_property_timestamp(
+        response, propertyname_to_property_id["date_of_death"]
+    )
+    # labels to be resolved later
+    place_of_birth = try_get_first_qid(
+        response, propertyname_to_property_id["place_of_birth"]
+    )
+    # labels to be resolved later
+    place_of_death = try_get_first_qid(
+        response, propertyname_to_property_id["place_of_death"]
+    )
+    # labels to be resolved later
+    citizenship = try_get_first_qid(
+        response, propertyname_to_property_id["citizenship"]
+    )
+    movements = try_get_qid_reference_list(
+        response, propertyname_to_property_id["movement"]
+    )
+    return {
+        "gender": gender,
+        "date_of_birth": date_of_birth,
+        "date_of_death": date_of_death,
+        "place_of_birth": place_of_birth,
+        "place_of_death": place_of_death,
+        "citizenship": citizenship,
+        "movements": movements,
+    }
+
+
 def get_subject(
     type_name, qids, languageKeys=[item[0] for item in language_config_to_list()]
 ):
@@ -692,8 +810,8 @@ def get_subject(
     item_count = 0
     extract_dicts = []
     chunk_size = 50  # The chunksize 50 is allowed by the wikidata api, bigger numbers need special permissions
-    motif_id_chunks = chunks(list(qids), chunk_size)
-    for chunk in motif_id_chunks:
+    subject_id_chunks = chunks(list(qids), chunk_size)
+    for chunk in subject_id_chunks:
         query_result = wikidata_entity_request(chunk)
 
         if "entities" not in query_result:
@@ -701,50 +819,16 @@ def get_subject(
             continue
 
         for result in query_result["entities"].values():
-            try:
-                qid = result["id"]
-            except Exception as error:
-                logging.warning("Error on qid, skipping item. Error: {0}".format(error))
+            subject_dict = try_map_response_to_subject(result, type_name)
+            if subject_dict is None:
                 continue
-
-            # ToDo: Extract to function
-            # How to get image url
-            # https://stackoverflow.com/questions/34393884/how-to-get-image-url-property-from-wikidata-item-by-api
-            try:
-                image = get_image_url_by_name(
-                    result["claims"][propertyname_to_property_id["image"]][0][
-                        "mainsnak"
-                    ]["datavalue"]["value"]
+            if type_name == "movements" or type_name == "artists":
+                influenced_by = try_get_qid_reference_list(
+                    result, propertyname_to_property_id["influenced_by"]
                 )
-            except:
-                image = ""
-            label = try_get_label_or_description(result, "labels", "en")
-            description = try_get_label_or_description(result, "descriptions", "en")
-            classes = try_get_qid_reference_list(
-                result, propertyname_to_property_id["class"]
-            )
-
-            subject_dict = {
-                "id": qid,
-                "classes": classes,
-                "label": label,
-                "description": description,
-                "image": image,
-            }
-
-            for langkey in languageKeys:
-                label_lang = try_get_label_or_description(result, "labels", langkey)
-                description_lang = try_get_label_or_description(
-                    result, "descriptions", langkey
-                )
-                wikipedia_link_lang = try_get_wikipedia_link(result, langkey)
-                subject_dict.update(
-                    {
-                        "label_" + langkey: label_lang,
-                        "description_" + langkey: description_lang,
-                        "wikipediaLink_" + langkey: wikipedia_link_lang,
-                    }
-                )
+                subject_dict.update({"influenced_by": influenced_by})
+            if type_name == "artists":
+                subject_dict.update(try_map_response_to_artist(result))
             extract_dicts.append(subject_dict)
 
         item_count += len(chunk)
@@ -757,7 +841,7 @@ def get_subject(
 def get_country_labels(
     qids, languageKeys=[item[0] for item in language_config_to_list()]
 ):
-    print(datetime.datetime.now(), "Starting with motifs and main_subjects")
+    print(datetime.datetime.now(), "Starting with country labels")
     print(f"Total country labels to extract: {len(qids)}")
     item_count = 0
     extract_dicts = []
@@ -826,8 +910,8 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "-d":
         if len(sys.argv) > 2 and sys.argv[2].isdigit():
             DEV_LIMIT = int(sys.argv[2])
-        print("DEV MODE: on, DEV_LIM={0}".format(DEV_LIMIT))
-        DEV = True
+    print("DEV MODE: on, DEV_LIM={0}".format(DEV_LIMIT))
+    DEV = True
 
     logging.debug("Extracting Art Ontology")
     extract_art_ontology()

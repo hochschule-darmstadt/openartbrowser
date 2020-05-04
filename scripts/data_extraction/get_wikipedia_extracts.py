@@ -220,7 +220,14 @@ def add_wikipedia_extracts(
     logging.basicConfig(
         filename="extract_wikipedia_extracts.log", filemode="w", level=logging.DEBUG
     )
-    for filename in ["artworks", "motifs", "genres", "materials"]:
+    for filename in [
+        "artworks",
+        "motifs",
+        "genres",
+        "materials",
+        "movements",
+        "artists",
+    ]:
         print(
             datetime.datetime.now(),
             "Starting extracting wikipedia extracts with",

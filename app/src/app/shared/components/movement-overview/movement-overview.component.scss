@@ -86,11 +86,12 @@
   height: 15rem;
 }
 
-.thumb_item {
-  height: 100%;
+.thumbnail {
   max-width: 15rem;
+  height: 100%;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+justify-content: space-between;
   overflow: hidden;
   cursor: pointer;
 
@@ -101,16 +102,12 @@
   }
 }
 
-.thumbnail {
-  width: fit-content;
-  height: 100%;
-}
 
 .overlay-container {
   display: block;
   position: relative;
   margin: 0 auto;
-  height: 90%;
+  height: 80%;
   text-align: center;
 
   &-caption {
@@ -169,10 +166,6 @@ a {
   font-size: large;
   max-height: 10%;
   min-height: 2rem;
-  margin-bottom: 0.3em;
-  align-self: center;
-  margin-top: auto;
-  padding-top: 0.3em;
 }
 
 #svg {

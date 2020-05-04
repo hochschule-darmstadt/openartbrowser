@@ -17,24 +17,22 @@
     </div>
 
     <div class="thumbnail-container ">
-      <div class="thumb_item" id="thumbnail">
-        <a class="overlay-container"
-           [routerLink]="['/movement', currentMovementId]"
-           angulartics2On="click"
-           angularticsCategory="Navigation"
-           angularticsAction="Timeline">
-          <div class="thumbnail">
-            <img class=" img_self"
-                 src="{{ thumbnail?.imageMedium }}"
-                 alt="{{ thumbnail?.label }}"
-                 (error)="onLoadingError(thumbnail)"/>
-            <div class="overlay_view" [ngClass]="thumbnail?.type == 'artist' ? 'rounded-circle' : ''">
-              <span class="img_description">{{ this.currentMovementLabel | titlecase }}</span>
-            </div>
+      <a class="thumbnail" id="thumbnail"
+        [routerLink]="['/movement', currentMovementId]"
+        angulartics2On="click"
+        angularticsCategory="Navigation"
+        angularticsAction="Timeline">
+        <div class="overlay-container">
+          <img class=" img_self"
+               src="{{ thumbnail?.imageMedium }}"
+               alt="{{ thumbnail?.label }}"
+               (error)="onLoadingError(thumbnail)"/>
+          <div class="overlay_view" [ngClass]="thumbnail?.type == 'artist' ? 'rounded-circle' : ''">
+            <span class="img_description">{{ this.currentMovementLabel | titlecase }}</span>
           </div>
-          <div *ngIf="this.currentDate" class="item-caption">{{this.currentDate}}</div>
-        </a>
-      </div>
+        </div>
+        <div *ngIf="this.currentDate" class="item-caption">{{this.currentDate}}</div>
+      </a>
     </div>
 
     <svg id="svg">

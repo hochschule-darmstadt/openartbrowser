@@ -3,6 +3,8 @@ import {Entity} from '../../models/entity.interface';
 import {Options} from 'ng5-slider';
 import {DataService} from '../../../core/services/elasticsearch/data.service';
 import {Artwork} from '../../models/artwork.interface';
+import {timer, Subject} from 'rxjs';
+import {switchMap} from 'rxjs/operators';
 
 interface MovementItem extends Entity {
   artworks: Artwork[]; // holds url to thumbnail images
@@ -18,6 +20,7 @@ interface MovementItem extends Entity {
 })
 export class MovementOverviewComponent implements OnInit, AfterViewInit {
   dataService: DataService;
+
   /** initial movements to be displayed by the component */
   movements: MovementItem[] = [];
 
@@ -46,9 +49,14 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
     showTicks: true,
   };
 
+  /** variables to control automatic periodical selection of a random movement  */
+  private nextRandomMovementTime = 15; // number in seconds, set to '0' to disable
+  private randomMovementTimer$ = new Subject();
+
   constructor(data: DataService) {
 
     this.dataService = data;
+
     this.onResize();
     // sample movements, to be removed
     this.movements.push({
@@ -115,6 +123,16 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
     this.getMovementImages([this.currentMovementId]).then(() => {
       this.setRandomThumbnail(this.currentMovementId);
       console.log('CURRENT ID ARTWORKS SHOULD HAVE LOADED\n', this.movements[0].artworks);
+
+      // setup timer for period random movement selection
+      // This will run the function 'selectRandomMovement' every 'nextRandomMovementTime' seconds
+      if (this.nextRandomMovementTime > 0) {
+        this.randomMovementTimer$.pipe(
+          switchMap(() => timer(this.nextRandomMovementTime * 1000, this.nextRandomMovementTime * 1000)),
+        ).subscribe(() => this.selectRandomMovement());
+        // start timer
+        this.randomMovementTimer$.next();
+      }
     });
     // now get those which are not displayed
     this.getMovementImages(movementIds).then(() => {
@@ -124,7 +142,6 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
     this.setTimeline();
     // fill this.boxes
     this.fillTimeline();
-
   }
 
   ngAfterViewInit() {
@@ -275,12 +292,19 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
 
   /** This method gets called when movement box gets clicked and calls drawThumbnail() */
   onClickMovementBox(event) {
+    // this resets the 'randomMovementTimer$'
+    this.randomMovementTimer$.next();
+
     const boxId = event.target.attributes.id.nodeValue;
     if (boxId && boxId !== this.currentMovementId) {
-      this.currentMovementId = boxId;
-      this.setRandomThumbnail(this.currentMovementId);
-      this.drawThumbnail(this.currentMovementId);
+      this.updateShownMovement(boxId);
     }
+  }
+
+  private updateShownMovement(newMovementId) {
+    this.currentMovementId = newMovementId;
+    this.setRandomThumbnail(this.currentMovementId);
+    this.drawThumbnail(this.currentMovementId);
   }
 
   /** get image sample of each movement in list of ids */
@@ -309,6 +333,16 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
     // TODO: move this?
     this.currentMovementLabel = this.movements[currMovementIndex].label;
     this.currentDate = this.movements[currMovementIndex].start + ' - ' + this.movements[currMovementIndex].end;
+  }
+
+  selectRandomMovement() {
+    let randIndex = Math.floor(Math.random() * this.movements.length);
+    let randomMovement = this.movements[randIndex];
+    if (randomMovement.id === this.currentMovementId) {
+      randIndex = (randIndex + 1) % this.movements.length;
+      randomMovement = this.movements[randIndex];
+    }
+    this.updateShownMovement(randomMovement.id);
   }
 
   /** Removes items from the component which cannot be displayed */

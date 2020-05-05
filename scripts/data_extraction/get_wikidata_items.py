@@ -566,22 +566,59 @@ def extract_art_ontology():
     # Get artists
     artists = get_distinct_attribute_values_from_artworks("artists", merged_artworks)
     artists_extracted = get_subject("artists", artists)
-    filename = Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "artists"
-    generate_json("artist", artists_extracted, filename)
 
     # TODO Get locations
     # TODO Get classes
 
-    # TODO Get classes
-
-    # TODO Resolve labels and langlabels for attributes in artworks: gender, place of birth, place of death, citizenship
     # Get country labels
     distinct_country_ids = get_distinct_attribute_values_from_artworks(
         "country", merged_artworks, True
     )
-    country_labels_extracted = get_country_labels(distinct_country_ids)
-    merged_artworks = resolve_country_id_to_label(
-        merged_artworks, country_labels_extracted
+    country_labels_extracted = get_entity_labels("country", distinct_country_ids)
+    merged_artworks = resolve_entity_id_to_label(
+        "country", merged_artworks, country_labels_extracted
+    )
+
+    # Get gender labels
+    distinct_gender_ids = get_distinct_attribute_values_from_artworks(
+        "gender", artists_extracted, True
+    )
+    gender_labels_extracted = get_entity_labels("gender", distinct_gender_ids)
+    artists_extracted = resolve_entity_id_to_label(
+        "gender", artists_extracted, gender_labels_extracted
+    )
+
+    # Get place of birth labels
+    distinct_place_of_birth_labels = get_distinct_attribute_values_from_artworks(
+        "place_of_birth", artists_extracted, True
+    )
+    place_of_birth_labels_extracted = get_entity_labels(
+        "place_of_birth", distinct_place_of_birth_labels
+    )
+    artists_extracted = resolve_entity_id_to_label(
+        "place_of_birth", artists_extracted, place_of_birth_labels_extracted
+    )
+
+    # Get place of death labels
+    distinct_place_of_death_labels = get_distinct_attribute_values_from_artworks(
+        "place_of_death", artists_extracted, True
+    )
+    place_of_death_labels_extracted = get_entity_labels(
+        "place_of_death", distinct_place_of_death_labels
+    )
+    artists_extracted = resolve_entity_id_to_label(
+        "place_of_death", artists_extracted, place_of_death_labels_extracted
+    )
+
+    # Get citizenship labels
+    distinct_citizenship_labels = get_distinct_attribute_values_from_artworks(
+        "citizenship", artists_extracted, True
+    )
+    citizenship_labels_extracted = get_entity_labels(
+        "citizenship", distinct_citizenship_labels
+    )
+    artists_extracted = resolve_entity_id_to_label(
+        "citizenship", artists_extracted, citizenship_labels_extracted
     )
 
     # Write to artworks.json
@@ -589,6 +626,10 @@ def extract_art_ontology():
         Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "artworks"
     )
     generate_json(artworks, merged_artworks, filename)
+
+    # Write to artists.json
+    filename = Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "artists"
+    generate_json("artist", artists_extracted, filename)
 
 
 def get_fields(type_name, languageKeys=[item[0] for item in language_config_to_list()]):
@@ -838,16 +879,16 @@ def get_subject(
     return extract_dicts
 
 
-def get_country_labels(
-    qids, languageKeys=[item[0] for item in language_config_to_list()]
+def get_entity_labels(
+    type_name, qids, languageKeys=[item[0] for item in language_config_to_list()]
 ):
-    print(datetime.datetime.now(), "Starting with country labels")
-    print(f"Total country labels to extract: {len(qids)}")
+    print(datetime.datetime.now(), f"Starting with {type_name} labels")
+    print(f"Total {type_name} labels to extract: {len(qids)}")
     item_count = 0
     extract_dicts = []
     chunk_size = 50  # The chunksize 50 is allowed by the wikidata api, bigger numbers need special permissions
-    country_id_chunks = chunks(list(qids), chunk_size)
-    for chunk in country_id_chunks:
+    id_chunks = chunks(list(qids), chunk_size)
+    for chunk in id_chunks:
         query_result = wikidata_entity_request(
             chunk, props=["labels"], timeout=10
         )  # country entities take longer so timeout is increased
@@ -875,33 +916,34 @@ def get_country_labels(
             extract_dicts.append(subject_dict)
 
         item_count += len(chunk)
-        print(f"Status of countries (labels only): {item_count}/{len(qids)}")
+        print(f"Status of {type_name} labels: {item_count}/{len(qids)}")
 
-    print(datetime.datetime.now(), "Finished with country labels")
+    print(datetime.datetime.now(), f"Finished with {type_name} labels")
     return extract_dicts
 
 
-def resolve_country_id_to_label(
+def resolve_entity_id_to_label(
+    type_name,
     artwork_dict,
-    country_labels,
+    labels,
     languageKeys=[item[0] for item in language_config_to_list()],
 ):
-    # country_labels objects to qid_country_labels_dict
-    qid_country_labels_dict = {}
-    for country_label_obj in country_labels:
-        qid_country_labels_dict[country_label_obj["id"]] = country_label_obj
+    # labels objects to qid_labels_dict
+    qid_labels_dict = {}
+    for label_obj in labels:
+        qid_labels_dict[label_obj["id"]] = label_obj
 
     for artwork_object in artwork_dict:
-        if artwork_object["country"] != "":
-            property_id = artwork_object["country"]
-            artwork_object["country"] = qid_country_labels_dict[property_id]["label_en"]
+        if artwork_object[type_name] != "":
+            property_id = artwork_object[type_name]
+            artwork_object[type_name] = qid_labels_dict[property_id]["label_en"]
             for langkey in languageKeys:
-                artwork_object[f"country_{langkey}"] = qid_country_labels_dict[
-                    property_id
-                ][f"label_{langkey}"]
+                artwork_object[f"{type_name}_{langkey}"] = qid_labels_dict[property_id][
+                    f"label_{langkey}"
+                ]
         else:
             for langkey in languageKeys:
-                artwork_object[f"country_{langkey}"] = ""
+                artwork_object[f"{type_name}_{langkey}"] = ""
 
     return artwork_dict
 

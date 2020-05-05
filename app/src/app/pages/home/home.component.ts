@@ -52,7 +52,7 @@ export class HomeComponent implements OnInit {
     /** set configuration of ngbCarousel */
     ngb_config.interval = 10000;
     ngb_config.keyboard = false;
-    ngb_config.pauseOnHover = false;
+    ngb_config.pauseOnHover = true;
   }
 
   ngOnInit() {

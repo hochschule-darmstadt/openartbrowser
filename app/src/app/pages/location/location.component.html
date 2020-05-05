@@ -5,7 +5,7 @@
 
       <app-information i18n-label="Country label@@country" label="Country" [value]="location?.country"> </app-information>
 
-      <app-information i18n-label="Official page label@@official_page" label="Official page" [value]="location?.website"> </app-information>
+      <app-hyperlink i18n-label="Official page label@@official_page" label="Web" [value]="location?.website"> </app-hyperlink>
 
       <div *ngIf="location?.abstract">
         <app-collapse collapse="{{ collapse }}">

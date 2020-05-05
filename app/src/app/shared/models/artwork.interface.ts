@@ -15,6 +15,12 @@ export interface Artwork extends Entity {
   motifs: Partial<Motif>[];
   country?: string;
   height?: number;
+  height_unit?: string;
   width?: number;
+  width_unit?: string;
+  length?: number;
+  length_unit?: string;
+  diameter?: number;
+  diameter_unit?: string;
   type: EntityType.ARTWORK;
 }

@@ -66,6 +66,16 @@
               label="Height" 
               [value]="dimensionValue">
             </app-information>
+
+            <app-information *ngSwitchCase="'Length'" i18n-label="Artwork Dimension label@@length"
+              label="Length" 
+              [value]="dimensionValue">
+            </app-information>
+
+            <app-information *ngSwitchCase="'Diameter'" i18n-label="Artwork Dimension label@@diameter"
+              label="Diameter" 
+              [value]="dimensionValue">
+            </app-information>
           </div>
         </app-collapse>
       </div>

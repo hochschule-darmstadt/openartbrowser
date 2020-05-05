@@ -603,6 +603,22 @@
         </context-group>
         <note priority="1" from="description">Dimension-Height label</note>
       </trans-unit>
+      <trans-unit id="length" datatype="html">
+        <source>Length</source><target state="final">Longitud</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
+          <context context-type="linenumber">196</context>
+        </context-group>
+        <note priority="1" from="description">Dimension-Length label</note>
+      </trans-unit>
+      <trans-unit id="diameter" datatype="html">
+        <source>Diameter</source><target state="final">Diámetro</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
+          <context context-type="linenumber">196</context>
+        </context-group>
+        <note priority="1" from="description">Dimension-Diameter label</note>
+      </trans-unit>
       <trans-unit id="related_artworks" datatype="html">
         <source>Related Artworks</source><target state="final">Obras de arte relacionadas</target>
         <context-group purpose="location">

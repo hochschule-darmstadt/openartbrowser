@@ -8,7 +8,14 @@
           {{ motif?.description }}
         </p>
       </div>
-      <app-abstract [entity]="motif"></app-abstract>
+
+      <div *ngIf="motif?.abstract">
+        <app-collapse collapse="{{ collapse }}">
+          <app-abstract [entity]="motif"></app-abstract>
+        </app-collapse>
+      </div>
+
+
     </div>
 
     <div class="col-sm-5 img" *ngIf="motif?.image">

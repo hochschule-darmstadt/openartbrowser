@@ -227,6 +227,7 @@ def add_wikipedia_extracts(
         "materials",
         "movements",
         "artists",
+        "locations",
     ]:
         print(
             datetime.datetime.now(),

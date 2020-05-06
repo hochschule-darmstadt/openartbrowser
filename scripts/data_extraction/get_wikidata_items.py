@@ -41,6 +41,9 @@ propertyname_to_property_id = {
     "place_of_birth": "P19",
     "place_of_death": "P20",
     "citizenship": "P27",  # Is called "country of citizenship" in wikidata
+    "website": "P856",  # Is called "official website" in wikidata
+    "part_of": "P361",
+    "coordinate": "P625",  # Is called "coordinate location" in wikidata
 }
 
 
@@ -524,9 +527,9 @@ def extract_art_ontology():
     # TODO refactor ab hier
 
     # Get motifs and main subjects
-    motifs = get_distinct_attribute_values_from_artworks("motifs", merged_artworks)
+    motifs = get_distinct_attribute_values_from_dict("motifs", merged_artworks)
 
-    main_subjects = get_distinct_attribute_values_from_artworks(
+    main_subjects = get_distinct_attribute_values_from_dict(
         "main_subjects", merged_artworks
     )
     motifs_and_main_subjects = motifs
@@ -538,15 +541,13 @@ def extract_art_ontology():
     generate_json("motif", motifs_extracted, filename)
 
     # Get genres
-    genres = get_distinct_attribute_values_from_artworks("genres", merged_artworks)
+    genres = get_distinct_attribute_values_from_dict("genres", merged_artworks)
     genres_extracted = get_subject("genres", genres)
     filename = Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "genres"
     generate_json("genre", genres_extracted, filename)
 
     # Get materials
-    materials = get_distinct_attribute_values_from_artworks(
-        "materials", merged_artworks
-    )
+    materials = get_distinct_attribute_values_from_dict("materials", merged_artworks)
     materials_extracted = get_subject("materials", materials)
     filename = (
         Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "materials"
@@ -554,9 +555,7 @@ def extract_art_ontology():
     generate_json("material", materials_extracted, filename)
 
     # Get movements
-    movements = get_distinct_attribute_values_from_artworks(
-        "movements", merged_artworks
-    )
+    movements = get_distinct_attribute_values_from_dict("movements", merged_artworks)
     movements_extracted = get_subject("movement", movements)
     filename = (
         Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "movements"
@@ -564,23 +563,34 @@ def extract_art_ontology():
     generate_json("movement", movements_extracted, filename)
 
     # Get artists
-    artists = get_distinct_attribute_values_from_artworks("artists", merged_artworks)
+    artists = get_distinct_attribute_values_from_dict("artists", merged_artworks)
     artists_extracted = get_subject("artists", artists)
 
-    # TODO Get locations
+    # Get locations
+    locations = get_distinct_attribute_values_from_dict("locations", merged_artworks)
+    locations_extracted = get_subject("locations", locations)
+
     # TODO Get classes
 
-    # Get country labels
-    distinct_country_ids = get_distinct_attribute_values_from_artworks(
+    # Get country labels for merged artworks and locations
+    distinct_country_ids_locations = get_distinct_attribute_values_from_dict(
+        "country", locations_extracted, True
+    )
+    distinct_country_ids_artworks = get_distinct_attribute_values_from_dict(
         "country", merged_artworks, True
+    )
+    distinct_country_ids = distinct_country_ids_locations.union(
+        distinct_country_ids_artworks
     )
     country_labels_extracted = get_entity_labels("country", distinct_country_ids)
     merged_artworks = resolve_entity_id_to_label(
         "country", merged_artworks, country_labels_extracted
     )
-
-    # Get gender labels
-    distinct_gender_ids = get_distinct_attribute_values_from_artworks(
+    locations_extracted = resolve_entity_id_to_label(
+        "country", locations_extracted, country_labels_extracted
+    )
+    # Get gender labels for artists
+    distinct_gender_ids = get_distinct_attribute_values_from_dict(
         "gender", artists_extracted, True
     )
     gender_labels_extracted = get_entity_labels("gender", distinct_gender_ids)
@@ -588,8 +598,8 @@ def extract_art_ontology():
         "gender", artists_extracted, gender_labels_extracted
     )
 
-    # Get place of birth labels
-    distinct_place_of_birth_labels = get_distinct_attribute_values_from_artworks(
+    # Get place of birth labels for artists
+    distinct_place_of_birth_labels = get_distinct_attribute_values_from_dict(
         "place_of_birth", artists_extracted, True
     )
     place_of_birth_labels_extracted = get_entity_labels(
@@ -599,8 +609,8 @@ def extract_art_ontology():
         "place_of_birth", artists_extracted, place_of_birth_labels_extracted
     )
 
-    # Get place of death labels
-    distinct_place_of_death_labels = get_distinct_attribute_values_from_artworks(
+    # Get place of death labels for artists
+    distinct_place_of_death_labels = get_distinct_attribute_values_from_dict(
         "place_of_death", artists_extracted, True
     )
     place_of_death_labels_extracted = get_entity_labels(
@@ -610,8 +620,8 @@ def extract_art_ontology():
         "place_of_death", artists_extracted, place_of_death_labels_extracted
     )
 
-    # Get citizenship labels
-    distinct_citizenship_labels = get_distinct_attribute_values_from_artworks(
+    # Get citizenship labels for artists
+    distinct_citizenship_labels = get_distinct_attribute_values_from_dict(
         "citizenship", artists_extracted, True
     )
     citizenship_labels_extracted = get_entity_labels(
@@ -620,6 +630,12 @@ def extract_art_ontology():
     artists_extracted = resolve_entity_id_to_label(
         "citizenship", artists_extracted, citizenship_labels_extracted
     )
+
+    # Write to locations.json
+    filename = (
+        Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "locations"
+    )
+    generate_json("locations", locations_extracted, filename)
 
     # Write to artworks.json
     filename = (
@@ -740,7 +756,7 @@ def merge_artworks():
     return extract_dicts
 
 
-def get_distinct_attribute_values_from_artworks(
+def get_distinct_attribute_values_from_dict(
     attribute_name, entry_dict, is_single_value_column=False
 ):
     attribute_set = set()
@@ -843,6 +859,35 @@ def try_map_response_to_artist(response):
     }
 
 
+def try_map_response_to_location(response):
+    country = try_get_first_qid(response, propertyname_to_property_id["country"])
+    website = try_get_first_qid(response, propertyname_to_property_id["website"])
+    part_of = try_get_qid_reference_list(
+        response, propertyname_to_property_id["part_of"]
+    )
+    try:
+        coordinate = response["claims"][propertyname_to_property_id["coordinate"]][0][
+            "mainsnak"
+        ]["datavalue"]["value"]
+        lat = coordinate["latitude"]
+        lon = coordinate["longitude"]
+    except Exception as error:
+        logging.info(
+            "Error on item {0}, property {1}, error {2}".format(
+                response["id"], propertyname_to_property_id["coordinate"], error
+            )
+        )
+        lat = ""
+        lon = ""
+    return {
+        "country": country,
+        "website": website,
+        "part_of": part_of,
+        "lat": lat,
+        "lon": lon,
+    }
+
+
 def get_subject(
     type_name, qids, languageKeys=[item[0] for item in language_config_to_list()]
 ):
@@ -870,6 +915,8 @@ def get_subject(
                 subject_dict.update({"influenced_by": influenced_by})
             if type_name == "artists":
                 subject_dict.update(try_map_response_to_artist(result))
+            if type_name == "locations":
+                subject_dict.update(try_map_response_to_location(result))
             extract_dicts.append(subject_dict)
 
         item_count += len(chunk)

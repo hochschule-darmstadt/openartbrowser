@@ -16,7 +16,7 @@ import logging
 logging.basicConfig(filename="extract_artworks.log", filemode="w", level=logging.DEBUG)
 
 DEV = False
-DEV_LIMIT = 4  # Not entry but chunks of 50
+DEV_LIMIT = 1  # Not entry but chunks of 50
 
 # All properties extracted from the wikidata entities mapped to their openartbrowser key-label
 propertyname_to_property_id = {
@@ -44,6 +44,7 @@ propertyname_to_property_id = {
     "website": "P856",  # Is called "official website" in wikidata
     "part_of": "P361",
     "coordinate": "P625",  # Is called "coordinate location" in wikidata
+    "subclass_of": "P279",
 }
 
 
@@ -570,7 +571,34 @@ def extract_art_ontology():
     locations = get_distinct_attribute_values_from_dict("locations", merged_artworks)
     locations_extracted = get_subject("locations", locations)
 
-    # TODO Get classes
+    # Get distinct classes from artworks, motifs, etc.
+    distinct_classes = get_distinct_attribute_values_from_dict(
+        "classes", merged_artworks
+    )
+    distinct_classes = distinct_classes.union(
+        get_distinct_attribute_values_from_dict("classes", motifs_extracted)
+    )
+    distinct_classes = distinct_classes.union(
+        get_distinct_attribute_values_from_dict("classes", genres_extracted)
+    )
+    distinct_classes = distinct_classes.union(
+        get_distinct_attribute_values_from_dict("classes", materials_extracted)
+    )
+    distinct_classes = distinct_classes.union(
+        get_distinct_attribute_values_from_dict("classes", movements_extracted)
+    )
+    distinct_classes = distinct_classes.union(
+        get_distinct_attribute_values_from_dict("classes", artists_extracted)
+    )
+    distinct_classes = distinct_classes.union(
+        get_distinct_attribute_values_from_dict("classes", locations_extracted)
+    )
+
+    extracted_classes = get_classes("classes", distinct_classes)
+
+    # Write to classes.json
+    filename = Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "classes"
+    generate_json("classes", extracted_classes, filename)
 
     # Get country labels for merged artworks and locations
     distinct_country_ids_locations = get_distinct_attribute_values_from_dict(
@@ -967,6 +995,88 @@ def get_entity_labels(
 
     print(datetime.datetime.now(), f"Finished with {type_name} labels")
     return extract_dicts
+
+
+already_extracted_superclass_ids = set()
+
+
+def get_classes(
+    type_name, qids, languageKeys=[item[0] for item in language_config_to_list()]
+):
+    print(datetime.datetime.now(), f"Starting with {type_name}")
+    if type_name == "classes":
+        print(
+            f"Total {type_name} to extract (only 'instance_of' of the provided qids): {len(qids)}"
+        )
+    else:
+        print(
+            f"Total {type_name} to extract (only 'subclass_of' of the provided qids): {len(qids)}"
+        )
+    item_count = 0
+    extract_dicts = []
+    chunk_size = 50  # The chunksize 50 is allowed by the wikidata api, bigger numbers need special permissions
+    classes_id_chunks = chunks(list(qids), chunk_size)
+    for chunk in classes_id_chunks:
+        query_result = wikidata_entity_request(chunk)
+
+        if "entities" not in query_result:
+            logging.warn("Skipping chunk")
+            continue
+
+        for result in query_result["entities"].values():
+            try:
+                qid = result["id"]
+            except Exception as error:
+                logging.warning("Error on qid, skipping item. Error: {0}".format(error))
+
+            label = try_get_label_or_description(result, "labels", "en")
+            description = try_get_label_or_description(result, "descriptions", "en")
+            subclass_of = try_get_qid_reference_list(
+                result, propertyname_to_property_id["subclass_of"]
+            )
+            class_dict = {
+                "id": qid,
+                "label": label,
+                "description": description,
+                "subclass_of": subclass_of,
+            }
+
+            for langkey in languageKeys:
+                label_lang = try_get_label_or_description(result, "labels", langkey)
+                description_lang = try_get_label_or_description(
+                    result, "descriptions", langkey
+                )
+                class_dict.update(
+                    {
+                        "label_" + langkey: label_lang,
+                        "description_" + langkey: description_lang,
+                    }
+                )
+            extract_dicts.append(class_dict)
+
+        item_count += len(chunk)
+        print(f"Status of {type_name}: {item_count}/{len(qids)}")
+
+    superclasses_qids = get_distinct_attribute_values_from_dict(
+        "subclass_of", extract_dicts
+    )
+    missing_superclass_qids = []
+
+    for superclass_id in superclasses_qids:
+        if superclass_id not in already_extracted_superclass_ids:
+            missing_superclass_qids.append(superclass_id)
+
+    if len(missing_superclass_qids) == 0:
+        return extract_dicts
+    else:
+        [
+            already_extracted_superclass_ids.add(superclass_id)
+            for superclass_id in superclasses_qids
+        ]
+        superclasses = get_classes("subclasses", missing_superclass_qids)
+        for superclass in superclasses:
+            extract_dicts.append(superclass)
+        return extract_dicts
 
 
 def resolve_entity_id_to_label(

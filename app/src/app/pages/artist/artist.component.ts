@@ -21,7 +21,8 @@ export class ArtistComponent implements OnInit, OnDestroy {
     1. Use Inheritance (Root-Page-Component) or Composition
     2. Inject entity instead of artist
   */
-
+  uniqueEntityVideos: any;
+  uniqueVideosLinks: string[];
   /** The entity this page is about */
   artist: Artist = null;
   /** Related artworks */
@@ -46,9 +47,15 @@ export class ArtistComponent implements OnInit, OnDestroy {
     });
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
+      this.uniqueEntityVideos = {};
+      this.uniqueVideosLinks = [];
       const artistId = params.get('artistId');
       /** Use data service to fetch entity from database */
       this.artist = await this.dataService.findById<Artist>(artistId, EntityType.ARTIST);
+      if (this.artist.videos) {
+        this.uniqueEntityVideos[this.artist.id] = this.artist;
+        this.uniqueVideosLinks.push(this.getVideoUrl(this.artist));
+      }
 
       /** load slider items */
       this.dataService.findArtworksByType(EntityType.ARTIST, [this.artist.id]).then(artworks => (this.sliderItems = shuffle(artworks)));
@@ -63,19 +70,37 @@ export class ArtistComponent implements OnInit, OnDestroy {
     });
   }
 
+
+  getVideoUrl(entity) {
+    return Array.isArray(entity.videos) ? entity.videos[0] : entity.videos;
+  }
+
+  /*
+    Iterates over the movements and adds all videos to uniqueEntityVideos.
+    Only Videos whose id and link are not in uniqueEntityVideos & uniqueVideosLinks will be added.
+  */
+  addMovmentVideos() {
+    for ( const movement of this.artist.movements) {
+      if (!this.uniqueEntityVideos[movement.id] && movement.videos && !this.uniqueVideosLinks.includes(this.getVideoUrl(movement))) {
+        this.uniqueEntityVideos[movement.id] = movement;
+        this.uniqueVideosLinks.push(this.getVideoUrl(movement));
+      }
+    }
+  }
   /**
    * Get all movements from the artworks of an artist and add them to the artist movements.
    * Since the first query only gives back the movement id and not the complete movement object,
    * it needs to be queried again to get the corresponding movement object.
    * Since the movements are added as arrays of arrays the deletion of duplicate movements is done at the end.
    */
-  private aggregatePictureMovementsToArtist() {
+  private async aggregatePictureMovementsToArtist() {
     const allMovements: Partial<Movement>[] = [];
     this.dataService.findArtworksByType(EntityType.ARTIST, [this.artist.id]).then(artworks => {
       artworks.forEach(artwork => {
         artwork.movements.forEach(movement => {
           if (movement !== '') {
             allMovements.push(movement);
+            this.addMovmentVideos();
           }
         });
       });
@@ -84,6 +109,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
           this.artist.movements.push(movement);
         });
         this.artist.movements = _.uniqWith(this.artist.movements, _.isEqual);
+        this.addMovmentVideos();
       });
     });
   }
@@ -119,6 +145,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
+    
   }
 
   toggleComponent() {

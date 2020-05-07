@@ -2,10 +2,15 @@
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7" *ngIf="location">
       <app-title [entity]="location"></app-title>
+      <div class="mb-3 mt-5 pl-2">
+        <p *ngIf="location.description" class="mb-1 first-letter">
+          {{ location.description }}
+        </p>
+      </div>
 
       <app-information i18n-label="Country label@@country" label="Country" [value]="location?.country"> </app-information>
 
-      <app-information i18n-label="Official page label@@official_page" label="Official page" [value]="location?.website"> </app-information>
+      <app-hyperlink i18n-label="Official page label@@official_page" label="Web" [value]="location?.website"> </app-hyperlink>
 
       <div *ngIf="location?.abstract">
         <app-collapse collapse="{{ collapse }}">

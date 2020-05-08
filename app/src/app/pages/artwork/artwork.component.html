@@ -47,12 +47,26 @@
 
           <app-information i18n-label="Material label@@material" label="Material" [values]="artwork?.materials"> </app-information>
 
-          <app-information i18n-label="Motif label@@motif" label="Motif" [values]="artwork?.motifs"> </app-information>
+          <app-information i18n-label="Motif label@@motif" label="Motifs" [values]="artwork?.motifs"> </app-information>
 
           <app-iconclass [iconclasses]="artwork.iconclasses"></app-iconclass>
 
-          <app-information i18n-label="Artwork Dimension label@@dimension" label="Dimension" [value]="artwork?.height + ' x ' + artwork?.width + 'cm'">
-          </app-information>
+          <div [ngSwitch]="dimensionLabel" *ngIf="( dimensionLabel && artwork && dimensionValue)">
+            <app-information *ngSwitchCase="'Dimension'" i18n-label="Artwork Dimension label@@dimension"
+              label="Dimension"
+              [value]="dimensionValue">
+            </app-information>
+
+            <app-information *ngSwitchCase="'Width'" i18n-label="Artwork Dimension label@@width"
+              label="Width"
+              [value]="dimensionValue">
+            </app-information>
+
+            <app-information *ngSwitchCase="'Height'" i18n-label="Artwork Dimension label@@height"
+              label="Height"
+              [value]="dimensionValue">
+            </app-information>
+          </div>
         </app-collapse>
       </div>
     </div>

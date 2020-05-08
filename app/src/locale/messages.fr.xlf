@@ -422,7 +422,7 @@
         <note priority="1" from="description">Location label</note>
       </trans-unit>
       <trans-unit id="motif" datatype="html">
-        <source>Motif</source><target state="final">Motif</target>
+        <source>Motifs</source><target state="final">Motifs</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/search-result/search-result.component.html</context>
           <context context-type="linenumber">87</context>
@@ -581,6 +581,22 @@
         </context-group>
         <note priority="1" from="description">Dimension label</note>
       </trans-unit>
+      <trans-unit id="width" datatype="html">
+        <source>Width</source><target state="final">Largeur</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
+          <context context-type="linenumber">196</context>
+        </context-group>
+        <note priority="1" from="description">Dimension-Width label</note>
+      </trans-unit>
+      <trans-unit id="height" datatype="html">
+        <source>Height</source><target state="final">Hauteur</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
+          <context context-type="linenumber">196</context>
+        </context-group>
+        <note priority="1" from="description">Dimension-Height label</note>
+      </trans-unit>
       <trans-unit id="related_artworks" datatype="html">
         <source>Related Artworks</source><target state="final">Œuvres d'art connexes</target>
         <context-group purpose="location">
@@ -654,7 +670,7 @@
         <note priority="1" from="description">Country label</note>
       </trans-unit>
       <trans-unit id="official_page" datatype="html">
-        <source>Official page</source><target state="final">Page officielle</target>
+        <source>Web</source><target state="final">Web</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/location/location.component.html</context>
           <context context-type="linenumber">22</context>

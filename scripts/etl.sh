@@ -12,9 +12,8 @@ trap "curl -F file=@${WD}/etl.log -F \"initial_comment=Oops! Something went wron
 
 curl -X POST https://slack.com/api/chat.postMessage -H "Authorization: Bearer ${TOKEN}" -H 'Content-type: application/json' --data '{"channel":"CSY0DLRDG","text":"The ETL-process is starting on server '${SERVERNAME}' at '${DATE}'","as_user":"true"}'
 
-./install_etl.sh
-
-python3 data_extraction/art_ontology_crawler.py
+python3 data_extraction/get_wikidata_items.py
+python3 data_extraction/get_wikipedia_extracts.py
 
 cd crawler_output/intermediate_files/json/
 

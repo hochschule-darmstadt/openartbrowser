@@ -1,18 +1,19 @@
 @ECHO OFF
 REM Batch script for executing ETL. No error handling!
 
-python ".\data_extraction\art_ontology_crawler.py" -d 10
+python ".\data_extraction\get_wikidata_items.py"
+python ".\data_extraction\get_wikipedia_extracts.py"
 
 CD crawler_output\intermediate_files\json\
 
-node ..\..\..\data_manipulation\script_artworks_rank.js
+node --max-old-space-size=4096 ..\..\..\data_manipulation\script_artworks_rank.js
 
-node ..\..\..\data_manipulation\script_genres_rank.js
-node ..\..\..\data_manipulation\script_artist_rank.js
-node ..\..\..\data_manipulation\script_locations_rank.js
-node ..\..\..\data_manipulation\script_materials_rank.js
-node ..\..\..\data_manipulation\script_movements_rank.js
-node ..\..\..\data_manipulation\script_motifs_rank.js
+node --max-old-space-size=4096 ..\..\..\data_manipulation\script_genres_rank.js
+node --max-old-space-size=4096 ..\..\..\data_manipulation\script_artist_rank.js
+node --max-old-space-size=4096 ..\..\..\data_manipulation\script_locations_rank.js
+node --max-old-space-size=4096 ..\..\..\data_manipulation\script_materials_rank.js
+node --max-old-space-size=4096 ..\..\..\data_manipulation\script_movements_rank.js
+node --max-old-space-size=4096 ..\..\..\data_manipulation\script_motifs_rank.js
 
 REM Merges all *_rank.json files into art_ontology.json
 node --max-old-space-size=4096 ..\..\..\data_manipulation\merge_art_data.js

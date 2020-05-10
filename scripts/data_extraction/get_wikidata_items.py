@@ -18,7 +18,7 @@ logging.basicConfig(
 )
 
 DEV = False
-DEV_CHUNK_LIMIT = 1  # Not entry but chunks of 50
+DEV_CHUNK_LIMIT = 2  # Not entry but chunks of 50
 
 # All properties extracted from the wikidata entities mapped to their openartbrowser key-label
 property_name_to_property_id = {

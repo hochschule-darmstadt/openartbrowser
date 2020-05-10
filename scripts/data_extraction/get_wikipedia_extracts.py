@@ -218,7 +218,7 @@ def add_wikipedia_extracts(
     languageKeys=[item[0] for item in language_config_to_list()],
 ):
     logging.basicConfig(
-        filename="extract_wikipedia_extracts.log", filemode="w", level=logging.DEBUG
+        filename="get_wikipedia_extracts.log", filemode="w", level=logging.DEBUG
     )
     for filename in [
         "artworks",

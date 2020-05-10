@@ -13,13 +13,15 @@ import hashlib
 import json
 import logging
 
-logging.basicConfig(filename="extract_artworks.log", filemode="w", level=logging.DEBUG)
+logging.basicConfig(
+    filename="get_wikidata_items.log", filemode="w", level=logging.DEBUG
+)
 
 DEV = False
-DEV_LIMIT = 1  # Not entry but chunks of 50
+DEV_CHUNK_LIMIT = 1  # Not entry but chunks of 50
 
 # All properties extracted from the wikidata entities mapped to their openartbrowser key-label
-propertyname_to_property_id = {
+property_name_to_property_id = {
     "image": "P18",
     "class": "P31",  # Is called "instance of" in wikidata
     "artist": "P170",  # Is called "creator" in wikidata
@@ -253,9 +255,11 @@ def try_get_label_or_description(entity_dict, fieldname, langkey):
 
 def try_get_dimensions(entity_dict, property_id):
     try:
-        return entity_dict["claims"][property_id][0]["mainsnak"]["datavalue"]["value"][
-            "amount"
-        ]
+        return float(
+            entity_dict["claims"][property_id][0]["mainsnak"]["datavalue"]["value"][
+                "amount"
+            ]
+        )
     except Exception as error:
         logging.info(
             "Error on item {0}, property {1}, error {2}".format(
@@ -375,9 +379,9 @@ def extract_artworks(
     chunk_size = 50  # The chunksize 50 is allowed by the wikidata api, bigger numbers need special permissions
     artwork_id_chunks = chunks(artwork_ids, chunk_size)
     for chunk in artwork_id_chunks:
-        if DEV and chunk_count == DEV_LIMIT:
+        if DEV and chunk_count == DEV_CHUNK_LIMIT:
             logging.debug(
-                f"DEV_LIMIT of {type_name} reached. End extraction for {type_name}"
+                f"DEV_CHUNK_LIMIT of {type_name} reached. End extraction for {type_name}"
             )
             break
 
@@ -392,7 +396,7 @@ def extract_artworks(
                 # How to get image url
                 # https://stackoverflow.com/questions/34393884/how-to-get-image-url-property-from-wikidata-item-by-api
                 image = get_image_url_by_name(
-                    result["claims"][propertyname_to_property_id["image"]][0][
+                    result["claims"][property_name_to_property_id["image"]][0][
                         "mainsnak"
                     ]["datavalue"]["value"]
                 )
@@ -405,37 +409,37 @@ def extract_artworks(
             label = try_get_label_or_description(result, "labels", "en")
             description = try_get_label_or_description(result, "descriptions", "en")
             classes = try_get_qid_reference_list(
-                result, propertyname_to_property_id["class"]
+                result, property_name_to_property_id["class"]
             )
             artists = try_get_qid_reference_list(
-                result, propertyname_to_property_id["artist"]
+                result, property_name_to_property_id["artist"]
             )
             locations = try_get_qid_reference_list(
-                result, propertyname_to_property_id["location"]
+                result, property_name_to_property_id["location"]
             )
             genres = try_get_qid_reference_list(
-                result, propertyname_to_property_id["genre"]
+                result, property_name_to_property_id["genre"]
             )
             movements = try_get_qid_reference_list(
-                result, propertyname_to_property_id["movement"]
+                result, property_name_to_property_id["movement"]
             )
             materials = try_get_qid_reference_list(
-                result, propertyname_to_property_id["material"]
+                result, property_name_to_property_id["material"]
             )
             motifs = try_get_qid_reference_list(
-                result, propertyname_to_property_id["motif"]
+                result, property_name_to_property_id["motif"]
             )
             iconclasses = try_get_value_list(
-                result, propertyname_to_property_id["iconclass"]
+                result, property_name_to_property_id["iconclass"]
             )
             inception = try_get_year_from_property_timestamp(
-                result, propertyname_to_property_id["inception"]
+                result, property_name_to_property_id["inception"]
             )
-            country = try_get_first_qid(result, propertyname_to_property_id["country"])
-            height = try_get_dimensions(result, propertyname_to_property_id["height"])
-            width = try_get_dimensions(result, propertyname_to_property_id["width"])
+            country = try_get_first_qid(result, property_name_to_property_id["country"])
+            height = try_get_dimensions(result, property_name_to_property_id["height"])
+            width = try_get_dimensions(result, property_name_to_property_id["width"])
             main_subjects = try_get_qid_reference_list(
-                result, propertyname_to_property_id["main_subject"]
+                result, property_name_to_property_id["main_subject"]
             )
 
             artwork_dictionary = {
@@ -598,7 +602,7 @@ def extract_art_ontology():
 
     # Write to classes.json
     filename = Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "classes"
-    generate_json("classes", extracted_classes, filename)
+    generate_json("class", extracted_classes, filename)
 
     # Get country labels for merged artworks and locations
     distinct_country_ids_locations = get_distinct_attribute_values_from_dict(
@@ -663,13 +667,13 @@ def extract_art_ontology():
     filename = (
         Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "locations"
     )
-    generate_json("locations", locations_extracted, filename)
+    generate_json("location", locations_extracted, filename)
 
     # Write to artworks.json
     filename = (
         Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "artworks"
     )
-    generate_json(artworks, merged_artworks, filename)
+    generate_json("artwork", merged_artworks, filename)
 
     # Write to artists.json
     filename = Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "artists"
@@ -818,7 +822,7 @@ def try_map_response_to_subject(
     # https://stackoverflow.com/questions/34393884/how-to-get-image-url-property-from-wikidata-item-by-api
     try:
         image = get_image_url_by_name(
-            response["claims"][propertyname_to_property_id["image"]][0]["mainsnak"][
+            response["claims"][property_name_to_property_id["image"]][0]["mainsnak"][
                 "datavalue"
             ]["value"]
         )
@@ -826,7 +830,9 @@ def try_map_response_to_subject(
         image = ""
     label = try_get_label_or_description(response, "labels", "en")
     description = try_get_label_or_description(response, "descriptions", "en")
-    classes = try_get_qid_reference_list(response, propertyname_to_property_id["class"])
+    classes = try_get_qid_reference_list(
+        response, property_name_to_property_id["class"]
+    )
 
     subject_dict = {
         "id": qid,
@@ -854,27 +860,27 @@ def try_map_response_to_subject(
 
 
 def try_map_response_to_artist(response):
-    gender = try_get_first_qid(response, propertyname_to_property_id["gender"])
+    gender = try_get_first_qid(response, property_name_to_property_id["gender"])
     date_of_birth = try_get_year_from_property_timestamp(
-        response, propertyname_to_property_id["date_of_birth"]
+        response, property_name_to_property_id["date_of_birth"]
     )
     date_of_death = try_get_year_from_property_timestamp(
-        response, propertyname_to_property_id["date_of_death"]
+        response, property_name_to_property_id["date_of_death"]
     )
     # labels to be resolved later
     place_of_birth = try_get_first_qid(
-        response, propertyname_to_property_id["place_of_birth"]
+        response, property_name_to_property_id["place_of_birth"]
     )
     # labels to be resolved later
     place_of_death = try_get_first_qid(
-        response, propertyname_to_property_id["place_of_death"]
+        response, property_name_to_property_id["place_of_death"]
     )
     # labels to be resolved later
     citizenship = try_get_first_qid(
-        response, propertyname_to_property_id["citizenship"]
+        response, property_name_to_property_id["citizenship"]
     )
     movements = try_get_qid_reference_list(
-        response, propertyname_to_property_id["movement"]
+        response, property_name_to_property_id["movement"]
     )
     return {
         "gender": gender,
@@ -888,13 +894,13 @@ def try_map_response_to_artist(response):
 
 
 def try_map_response_to_location(response):
-    country = try_get_first_qid(response, propertyname_to_property_id["country"])
-    website = try_get_first_qid(response, propertyname_to_property_id["website"])
+    country = try_get_first_qid(response, property_name_to_property_id["country"])
+    website = try_get_first_qid(response, property_name_to_property_id["website"])
     part_of = try_get_qid_reference_list(
-        response, propertyname_to_property_id["part_of"]
+        response, property_name_to_property_id["part_of"]
     )
     try:
-        coordinate = response["claims"][propertyname_to_property_id["coordinate"]][0][
+        coordinate = response["claims"][property_name_to_property_id["coordinate"]][0][
             "mainsnak"
         ]["datavalue"]["value"]
         lat = coordinate["latitude"]
@@ -902,7 +908,7 @@ def try_map_response_to_location(response):
     except Exception as error:
         logging.info(
             "Error on item {0}, property {1}, error {2}".format(
-                response["id"], propertyname_to_property_id["coordinate"], error
+                response["id"], property_name_to_property_id["coordinate"], error
             )
         )
         lat = ""
@@ -938,7 +944,7 @@ def get_subject(
                 continue
             if type_name == "movements" or type_name == "artists":
                 influenced_by = try_get_qid_reference_list(
-                    result, propertyname_to_property_id["influenced_by"]
+                    result, property_name_to_property_id["influenced_by"]
                 )
                 subject_dict.update({"influenced_by": influenced_by})
             if type_name == "artists":
@@ -1032,7 +1038,7 @@ def get_classes(
             label = try_get_label_or_description(result, "labels", "en")
             description = try_get_label_or_description(result, "descriptions", "en")
             subclass_of = try_get_qid_reference_list(
-                result, propertyname_to_property_id["subclass_of"]
+                result, property_name_to_property_id["subclass_of"]
             )
             class_dict = {
                 "id": qid,
@@ -1108,9 +1114,9 @@ def resolve_entity_id_to_label(
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "-d":
         if len(sys.argv) > 2 and sys.argv[2].isdigit():
-            DEV_LIMIT = int(sys.argv[2])
-    print("DEV MODE: on, DEV_LIM={0}".format(DEV_LIMIT))
-    DEV = True
+            DEV_CHUNK_LIMIT = int(sys.argv[2])
+        print("DEV MODE: on, DEV_LIM={0}".format(DEV_CHUNK_LIMIT))
+        DEV = True
 
     logging.debug("Extracting Art Ontology")
     extract_art_ontology()

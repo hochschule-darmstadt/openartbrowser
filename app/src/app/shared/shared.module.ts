@@ -34,7 +34,7 @@ import { HyperlinkComponent } from './components/hyperlink/hyperlink.component';
     AbstractComponent,
     IconclassComponent,
     CollapseComponent,
-    DimensionsComponent
+    DimensionsComponent,
     HyperlinkComponent
   ],
   imports: [CommonModule, NgbModule, RouterModule, FormsModule, Ng5SliderModule, Angulartics2Module],
@@ -50,7 +50,7 @@ import { HyperlinkComponent } from './components/hyperlink/hyperlink.component';
     AbstractComponent,
     IconclassComponent,
     CollapseComponent,
-    DimensionsComponent
+    DimensionsComponent,
     HyperlinkComponent
   ]
 })

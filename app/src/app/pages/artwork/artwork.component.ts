@@ -38,16 +38,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
 
 
   /**
-   * @description displays the dimensions of the artwork.
-   */
-  dimensionValue: string;
-
-  /**
-   * @description displays the label of the artwork dimensions.
-   */
-  dimensionLabel: string;
-
-  /**
    * whether artwork image should be hidden
    */
   imageHidden = false;
@@ -122,31 +112,12 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       if (this.artwork) {
         /* Count meta data to show more on load */
         this.calculateCollapseState();
-        this.setDimensions();
         /* load tabs content */
         this.loadTabs();
       }
     });
   }
 
-
-  setDimensions() {
-     if (this.artwork.height || this.artwork.width) {
-
-        if (this.artwork.height && this.artwork.width) {
-          this.dimensionLabel = 'Dimension';
-        } else if (this.artwork.height) {
-          this.dimensionLabel = 'Height';
-        } else if (this.artwork.width) {
-          this.dimensionLabel = 'Width';
-        }
-
-        this.dimensionValue  = [
-          this.artwork.height ? this.artwork.height + ' cm' : '',
-          this.artwork.width ? this.artwork.width + ' cm' : '',
-        ].filter(x => x).join(' x ');
-      }
-  }
 
   /**
    * hide artwork image

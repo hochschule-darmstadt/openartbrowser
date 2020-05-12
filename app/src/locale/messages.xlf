@@ -550,6 +550,22 @@
         </context-group>
         <note priority="1" from="description">Artwork Dimension-Height label</note>
       </trans-unit>
+      <trans-unit id="length" datatype="html">
+        <source>Length</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
+          <context context-type="linenumber">76</context>
+        </context-group>
+        <note priority="1" from="description">Artwork Dimension-Length label</note>
+      </trans-unit>
+      <trans-unit id="diameter" datatype="html">
+        <source>Diameter</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
+          <context context-type="linenumber">76</context>
+        </context-group>
+        <note priority="1" from="description">Artwork Dimension-Diameter label</note>
+      </trans-unit>
       <trans-unit id="related_artworks" datatype="html">
         <source>Related Artworks</source>
         <context-group purpose="location">

@@ -12,6 +12,7 @@ from pywikibot import WbTime
 import hashlib
 import json
 import logging
+import re
 
 logging.basicConfig(
     filename="get_wikidata_items.log", filemode="w", level=logging.DEBUG
@@ -193,6 +194,7 @@ def wikidata_entity_request(
                 exit(-1)
             response = response.json()
             if "error" in response:
+                # ToDo: more specific error handling since unknown ids error throws a different message
                 logging.warning(
                     f"The maxlag of the server exceeded ({maxlag} seconds) waiting a minute before retry. Response: {response}"
                 )
@@ -277,9 +279,20 @@ def try_get_dimension_value(entity_dict, property_id):
 
 def try_get_dimension_unit(entity_dict, property_id):
     try:
-        return entity_dict["claims"][property_id][0]["mainsnak"]["datavalue"]["value"][
-            "unit"
-        ].replace("http://www.wikidata.org/entity/", "")
+        unit_qid = entity_dict["claims"][property_id][0]["mainsnak"]["datavalue"][
+            "value"
+        ]["unit"].replace("http://www.wikidata.org/entity/", "")
+        qid_pattern = r"^Q\d+"
+        is_qid = re.match(qid_pattern, unit_qid)
+        if is_qid:
+            return unit_qid
+        else:
+            logging.error(
+                "Error on item {0}, property {1}, Unit was provided but isn't a QID reference".format(
+                    entity_dict["id"], property_id
+                )
+            )
+            return ""
     except Exception as error:
         logging.info(
             "Error on item {0}, property {1}, error {2}".format(

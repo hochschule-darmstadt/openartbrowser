@@ -26,6 +26,8 @@ property_name_to_property_id = {
     "class": "P31",  # Is called "instance of" in wikidata
     "artist": "P170",  # Is called "creator" in wikidata
     "location": "P276",
+    "start_time": "P580",
+    "end_time": "P582",
     "genre": "P136",
     "movement": "P135",
     "inception": "P571",
@@ -48,6 +50,7 @@ property_name_to_property_id = {
     "citizenship": "P27",  # Is called "country of citizenship" in wikidata
     "website": "P856",  # Is called "official website" in wikidata
     "part_of": "P361",
+    "has_part": "P527",
     "coordinate": "P625",  # Is called "coordinate location" in wikidata
     "subclass_of": "P279",
 }
@@ -339,13 +342,13 @@ def try_get_year_from_property_timestamp(entity_dict, property_id):
 
 
 def try_get_first_qid(entity_dict, property_id):
-    """ Method to extract the country id """
+    """ Method to extract the first qid """
     try:
         # ToDo: resolve to label or load all country qids load them seperate and do this later
-        country = entity_dict["claims"][property_id][0]["mainsnak"]["datavalue"][
+        entity = entity_dict["claims"][property_id][0]["mainsnak"]["datavalue"][
             "value"
         ]["id"]
-        return country
+        return entity
     except Exception as error:
         logging.info("Error: {0}".format(error))
         return ""
@@ -624,11 +627,7 @@ def extract_art_ontology():
 
     # Get movements
     movements = get_distinct_attribute_values_from_dict("movements", merged_artworks)
-    movements_extracted = get_subject("movement", movements)
-    filename = (
-        Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "movements"
-    )
-    generate_json("movement", movements_extracted, filename)
+    movements_extracted = get_subject("movements", movements)
 
     # Get artists
     artists = get_distinct_attribute_values_from_dict("artists", merged_artworks)
@@ -674,8 +673,11 @@ def extract_art_ontology():
     distinct_country_ids_artworks = get_distinct_attribute_values_from_dict(
         "country", merged_artworks, True
     )
+    distinct_country_ids_movements = get_distinct_attribute_values_from_dict(
+        "country", movements_extracted, True
+    )
     distinct_country_ids = distinct_country_ids_locations.union(
-        distinct_country_ids_artworks
+        distinct_country_ids_artworks, distinct_country_ids_movements
     )
     country_labels_extracted = get_entity_labels("country", distinct_country_ids)
     merged_artworks = resolve_entity_id_to_label(
@@ -683,6 +685,9 @@ def extract_art_ontology():
     )
     locations_extracted = resolve_entity_id_to_label(
         "country", locations_extracted, country_labels_extracted
+    )
+    movements_extracted = resolve_entity_id_to_label(
+        "country", movements_extracted, country_labels_extracted
     )
     # Get gender labels for artists
     distinct_gender_ids = get_distinct_attribute_values_from_dict(
@@ -742,6 +747,13 @@ def extract_art_ontology():
 
     unit_symbols = get_unit_symbols(distinct_unit_qids)
     resolve_unit_id_to_unit_symbol(merged_artworks, unit_symbols)
+
+    # Write to movements.json
+    filename = (
+        Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "movements"
+    )
+    generate_json("movement", movements_extracted, filename)
+
     # Write to locations.json
     filename = (
         Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "locations"
@@ -978,6 +990,30 @@ def try_map_response_to_artist(response):
     }
 
 
+def try_map_response_to_movement(response):
+    start_time = try_get_year_from_property_timestamp(
+        response, property_name_to_property_id["start_time"]
+    )
+    end_time = try_get_year_from_property_timestamp(
+        response, property_name_to_property_id["end_time"]
+    )
+    # labels to be resolved later
+    country = try_get_first_qid(response, property_name_to_property_id["country"])
+    has_part = try_get_qid_reference_list(
+        response, property_name_to_property_id["has_part"]
+    )
+    part_of = try_get_qid_reference_list(
+        response, property_name_to_property_id["part_of"]
+    )
+    return {
+        "start_time": start_time,
+        "end_time": end_time,
+        "country": country,
+        "has_part": has_part,
+        "part_of": part_of,
+    }
+
+
 def try_map_response_to_location(response):
     country = try_get_first_qid(response, property_name_to_property_id["country"])
     website = try_get_first_qid(response, property_name_to_property_id["website"])
@@ -1032,6 +1068,8 @@ def get_subject(
                     result, property_name_to_property_id["influenced_by"]
                 )
                 subject_dict.update({"influenced_by": influenced_by})
+            if type_name == "movements":
+                subject_dict.update(try_map_response_to_movement(result))
             if type_name == "artists":
                 subject_dict.update(try_map_response_to_artist(result))
             if type_name == "locations":

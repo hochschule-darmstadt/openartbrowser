@@ -36,7 +36,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   artwork: Artwork = null;
 
-
   /**
    * whether artwork image should be hidden
    */
@@ -110,6 +109,8 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       this.artwork = (await this.dataService.findById<Artwork>(artworkId, EntityType.ARTWORK)) as Artwork;
 
       if (this.artwork) {
+        this.resolveIds('main_subjects');
+
         /* Count meta data to show more on load */
         this.calculateCollapseState();
         /* load tabs content */
@@ -118,6 +119,13 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * resolves Ids to actual entities
+   * @param key attribute on this.artwork
+   */
+  async resolveIds(key: string) {
+    this.artwork[key] = await this.dataService.findMultipleById(this.artwork[key] as string[]);
+  }
 
   /**
    * hide artwork image

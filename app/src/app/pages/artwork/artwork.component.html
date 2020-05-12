@@ -29,6 +29,7 @@
           artwork?.movements?.length ||
           artwork?.materials?.length ||
           artwork?.motifs?.length ||
+          artwork?.main_subjects?.length ||
           (artwork?.height && artwork?.width)
         "
       >
@@ -46,6 +47,8 @@
           <app-information i18n-label="Movement label@@movement" label="Movement" [values]="artwork?.movements"> </app-information>
 
           <app-information i18n-label="Material label@@material" label="Material" [values]="artwork?.materials"> </app-information>
+
+          <app-information i18n-label="Main Subject label@@mainSubject" label="Main Subjects" [values]="artwork?.main_subjects"> </app-information>
 
           <app-information i18n-label="Motif label@@motif" label="Motifs" [values]="artwork?.motifs"> </app-information>
 

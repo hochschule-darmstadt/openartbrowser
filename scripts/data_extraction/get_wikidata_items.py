@@ -18,7 +18,7 @@ logging.basicConfig(
 )
 
 DEV = False
-DEV_CHUNK_LIMIT = 2  # Not entry but chunks of 50
+DEV_CHUNK_LIMIT = 4  # Not entry but chunks of 50
 
 # All properties extracted from the wikidata entities mapped to their openartbrowser key-label
 property_name_to_property_id = {
@@ -26,6 +26,8 @@ property_name_to_property_id = {
     "class": "P31",  # Is called "instance of" in wikidata
     "artist": "P170",  # Is called "creator" in wikidata
     "location": "P276",
+    "start_time": "P580",
+    "end_time": "P582",
     "genre": "P136",
     "movement": "P135",
     "inception": "P571",
@@ -34,6 +36,9 @@ property_name_to_property_id = {
     "country": "P17",
     "height": "P2048",
     "width": "P2049",
+    "length": "P2043",
+    "diameter": "P2386",
+    "unit_symbol": "P5061",
     "iconclass": "P1257",
     "main_subject": "P921",
     "influenced_by": "P737",
@@ -45,6 +50,7 @@ property_name_to_property_id = {
     "citizenship": "P27",  # Is called "country of citizenship" in wikidata
     "website": "P856",  # Is called "official website" in wikidata
     "part_of": "P361",
+    "has_part": "P527",
     "coordinate": "P625",  # Is called "coordinate location" in wikidata
     "subclass_of": "P279",
 }
@@ -253,13 +259,27 @@ def try_get_label_or_description(entity_dict, fieldname, langkey):
         return ""
 
 
-def try_get_dimensions(entity_dict, property_id):
+def try_get_dimension_value(entity_dict, property_id):
     try:
         return float(
             entity_dict["claims"][property_id][0]["mainsnak"]["datavalue"]["value"][
                 "amount"
             ]
         )
+    except Exception as error:
+        logging.info(
+            "Error on item {0}, property {1}, error {2}".format(
+                entity_dict["id"], property_id, error
+            )
+        )
+        return ""
+
+
+def try_get_dimension_unit(entity_dict, property_id):
+    try:
+        return entity_dict["claims"][property_id][0]["mainsnak"]["datavalue"]["value"][
+            "unit"
+        ].replace("http://www.wikidata.org/entity/", "")
     except Exception as error:
         logging.info(
             "Error on item {0}, property {1}, error {2}".format(
@@ -322,13 +342,13 @@ def try_get_year_from_property_timestamp(entity_dict, property_id):
 
 
 def try_get_first_qid(entity_dict, property_id):
-    """ Method to extract the country id """
+    """ Method to extract the first qid """
     try:
         # ToDo: resolve to label or load all country qids load them seperate and do this later
-        country = entity_dict["claims"][property_id][0]["mainsnak"]["datavalue"][
+        entity = entity_dict["claims"][property_id][0]["mainsnak"]["datavalue"][
             "value"
         ]["id"]
-        return country
+        return entity
     except Exception as error:
         logging.info("Error: {0}".format(error))
         return ""
@@ -342,6 +362,20 @@ def try_get_wikipedia_link(entity_dict, langkey):
         )
     except:
         return ""
+
+
+def try_get_unit_symbol(entity_dict, property_id):
+    try:
+        unit_symbol_entries = entity_dict["claims"][property_id]
+        for unit_symbol_entry in unit_symbol_entries:
+            if unit_symbol_entry["mainsnak"]["datavalue"]["value"]["language"] == "en":
+                return unit_symbol_entry["mainsnak"]["datavalue"]["value"]["text"]
+
+        logging.info("Unit symbol not found for property id: {0}".format(property_id))
+        return "no unit"
+    except Exception as error:
+        logging.info("Error: {0}".format(error))
+        return "no unit"
 
 
 def extract_artworks(
@@ -436,8 +470,34 @@ def extract_artworks(
                 result, property_name_to_property_id["inception"]
             )
             country = try_get_first_qid(result, property_name_to_property_id["country"])
-            height = try_get_dimensions(result, property_name_to_property_id["height"])
-            width = try_get_dimensions(result, property_name_to_property_id["width"])
+
+            # Resolve dimensions
+            # The units are qids which have to be resolved later
+            height = try_get_dimension_value(
+                result, property_name_to_property_id["height"]
+            )
+            height_unit = try_get_dimension_unit(
+                result, property_name_to_property_id["height"]
+            )
+            width = try_get_dimension_value(
+                result, property_name_to_property_id["width"]
+            )
+            width_unit = try_get_dimension_unit(
+                result, property_name_to_property_id["width"]
+            )
+            length = try_get_dimension_value(
+                result, property_name_to_property_id["length"]
+            )
+            length_unit = try_get_dimension_unit(
+                result, property_name_to_property_id["length"]
+            )
+            diameter = try_get_dimension_value(
+                result, property_name_to_property_id["diameter"]
+            )
+            diameter_unit = try_get_dimension_unit(
+                result, property_name_to_property_id["diameter"]
+            )
+
             main_subjects = try_get_qid_reference_list(
                 result, property_name_to_property_id["main_subject"]
             )
@@ -457,7 +517,13 @@ def extract_artworks(
                 "motifs": motifs,
                 "country": country,
                 "height": height,
+                "height_unit": height_unit,
                 "width": width,
+                "width_unit": width_unit,
+                "length": length,
+                "length_unit": length_unit,
+                "diameter": diameter,
+                "diameter_unit": diameter_unit,
                 "iconclasses": iconclasses,
                 "main_subjects": main_subjects,
             }
@@ -561,11 +627,7 @@ def extract_art_ontology():
 
     # Get movements
     movements = get_distinct_attribute_values_from_dict("movements", merged_artworks)
-    movements_extracted = get_subject("movement", movements)
-    filename = (
-        Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "movements"
-    )
-    generate_json("movement", movements_extracted, filename)
+    movements_extracted = get_subject("movements", movements)
 
     # Get artists
     artists = get_distinct_attribute_values_from_dict("artists", merged_artworks)
@@ -611,8 +673,11 @@ def extract_art_ontology():
     distinct_country_ids_artworks = get_distinct_attribute_values_from_dict(
         "country", merged_artworks, True
     )
+    distinct_country_ids_movements = get_distinct_attribute_values_from_dict(
+        "country", movements_extracted, True
+    )
     distinct_country_ids = distinct_country_ids_locations.union(
-        distinct_country_ids_artworks
+        distinct_country_ids_artworks, distinct_country_ids_movements
     )
     country_labels_extracted = get_entity_labels("country", distinct_country_ids)
     merged_artworks = resolve_entity_id_to_label(
@@ -620,6 +685,9 @@ def extract_art_ontology():
     )
     locations_extracted = resolve_entity_id_to_label(
         "country", locations_extracted, country_labels_extracted
+    )
+    movements_extracted = resolve_entity_id_to_label(
+        "country", movements_extracted, country_labels_extracted
     )
     # Get gender labels for artists
     distinct_gender_ids = get_distinct_attribute_values_from_dict(
@@ -663,6 +731,29 @@ def extract_art_ontology():
         "citizenship", artists_extracted, citizenship_labels_extracted
     )
 
+    # Get unit symbols from qid for artworks
+    distinct_unit_qids = get_distinct_attribute_values_from_dict(
+        "height_unit", merged_artworks, True
+    )
+    distinct_unit_qids = distinct_unit_qids.union(
+        get_distinct_attribute_values_from_dict("width_unit", merged_artworks, True)
+    )
+    distinct_unit_qids = distinct_unit_qids.union(
+        get_distinct_attribute_values_from_dict("length_unit", merged_artworks, True)
+    )
+    distinct_unit_qids = distinct_unit_qids.union(
+        get_distinct_attribute_values_from_dict("diameter_unit", merged_artworks, True)
+    )
+
+    unit_symbols = get_unit_symbols(distinct_unit_qids)
+    resolve_unit_id_to_unit_symbol(merged_artworks, unit_symbols)
+
+    # Write to movements.json
+    filename = (
+        Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "movements"
+    )
+    generate_json("movement", movements_extracted, filename)
+
     # Write to locations.json
     filename = (
         Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "locations"
@@ -700,7 +791,13 @@ def get_fields(type_name, languageKeys=[item[0] for item in language_config_to_l
             "motifs",
             "country",
             "height",
+            "height_unit",
             "width",
+            "width_unit",
+            "diameter",
+            "diameter_unit",
+            "length",
+            "length_unit",
             "iconclasses",
             "main_subjects",
         ]
@@ -893,6 +990,30 @@ def try_map_response_to_artist(response):
     }
 
 
+def try_map_response_to_movement(response):
+    start_time = try_get_year_from_property_timestamp(
+        response, property_name_to_property_id["start_time"]
+    )
+    end_time = try_get_year_from_property_timestamp(
+        response, property_name_to_property_id["end_time"]
+    )
+    # labels to be resolved later
+    country = try_get_first_qid(response, property_name_to_property_id["country"])
+    has_part = try_get_qid_reference_list(
+        response, property_name_to_property_id["has_part"]
+    )
+    part_of = try_get_qid_reference_list(
+        response, property_name_to_property_id["part_of"]
+    )
+    return {
+        "start_time": start_time,
+        "end_time": end_time,
+        "country": country,
+        "has_part": has_part,
+        "part_of": part_of,
+    }
+
+
 def try_map_response_to_location(response):
     country = try_get_first_qid(response, property_name_to_property_id["country"])
     website = try_get_first_qid(response, property_name_to_property_id["website"])
@@ -947,6 +1068,8 @@ def get_subject(
                     result, property_name_to_property_id["influenced_by"]
                 )
                 subject_dict.update({"influenced_by": influenced_by})
+            if type_name == "movements":
+                subject_dict.update(try_map_response_to_movement(result))
             if type_name == "artists":
                 subject_dict.update(try_map_response_to_artist(result))
             if type_name == "locations":
@@ -1085,8 +1208,62 @@ def get_classes(
         return extract_dicts
 
 
+def get_unit_symbols(qids):
+    print(datetime.datetime.now(), f"Starting with unit symbols")
+    print(f"Total unit symbols to extract: {len(qids)}")
+    item_count = 0
+    extract_dicts = []
+    chunk_size = 50  # The chunksize 50 is allowed by the wikidata api, bigger numbers need special permissions
+    id_chunks = chunks(list(qids), chunk_size)
+    for chunk in id_chunks:
+        query_result = wikidata_entity_request(chunk, props=["claims"], timeout=10)
+
+        if "entities" not in query_result:
+            logging.warn("Skipping chunk")
+            continue
+
+        for result in query_result["entities"].values():
+            try:
+                qid = result["id"]
+            except Exception as error:
+                logging.warning("Error on qid, skipping item. Error: {0}".format(error))
+                continue
+
+            unit_symbol = try_get_unit_symbol(
+                result, property_name_to_property_id["unit_symbol"]
+            )
+
+            subject_dict = {"id": qid, "unit_symbol": unit_symbol}
+            extract_dicts.append(subject_dict)
+
+        item_count += len(chunk)
+        print(f"Status of unit symbols: {item_count}/{len(qids)}")
+
+    print(datetime.datetime.now(), f"Finished with unit symbols")
+    return extract_dicts
+
+
+def resolve_unit_id_to_unit_symbol(artwork_dict, unit_symbols):
+    attribute_names = ["height_unit", "width_unit", "length_unit", "diameter_unit"]
+    qid_unit_symbol_dict = {}
+    for unit_symbol_obj in unit_symbols:
+        qid_unit_symbol_dict[unit_symbol_obj["id"]] = unit_symbol_obj
+
+    for artwork_object in artwork_dict:
+        for attribute_name in attribute_names:
+            if artwork_object[attribute_name] != "":
+                entity_id = artwork_object[attribute_name]
+                artwork_object[attribute_name] = qid_unit_symbol_dict[entity_id][
+                    "unit_symbol"
+                ]
+            else:
+                artwork_object[attribute_name] = ""
+
+    return artwork_dict
+
+
 def resolve_entity_id_to_label(
-    type_name,
+    attribute_name,
     artwork_dict,
     labels,
     languageKeys=[item[0] for item in language_config_to_list()],
@@ -1097,16 +1274,16 @@ def resolve_entity_id_to_label(
         qid_labels_dict[label_obj["id"]] = label_obj
 
     for artwork_object in artwork_dict:
-        if artwork_object[type_name] != "":
-            property_id = artwork_object[type_name]
-            artwork_object[type_name] = qid_labels_dict[property_id]["label_en"]
+        if artwork_object[attribute_name] != "":
+            entity_id = artwork_object[attribute_name]
+            artwork_object[attribute_name] = qid_labels_dict[entity_id]["label_en"]
             for langkey in languageKeys:
-                artwork_object[f"{type_name}_{langkey}"] = qid_labels_dict[property_id][
-                    f"label_{langkey}"
-                ]
+                artwork_object[f"{attribute_name}_{langkey}"] = qid_labels_dict[
+                    entity_id
+                ][f"label_{langkey}"]
         else:
             for langkey in languageKeys:
-                artwork_object[f"{type_name}_{langkey}"] = ""
+                artwork_object[f"{attribute_name}_{langkey}"] = ""
 
     return artwork_dict
 

@@ -16,7 +16,9 @@ import { TimelineComponent } from './components/timeline/timeline.component';
 import { Ng5SliderModule } from 'ng5-slider';
 import { CollapseComponent } from './components/collapse/collapse.component';
 import { Angulartics2Module } from 'angulartics2';
+import { DimensionsComponent } from './components/dimensions/dimensions.component';
 import { HyperlinkComponent } from './components/hyperlink/hyperlink.component';
+
 
 /** Everything that should be used within multiple feature modules but isn't always required goes here */
 @NgModule({
@@ -32,6 +34,7 @@ import { HyperlinkComponent } from './components/hyperlink/hyperlink.component';
     AbstractComponent,
     IconclassComponent,
     CollapseComponent,
+    DimensionsComponent,
     HyperlinkComponent
   ],
   imports: [CommonModule, NgbModule, RouterModule, FormsModule, Ng5SliderModule, Angulartics2Module],
@@ -47,6 +50,7 @@ import { HyperlinkComponent } from './components/hyperlink/hyperlink.component';
     AbstractComponent,
     IconclassComponent,
     CollapseComponent,
+    DimensionsComponent,
     HyperlinkComponent
   ]
 })

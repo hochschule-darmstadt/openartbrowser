@@ -51,22 +51,7 @@
 
           <app-iconclass [iconclasses]="artwork.iconclasses"></app-iconclass>
 
-          <div [ngSwitch]="dimensionLabel" *ngIf="( dimensionLabel && artwork && dimensionValue)">
-            <app-information *ngSwitchCase="'Dimension'" i18n-label="Artwork Dimension label@@dimension"
-              label="Dimension"
-              [value]="dimensionValue">
-            </app-information>
-
-            <app-information *ngSwitchCase="'Width'" i18n-label="Artwork Dimension label@@width"
-              label="Width"
-              [value]="dimensionValue">
-            </app-information>
-
-            <app-information *ngSwitchCase="'Height'" i18n-label="Artwork Dimension label@@height"
-              label="Height"
-              [value]="dimensionValue">
-            </app-information>
-          </div>
+          <app-dimensions *ngIf="artwork" [artwork]="artwork"></app-dimensions>
         </app-collapse>
       </div>
     </div>

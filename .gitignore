@@ -9,3 +9,4 @@ apicache-py3
 *.lwp
 /.idea/
 /scripts/logs
+.vscode

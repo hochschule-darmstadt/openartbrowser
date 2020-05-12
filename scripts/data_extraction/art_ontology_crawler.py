@@ -16,27 +16,78 @@ import datetime
 import ast
 import sys
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util import Retry
 import json
 from pathlib import Path
+from urllib.error import HTTPError
+import logging
+import time
 
 DEV = False
 DEV_LIMIT = 10
 
 
-def get_abstract(page_id, language_code):
+def agent_header():
+    return "<nowiki>https://cai-artbrowserstaging.fbi.h-da.de/</nowiki>; tilo.w.michel@stud.h-da.de"
+
+
+def requests_retry_session(
+    retries=3, backoff_factor=0.3, status_forcelist=(500, 502, 504), session=None,
+):
+    session = session or requests.Session()
+    retry = Retry(
+        total=retries,
+        read=retries,
+        connect=retries,
+        backoff_factor=backoff_factor,
+        status_forcelist=status_forcelist,
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+    return session
+
+
+def get_abstract(page_id, language_code, timeout=5, maxlag=10):
     """Extracts the abstract for a given page_id and language
 
     page_id -- The wikipedia internal page id. This can be received from pywikibot pages.
     language_code -- e.g. 'en', 'de', ...
+
+    Example call for the mona lisa extract:
+    https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&pageids=70889
     """
-
-    url = "https://{}.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&pageids={}".format(
-        language_code, page_id
-    )
-    resp = requests.get(url)
-    resp_obj = json.loads(resp.text)
-
-    return resp_obj["query"]["pages"][str(page_id)]["extract"]
+    parameters = {
+        "format": "json",
+        "action": "query",
+        "prop": "extracts",
+        "exintro": True,
+        "explaintext": True,
+        "pageids": page_id,
+    }
+    header = {"Content-Type": "application/json", "user_agent": agent_header()}
+    try:
+        t0 = time.time()
+        response = requests_retry_session().get(
+            f"https://{language_code}.wikipedia.org/w/api.php",
+            params=parameters,
+            headers=header,
+            timeout=timeout,
+        )
+        response = response.json()
+    except HTTPError as http_error:
+        logging.error(
+            f"Request error was fatal. Ending Crawl at {datetime.datetime.now()}. Error: {http_error}"
+        )
+        return ""
+    except Exception as error:
+        print(f"Unknown error: {error}")
+        return ""
+    finally:
+        t1 = time.time()
+        logging.info(f"The wikipedia request took {t1 - t0} seconds")
+        return response["query"]["pages"][str(page_id)]["extract"]
 
 
 def language_config_to_list(

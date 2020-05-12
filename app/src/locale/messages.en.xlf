@@ -421,7 +421,7 @@
         <note priority="1" from="description">Location label</note>
       </trans-unit>
       <trans-unit id="motif" datatype="html">
-        <source>Motif</source><target state="final">Motif</target>
+        <source>Motifs</source><target state="final">Motifs</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/search-result/search-result.component.html</context>
           <context context-type="linenumber">87</context>
@@ -674,7 +674,7 @@
         <note priority="1" from="description">Country label</note>
       </trans-unit>
       <trans-unit id="official_page" datatype="html">
-        <source>Official page</source><target state="final">Official page</target>
+        <source>Web</source><target state="final">Web</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/location/location.component.html</context>
           <context context-type="linenumber">22</context>

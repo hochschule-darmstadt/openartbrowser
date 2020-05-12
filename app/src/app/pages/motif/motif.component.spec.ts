@@ -11,6 +11,7 @@ import { AbstractComponent } from 'src/app/shared/components/abstract/abstract.c
 import { TitleComponent } from 'src/app/shared/components/title/title.component';
 import { InformationComponent } from 'src/app/shared/components/information/information.component';
 import { BadgeComponent } from 'src/app/shared/components/badge/badge.component';
+import { CollapseComponent } from 'src/app/shared/components/collapse/collapse.component';
 
 describe('MotifComponent', () => {
   let component: MotifComponent;
@@ -19,7 +20,16 @@ describe('MotifComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [NgbModule, HttpClientModule, RouterModule.forRoot([])],
-      declarations: [MotifComponent, SlideComponent, CarouselComponent, AbstractComponent, BadgeComponent, TitleComponent, InformationComponent],
+      declarations: [
+        MotifComponent,
+        SlideComponent,
+        CarouselComponent,
+        AbstractComponent,
+        BadgeComponent,
+        CollapseComponent,
+        TitleComponent,
+        InformationComponent
+      ],
       providers: [DataService]
     }).compileComponents();
   }));

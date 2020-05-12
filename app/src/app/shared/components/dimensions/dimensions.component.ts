@@ -22,7 +22,9 @@ export class DimensionsComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.setDimensions();
+    if (this.artwork) {
+      this.setDimensions();
+    }
   }
 
   setDimensions() {

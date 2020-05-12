@@ -307,6 +307,18 @@ def try_get_qid_reference_list(entity_dict, property_id):
         return []
 
 
+def try_get_first_value(entity_dict, property_id):
+    try:
+        return entity_dict["claims"][property_id][0]["mainsnak"]["datavalue"]["value"]
+    except Exception as error:
+        logging.info(
+            "Error on item {0}, property {1}, error {2}".format(
+                entity_dict["id"], property_id, error
+            )
+        )
+        return ""
+
+
 def try_get_value_list(entity_dict, property_id):
     """ Method to extract iconclasses """
     try:
@@ -1016,7 +1028,7 @@ def try_map_response_to_movement(response):
 
 def try_map_response_to_location(response):
     country = try_get_first_qid(response, property_name_to_property_id["country"])
-    website = try_get_first_qid(response, property_name_to_property_id["website"])
+    website = try_get_first_value(response, property_name_to_property_id["website"])
     part_of = try_get_qid_reference_list(
         response, property_name_to_property_id["part_of"]
     )

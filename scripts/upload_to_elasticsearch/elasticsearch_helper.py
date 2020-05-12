@@ -1,7 +1,6 @@
-from elasticsearch import Elasticsearch
+from elasticsearch import Elasticsearch, helpers
 from pathlib import Path
 import json
-import ijson
 import time
 import datetime
 import uuid
@@ -45,12 +44,12 @@ def delete_index(index_name) -> bool:
     return False
 
 
-def create_index(index_name, file) -> None:
+def create_index(index_name, filename) -> None:
     """
     Creates an index with new documents from art_ontology_<language_code>.json.
 
     :arg index_name: Index name in which documents should be created.
-    :arg file: Name of the file which contains the documents to be created
+    :arg filename: Name of the filename which contains the documents to be created
                e. g. art_ontology_<language_code>.json.
     """
     # Uses localhost:9200 (elasticsearch default) to create the index with it's documents
@@ -67,24 +66,30 @@ def create_index(index_name, file) -> None:
     if create_empty_index(index_name=index_name):
         print("Index " + index_name + " created successfully")
     else:
-        print("Stopping index creation from file " + file)
+        print("Stopping index creation from filename " + str(filename))
         return
 
-    creation_count = 0
-
-    # Document creation
-    for item in ijson.items(open(file, "r", encoding="utf-8"), "item"):
-        es.create(id=uuid.uuid4(), index=index_name, doc_type="data", body=item)
-        creation_count += 1
+    # load items from filename
+    print("Loading " + filename.name)
+    with open(filename, encoding="utf-8") as file:
+        items = json.load(file)
+        print(f"{filename} has {len(items)} items")
+        print("Bulk insert starting now")
+        bulk_insert = [
+            {
+                "_index": index_name,
+                "_type": "data",
+                "_id": uuid.uuid4(),
+                "_source": json.dumps(item),
+            }
+            for item in items
+        ]
+        helpers.bulk(es, bulk_insert)
 
     end = time.time()
-    print(str(creation_count) + " documents were created in index " + index_name)
+    print(f"{len(items)} documents were created in index {index_name}")
     print(
-        "Finished creating the index current time: "
-        + str(datetime.datetime.now())
-        + " it took "
-        + str((int((end - start) / 60)))
-        + " minutes"
+        f"Finished creating the index current time: {str(datetime.datetime.now())} it took {str((int((end - start) / 60)))} minutes"
     )
 
 
@@ -337,7 +342,7 @@ def create_index_for_each_language(
     """
     for key in lang_keys:
         create_index(
-            file=filepath / str("art_ontology_" + key + ".json"),
+            filename=filepath / str("art_ontology_" + key + ".json"),
             index_name=key + "_new",
         )
 

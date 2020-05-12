@@ -12,7 +12,9 @@ COPY ["./languageconfig.csv/", "/app"]
 #COPY ["./language_helper.py/", "/app"]
 
 # run ArtOntologyCrawler in development mode
-RUN ["python", "/app/data_extraction/art_ontology_crawler.py", "-d"]
+RUN pip install SPARQLWrapper
+RUN ["python", "/app/data_extraction/get_wikidata_items.py", "-d"]
+RUN ["python", "/app/data_extraction/get_wikipedia_extracts.py"]
 
 # ------------------------------------------------
 
@@ -57,7 +59,7 @@ RUN pip install elasticsearch requests simplejson ijson
 RUN ["python", "data_manipulation/add_youtube_videos.py", "-d"]
 RUN ["python", "data_manipulation/split_languages.py", "-d"]
 
-# art_ontology.json is moved to /root because elasticsearch_helper.py 
+# art_ontology.json is moved to /root because elasticsearch_helper.py
 # expects the json file in the home directory
 COPY ["./crawler_output/", "/root/crawler_output/"]
 
@@ -70,7 +72,7 @@ WORKDIR /app
 RUN yum update -y && \
     yum install -y https://centos7.iuscommunity.org/ius-release.rpm && \
     yum install -y python36u python36u-pip
-	
+
 RUN python --version
 
 RUN pip3 install elasticsearch ijson requests

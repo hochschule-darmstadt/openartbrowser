@@ -31,7 +31,7 @@ export class DimensionsComponent implements OnInit {
     if (this.artwork.diameter) {
       this.dimensionLabel = 'Diameter';
       /* Displays units if available. If not cm will be displayed */
-      this.dimensionValue = this.artwork.diameter + this.artwork.diameter_unit ? ' ' + this.artwork.diameter_unit : ' cm';
+      this.dimensionValue = this.artwork.diameter + (this.artwork.diameter_unit ? ' ' + this.artwork.diameter_unit : ' cm');
     } else if (this.artwork.height || this.artwork.width || this.artwork.length) {
 
         if ((this.artwork.height && this.artwork.width) ||

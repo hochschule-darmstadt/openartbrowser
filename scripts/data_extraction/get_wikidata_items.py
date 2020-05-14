@@ -1,18 +1,19 @@
-from pathlib import Path
 import csv
 import datetime
-from SPARQLWrapper import SPARQLWrapper, JSON
-from urllib.error import HTTPError
-import time
-import requests
-from requests.adapters import HTTPAdapter
-from urllib3.util import Retry
-import sys
-from pywikibot import WbTime
 import hashlib
 import json
 import logging
 import re
+import sys
+import time
+from pathlib import Path
+from urllib.error import HTTPError
+
+import requests
+from pywikibot import WbTime
+from requests.adapters import HTTPAdapter
+from SPARQLWrapper import JSON, SPARQLWrapper
+from urllib3.util import Retry
 
 logging.basicConfig(
     filename="get_wikidata_items.log", filemode="w", level=logging.DEBUG
@@ -467,27 +468,31 @@ def extract_artworks(
 
             label = try_get_label_or_description(result, "labels", "en")
             description = try_get_label_or_description(result, "descriptions", "en")
-            classes = try_get_qid_reference_list(
-                result, property_name_to_property_id["class"]
+
+            (
+                classes,
+                artists,
+                locations,
+                genres,
+                movements,
+                materials,
+                motifs,
+                main_subjects,
+            ) = get_attribute_values_with_try_get_func(
+                result,
+                [
+                    "class",
+                    "artist",
+                    "location",
+                    "genre",
+                    "movement",
+                    "material",
+                    "motif",
+                    "main_subject",
+                ],
+                try_get_qid_reference_list,
             )
-            artists = try_get_qid_reference_list(
-                result, property_name_to_property_id["artist"]
-            )
-            locations = try_get_qid_reference_list(
-                result, property_name_to_property_id["location"]
-            )
-            genres = try_get_qid_reference_list(
-                result, property_name_to_property_id["genre"]
-            )
-            movements = try_get_qid_reference_list(
-                result, property_name_to_property_id["movement"]
-            )
-            materials = try_get_qid_reference_list(
-                result, property_name_to_property_id["material"]
-            )
-            motifs = try_get_qid_reference_list(
-                result, property_name_to_property_id["motif"]
-            )
+
             iconclasses = try_get_value_list(
                 result, property_name_to_property_id["iconclass"]
             )
@@ -498,33 +503,20 @@ def extract_artworks(
 
             # Resolve dimensions
             # The units are qids which have to be resolved later
-            height = try_get_dimension_value(
-                result, property_name_to_property_id["height"]
+            height, width, length, diameter = get_attribute_values_with_try_get_func(
+                result,
+                ["height", "width", "length", "diameter"],
+                try_get_dimension_value,
             )
-            height_unit = try_get_dimension_unit(
-                result, property_name_to_property_id["height"]
-            )
-            width = try_get_dimension_value(
-                result, property_name_to_property_id["width"]
-            )
-            width_unit = try_get_dimension_unit(
-                result, property_name_to_property_id["width"]
-            )
-            length = try_get_dimension_value(
-                result, property_name_to_property_id["length"]
-            )
-            length_unit = try_get_dimension_unit(
-                result, property_name_to_property_id["length"]
-            )
-            diameter = try_get_dimension_value(
-                result, property_name_to_property_id["diameter"]
-            )
-            diameter_unit = try_get_dimension_unit(
-                result, property_name_to_property_id["diameter"]
-            )
-
-            main_subjects = try_get_qid_reference_list(
-                result, property_name_to_property_id["main_subject"]
+            (
+                height_unit,
+                width_unit,
+                length_unit,
+                diameter_unit,
+            ) = get_attribute_values_with_try_get_func(
+                result,
+                ["height", "width", "length", "diameter"],
+                try_get_dimension_unit,
             )
 
             artwork_dictionary = {
@@ -576,6 +568,11 @@ def extract_artworks(
 
     print(datetime.datetime.now(), "Finished with", type_name)
     return extract_dicts
+
+
+def get_attribute_values_with_try_get_func(result, item_list, try_get_func):
+    for item in item_list:
+        yield try_get_func(result, property_name_to_property_id[item])
 
 
 def extract_art_ontology():

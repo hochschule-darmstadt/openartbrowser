@@ -21,8 +21,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
     1. Use Inheritance (Root-Page-Component) or Composition
     2. Inject entity instead of artist
   */
-  uniqueEntityVideos: any;
-  uniqueVideosLinks: string[];
+
   /** The entity this page is about */
   artist: Artist = null;
   /** Related artworks */
@@ -37,6 +36,10 @@ export class ArtistComponent implements OnInit, OnDestroy {
 
   /** a video was found */
   videoExists = false;
+  /* List of unique Entities (Movements) with Videos */
+  uniqueEntityVideos: any;
+  /* List of unique Videolinks */
+  uniqueVideosLinks: string[];
 
   constructor(private dataService: DataService, private route: ActivatedRoute) {}
 

@@ -37,6 +37,7 @@
     "@types/qs": "^6.5.3",
     "angulartics2": "^8.2.0",
     "core-js": "^3.4.7",
+    "es-query-builder": "git+https://github.com/hochschule-darmstadt/es-query-builder.git",
     "lodash": "^4.17.15",
     "ng5-slider": "^1.2.4",
     "ngx-image-viewer": "github:hochschule-darmstadt/ngx-image-viewer#build",

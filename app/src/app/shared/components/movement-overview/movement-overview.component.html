@@ -1,7 +1,7 @@
 <div class="container custom-bootgrid">
   <div class="col justify-content-center">
     <div class="custom-slider">
-      <ng5-slider id="ng5slider" [options]="options"></ng5-slider>
+      <ng5-slider *ngIf="movements.length > 0" id="ng5slider" [options]="options"></ng5-slider>
     </div>
     <div class="box-container">
       <div class="row" *ngFor="let row of this.boxes">

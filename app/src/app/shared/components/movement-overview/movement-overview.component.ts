@@ -1,15 +1,14 @@
 import {AfterViewInit, Component, HostListener, OnInit} from '@angular/core';
-import {Entity} from '../../models/entity.interface';
+import {Entity, EntityType} from '../../models/entity.interface';
 import {Options} from 'ng5-slider';
 import {DataService} from '../../../core/services/elasticsearch/data.service';
 import {Artwork} from '../../models/artwork.interface';
-import {timer, Subject} from 'rxjs';
+import {Subject, timer} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
+import {Movement} from '../../models/movement.interface';
 
-interface MovementItem extends Entity {
+interface MovementItem extends Movement {
   artworks: Artwork[]; // holds url to thumbnail images
-  start: number; // represents the value the item is located in the timeline
-  end: number; // represents the value the item ends in the timeline
   width: number; // width-percentage of this item, injected into css
 }
 
@@ -23,6 +22,21 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
 
   /** initial movements to be displayed by the component */
   movements: MovementItem[] = [];
+  defaultMovementIds: string[] = [
+    'Q1474884',
+    'Q443153',
+    'Q37853',
+    'Q1404472',
+    'Q2352880',
+    'Q40415',
+    'Q34636',
+    'Q37068',
+    'Q122960',
+    'Q14378',
+    'Q4692',
+    'Q46825',
+    'Q170292',
+  ];
 
   /** 2d array holding items to be displayed */
   boxes: MovementItem[][] = [[]];
@@ -58,94 +72,59 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
     this.dataService = data;
 
     this.onResize();
-    // sample movements, to be removed
-    this.movements.push({
-      id: 'Q867769',
-      artworks: [],
-      label: 'international gothic',
-      start: 1143,
-      end: 1450,
-      width: 10
-    } as MovementItem);
-
-    this.movements.push({
-      id: 'Q37853',
-      artworks: [],
-      label: 'baroque',
-      start: 1500,
-      end: 1800,
-      width: 30
-    } as MovementItem);
-
-    this.movements.push({
-      id: 'Q4692',
-      artworks: [],
-      label: 'renaissance',
-      start: 1400,
-      end: 1600,
-      width: 30
-    } as MovementItem);
-
-    this.movements.push({
-      id: 'Q3624153',
-      artworks: [],
-      label: 'medieval art',
-      start: 1200,
-      end: 1700,
-      width: 30
-    } as MovementItem);
-    this.movements.push({
-      id: 'Q14378',
-      artworks: [],
-      label: 'neoclassicism',
-      start: 1650,
-      end: 2000,
-      width: 30
-    } as MovementItem);
-    this.movements.push({
-      id: 'Q1122677',
-      artworks: [],
-      label: 'Modernism',
-      start: 1900,
-      end: 2010,
-      width: 30
-    } as MovementItem);
-
   }
 
   ngOnInit() {
     // sort movements by their inception/start
-    this.movements.sort((a, b) => (a.start > b.start ? 1 : -1));
-    this.currentMovementId = this.movements[0].id;
-    // get all movementIds except currentMovementId
-    const movementIds = this.movements.filter(value => value.id !== this.currentMovementId).map(A => A.id);
-    // get all images if current movement first.
-    this.getMovementImages([this.currentMovementId]).then(() => {
-      this.setRandomThumbnail(this.currentMovementId);
-      console.log('CURRENT ID ARTWORKS SHOULD HAVE LOADED\n', this.movements[0].artworks);
+    this.dataService.findMultipleById<Movement>(this.defaultMovementIds, EntityType.MOVEMENT)
+      .then(movements => {
+        this.movements = movements.filter(m => m.start_time && m.end_time) as MovementItem[];
+        for (const movement of this.movements) {
+          movement.artworks = [];
+        }
+        console.log('movements: ', this.movements);
 
-      // setup timer for period random movement selection
-      // This will run the function 'selectRandomMovement' every 'nextRandomMovementTime' seconds
-      if (this.nextRandomMovementTime > 0) {
-        this.randomMovementTimer$.pipe(
-          switchMap(() => timer(this.nextRandomMovementTime * 1000, this.nextRandomMovementTime * 1000)),
-        ).subscribe(() => this.selectRandomMovement());
-        // start timer
-        this.randomMovementTimer$.next();
-      }
-    });
-    // now get those which are not displayed
-    this.getMovementImages(movementIds).then(() => {
-      console.log('OTHER ARTWORKS SHOULD HAVE LOADED\n', this.movements.map(movementId => movementId.artworks));
-    });
-    // find start and end of displayed period
-    this.setTimeline();
-    // fill this.boxes
-    this.fillTimeline();
+        this.movements.sort((a, b) => (a.start_time > b.start_time ? 1 : -1));
+        this.currentMovementId = this.movements[0].id;
+
+        // get all movementIds except currentMovementId
+        const movementIds = this.movements.filter(value => value.id !== this.currentMovementId).map(A => A.id);
+        // get all images if current movement first.
+        this.getMovementImages([this.currentMovementId]).then(() => {
+          this.setRandomThumbnail(this.currentMovementId);
+          console.log('CURRENT ID ARTWORKS SHOULD HAVE LOADED\n', this.movements[0].artworks);
+
+          // setup timer for period random movement selection
+          // This will run the function 'selectRandomMovement' every 'nextRandomMovementTime' seconds
+          if (this.nextRandomMovementTime > 0) {
+            this.randomMovementTimer$.pipe(
+              switchMap(() => timer(this.nextRandomMovementTime * 1000, this.nextRandomMovementTime * 1000)),
+            ).subscribe(() => this.selectRandomMovement());
+            // start timer
+            this.randomMovementTimer$.next();
+          }
+
+          if (this.currentMovementId !== undefined) {
+            this.drawThumbnail(this.currentMovementId);
+          }
+        });
+        // now get those which are not displayed
+        this.getMovementImages(movementIds).then(() => {
+          console.log('OTHER ARTWORKS SHOULD HAVE LOADED\n', this.movements.map(movementId => movementId.artworks));
+        });
+        // find start and end of displayed period
+        this.setTimeline();
+        // fill this.boxes
+        this.fillTimeline();
+
+
+      });
   }
 
   ngAfterViewInit() {
-    this.drawThumbnail(this.currentMovementId);
+    if (this.currentMovementId !== undefined) {
+      this.drawThumbnail(this.currentMovementId);
+    }
   }
 
   /** Determine values based on screen width (responsivity) */
@@ -162,10 +141,10 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
   /** finds start and end of displayed period */
   private setTimeline() {
     const firstStart = Math.min.apply(Math, this.movements.map((m) => {
-      return m.start;
+      return m.start_time;
     }));
     const lastEnd = Math.max.apply(Math, this.movements.map((m) => {
-      return m.end;
+      return m.end_time;
     }));
 
 
@@ -209,7 +188,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
           this.boxes[rowNum].push(this.movements[i]); // if first item in row, insert
           rowNum = 0; // start again at first row
           set = true;
-        } else if (this.movements[i].start < this.boxes[rowNum].slice(-1)[0].end) {
+        } else if (this.movements[i].start_time < this.boxes[rowNum].slice(-1)[0].end_time) {
           // if overlapping, continue at next row
           rowNum++;
         } else {
@@ -235,26 +214,26 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
       // for (let i = 0; i < this.boxes.length; i++) {
       // no need for this atm, but sums up duration of all movements in this row. Feeling cute, might delete later.
       const sumRow = row.reduce((a, b) => {
-        return a + b.end - b.start;
+        return a + b.end_time - b.start_time;
       }, 0);
       // fill in first space
       row.splice(0, 0, {
-        width: (row[0].start - this.timelineStart) / (timelineLen / 100)
+        width: (row[0].start_time - this.timelineStart) / (timelineLen / 100)
       } as MovementItem);
       // fill in spaces between all movements in one row
       for (let j = 1; j < row.length; j++) {
         // set width of current movement
-        row[j].width = (row[j].end - row[j].start) / (timelineLen / 100);
+        row[j].width = (row[j].end_time - row[j].start_time) / (timelineLen / 100);
         // fill in space between predecessor and current item
-        if (row[j].start > row[j - 1].end) {
+        if (row[j].start_time > row[j - 1].end_time) {
           row.splice(j, 0, {
-            width: (row[j].start - row[j - 1].end) / (timelineLen / 100)
+            width: (row[j].start_time - row[j - 1].end_time) / (timelineLen / 100)
           } as MovementItem);
         }
       }
       // fill space between last movement and end of period
       row.push({
-        width: (this.timelineEnd - row.slice(-1)[0].end) / (timelineLen / 100)
+        width: (this.timelineEnd - row.slice(-1)[0].end_time) / (timelineLen / 100)
       } as MovementItem);
     }
     console.log(this.boxes);
@@ -332,7 +311,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
 
     // TODO: move this?
     this.currentMovementLabel = this.movements[currMovementIndex].label;
-    this.currentDate = this.movements[currMovementIndex].start + ' - ' + this.movements[currMovementIndex].end;
+    this.currentDate = this.movements[currMovementIndex].start_time + ' - ' + this.movements[currMovementIndex].end_time;
   }
 
   selectRandomMovement() {

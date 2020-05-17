@@ -19,8 +19,8 @@ logging.basicConfig(
     filename="get_wikidata_items.log", filemode="w", level=logging.DEBUG
 )
 
-DEV = False
-DEV_CHUNK_LIMIT = 4  # Not entry but chunks of 50
+DEV = True
+DEV_CHUNK_LIMIT = 2  # Not entry but chunks of 50
 
 # All properties extracted from the wikidata entities mapped to their openartbrowser key-label
 property_name_to_property_id = {
@@ -590,207 +590,174 @@ def extract_art_ontology():
             artwork, wd, already_crawled_wikidata_items
         )
 
-        filename = (
-            Path.cwd()
-            / "crawler_output"
-            / "intermediate_files"
-            / "csv"
-            / "artworks"
-            / artwork
-        )
+        filename = create_new_path("artworks", artwork, "csv")
         generate_csv(artwork, extracted_artwork, get_fields(artwork), filename)
 
-        filename = (
-            Path.cwd()
-            / "crawler_output"
-            / "intermediate_files"
-            / "json"
-            / "artworks"
-            / artwork
-        )
+        filename = create_new_path("artworks", artwork, "json")
         generate_json(artwork, extracted_artwork, filename)
 
-    artworks = "artworks"
     merged_artworks = merge_artworks()
 
-    filename = Path.cwd() / "crawler_output" / "intermediate_files" / "csv" / artworks
-    generate_csv(artworks, merged_artworks, get_fields(artworks) + ["type"], filename)
-
-    filename = Path.cwd() / "crawler_output" / "intermediate_files" / "json" / artworks
-    # TODO refactor ab hier
+    filename = create_new_path("artworks", file_type="csv")
+    generate_csv(
+        "artworks", merged_artworks, get_fields("artworks") + ["type"], filename
+    )
 
     # Get motifs and main subjects
     motifs = get_distinct_attribute_values_from_dict("motifs", merged_artworks)
-
     main_subjects = get_distinct_attribute_values_from_dict(
         "main_subjects", merged_artworks
     )
+    # TODO extract method
     motifs_and_main_subjects = motifs
     for main_subject in main_subjects:
         if main_subject not in motifs:
             motifs_and_main_subjects.add(main_subject)
     motifs_extracted = get_subject("motifs and main subjects", motifs_and_main_subjects)
-    filename = Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "motifs"
-    generate_json("motif", motifs_extracted, filename)
 
-    # Get genres
-    genres = get_distinct_attribute_values_from_dict("genres", merged_artworks)
-    genres_extracted = get_subject("genres", genres)
-    filename = Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "genres"
-    generate_json("genre", genres_extracted, filename)
-
-    # Get materials
-    materials = get_distinct_attribute_values_from_dict("materials", merged_artworks)
-    materials_extracted = get_subject("materials", materials)
-    filename = (
-        Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "materials"
+    # Get extracted genres, materials, etc.
+    genres, materials, movements, artists, locations = bundle_extract_data_calls(
+        ["genres", "materials", "movements", "artists", "locations"], merged_artworks
     )
-    generate_json("material", materials_extracted, filename)
-
-    # Get movements
-    movements = get_distinct_attribute_values_from_dict("movements", merged_artworks)
-    movements_extracted = get_subject("movements", movements)
-
-    # Get artists
-    artists = get_distinct_attribute_values_from_dict("artists", merged_artworks)
-    artists_extracted = get_subject("artists", artists)
-
-    # Get locations
-    locations = get_distinct_attribute_values_from_dict("locations", merged_artworks)
-    locations_extracted = get_subject("locations", locations)
 
     # Get distinct classes from artworks, motifs, etc.
-    distinct_classes = get_distinct_attribute_values_from_dict(
-        "classes", merged_artworks
+    extracted_classes = get_distinct_extracted_classes(
+        merged_artworks,
+        motifs_extracted,
+        genres,
+        materials,
+        movements,
+        artists,
+        locations,
     )
-    distinct_classes = distinct_classes.union(
-        get_distinct_attribute_values_from_dict("classes", motifs_extracted)
-    )
-    distinct_classes = distinct_classes.union(
-        get_distinct_attribute_values_from_dict("classes", genres_extracted)
-    )
-    distinct_classes = distinct_classes.union(
-        get_distinct_attribute_values_from_dict("classes", materials_extracted)
-    )
-    distinct_classes = distinct_classes.union(
-        get_distinct_attribute_values_from_dict("classes", movements_extracted)
-    )
-    distinct_classes = distinct_classes.union(
-        get_distinct_attribute_values_from_dict("classes", artists_extracted)
-    )
-    distinct_classes = distinct_classes.union(
-        get_distinct_attribute_values_from_dict("classes", locations_extracted)
-    )
-
-    extracted_classes = get_classes("classes", distinct_classes)
-
-    # Write to classes.json
-    filename = Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "classes"
-    generate_json("class", extracted_classes, filename)
 
     # Get country labels for merged artworks and locations
-    distinct_country_ids_locations = get_distinct_attribute_values_from_dict(
-        "country", locations_extracted, True
-    )
-    distinct_country_ids_artworks = get_distinct_attribute_values_from_dict(
-        "country", merged_artworks, True
-    )
-    distinct_country_ids_movements = get_distinct_attribute_values_from_dict(
-        "country", movements_extracted, True
-    )
-    distinct_country_ids = distinct_country_ids_locations.union(
-        distinct_country_ids_artworks, distinct_country_ids_movements
-    )
-    country_labels_extracted = get_entity_labels("country", distinct_country_ids)
-    merged_artworks = resolve_entity_id_to_label(
-        "country", merged_artworks, country_labels_extracted
-    )
-    locations_extracted = resolve_entity_id_to_label(
-        "country", locations_extracted, country_labels_extracted
-    )
-    movements_extracted = resolve_entity_id_to_label(
-        "country", movements_extracted, country_labels_extracted
-    )
-    # Get gender labels for artists
-    distinct_gender_ids = get_distinct_attribute_values_from_dict(
-        "gender", artists_extracted, True
-    )
-    gender_labels_extracted = get_entity_labels("gender", distinct_gender_ids)
-    artists_extracted = resolve_entity_id_to_label(
-        "gender", artists_extracted, gender_labels_extracted
+    (
+        locations,
+        merged_artworks,
+        movements,
+    ) = get_country_labels_for_merged_artworks_and_locations(
+        locations, merged_artworks, movements
     )
 
-    # Get place of birth labels for artists
-    distinct_place_of_birth_labels = get_distinct_attribute_values_from_dict(
-        "place_of_birth", artists_extracted, True
-    )
-    place_of_birth_labels_extracted = get_entity_labels(
-        "place_of_birth", distinct_place_of_birth_labels
-    )
-    artists_extracted = resolve_entity_id_to_label(
-        "place_of_birth", artists_extracted, place_of_birth_labels_extracted
-    )
-
-    # Get place of death labels for artists
-    distinct_place_of_death_labels = get_distinct_attribute_values_from_dict(
-        "place_of_death", artists_extracted, True
-    )
-    place_of_death_labels_extracted = get_entity_labels(
-        "place_of_death", distinct_place_of_death_labels
-    )
-    artists_extracted = resolve_entity_id_to_label(
-        "place_of_death", artists_extracted, place_of_death_labels_extracted
-    )
-
-    # Get citizenship labels for artists
-    distinct_citizenship_labels = get_distinct_attribute_values_from_dict(
-        "citizenship", artists_extracted, True
-    )
-    citizenship_labels_extracted = get_entity_labels(
-        "citizenship", distinct_citizenship_labels
-    )
-    artists_extracted = resolve_entity_id_to_label(
-        "citizenship", artists_extracted, citizenship_labels_extracted
-    )
+    # Get labels for artists
+    artists = get_labels_for_artists(artists, "gender")
+    artists = get_labels_for_artists(artists, "place_of_birth")
+    artists = get_labels_for_artists(artists, "place_of_death")
+    artists = get_labels_for_artists(artists, "citizenship")
 
     # Get unit symbols from qid for artworks
-    distinct_unit_qids = get_distinct_attribute_values_from_dict(
-        "height_unit", merged_artworks, True
-    )
-    distinct_unit_qids = distinct_unit_qids.union(
-        get_distinct_attribute_values_from_dict("width_unit", merged_artworks, True)
-    )
-    distinct_unit_qids = distinct_unit_qids.union(
-        get_distinct_attribute_values_from_dict("length_unit", merged_artworks, True)
-    )
-    distinct_unit_qids = distinct_unit_qids.union(
-        get_distinct_attribute_values_from_dict("diameter_unit", merged_artworks, True)
-    )
+    distinct_unit_qids = get_unit_symbols_from_qid(merged_artworks)
 
     unit_symbols = get_unit_symbols(distinct_unit_qids)
     resolve_unit_id_to_unit_symbol(merged_artworks, unit_symbols)
 
-    # Write to movements.json
-    filename = (
-        Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "movements"
+    # Write to JSON
+    write_data_to_json(
+        motifs_extracted,
+        genres,
+        extracted_classes,
+        materials,
+        movements,
+        locations,
+        merged_artworks,
+        artists,
     )
-    generate_json("movement", movements_extracted, filename)
 
-    # Write to locations.json
-    filename = (
-        Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "locations"
+
+def write_data_to_json(
+    motifs_extracted,
+    genres,
+    extracted_classes,
+    materials,
+    movements,
+    locations,
+    merged_artworks,
+    artists,
+):
+    generate_json("motif", motifs_extracted, create_new_path("motifs"))
+    generate_json("genre", genres, create_new_path("genres"))
+    generate_json("class", extracted_classes, create_new_path("classes"))
+    generate_json("material", materials, create_new_path("materials"))
+    generate_json("movement", movements, create_new_path("movements"))
+    generate_json("location", locations, create_new_path("locations"))
+    generate_json("artwork", merged_artworks, create_new_path("artworks"))
+    generate_json("artist", artists, create_new_path("artists"))
+
+
+def get_unit_symbols_from_qid(merged_artworks):
+    distinct_unit_qids = get_distinct_attribute_values_from_dict(
+        "height_unit", merged_artworks, True
     )
-    generate_json("location", locations_extracted, filename)
 
-    # Write to artworks.json
-    filename = (
-        Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "artworks"
+    for item in ["width_unit", "length_unit", "diameter_unit"]:
+        distinct_unit_qids = distinct_unit_qids.union(
+            get_distinct_attribute_values_from_dict(item, merged_artworks, True)
+        )
+    return distinct_unit_qids
+
+
+def get_labels_for_artists(artists, label):
+    distinct_label = get_distinct_attribute_values_from_dict(label, artists, True)
+    extracted_labels = get_entity_labels(label, distinct_label)
+    return resolve_entity_id_to_label(label, artists, extracted_labels)
+
+
+def get_distinct_extracted_classes(
+    merged_artworks, motifs_extracted, genres, materials, movements, artists, locations
+):
+    distinct_classes = get_distinct_attribute_values_from_dict(
+        "classes", merged_artworks
     )
-    generate_json("artwork", merged_artworks, filename)
+    distinct_classes = bundle_class_union_calls(
+        distinct_classes,
+        [motifs_extracted, genres, materials, movements, artists, locations],
+    )
+    return get_classes("classes", distinct_classes)
 
-    # Write to artists.json
-    filename = Path.cwd() / "crawler_output" / "intermediate_files" / "json" / "artists"
-    generate_json("artist", artists_extracted, filename)
+
+def get_country_labels_for_merged_artworks_and_locations(
+    locations, merged_artworks, movements
+):
+    tmp = [locations, merged_artworks, movements]
+    distinct_ids = [
+        get_distinct_attribute_values_from_dict("country", item, True) for item in tmp
+    ]
+
+    distinct_country_ids = distinct_ids[0].union(distinct_ids[1], distinct_ids[2])
+    country_labels_extracted = get_entity_labels("country", distinct_country_ids)
+
+    resolved_data = [
+        resolve_entity_id_to_label("country", item, country_labels_extracted)
+        for item in tmp
+    ]
+
+    return resolved_data[0], resolved_data[1], resolved_data[2]
+
+
+def bundle_class_union_calls(distinct_classes, data_list):
+    for item in data_list:
+        distinct_classes = distinct_classes | get_distinct_attribute_values_from_dict(
+            "classes", item
+        )
+    return distinct_classes
+
+
+def create_new_path(name, subpath="", file_type="json"):
+    return (
+        Path.cwd()
+        / "crawler_output"
+        / "intermediate_files"
+        / file_type
+        / name
+        / subpath
+    )
+
+
+def bundle_extract_data_calls(name_list, merged_artworks):
+    for item in name_list:
+        tmp = get_distinct_attribute_values_from_dict(item, merged_artworks)
+        yield get_subject(item, tmp)
 
 
 def get_fields(type_name, languageKeys=[item[0] for item in language_config_to_list()]):
@@ -883,13 +850,7 @@ def merge_artworks():
     artworks = set()
     file_names = ["paintings.json", "drawings.json", "sculptures.json"]
     file_names = [
-        Path.cwd()
-        / "crawler_output"
-        / "intermediate_files"
-        / "json"
-        / "artworks"
-        / file_name
-        for file_name in file_names
+        create_new_path("artworks", subpath=file_name) for file_name in file_names
     ]
     extract_dicts = []
 

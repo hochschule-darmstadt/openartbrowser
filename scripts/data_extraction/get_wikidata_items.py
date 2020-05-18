@@ -1,6 +1,7 @@
 import csv
 import datetime
 import hashlib
+import inspect
 import json
 import logging
 import re
@@ -249,159 +250,123 @@ def get_image_url_by_name(image_name) -> str:
     return url
 
 
+def return_on_failure(return_value):
+    """
+    A decorator that wraps the passed in function and logs
+    exceptions should one occur
+
+    @param return_value: The return value of func in case of an exception
+    """
+
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except Exception as error:
+                error_message = "Error in function {0} on item {1}".format(
+                    func.__name__, args[0]["id"]
+                )
+                # iterate over argument names
+                for index, param in enumerate(inspect.getfullargspec(func)[0][1:], 1):
+                    error_message += ", {0} {1}".format(param, args[index])
+                error_message += ", error {0}".format(error)
+                logging.info(error_message)
+
+                return return_value
+
+        return wrapper
+
+    return decorator
+
+
+@return_on_failure("")
 def try_get_label_or_description(entity_dict, fieldname, langkey):
     """ Method to extract the label or description """
-    try:
-        return entity_dict[fieldname][langkey]["value"]
-    except Exception as error:
-        logging.info(
-            "Error on item {0}, property {1}, error {2}".format(
-                entity_dict["id"], fieldname, error
-            )
-        )
-        return ""
+    return entity_dict[fieldname][langkey]["value"]
 
 
+@return_on_failure("")
+def try_get_wikipedia_link(entity_dict, langkey):
+    return "https://{0}.wikipedia.org/wiki/{1}".format(
+        langkey, entity_dict["sitelinks"][f"{langkey}wiki"]["title"].replace(" ", "_"),
+    )
+
+
+@return_on_failure("")
 def try_get_dimension_value(entity_dict, property_id):
-    try:
-        return float(
-            entity_dict["claims"][property_id][0]["mainsnak"]["datavalue"]["value"][
-                "amount"
-            ]
-        )
-    except Exception as error:
-        logging.info(
-            "Error on item {0}, property {1}, error {2}".format(
-                entity_dict["id"], property_id, error
-            )
-        )
-        return ""
+    return float(
+        entity_dict["claims"][property_id][0]["mainsnak"]["datavalue"]["value"][
+            "amount"
+        ]
+    )
 
 
+@return_on_failure("")
 def try_get_dimension_unit(entity_dict, property_id):
-    try:
-        unit_qid = entity_dict["claims"][property_id][0]["mainsnak"]["datavalue"][
-            "value"
-        ]["unit"].replace("http://www.wikidata.org/entity/", "")
-        qid_pattern = r"^Q\d+"
-        is_qid = re.match(qid_pattern, unit_qid)
-        if is_qid:
-            return unit_qid
-        else:
-            logging.error(
-                "Error on item {0}, property {1}, Unit was provided but isn't a QID reference".format(
-                    entity_dict["id"], property_id
-                )
-            )
-            return ""
-    except Exception as error:
-        logging.info(
-            "Error on item {0}, property {1}, error {2}".format(
-                entity_dict["id"], property_id, error
+    unit_qid = entity_dict["claims"][property_id][0]["mainsnak"]["datavalue"]["value"][
+        "unit"
+    ].replace("http://www.wikidata.org/entity/", "")
+    qid_pattern = r"^Q\d+"
+    is_qid = re.match(qid_pattern, unit_qid)
+    if is_qid:
+        return unit_qid
+    else:
+        logging.error(
+            "Error on item {0}, property {1}, Unit was provided but isn't a QID reference".format(
+                entity_dict["id"], property_id
             )
         )
         return ""
 
 
+@return_on_failure([])
 def try_get_qid_reference_list(entity_dict, property_id):
     """ Method to extract the references (which are qids) as a list """
-    try:
-        return list(
-            map(
-                lambda clm: clm["mainsnak"]["datavalue"]["value"]["id"],
-                entity_dict["claims"][property_id],
-            )
+    return list(
+        map(
+            lambda clm: clm["mainsnak"]["datavalue"]["value"]["id"],
+            entity_dict["claims"][property_id],
         )
-    except Exception as error:
-        logging.info(
-            "Error on item {0}, property {1}, error {2}".format(
-                entity_dict["id"], property_id, error
-            )
-        )
-        return []
+    )
 
 
+@return_on_failure("")
 def try_get_first_value(entity_dict, property_id):
-    try:
-        return entity_dict["claims"][property_id][0]["mainsnak"]["datavalue"]["value"]
-    except Exception as error:
-        logging.info(
-            "Error on item {0}, property {1}, error {2}".format(
-                entity_dict["id"], property_id, error
-            )
-        )
-        return ""
+    return entity_dict["claims"][property_id][0]["mainsnak"]["datavalue"]["value"]
 
 
+@return_on_failure([])
 def try_get_value_list(entity_dict, property_id):
     """ Method to extract iconclasses """
-    try:
-        return list(
-            map(
-                lambda clm: clm["mainsnak"]["datavalue"]["value"],
-                entity_dict["claims"][property_id],
-            )
+    return list(
+        map(
+            lambda clm: clm["mainsnak"]["datavalue"]["value"],
+            entity_dict["claims"][property_id],
         )
-    except Exception as error:
-        logging.info(
-            "Error on item {0}, property {1}, error {2}".format(
-                entity_dict["id"], property_id, error
-            )
-        )
-        return []
+    )
 
 
+@return_on_failure("")
 def try_get_year_from_property_timestamp(entity_dict, property_id):
     """ Method to extract the year from an inception timestamp """
-    try:
-        timestr = entity_dict["claims"][property_id][0]["mainsnak"]["datavalue"][
-            "value"
-        ]["time"]
-        return WbTime.fromTimestr(timestr).year
-    except Exception as error:
-        logging.info(
-            "Error on item {0}, property {1}, error {2}".format(
-                entity_dict["id"], property_id, error
-            )
-        )
-        return ""
+    timestr = entity_dict["claims"][property_id][0]["mainsnak"]["datavalue"]["value"][
+        "time"
+    ]
+    return WbTime.fromTimestr(timestr).year
 
 
+@return_on_failure("")
 def try_get_first_qid(entity_dict, property_id):
     """ Method to extract the first qid """
-    try:
-        # ToDo: resolve to label or load all country qids load them seperate and do this later
-        entity = entity_dict["claims"][property_id][0]["mainsnak"]["datavalue"][
-            "value"
-        ]["id"]
-        return entity
-    except Exception as error:
-        logging.info("Error: {0}".format(error))
-        return ""
+    return entity_dict["claims"][property_id][0]["mainsnak"]["datavalue"]["value"]["id"]
 
 
-def try_get_wikipedia_link(entity_dict, langkey):
-    try:
-        return "https://{0}.wikipedia.org/wiki/{1}".format(
-            langkey,
-            entity_dict["sitelinks"][f"{langkey}wiki"]["title"].replace(" ", "_"),
-        )
-    except:
-        return ""
-
-
+@return_on_failure("no unit")
 def try_get_unit_symbol(entity_dict, property_id):
-    try:
-        unit_symbol_entries = entity_dict["claims"][property_id]
-        for unit_symbol_entry in unit_symbol_entries:
-            if unit_symbol_entry["mainsnak"]["datavalue"]["value"]["language"] == "en":
-                return unit_symbol_entry["mainsnak"]["datavalue"]["value"]["text"]
-
-        logging.info("Unit symbol not found for property id: {0}".format(property_id))
-        return "no unit"
-    except Exception as error:
-        logging.info("Error: {0}".format(error))
-        return "no unit"
+    unit_symbol_entries = entity_dict["claims"][property_id]
+    for unit_symbol_entry in unit_symbol_entries:
+        if unit_symbol_entry["mainsnak"]["datavalue"]["value"]["language"] == "en":
+            return unit_symbol_entry["mainsnak"]["datavalue"]["value"]["text"]
 
 
 def extract_artworks(
@@ -590,30 +555,21 @@ def extract_art_ontology():
             artwork, wd, already_crawled_wikidata_items
         )
 
-        filename = create_new_path("artworks", artwork, "csv")
-        generate_csv(artwork, extracted_artwork, get_fields(artwork), filename)
+        path_name = create_new_path("artworks", artwork, "csv")
+        generate_csv(artwork, extracted_artwork, get_fields(artwork), path_name)
 
-        filename = create_new_path("artworks", artwork, "json")
-        generate_json(artwork, extracted_artwork, filename)
+        path_name = create_new_path("artworks", artwork, "json")
+        generate_json(artwork, extracted_artwork, path_name)
 
     merged_artworks = merge_artworks()
 
-    filename = create_new_path("artworks", file_type="csv")
+    path_name = create_new_path("artworks", file_type="csv")
     generate_csv(
-        "artworks", merged_artworks, get_fields("artworks") + ["type"], filename
+        "artworks", merged_artworks, get_fields("artworks") + ["type"], path_name
     )
 
     # Get motifs and main subjects
-    motifs = get_distinct_attribute_values_from_dict("motifs", merged_artworks)
-    main_subjects = get_distinct_attribute_values_from_dict(
-        "main_subjects", merged_artworks
-    )
-    # TODO extract method
-    motifs_and_main_subjects = motifs
-    for main_subject in main_subjects:
-        if main_subject not in motifs:
-            motifs_and_main_subjects.add(main_subject)
-    motifs_extracted = get_subject("motifs and main subjects", motifs_and_main_subjects)
+    motifs = extract_motifs_and_main_subjects(merged_artworks)
 
     # Get extracted genres, materials, etc.
     genres, materials, movements, artists, locations = bundle_extract_data_calls(
@@ -622,13 +578,7 @@ def extract_art_ontology():
 
     # Get distinct classes from artworks, motifs, etc.
     extracted_classes = get_distinct_extracted_classes(
-        merged_artworks,
-        motifs_extracted,
-        genres,
-        materials,
-        movements,
-        artists,
-        locations,
+        merged_artworks, motifs, genres, materials, movements, artists, locations,
     )
 
     # Get country labels for merged artworks and locations
@@ -641,20 +591,18 @@ def extract_art_ontology():
     )
 
     # Get labels for artists
-    artists = get_labels_for_artists(artists, "gender")
-    artists = get_labels_for_artists(artists, "place_of_birth")
-    artists = get_labels_for_artists(artists, "place_of_death")
-    artists = get_labels_for_artists(artists, "citizenship")
+    artists = get_labels_for_artists(
+        artists, ["gender", "place_of_birth", "place_of_death", "citizenship"]
+    )
 
     # Get unit symbols from qid for artworks
     distinct_unit_qids = get_unit_symbols_from_qid(merged_artworks)
-
     unit_symbols = get_unit_symbols(distinct_unit_qids)
     resolve_unit_id_to_unit_symbol(merged_artworks, unit_symbols)
 
     # Write to JSON
     write_data_to_json(
-        motifs_extracted,
+        motifs,
         genres,
         extracted_classes,
         materials,
@@ -665,8 +613,19 @@ def extract_art_ontology():
     )
 
 
+def extract_motifs_and_main_subjects(merged_artworks):
+    motifs = get_distinct_attribute_values_from_dict("motifs", merged_artworks)
+    main_subjects = get_distinct_attribute_values_from_dict(
+        "main_subjects", merged_artworks
+    )
+
+    motifs_and_main_subjects = motifs | main_subjects
+    motifs = get_subject("motifs and main subjects", motifs_and_main_subjects)
+    return motifs
+
+
 def write_data_to_json(
-    motifs_extracted,
+    motifs,
     genres,
     extracted_classes,
     materials,
@@ -675,7 +634,7 @@ def write_data_to_json(
     merged_artworks,
     artists,
 ):
-    generate_json("motif", motifs_extracted, create_new_path("motifs"))
+    generate_json("motif", motifs, create_new_path("motifs"))
     generate_json("genre", genres, create_new_path("genres"))
     generate_json("class", extracted_classes, create_new_path("classes"))
     generate_json("material", materials, create_new_path("materials"))
@@ -697,21 +656,22 @@ def get_unit_symbols_from_qid(merged_artworks):
     return distinct_unit_qids
 
 
-def get_labels_for_artists(artists, label):
-    distinct_label = get_distinct_attribute_values_from_dict(label, artists, True)
-    extracted_labels = get_entity_labels(label, distinct_label)
-    return resolve_entity_id_to_label(label, artists, extracted_labels)
+def get_labels_for_artists(artists, prop_list):
+    for item in prop_list:
+        distinct_label = get_distinct_attribute_values_from_dict(item, artists, True)
+        extracted_labels = get_entity_labels(item, distinct_label)
+        resolve_entity_id_to_label(item, artists, extracted_labels)
+    return artists
 
 
 def get_distinct_extracted_classes(
-    merged_artworks, motifs_extracted, genres, materials, movements, artists, locations
+    merged_artworks, motifs, genres, materials, movements, artists, locations
 ):
     distinct_classes = get_distinct_attribute_values_from_dict(
         "classes", merged_artworks
     )
     distinct_classes = bundle_class_union_calls(
-        distinct_classes,
-        [motifs_extracted, genres, materials, movements, artists, locations],
+        distinct_classes, [motifs, genres, materials, movements, artists, locations],
     )
     return get_classes("classes", distinct_classes)
 
@@ -727,12 +687,8 @@ def get_country_labels_for_merged_artworks_and_locations(
     distinct_country_ids = distinct_ids[0].union(distinct_ids[1], distinct_ids[2])
     country_labels_extracted = get_entity_labels("country", distinct_country_ids)
 
-    resolved_data = [
-        resolve_entity_id_to_label("country", item, country_labels_extracted)
-        for item in tmp
-    ]
-
-    return resolved_data[0], resolved_data[1], resolved_data[2]
+    for item in tmp:
+        yield resolve_entity_id_to_label("country", item, country_labels_extracted)
 
 
 def bundle_class_union_calls(distinct_classes, data_list):

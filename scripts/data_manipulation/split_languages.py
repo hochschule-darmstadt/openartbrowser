@@ -3,7 +3,7 @@
 import simplejson as json
 import ijson
 from pathlib import Path
-import csv
+import utils.util_funcs as util_funcs
 
 
 def get_language_attributes():
@@ -49,7 +49,7 @@ def generate_langdict_arrays():
         [array[]] -- [empty array of arrays, where index = languages
          count of languageconfig.csv]
     """
-    dictlist = [[] for x in range(len(language_config_to_list()))]
+    dictlist = [[] for x in range(len(util_funcs.language_config_to_list()))]
     return dictlist
 
 
@@ -153,27 +153,9 @@ def generate_langjson_files(name, extract_dicts):
         file.write(json.dumps(extract_dicts, ensure_ascii=False))
 
 
-def language_config_to_list(
-    config_file=Path(__file__).parent.parent.absolute() / "languageconfig.csv",
-):
-    """[Reads languageconfig.csv and returns array that contains its
-    full contents]
-
-    Returns:
-        [list] -- [contents of languageconfig.csv as list]
-    """
-    languageValues = []
-    with open(config_file, encoding="utf-8") as file:
-        configReader = csv.reader(file, delimiter=";")
-        for row in configReader:
-            if row[0] != "langkey":
-                languageValues.append(row)
-    return languageValues
-
-
 # load languageconfig file with keys / language dicts
 language_skeleton = generate_langdict_arrays()
-language_values = language_config_to_list()
+language_values = util_funcs.language_config_to_list()
 language_keys = [item[0] for item in language_values]
 
 if __name__ == "__main__":

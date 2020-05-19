@@ -5,7 +5,7 @@ import time
 import datetime
 import uuid
 import requests
-import csv
+import utils.util_funcs as util_funcs
 
 
 def create_empty_index(index_name) -> bool:
@@ -311,26 +311,8 @@ def list_all_indices(elastic_search_url="localhost:9200") -> None:
         print(str(e))
 
 
-def language_config_to_list(
-    config_file=Path(__file__).parent.parent.absolute() / "languageconfig.csv",
-):
-    """[Reads languageconfig.csv and returns array that contains its
-    full contents]
-
-    Returns:
-        [list] -- [contents of languageconfig.csv as list]
-    """
-    languageValues = []
-    with open(config_file, encoding="utf-8") as file:
-        configReader = csv.reader(file, delimiter=";")
-        for row in configReader:
-            if row[0] != "langkey":
-                languageValues.append(row)
-    return languageValues
-
-
 def create_index_for_each_language(
-    lang_keys=[item[0] for item in language_config_to_list()],
+    lang_keys=[item[0] for item in util_funcs.language_config_to_list()],
     filepath=Path(__file__).resolve().parent.parent / "crawler_output",
 ) -> None:
     """
@@ -348,7 +330,7 @@ def create_index_for_each_language(
 
 
 def swap_index_for_each_language(
-    lang_keys=[item[0] for item in language_config_to_list()],
+    lang_keys=[item[0] for item in util_funcs.language_config_to_list()],
 ) -> None:
     """
     Swaps a newly created index (identified by it's name *_new) with the current one.
@@ -365,7 +347,7 @@ def swap_index_for_each_language(
 
 
 def swap_to_backup_for_each_language(
-    lang_keys=[item[0] for item in language_config_to_list()],
+    lang_keys=[item[0] for item in util_funcs.language_config_to_list()],
     delete_non_working_indices=True,
 ) -> None:
     """
@@ -407,7 +389,7 @@ def swap_to_backup_for_each_language(
 
 
 def count_check_for_each_language(
-    lang_keys=[item[0] for item in language_config_to_list()],
+    lang_keys=[item[0] for item in util_funcs.language_config_to_list()],
     filepath=Path(__file__).resolve().parent.parent / "crawler_output",
 ) -> bool:
     """

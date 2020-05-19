@@ -1,7 +1,7 @@
 @echo off
 
 WHERE curl
-IF %ERRORLEVEL% NEQ 0 ( 
+IF %ERRORLEVEL% NEQ 0 (
     ECHO curl isn't installed but needed for this script
     exit
 )

@@ -10,11 +10,10 @@ import time
 from pathlib import Path
 from urllib.error import HTTPError
 
-import requests
 from pywikibot import WbTime
-from requests.adapters import HTTPAdapter
 from SPARQLWrapper import JSON, SPARQLWrapper
-from urllib3.util import Retry
+import utils.util_funcs as util_funcs
+import utils.request_utils as request_utils
 
 logging.basicConfig(
     filename="get_wikidata_items.log", filemode="w", level=logging.DEBUG
@@ -59,34 +58,6 @@ property_name_to_property_id = {
 }
 
 
-def agent_header():
-    return "<nowiki>https://cai-artbrowserstaging.fbi.h-da.de/; tilo.w.michel@stud.h-da.de</nowiki>"
-
-
-def language_config_to_list(
-    config_file=Path(__file__).parent.parent.absolute() / "languageconfig.csv",
-):
-    """Reads languageconfig.csv and returns array that contains its
-    full contents
-
-    Returns:
-        list -- contents of languageconfig.csv as list
-    """
-    languageValues = []
-    with open(config_file, encoding="utf-8") as file:
-        configReader = csv.reader(file, delimiter=";")
-        for row in configReader:
-            if row[0] != "langkey":
-                languageValues.append(row)
-    return languageValues
-
-
-def chunks(lst, n):
-    """Yield successive n-sized chunks from lst."""
-    for i in range(0, len(lst), n):
-        yield lst[i : i + n]
-
-
 def query_artwork_qids(type_name, wikidata_id):
     """ Extracts all artwork QIDs from the wikidata SPARQL endpoint https://query.wikidata.org/ """
     artwork_ids_filepath = Path(__file__).parent.absolute() / "artwork_ids_query.sparql"
@@ -96,7 +67,9 @@ def query_artwork_qids(type_name, wikidata_id):
         .replace("$QID", wikidata_id)
     )
 
-    sparql = SPARQLWrapper("https://query.wikidata.org/sparql", agent=agent_header())
+    sparql = SPARQLWrapper(
+        "https://query.wikidata.org/sparql", agent=util_funcs.agent_header()
+    )
 
     wikidata_entity_url = "http://www.wikidata.org/entity/"
 
@@ -129,33 +102,9 @@ def query_artwork_qids(type_name, wikidata_id):
     return artwork_ids
 
 
-def add_wiki_to_string(s):
-    return s + "wiki"
-
-
-def requests_retry_session(
-    retries=3, backoff_factor=0.3, status_forcelist=(500, 502, 504), session=None,
-):
-    """ Request session with retry possibility
-        Source: https://www.peterbe.com/plog/best-practice-with-retries-with-requests
-    """
-    session = session or requests.Session()
-    retry = Retry(
-        total=retries,
-        read=retries,
-        connect=retries,
-        backoff_factor=backoff_factor,
-        status_forcelist=status_forcelist,
-    )
-    adapter = HTTPAdapter(max_retries=retry)
-    session.mount("http://", adapter)
-    session.mount("https://", adapter)
-    return session
-
-
 def wikidata_entity_request(
     qids,
-    languageKeys=[item[0] for item in language_config_to_list()],
+    languageKeys=[item[0] for item in util_funcs.language_config_to_list()],
     props=["claims", "descriptions", "labels", "sitelinks"],
     timeout=5,
     sleep_time=60,
@@ -166,7 +115,7 @@ def wikidata_entity_request(
         https://www.wikidata.org/w/api.php?action=help&modules=wbgetentities
     """
     initial_timeout = timeout
-    langkeyPlusWikiList = [add_wiki_to_string(key) for key in languageKeys]
+    langkeyPlusWikiList = [key + "wiki" for key in languageKeys]
     parameters = {
         "action": "wbgetentities",
         "ids": "|".join(qids),
@@ -178,11 +127,14 @@ def wikidata_entity_request(
         # the query an error response is returned
         "maxlag": maxlag,
     }
-    header = {"Content-Type": "application/json", "user_agent": agent_header()}
+    header = {
+        "Content-Type": "application/json",
+        "user_agent": util_funcs.agent_header(),
+    }
     while True:
         try:
             t0 = time.time()
-            response = requests_retry_session().get(
+            response = request_utils.requests_retry_session().get(
                 "https://www.wikidata.org/w/api.php",
                 params=parameters,
                 headers=header,
@@ -373,7 +325,7 @@ def extract_artworks(
     type_name,
     wikidata_id,
     already_crawled_wikidata_items,
-    languageKeys=[item[0] for item in language_config_to_list()],
+    languageKeys=[item[0] for item in util_funcs.language_config_to_list()],
 ):
     """Extracts artworks metadata from Wikidata and stores them in a dictionary.
 
@@ -402,7 +354,7 @@ def extract_artworks(
         f"{len(artwork_ids)} {type_name} entries are not loaded yet, starting now. Already crawled item count is {len(already_crawled_wikidata_items)}"
     )
     chunk_size = 50  # The chunksize 50 is allowed by the wikidata api, bigger numbers need special permissions
-    artwork_id_chunks = chunks(artwork_ids, chunk_size)
+    artwork_id_chunks = util_funcs.chunks(artwork_ids, chunk_size)
     for chunk in artwork_id_chunks:
         if DEV and chunk_count == DEV_CHUNK_LIMIT:
             logging.debug(
@@ -716,7 +668,9 @@ def bundle_extract_data_calls(name_list, merged_artworks):
         yield get_subject(item, tmp)
 
 
-def get_fields(type_name, languageKeys=[item[0] for item in language_config_to_list()]):
+def get_fields(
+    type_name, languageKeys=[item[0] for item in util_funcs.language_config_to_list()]
+):
     """ Returns all fields / columns for a specific type, e. g. 'artworks' """
     fields = ["id", "classes", "label", "description", "image"]
     for langkey in languageKeys:
@@ -841,7 +795,9 @@ def get_distinct_attribute_values_from_dict(
 
 
 def try_map_response_to_subject(
-    response, type_name, languageKeys=[item[0] for item in language_config_to_list()]
+    response,
+    type_name,
+    languageKeys=[item[0] for item in util_funcs.language_config_to_list()],
 ):
     """
     Maps the default attributes which every subject has:
@@ -983,14 +939,16 @@ def try_map_response_to_location(response):
 
 
 def get_subject(
-    type_name, qids, languageKeys=[item[0] for item in language_config_to_list()]
+    type_name,
+    qids,
+    languageKeys=[item[0] for item in util_funcs.language_config_to_list()],
 ):
     print(datetime.datetime.now(), f"Starting with {type_name}")
     print(f"Total {type_name} to extract: {len(qids)}")
     item_count = 0
     extract_dicts = []
     chunk_size = 50  # The chunksize 50 is allowed by the wikidata api, bigger numbers need special permissions
-    subject_id_chunks = chunks(list(qids), chunk_size)
+    subject_id_chunks = util_funcs.chunks(list(qids), chunk_size)
     for chunk in subject_id_chunks:
         query_result = wikidata_entity_request(chunk)
 
@@ -1023,14 +981,16 @@ def get_subject(
 
 
 def get_entity_labels(
-    type_name, qids, languageKeys=[item[0] for item in language_config_to_list()]
+    type_name,
+    qids,
+    languageKeys=[item[0] for item in util_funcs.language_config_to_list()],
 ):
     print(datetime.datetime.now(), f"Starting with {type_name} labels")
     print(f"Total {type_name} labels to extract: {len(qids)}")
     item_count = 0
     extract_dicts = []
     chunk_size = 50  # The chunksize 50 is allowed by the wikidata api, bigger numbers need special permissions
-    id_chunks = chunks(list(qids), chunk_size)
+    id_chunks = util_funcs.chunks(list(qids), chunk_size)
     for chunk in id_chunks:
         query_result = wikidata_entity_request(
             chunk, props=["labels"], timeout=10
@@ -1069,7 +1029,9 @@ already_extracted_superclass_ids = set()
 
 
 def get_classes(
-    type_name, qids, languageKeys=[item[0] for item in language_config_to_list()]
+    type_name,
+    qids,
+    languageKeys=[item[0] for item in util_funcs.language_config_to_list()],
 ):
     print(datetime.datetime.now(), f"Starting with {type_name}")
     if type_name == "classes":
@@ -1083,7 +1045,7 @@ def get_classes(
     item_count = 0
     extract_dicts = []
     chunk_size = 50  # The chunksize 50 is allowed by the wikidata api, bigger numbers need special permissions
-    classes_id_chunks = chunks(list(qids), chunk_size)
+    classes_id_chunks = util_funcs.chunks(list(qids), chunk_size)
     for chunk in classes_id_chunks:
         query_result = wikidata_entity_request(chunk)
 
@@ -1153,7 +1115,7 @@ def get_unit_symbols(qids):
     item_count = 0
     extract_dicts = []
     chunk_size = 50  # The chunksize 50 is allowed by the wikidata api, bigger numbers need special permissions
-    id_chunks = chunks(list(qids), chunk_size)
+    id_chunks = util_funcs.chunks(list(qids), chunk_size)
     for chunk in id_chunks:
         query_result = wikidata_entity_request(chunk, props=["claims"], timeout=10)
 
@@ -1205,7 +1167,7 @@ def resolve_entity_id_to_label(
     attribute_name,
     artwork_dict,
     labels,
-    languageKeys=[item[0] for item in language_config_to_list()],
+    languageKeys=[item[0] for item in util_funcs.language_config_to_list()],
 ):
     # labels objects to qid_labels_dict
     qid_labels_dict = {}

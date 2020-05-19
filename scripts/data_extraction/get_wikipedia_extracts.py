@@ -1,63 +1,14 @@
 import json
-import csv
 import time
 import datetime
 import logging
-import requests
 from urllib.error import HTTPError
 from pathlib import Path
-from requests.adapters import HTTPAdapter
-from urllib3.util import Retry
+import utils.util_funcs as util_funcs
+import utils.request_utils as request_utils
+
 
 json_file_path = Path.cwd() / "crawler_output" / "intermediate_files" / "json"
-
-
-def agent_header():
-    return "<nowiki>https://cai-artbrowserstaging.fbi.h-da.de/; tilo.w.michel@stud.h-da.de</nowiki>"
-
-
-def chunks(lst, n):
-    """Yield successive n-sized chunks from lst."""
-    for i in range(0, len(lst), n):
-        yield lst[i : i + n]
-
-
-def language_config_to_list(
-    config_file=Path(__file__).parent.parent.absolute() / "languageconfig.csv",
-):
-    """Reads languageconfig.csv and returns array that contains its
-    full contents
-
-    Returns:
-        list -- contents of languageconfig.csv as list
-    """
-    languageValues = []
-    with open(config_file, encoding="utf-8") as file:
-        configReader = csv.reader(file, delimiter=";")
-        for row in configReader:
-            if row[0] != "langkey":
-                languageValues.append(row)
-    return languageValues
-
-
-def requests_retry_session(
-    retries=3, backoff_factor=0.3, status_forcelist=(500, 502, 504), session=None,
-):
-    """ Request session with retry possibility
-        Source: https://www.peterbe.com/plog/best-practice-with-retries-with-requests
-    """
-    session = session or requests.Session()
-    retry = Retry(
-        total=retries,
-        read=retries,
-        connect=retries,
-        backoff_factor=backoff_factor,
-        status_forcelist=status_forcelist,
-    )
-    adapter = HTTPAdapter(max_retries=retry)
-    session.mount("http://", adapter)
-    session.mount("https://", adapter)
-    return session
 
 
 def get_wikipedia_page_ids(
@@ -66,13 +17,9 @@ def get_wikipedia_page_ids(
     """ Source: https://stackoverflow.com/questions/52787504/how-to-get-page-id-from-wikipedia-page-title """
     title_indice_dictionary = {}
     wikipedia_url = f"https://{langkey}.wikipedia.org/wiki/"
-    for indice in indices:
+    for index in indices:
         title_indice_dictionary.update(
-            {
-                items[indice][f"wikipediaLink_{langkey}"].replace(
-                    wikipedia_url, ""
-                ): indice
-            }
+            {items[index][f"wikipediaLink_{langkey}"].replace(wikipedia_url, ""): index}
         )
 
     parameters = {
@@ -84,11 +31,14 @@ def get_wikipedia_page_ids(
         # the query an error response is returned
         "maxlag": maxlag,
     }
-    header = {"Content-Type": "application/json", "user_agent": agent_header()}
+    header = {
+        "Content-Type": "application/json",
+        "user_agent": util_funcs.agent_header(),
+    }
     while True:
         try:
             t0 = time.time()
-            response = requests_retry_session().get(
+            response = request_utils.requests_retry_session().get(
                 f"https://{langkey}.wikipedia.org/w/api.php",
                 params=parameters,
                 headers=header,
@@ -157,11 +107,14 @@ def get_wikipedia_extracts(
         # the query an error response is returned
         "maxlag": maxlag,
     }
-    header = {"Content-Type": "application/json", "user_agent": agent_header()}
+    header = {
+        "Content-Type": "application/json",
+        "user_agent": util_funcs.agent_header(),
+    }
     while True:
         try:
             t0 = time.time()
-            response = requests_retry_session().get(
+            response = request_utils.requests_retry_session().get(
                 f"https://{langkey}.wikipedia.org/w/api.php",
                 params=parameters,
                 headers=header,
@@ -215,7 +168,7 @@ def get_wikipedia_extracts(
 
 
 def add_wikipedia_extracts(
-    languageKeys=[item[0] for item in language_config_to_list()],
+    languageKeys=[item[0] for item in util_funcs.language_config_to_list()],
 ):
     logging.basicConfig(
         filename="get_wikipedia_extracts.log", filemode="w", level=logging.DEBUG
@@ -253,7 +206,7 @@ def add_wikipedia_extracts(
                 # The request method has to be adjusted for this
                 # Further information https://stackoverflow.com/questions/9846795/prop-extracts-not-returning-all-extracts-in-the-wikimedia-api
                 chunk_size = 20
-                item_indices_chunks = chunks(
+                item_indices_chunks = util_funcs.chunks(
                     item_indices_with_wiki_link_for_lang, chunk_size
                 )
                 extracted_count = 0

@@ -37,6 +37,7 @@ jobs:
         - pip3 install .
       script:
         - python data_extraction/get_wikidata_items.py -d 1
+        - python data_extraction/get_wikipedia_extracts.py
 
     - stage: deploy-to-staging
       if: branch = staging AND type = push

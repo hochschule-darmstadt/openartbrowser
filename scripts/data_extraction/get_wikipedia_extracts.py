@@ -187,51 +187,51 @@ def add_wikipedia_extracts(
             "Starting extracting wikipedia extracts with",
             filename,
         )
-
-        with open(
-            (json_file_path / filename).with_suffix(".json"), encoding="utf-8"
-        ) as file:
-            items = json.load(file)
-            for key in languageKeys:
-                item_indices_with_wiki_link_for_lang = [
-                    items.index(item)
-                    for item in items
-                    if item[f"wikipediaLink_{key}"] != ""
-                ]
-                print(
-                    f"There are {len(item_indices_with_wiki_link_for_lang)} {key}.wikipedia links within the {len(items)} {filename} items"
-                )
-                # ToDo: The limit for extracts seems to be 20, there is an excontinue parameter which
-                # could be used to increase the performance and load more at once (50 is allowed by the API) if needed
-                # The request method has to be adjusted for this
-                # Further information https://stackoverflow.com/questions/9846795/prop-extracts-not-returning-all-extracts-in-the-wikimedia-api
-                chunk_size = 20
-                item_indices_chunks = util_funcs.chunks(
-                    item_indices_with_wiki_link_for_lang, chunk_size
-                )
-                extracted_count = 0
-                # Fill json objects without wikilink to an abstract with empty key-value pairs (could be removed if frontend is adjusted)
-                for j in range(len(items)):
-                    if j not in item_indices_with_wiki_link_for_lang:
-                        items[j][f"abstract_{key}"] = ""
-
-                for chunk in item_indices_chunks:
-                    # Get PageIds from URL https://en.wikipedia.org/w/api.php?action=query&titles=Jean_Wauquelin_presenting_his_'Chroniques_de_Hainaut'_to_Philip_the_Good
-                    page_id_indices_dictionary = get_wikipedia_page_ids(
-                        items, chunk, key
-                    )
-                    # Get Extracts from PageId https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&pageids=70889|1115370
-                    rawResponse = get_wikipedia_extracts(
-                        items, page_id_indices_dictionary, key
-                    )
-                    # add extracted abstracts to json objects
-                    for i in chunk:
-                        items[i][f"abstract_{key}"] = rawResponse[i]
-
-                    extracted_count += len(chunk)
+        try:
+            with open(
+                (json_file_path / filename).with_suffix(".json"), encoding="utf-8"
+            ) as file:
+                items = json.load(file)
+                for key in languageKeys:
+                    item_indices_with_wiki_link_for_lang = [
+                        items.index(item)
+                        for item in items
+                        if item[f"wikipediaLink_{key}"] != ""
+                    ]
                     print(
-                        f"Extracts for {filename} and language {key} status: {extracted_count}/{len(item_indices_with_wiki_link_for_lang)}"
+                        f"There are {len(item_indices_with_wiki_link_for_lang)} {key}.wikipedia links within the {len(items)} {filename} items"
                     )
+                    # ToDo: The limit for extracts seems to be 20, there is an excontinue parameter which
+                    # could be used to increase the performance and load more at once (50 is allowed by the API) if needed
+                    # The request method has to be adjusted for this
+                    # Further information https://stackoverflow.com/questions/9846795/prop-extracts-not-returning-all-extracts-in-the-wikimedia-api
+                    chunk_size = 20
+                    item_indices_chunks = util_funcs.chunks(
+                        item_indices_with_wiki_link_for_lang, chunk_size
+                    )
+                    extracted_count = 0
+                    # Fill json objects without wikilink to an abstract with empty key-value pairs (could be removed if frontend is adjusted)
+                    for j in range(len(items)):
+                        if j not in item_indices_with_wiki_link_for_lang:
+                            items[j][f"abstract_{key}"] = ""
+
+                    for chunk in item_indices_chunks:
+                        # Get PageIds from URL https://en.wikipedia.org/w/api.php?action=query&titles=Jean_Wauquelin_presenting_his_'Chroniques_de_Hainaut'_to_Philip_the_Good
+                        page_id_indices_dictionary = get_wikipedia_page_ids(
+                            items, chunk, key
+                        )
+                        # Get Extracts from PageId https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&pageids=70889|1115370
+                        rawResponse = get_wikipedia_extracts(
+                            items, page_id_indices_dictionary, key
+                        )
+                        # add extracted abstracts to json objects
+                        for i in chunk:
+                            items[i][f"abstract_{key}"] = rawResponse[i]
+
+                        extracted_count += len(chunk)
+                        print(
+                            f"Extracts for {filename} and language {key} status: {extracted_count}/{len(item_indices_with_wiki_link_for_lang)}"
+                        )
 
             # overwrite file
             with open(
@@ -241,7 +241,11 @@ def add_wikipedia_extracts(
                 encoding="utf-8",
             ) as file:
                 file.write(json.dumps(items, ensure_ascii=False))
-
+        except Exception as error:
+            print(
+                f"Error when opening following file: {filename}. Error: {error}. Skipping file now."
+            )
+            continue
         print(
             datetime.datetime.now(),
             "Finished extracting wikipedia extracts with",

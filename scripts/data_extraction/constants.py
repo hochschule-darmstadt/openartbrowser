@@ -5,11 +5,11 @@ HTTP_HEADER = {
     "user_agent": AGENT_HEADER,
 }
 
-MAX_LAG = 10
-SLEEP_TIME = 60
-TIMEOUT = 5
+MAX_LAG = 10  # see https://www.mediawiki.org/wiki/Manual:Maxlag_parameter
+SLEEP_TIME = 60  # Time in seconds to sleep if a request failed
+TIMEOUT = 5  # Time to timeout a request
 
-QID_PATTERN = r"^Q[1-9]\d*"
+QID_PATTERN = r"^Q[1-9]\d*"  # Possible QIDs regex starting from Q1
 
 JSON = "json"
 CSV = "csv"

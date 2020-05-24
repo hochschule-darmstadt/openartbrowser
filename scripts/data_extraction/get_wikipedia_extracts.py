@@ -178,7 +178,9 @@ def add_wikipedia_extracts(
 
                         extracted_count += len(chunk)
                         print(
-                            f"Extracts for {filename} and language {key} status: {extracted_count}/{len(item_indices_with_wiki_link_for_lang)}"
+                            f"Extracts for {filename} and language {key} status: {extracted_count}/{len(item_indices_with_wiki_link_for_lang)}",
+                            end="\r",
+                            flush=True,
                         )
 
             # overwrite file

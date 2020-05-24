@@ -387,7 +387,11 @@ def extract_artworks(
             already_crawled_wikidata_items.add(qid)
 
         item_count += len(chunk)
-        print(f"Status of {type_name}: {item_count}/{len(artwork_ids)}")
+        print(
+            f"Status of {type_name}: {item_count}/{len(artwork_ids)}",
+            end="\r",
+            flush=True,
+        )
 
         chunk_count += 1
 
@@ -899,7 +903,7 @@ def get_subject(
             extract_dicts.append(subject_dict)
 
         item_count += len(chunk)
-        print(f"Status of {type_name}: {item_count}/{len(qids)}")
+        print(f"Status of {type_name}: {item_count}/{len(qids)}", end="\r", flush=True)
 
     print(datetime.datetime.now(), f"Finished with {type_name}")
     return extract_dicts
@@ -944,7 +948,11 @@ def get_entity_labels(
             extract_dicts.append(subject_dict)
 
         item_count += len(chunk)
-        print(f"Status of {type_name} {LABEL[PLURAL]}: {item_count}/{len(qids)}")
+        print(
+            f"Status of {type_name} {LABEL[PLURAL]}: {item_count}/{len(qids)}",
+            end="\r",
+            flush=True,
+        )
 
     print(datetime.datetime.now(), f"Finished with {type_name} {LABEL[PLURAL]}")
     return extract_dicts
@@ -1010,7 +1018,7 @@ def get_classes(
             extract_dicts.append(class_dict)
 
         item_count += len(chunk)
-        print(f"Status of {type_name}: {item_count}/{len(qids)}")
+        print(f"Status of {type_name}: {item_count}/{len(qids)}", end="\r", flush=True)
 
     superclasses_qids = get_distinct_attribute_values_from_dict(
         SUBCLASS_OF, extract_dicts
@@ -1063,7 +1071,7 @@ def get_unit_symbols(qids):
             extract_dicts.append(subject_dict)
 
         item_count += len(chunk)
-        print(f"Status of unit symbols: {item_count}/{len(qids)}")
+        print(f"Status of unit symbols: {item_count}/{len(qids)}", end="\r", flush=True)
 
     print(datetime.datetime.now(), f"Finished with unit symbols")
     return extract_dicts

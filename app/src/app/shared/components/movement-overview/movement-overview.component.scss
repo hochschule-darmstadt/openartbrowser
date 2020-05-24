@@ -34,31 +34,6 @@
   }
 }
 
-.box-container {
-  margin: 0 15px;
-}
-
-@media only screen and (max-width: 599px) {
-  .scrolling-container {
-    overflow-y: auto;
-    overflow-x: hidden;
-    white-space: nowrap;
-    overflow-x: scroll;
-    width: 100%;
-  }
-  :host::ng-deep {
-    .custom-slider {
-      width: 837px;
-
-    }
-  }
-  .box-container {
-    width: 837px;
-
-  }
-}
-
-
 .box {
   max-height: 2rem;
   text-align: center;
@@ -86,6 +61,11 @@
 
 .fit-text-container {
   pointer-events: none;
+}
+
+
+.box-container {
+  margin: 0 15px;
 }
 
 

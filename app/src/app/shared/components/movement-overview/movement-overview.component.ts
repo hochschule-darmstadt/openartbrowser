@@ -65,8 +65,6 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
   private nextRandomMovementTime = 15; // number in seconds, set to '0' to disable
   private randomMovementTimer$ = new Subject();
 
-  private isMobile: boolean;
-
   constructor(data: DataService) {
 
     this.dataService = data;
@@ -133,14 +131,8 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
 
   /** Determine values based on screen width (responsivity) */
   @HostListener('window:resize', ['$event'])
-  onResize(event?) {
-    this.checkIsMobile();
-    let screenWidth: number;
-    if (this.isMobile) {
-      screenWidth = 1337;
-    } else {
-      screenWidth = window.innerWidth;
-    }
+  onResize() {
+    const screenWidth = window.innerWidth;
     /** Determine the amount of marked steps in the slider, depending on screen width */
     this.averagePeriodCount = Math.min(7, Math.floor(screenWidth / 125));
     if (this.currentMovementId !== undefined) {
@@ -256,29 +248,16 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
     const y1 = clickedMovement.offsetTop + clickedMovement.offsetHeight;
 
     const thumbnail = document.getElementById('thumbnail');
+    // hide thumbnail
+    thumbnail.setAttribute('style',
+      'margin-left: ' + (x1 - (thumbnail.offsetWidth / 2) - 15).toString() + 'px;' +
+      '-webkit-transform: scale(0); -ms-transform: scale(0); transform: scale(0); transition: 0s ease;');
+    // scale up again at other location
+    thumbnail.setAttribute('style',
+      'margin-left: ' + (x1 - (thumbnail.offsetWidth / 2) - 15).toString() + 'px;' +
+      '-webkit-transform: scale(1); -ms-transform: scale(1); transform: scale(1); transition: 0.3s ease;');
 
-    let x2: number;
-    if (this.isMobile) {
-      // hide thumbnail
-      thumbnail.setAttribute('style',
-        'margin-left: 50%;' +
-        '-webkit-transform: scale(0); -ms-transform: scale(0); transform: scale(0) translateX(-50%); transition: 0s ease;');
-      // scale up again at other location
-      thumbnail.setAttribute('style',
-        'margin-left: 50%;' +
-        '-webkit-transform: scale(1); -ms-transform: scale(1); transform: scale(1) translateX(-50%); transition: 0.3s ease;');
-      // hide thumbnail
-      x2 = thumbnail.offsetLeft;
-    } else {
-      thumbnail.setAttribute('style',
-        'margin-left: ' + (x1 - (thumbnail.offsetWidth / 2) - 15).toString() + 'px;' +
-        '-webkit-transform: scale(0); -ms-transform: scale(0); transform: scale(0); transition: 0s ease;');
-      // scale up again at other location
-      thumbnail.setAttribute('style',
-        'margin-left: ' + (x1 - (thumbnail.offsetWidth / 2) - 15).toString() + 'px;' +
-        '-webkit-transform: scale(1); -ms-transform: scale(1); transform: scale(1); transition: 0.3s ease;');
-      x2 = thumbnail.offsetLeft + (thumbnail.offsetWidth / 2);
-    }
+    const x2 = thumbnail.offsetLeft + (thumbnail.offsetWidth / 2);
     const y2 = thumbnail.offsetTop;
 
     const line = document.getElementById('line');
@@ -356,10 +335,6 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
       1
     );
     this.setRandomThumbnail(this.currentMovementId);
-  }
-
-  private checkIsMobile() {
-    this.isMobile = window.innerWidth < 575;
   }
 }
 

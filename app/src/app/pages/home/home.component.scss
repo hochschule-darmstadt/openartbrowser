@@ -151,6 +151,7 @@ $color1: #00bc8c;
     -webkit-transition: 0.3s ease;
     transition: 0.3s ease;
     border-radius: 15px;
+
     i {
       margin-right: 5px;
     }
@@ -242,5 +243,13 @@ $color1: #00bc8c;
 
   &:hover {
     cursor: default;
+  }
+}
+
+
+/** do not display movement overview in mobile version **/
+@media only screen and (max-width: 299px) {
+  #mv_overview {
+    display: none;
   }
 }

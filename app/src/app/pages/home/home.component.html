@@ -11,7 +11,6 @@
       <h1>ArtBrowser</h1>
     </div>
   </div>
-  <app-movement-overview></app-movement-overview>
 
   <div class="row pt-4">
     <div class="mb-4 container-category" *ngFor="let category of categories; let i = index" [ngClass]="categories.length / 2 > i + 1 ? 'col-lg-4' : 'col-lg-3'">
@@ -42,4 +41,5 @@
       </ngb-carousel>
     </div>
   </div>
+  <app-movement-overview id="mv_overview"></app-movement-overview>
 </div>

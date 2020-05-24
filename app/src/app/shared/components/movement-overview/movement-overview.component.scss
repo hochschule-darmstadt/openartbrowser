@@ -60,6 +60,7 @@
 
 
 .box {
+  max-height: 2rem;
   text-align: center;
   background: #cccccc;
   color: #222222;
@@ -81,6 +82,10 @@
 
 .box:hover {
   cursor: pointer;
+}
+
+.fit-text-container {
+  pointer-events: none;
 }
 
 
@@ -122,6 +127,10 @@
   }
 }
 
+#fittest {
+  border: 1px solid red;
+  width: 30%;
+}
 
 .overlay-container {
   max-width: 15rem;

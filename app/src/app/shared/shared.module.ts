@@ -17,6 +17,7 @@ import { Ng5SliderModule } from 'ng5-slider';
 import { CollapseComponent } from './components/collapse/collapse.component';
 import { Angulartics2Module } from 'angulartics2';
 import { MovementOverviewComponent } from './components/movement-overview/movement-overview.component';
+import { NgxFitTextModule } from 'ngx-fit-text';
 
 /** Everything that should be used within multiple feature modules but isn't always required goes here */
 @NgModule({
@@ -34,7 +35,7 @@ import { MovementOverviewComponent } from './components/movement-overview/moveme
     CollapseComponent,
     MovementOverviewComponent
   ],
-  imports: [CommonModule, NgbModule, RouterModule, FormsModule, Ng5SliderModule, Angulartics2Module],
+  imports: [CommonModule, NgbModule, RouterModule, FormsModule, Ng5SliderModule, Angulartics2Module, NgxFitTextModule],
   exports: [
     CarouselComponent,
     SearchComponent,

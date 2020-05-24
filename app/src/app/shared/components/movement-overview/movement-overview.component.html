@@ -12,11 +12,13 @@
                [ngClass]="movement?.label ? 'box' : ''"
                [style.width]="movement.width+'%'"
                (click)="movement.label && onClickMovementBox($event)">
-            {{ movement.label | titlecase }}
+            <div class="fit-text-container" [ngxFitText] [ngxFitTextMin]="10"
+                 [ngxFitTextMax]="20">{{ movement.label | titlecase }}</div>
           </div>
         </div>
       </div>
     </div>
+
     <div class="thumbnail-container ">
       <a class="thumbnail" id="thumbnail"
          [routerLink]="['/movement', currentMovementId]"

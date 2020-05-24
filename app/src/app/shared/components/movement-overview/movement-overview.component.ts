@@ -23,19 +23,17 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
   /** initial movements to be displayed by the component */
   movements: MovementItem[] = [];
   defaultMovementIds: string[] = [
-    'Q1474884',
-    'Q443153',
-    'Q37853',
-    'Q1404472',
-    'Q2352880',
-    'Q40415',
-    'Q34636',
-    'Q37068',
-    'Q122960',
-    'Q14378',
-    'Q4692',
-    'Q46825',
-    'Q170292',
+    'Q1474884',   // High Renaissance
+    'Q443153',    // Flemish Primitives
+    'Q37853',     // Baroque
+    'Q1404472',   // Italian Renaissance
+    'Q2352880',   // Dutch Golden Age painting
+    'Q37068',     // Romanticism
+    'Q122960',    // Rococo
+    'Q14378',     // neoclassicism
+    'Q4692',      // Renaissance
+    'Q46825',     // Gothic art
+    'Q170292',    // classicism
   ];
 
   /** 2d array holding items to be displayed */
@@ -80,7 +78,14 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
     // sort movements by their inception/start
     this.dataService.findMultipleById<Movement>(this.defaultMovementIds, EntityType.MOVEMENT)
       .then(movements => {
+        for (const movement of movements) {
+          console.log(movement.id, movement.label);
+        }
         this.movements = movements.filter(m => m.start_time && m.end_time) as MovementItem[];
+        console.log('Missing movement start or end:');
+        for (const mov of movements.filter(m => !this.movements.includes(m as MovementItem))){
+          console.log('https://www.wikidata.org/wiki/' + mov.id, mov.label);
+        }
         for (const movement of this.movements) {
           movement.artworks = [];
         }

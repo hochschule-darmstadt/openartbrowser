@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
@@ -7,11 +7,18 @@ import { Subject } from 'rxjs';
 import * as _ from 'lodash';
 import { shuffle } from 'src/app/core/services/utils.service';
 
+enum Tab {
+  Artworks,
+  Timeline,
+  MovementOverview
+}
+
 @Component({
   selector: 'app-movement',
   templateUrl: './movement.component.html',
   styleUrls: ['./movement.component.scss']
 })
+
 export class MovementComponent implements OnInit, OnDestroy {
   /* TODO:REVIEW
      Similiarities in every page-Component:
@@ -21,6 +28,8 @@ export class MovementComponent implements OnInit, OnDestroy {
      1. Use Inheritance (Root-Page-Component) or Composition
      2. Inject entity instead of movement
    */
+  Tab = Tab;
+  private activeTab: Tab = Tab.Timeline;
 
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();
@@ -35,7 +44,7 @@ export class MovementComponent implements OnInit, OnDestroy {
   collapse = true;
 
   /** Toggle bool for displaying either timeline or artworks carousel component */
-  showTimelineNotArtworks = true;
+  movementOverviewLoaded = false;
 
   /** a video was found */
   videoExists = false;
@@ -82,14 +91,20 @@ export class MovementComponent implements OnInit, OnDestroy {
     this.collapse = metaNumber >= 10;
   }
 
+  setActiveTab(tab: Tab) {
+    this.activeTab = tab;
+
+    if (this.activeTab === Tab.MovementOverview) {
+      this.movementOverviewLoaded = true;
+    }
+  }
+
+
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
   }
 
-  toggleComponent() {
-    this.showTimelineNotArtworks = !this.showTimelineNotArtworks;
-  }
 
   videoFound(event) {
     this.videoExists = this.videoExists ? true : event;

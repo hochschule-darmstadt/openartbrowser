@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, HostListener, OnInit} from '@angular/core';
+import {AfterViewInit, Component, HostListener, Input, OnInit} from '@angular/core';
 import {EntityType} from '../../models/entity.interface';
 import {Options} from 'ng5-slider';
 import {DataService} from '../../../core/services/elasticsearch/data.service';
@@ -35,6 +35,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
     'Q46825',     // Gothic art
     'Q170292',    // classicism
   ];
+  @Input() movementIds: string[];
 
   /** 2d array holding items to be displayed */
   boxes: MovementItem[][] = [[]];
@@ -73,8 +74,12 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    if (!this.movementIds) {
+      this.movementIds = this.defaultMovementIds;
+    }
+
     // sort movements by their inception/start
-    this.dataService.findMultipleById<Movement>(this.defaultMovementIds, EntityType.MOVEMENT)
+    this.dataService.findMultipleById<Movement>(this.movementIds, EntityType.MOVEMENT)
       .then(movements => {
         this.movements = movements.filter(m => m.start_time && m.end_time) as MovementItem[];
         console.log('Missing movement start or end:');
@@ -118,12 +123,11 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
         this.setTimeline();
         // fill this.boxes
         this.fillTimeline();
-
-
       });
   }
 
   ngAfterViewInit() {
+    console.log("AFTER VIEW INIT");
     if (this.currentMovementId !== undefined) {
       this.drawThumbnail(this.currentMovementId);
     }
@@ -132,6 +136,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
   /** Determine values based on screen width (responsivity) */
   @HostListener('window:resize', ['$event'])
   onResize() {
+    console.log("ON RESIZE");
     const screenWidth = window.innerWidth;
     /** Determine the amount of marked steps in the slider, depending on screen width */
     this.averagePeriodCount = Math.min(7, Math.floor(screenWidth / 125));
@@ -152,7 +157,10 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
 
     const dateSpan = lastEnd - firstStart;
     /** The period span must be either a multiple of reasonablePeriodDistance or minimumPeriodDistance */
-    const reasonablePeriodDistance = 50;
+    let reasonablePeriodDistance = 50;
+    if (dateSpan < this.averagePeriodCount * reasonablePeriodDistance) {
+      reasonablePeriodDistance = 10 * (Math.floor(dateSpan / this.averagePeriodCount / 10) + 1);
+    }
     const minimumPeriodDistance = 1;
     /** Example:  30/7 = 4,28 ; 4,28 / 5 = 0,85 ; Math.max( Math.round(0.85)*5, 1) = 5 */
     this.periodSpan = Math.max(Math.round(dateSpan / this.averagePeriodCount / reasonablePeriodDistance)
@@ -161,6 +169,8 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
     this.timelineStart = firstStart - (firstStart % this.periodSpan);
     this.timelineEnd = lastEnd - (lastEnd % this.periodSpan) + this.periodSpan;
 
+
+
     /** Set slider options */
     const newOptions: Options = Object.assign({}, this.options);
     newOptions.ceil = this.timelineEnd;
@@ -168,7 +178,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
     newOptions.tickStep = this.periodSpan;
     this.options = newOptions;
 
-    console.log(this.timelineStart, this.timelineEnd, this.periodSpan);
+    console.log(this.timelineStart, this.timelineEnd, this.periodSpan, this.averagePeriodCount);
   }
 
   /** this method splits movements into different rows where they overlap and sets their widths. It adds spacers, too */

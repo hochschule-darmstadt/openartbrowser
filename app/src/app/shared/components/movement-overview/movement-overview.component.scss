@@ -34,6 +34,31 @@
   }
 }
 
+.box-container {
+  margin: 0 15px;
+}
+
+@media only screen and (max-width: 599px) {
+  .scrolling-container {
+    overflow-y: auto;
+    overflow-x: hidden;
+    white-space: nowrap;
+    overflow-x: scroll;
+    width: 100%;
+  }
+  :host::ng-deep {
+    .custom-slider {
+      width: 837px;
+
+    }
+  }
+  .box-container {
+    width: 837px;
+
+  }
+}
+
+
 .box {
   text-align: center;
   background: #cccccc;
@@ -56,11 +81,6 @@
 
 .box:hover {
   cursor: pointer;
-}
-
-
-.box-container {
-  margin: 0 15px;
 }
 
 

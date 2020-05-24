@@ -12,8 +12,10 @@ from urllib.error import HTTPError
 
 from pywikibot import WbTime
 from SPARQLWrapper import JSON, SPARQLWrapper
-import utils.util_funcs as util_funcs
+
+import utils.open_art_browser_constants as constant
 import utils.request_utils as request_utils
+import utils.util_funcs as util_funcs
 
 logging.basicConfig(
     filename="get_wikidata_items.log", filemode="w", level=logging.DEBUG
@@ -106,9 +108,9 @@ def wikidata_entity_request(
     qids,
     languageKeys=[item[0] for item in util_funcs.language_config_to_list()],
     props=["claims", "descriptions", "labels", "sitelinks"],
-    timeout=5,
-    sleep_time=60,
-    maxlag=10,
+    timeout=constant.TIMEOUT,
+    sleep_time=constant.SLEEP_TIME,
+    maxlag=constant.MAX_LAG,
 ):
     """ Represents one artwork request for n-items
         The API specifies that 50 items can be loaded at once without needing additional permissions:
@@ -127,68 +129,19 @@ def wikidata_entity_request(
         # the query an error response is returned
         "maxlag": maxlag,
     }
-    header = {
-        "Content-Type": "application/json",
-        "user_agent": util_funcs.agent_header(),
-    }
-    while True:
-        try:
-            t0 = time.time()
-            response = request_utils.requests_retry_session().get(
-                "https://www.wikidata.org/w/api.php",
-                params=parameters,
-                headers=header,
-                timeout=timeout,
-            )
-            logging.info(f"Response received {response.status_code}")
-            if response.status_code == 403:
-                logging.error(
-                    f"The server forbid the query. Ending Crawl at {datetime.datetime.now()}. Error: {response.status_code}"
-                )
-                exit(-1)
-            response = response.json()
-            if "error" in response:
-                # ToDo: more specific error handling since unknown ids error throws a different message
-                logging.warning(
-                    f"The maxlag of the server exceeded ({maxlag} seconds) waiting a minute before retry. Response: {response}"
-                )
-                time.sleep(sleep_time)
-                continue
-            else:
-                break  # wenn die response richtig aussieht dann aus der schleife springen
-        except HTTPError as http_error:
-            logging.error(
-                f"Request error. Time: {datetime.datetime.now()}. HTTP-Error: {http_error}. Following items couldn't be loaded: {qids}"
-            )
-            time.sleep(sleep_time)
-            sleep_time *= 2  # increase sleep time if this happens again
-            continue
-        except NameError as nameError:
-            logging.error(
-                f"Request error. Time: {datetime.datetime.now()}. Name-Error: {nameError}. Following items couldn't be loaded: {qids}"
-            )
-            logging.error(
-                "The request's response wasn't defined. Something went wrong (see above). Sleeping for one minute and doubling the timeout. After that retry the request"
-            )
-            time.sleep(sleep_time)
-            timeout *= 2
-            if timeout >= initial_timeout * 8:
-                logging.error(
-                    "The server doesn't respond to this request. Skipping chunk"
-                )
-                return ""
-            else:
-                continue
-        except Exception as error:
-            print(
-                f"Unknown error. Time: {datetime.datetime.now()}. Error: {error}. Following items couldn't be loaded: {qids}"
-            )
-            time.sleep(sleep_time)
-            continue
 
-    t1 = time.time()
-    logging.info(f"The request took {t1 - t0} seconds")
-    return response
+    url = "https://www.wikidata.org/w/api.php"
+    return request_utils.send_http_request(
+        parameters,
+        constant.HTTP_HEADER,
+        url,
+        logging,
+        initial_timeout=initial_timeout,
+        items=qids,
+        timeout=timeout,
+        sleep_time=sleep_time,
+        maxlag=maxlag,
+    )
 
 
 def get_image_url_by_name(image_name) -> str:

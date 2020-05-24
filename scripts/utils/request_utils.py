@@ -1,6 +1,88 @@
+import datetime
+import time
+from urllib.error import HTTPError
+
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util import Retry
+
+import utils.open_art_browser_constants as constant
+
+
+def send_http_request(
+    parameters,
+    header,
+    url,
+    logging,
+    initial_timeout=0,
+    items=[],
+    abstracts=False,
+    timeout=constant.TIMEOUT,
+    sleep_time=constant.SLEEP_TIME,
+    maxlag=constant.MAX_LAG,
+):
+    while True:
+        try:
+            t0 = time.time()
+            response = requests_retry_session().get(
+                url, params=parameters, headers=header, timeout=timeout,
+            )
+            logging.info(f"Response received {response.status_code}")
+            if response.status_code == 403:
+                logging.error(
+                    f"The server forbid the query. Ending Crawl at {datetime.datetime.now()}. Error: {response.status_code}"
+                )
+                exit(-1)
+            response = response.json()
+            if abstracts and "batchcomplete" not in response:
+                logging.error(
+                    "Looks like not all extracts were loaded from wikipedia. Decrease the groupsize to avoid this behavior. Exiting script now"
+                )
+                exit(-1)
+            if "error" in response:
+                # ToDo: more specific error handling since unknown ids error throws a different message
+                logging.warning(
+                    f"The maxlag of the server exceeded ({maxlag} seconds) waiting a minute before retry. Response: {response}"
+                )
+                time.sleep(sleep_time)
+                continue
+            else:
+                break  # wenn die response richtig aussieht dann aus der schleife springen
+        except HTTPError as http_error:
+            logging.error(
+                f"Request error. Time: {datetime.datetime.now()}. HTTP-Error: {http_error}. Following items couldn't be loaded: {items}"
+            )
+            time.sleep(sleep_time)
+            sleep_time *= 2  # increase sleep time if this happens again
+            continue
+        except NameError as nameError:
+            logging.error(
+                f"Request error. Time: {datetime.datetime.now()}. Name-Error: {nameError}. Following items couldn't be loaded: {items}"
+            )
+            logging.error(
+                "The request's response wasn't defined. Something went wrong (see above). Sleeping for one minute and doubling the timeout. After that retry the request"
+            )
+            time.sleep(sleep_time)
+            timeout *= 2
+            if timeout >= initial_timeout * 8:
+                logging.error(
+                    "The server doesn't respond to this request. Skipping chunk"
+                )
+                return ""
+            else:
+                continue
+        except Exception as error:
+            print(
+                f"Unknown error. Time: {datetime.datetime.now()}. Error: {error}. Following items couldn't be loaded: {items}"
+            )
+            time.sleep(sleep_time)
+            continue
+
+        finally:
+            t1 = time.time()
+            logging.info(f"The request took {t1 - t0} seconds")
+
+    return response
 
 
 def requests_retry_session(

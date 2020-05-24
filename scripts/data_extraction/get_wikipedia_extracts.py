@@ -1,18 +1,22 @@
-import json
-import time
 import datetime
+import json
 import logging
-from urllib.error import HTTPError
 from pathlib import Path
-import utils.util_funcs as util_funcs
-import utils.request_utils as request_utils
 
+import utils.open_art_browser_constants as constant
+import utils.request_utils as request_utils
+import utils.util_funcs as util_funcs
 
 json_file_path = Path.cwd() / "crawler_output" / "intermediate_files" / "json"
 
 
 def get_wikipedia_page_ids(
-    items, indices, langkey, timeout=5, sleep_time=60, maxlag=10
+    items,
+    indices,
+    langkey,
+    timeout=constant.TIMEOUT,
+    sleep_time=constant.SLEEP_TIME,
+    maxlag=constant.MAX_LAG,
 ):
     """ Source: https://stackoverflow.com/questions/52787504/how-to-get-page-id-from-wikipedia-page-title """
     title_indice_dictionary = {}
@@ -31,49 +35,18 @@ def get_wikipedia_page_ids(
         # the query an error response is returned
         "maxlag": maxlag,
     }
-    header = {
-        "Content-Type": "application/json",
-        "user_agent": util_funcs.agent_header(),
-    }
-    while True:
-        try:
-            t0 = time.time()
-            response = request_utils.requests_retry_session().get(
-                f"https://{langkey}.wikipedia.org/w/api.php",
-                params=parameters,
-                headers=header,
-                timeout=timeout,
-            )
-            logging.info(f"Response received {response.status_code}")
-            if response.status_code == 403:
-                logging.error(
-                    f"The server forbid the query. Ending Crawl at {datetime.datetime.now()}. Error: {response.status_code}"
-                )
-                exit(-1)
-            response = response.json()
-            if "error" in response:
-                logging.warning(
-                    f"The maxlag of the server exceeded ({maxlag} seconds) waiting a minute before retry. Response: {response}"
-                )
-                time.sleep(sleep_time)
-                continue
-            else:
-                break
-        except HTTPError as http_error:
-            logging.error(
-                f"Request error. Time: {datetime.datetime.now()}. HTTP-Error: {http_error}. Following items couldn't be loaded: {title_indice_dictionary.keys()}"
-            )
-            time.sleep(sleep_time)
-            continue
-        except Exception as error:
-            print(
-                f"Unknown error. Time: {datetime.datetime.now()}. Error: {error}. Following items couldn't be loaded: {title_indice_dictionary.keys()}"
-            )
-            time.sleep(sleep_time)
-            continue
-        finally:
-            t1 = time.time()
-            logging.info(f"The request took {t1 - t0} seconds")
+
+    url = f"https://{langkey}.wikipedia.org/w/api.php"
+    response = request_utils.send_http_request(
+        parameters,
+        constant.HTTP_HEADER,
+        url,
+        logging,
+        items=title_indice_dictionary.keys(),
+        timeout=timeout,
+        sleep_time=sleep_time,
+        maxlag=maxlag,
+    )
 
     page_normalized_titles = {x: x for x in title_indice_dictionary.keys()}
 
@@ -93,7 +66,12 @@ def get_wikipedia_page_ids(
 
 
 def get_wikipedia_extracts(
-    items, page_id_index_dictionary, langkey, timeout=5, sleep_time=60, maxlag=10
+    items,
+    page_id_index_dictionary,
+    langkey,
+    timeout=constant.TIMEOUT,
+    sleep_time=constant.SLEEP_TIME,
+    maxlag=constant.MAX_LAG,
 ):
     """ https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&pageids=70889|1115370 """
     parameters = {
@@ -107,50 +85,20 @@ def get_wikipedia_extracts(
         # the query an error response is returned
         "maxlag": maxlag,
     }
-    header = {
-        "Content-Type": "application/json",
-        "user_agent": util_funcs.agent_header(),
-    }
-    while True:
-        try:
-            t0 = time.time()
-            response = request_utils.requests_retry_session().get(
-                f"https://{langkey}.wikipedia.org/w/api.php",
-                params=parameters,
-                headers=header,
-                timeout=timeout,
-            )
-            logging.info(f"Response received {response.status_code}")
-            if response.status_code == 403:
-                logging.error(
-                    f"The server forbid the query. Ending Crawl at {datetime.datetime.now()}. Error: {response.status_code}"
-                )
-                exit(-1)
-            response = response.json()
-            if "batchcomplete" not in response:
-                logging.error(
-                    "Looks like not all extracts were loaded from wikipedia. Decrease the groupsize to avoid this behavior. Exiting script now"
-                )
-                exit(-1)
-            if "error" in response:
-                logging.warning(
-                    f"The maxlag of the server exceeded ({maxlag} seconds) waiting a minute before retry. Response: {response}"
-                )
-                time.sleep(sleep_time)
-                # retry
-                continue
-        except HTTPError as http_error:
-            logging.error(
-                f"Request error. Time: {datetime.datetime.now()}. HTTP-Error: {http_error}. Following page ids couldn't be loaded: {page_id_index_dictionary.keys()}"
-            )
-        except Exception as error:
-            print(
-                f"Unknown error. Time: {datetime.datetime.now()}. Error: {error}. Following page ids couldn't be loaded: {page_id_index_dictionary.keys()}"
-            )
-        finally:
-            t1 = time.time()
-            logging.info(f"The request took {t1 - t0} seconds")
-            break
+
+    # Send HTTP-Request
+    url = f"https://{langkey}.wikipedia.org/w/api.php"
+    response = request_utils.send_http_request(
+        parameters,
+        constant.HTTP_HEADER,
+        url,
+        logging,
+        items=page_id_index_dictionary.keys(),
+        abstracts=True,
+        timeout=timeout,
+        sleep_time=sleep_time,
+        maxlag=maxlag,
+    )
 
     index_extract_dictionary = {}
     for page_id, index in page_id_index_dictionary.items():

@@ -3,32 +3,32 @@ import json
 import logging
 from pathlib import Path
 
-import utils.open_art_browser_constants as constant
-import utils.request_utils as request_utils
-import utils.util_funcs as util_funcs
+from data_extraction.constants import *
+from data_extraction.request_utils import send_http_request
+from data_extraction.utils import chunks
+from shared.utils import language_config_to_list
 
-json_file_path = Path.cwd() / "crawler_output" / "intermediate_files" / "json"
+json_file_path = Path.cwd() / CRAWLER_OUTPUT / INTERMEDIATE_FILES / JSON
 
 
 def get_wikipedia_page_ids(
-    items,
-    indices,
-    langkey,
-    timeout=constant.TIMEOUT,
-    sleep_time=constant.SLEEP_TIME,
-    maxlag=constant.MAX_LAG,
+    items, indices, langkey, timeout=TIMEOUT, sleep_time=SLEEP_TIME, maxlag=MAX_LAG,
 ):
     """ Source: https://stackoverflow.com/questions/52787504/how-to-get-page-id-from-wikipedia-page-title """
     title_indice_dictionary = {}
     wikipedia_url = f"https://{langkey}.wikipedia.org/wiki/"
     for index in indices:
         title_indice_dictionary.update(
-            {items[index][f"wikipediaLink_{langkey}"].replace(wikipedia_url, ""): index}
+            {
+                items[index][f"{WIKIPEDIA_LINK}_{langkey}"].replace(
+                    wikipedia_url, ""
+                ): index
+            }
         )
 
     parameters = {
         "action": "query",
-        "format": "json",
+        "format": JSON,
         "prop": "info",
         "titles": "|".join(title_indice_dictionary.keys()),
         # if the server needs more than maxlag seconds to answer
@@ -37,15 +37,15 @@ def get_wikipedia_page_ids(
     }
 
     url = f"https://{langkey}.wikipedia.org/w/api.php"
-    response = request_utils.send_http_request(
+    response = send_http_request(
         parameters,
-        constant.HTTP_HEADER,
+        HTTP_HEADER,
         url,
         logging,
         items=title_indice_dictionary.keys(),
-        timeout=timeout,
-        sleep_time=sleep_time,
-        maxlag=maxlag,
+        timeout=TIMEOUT,
+        sleep_time=SLEEP_TIME,
+        maxlag=MAX_LAG,
     )
 
     page_normalized_titles = {x: x for x in title_indice_dictionary.keys()}
@@ -69,14 +69,14 @@ def get_wikipedia_extracts(
     items,
     page_id_index_dictionary,
     langkey,
-    timeout=constant.TIMEOUT,
-    sleep_time=constant.SLEEP_TIME,
-    maxlag=constant.MAX_LAG,
+    timeout=TIMEOUT,
+    sleep_time=SLEEP_TIME,
+    maxlag=MAX_LAG,
 ):
     """ https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&pageids=70889|1115370 """
     parameters = {
         "action": "query",
-        "format": "json",
+        "format": JSON,
         "prop": "extracts",
         "exintro": True,
         "explaintext": True,
@@ -88,16 +88,16 @@ def get_wikipedia_extracts(
 
     # Send HTTP-Request
     url = f"https://{langkey}.wikipedia.org/w/api.php"
-    response = request_utils.send_http_request(
+    response = send_http_request(
         parameters,
-        constant.HTTP_HEADER,
+        HTTP_HEADER,
         url,
         logging,
         items=page_id_index_dictionary.keys(),
         abstracts=True,
-        timeout=timeout,
-        sleep_time=sleep_time,
-        maxlag=maxlag,
+        timeout=TIMEOUT,
+        sleep_time=SLEEP_TIME,
+        maxlag=MAX_LAG,
     )
 
     index_extract_dictionary = {}
@@ -116,19 +116,19 @@ def get_wikipedia_extracts(
 
 
 def add_wikipedia_extracts(
-    languageKeys=[item[0] for item in util_funcs.language_config_to_list()],
+    languageKeys=[item[0] for item in language_config_to_list()],
 ):
     logging.basicConfig(
-        filename="get_wikipedia_extracts.log", filemode="w", level=logging.DEBUG
+        filename=GET_WIKIPEDIA_EXTRACS_LOG_FILENAME, filemode="w", level=logging.DEBUG
     )
     for filename in [
-        "artworks",
-        "motifs",
-        "genres",
-        "materials",
-        "movements",
-        "artists",
-        "locations",
+        ARTWORK[PLURAL],
+        MOTIF[PLURAL],
+        GENRE[PLURAL],
+        MATERIAL[PLURAL],
+        MOVEMENT[PLURAL],
+        ARTIST[PLURAL],
+        LOCATION[PLURAL],
     ]:
         print(
             datetime.datetime.now(),
@@ -137,14 +137,14 @@ def add_wikipedia_extracts(
         )
         try:
             with open(
-                (json_file_path / filename).with_suffix(".json"), encoding="utf-8"
+                (json_file_path / filename).with_suffix(f".{JSON}"), encoding="utf-8"
             ) as file:
                 items = json.load(file)
                 for key in languageKeys:
                     item_indices_with_wiki_link_for_lang = [
                         items.index(item)
                         for item in items
-                        if item[f"wikipediaLink_{key}"] != ""
+                        if item[f"{WIKIPEDIA_LINK}_{key}"] != ""
                     ]
                     print(
                         f"There are {len(item_indices_with_wiki_link_for_lang)} {key}.wikipedia links within the {len(items)} {filename} items"
@@ -154,14 +154,14 @@ def add_wikipedia_extracts(
                     # The request method has to be adjusted for this
                     # Further information https://stackoverflow.com/questions/9846795/prop-extracts-not-returning-all-extracts-in-the-wikimedia-api
                     chunk_size = 20
-                    item_indices_chunks = util_funcs.chunks(
+                    item_indices_chunks = chunks(
                         item_indices_with_wiki_link_for_lang, chunk_size
                     )
                     extracted_count = 0
                     # Fill json objects without wikilink to an abstract with empty key-value pairs (could be removed if frontend is adjusted)
                     for j in range(len(items)):
                         if j not in item_indices_with_wiki_link_for_lang:
-                            items[j][f"abstract_{key}"] = ""
+                            items[j][f"{ABSTRACT}_{key}"] = ""
 
                     for chunk in item_indices_chunks:
                         # Get PageIds from URL https://en.wikipedia.org/w/api.php?action=query&titles=Jean_Wauquelin_presenting_his_'Chroniques_de_Hainaut'_to_Philip_the_Good
@@ -174,7 +174,7 @@ def add_wikipedia_extracts(
                         )
                         # add extracted abstracts to json objects
                         for i in chunk:
-                            items[i][f"abstract_{key}"] = rawResponse[i]
+                            items[i][f"{ABSTRACT}_{key}"] = rawResponse[i]
 
                         extracted_count += len(chunk)
                         print(
@@ -183,7 +183,7 @@ def add_wikipedia_extracts(
 
             # overwrite file
             with open(
-                (json_file_path / filename).with_suffix(".json"),
+                (json_file_path / filename).with_suffix(f".{JSON}"),
                 "w",
                 newline="",
                 encoding="utf-8",

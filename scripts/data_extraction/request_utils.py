@@ -6,7 +6,7 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util import Retry
 
-import utils.open_art_browser_constants as constant
+from data_extraction.constants import TIMEOUT, SLEEP_TIME, MAX_LAG
 
 
 def send_http_request(
@@ -17,9 +17,9 @@ def send_http_request(
     initial_timeout=0,
     items=[],
     abstracts=False,
-    timeout=constant.TIMEOUT,
-    sleep_time=constant.SLEEP_TIME,
-    maxlag=constant.MAX_LAG,
+    timeout=TIMEOUT,
+    sleep_time=SLEEP_TIME,
+    maxlag=MAX_LAG,
 ):
     while True:
         try:

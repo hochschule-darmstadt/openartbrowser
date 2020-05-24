@@ -78,12 +78,9 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
     // sort movements by their inception/start
     this.dataService.findMultipleById<Movement>(this.defaultMovementIds, EntityType.MOVEMENT)
       .then(movements => {
-        for (const movement of movements) {
-          console.log(movement.id, movement.label);
-        }
         this.movements = movements.filter(m => m.start_time && m.end_time) as MovementItem[];
         console.log('Missing movement start or end:');
-        for (const mov of movements.filter(m => !this.movements.includes(m as MovementItem))){
+        for (const mov of movements.filter(m => !this.movements.includes(m as MovementItem))) {
           console.log('https://www.wikidata.org/wiki/' + mov.id, mov.label);
         }
         for (const movement of this.movements) {

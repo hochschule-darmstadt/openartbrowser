@@ -248,7 +248,7 @@ $color1: #00bc8c;
 
 
 /** do not display movement overview in mobile version **/
-@media only screen and (max-width: 299px) {
+@media only screen and (max-width: 500px) {
   #mv_overview {
     display: none;
   }

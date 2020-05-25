@@ -45,7 +45,7 @@ PAINTING = {PLURAL: "paintings", ID: "wd:Q3305213"}
 ABSTRACT = "abstract"
 WIKIPEDIA_LINK = "wikipediaLink"  # TODO: Change to snakecase wikipedia_link (requires changes in the frontend)
 LATITUDE = {SINGULAR: "latitude", ABBREVIATION: "lat"}
-LONGITUDE = {SINGULAR: "latitude", ABBREVIATION: "lon"}
+LONGITUDE = {SINGULAR: "longitude", ABBREVIATION: "lon"}
 
 IMAGE = "image"
 CLASS = {SINGULAR: "class", PLURAL: "classes"}

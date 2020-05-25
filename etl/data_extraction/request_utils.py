@@ -3,10 +3,9 @@ import time
 from urllib.error import HTTPError
 
 import requests
+from data_extraction.constants import MAX_LAG, SLEEP_TIME, TIMEOUT
 from requests.adapters import HTTPAdapter
 from urllib3.util import Retry
-
-from data_extraction.constants import TIMEOUT, SLEEP_TIME, MAX_LAG
 
 
 def send_http_request(

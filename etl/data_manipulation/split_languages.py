@@ -1,8 +1,9 @@
 # splits art_ontology file into language art_ontology_files
 
-import simplejson as json
-import ijson
 from pathlib import Path
+
+import ijson
+import simplejson as json
 from shared.utils import language_config_to_list
 
 

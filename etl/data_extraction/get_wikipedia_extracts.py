@@ -4,9 +4,7 @@ from pathlib import Path
 
 from data_extraction.constants import *
 from data_extraction.request_utils import send_http_request
-from shared.utils import language_config_to_list, setup_logger, chunks
-
-json_file_path = Path.cwd() / CRAWLER_OUTPUT / INTERMEDIATE_FILES / JSON
+from shared.utils import chunks, create_new_path, language_config_to_list, setup_logger
 
 logger = setup_logger(
     "data_extraction.get_wikipedia_extracts",
@@ -139,7 +137,7 @@ def add_wikipedia_extracts(
         )
         try:
             with open(
-                (json_file_path / filename).with_suffix(f".{JSON}"), encoding="utf-8"
+                (create_new_path(filename)).with_suffix(f".{JSON}"), encoding="utf-8"
             ) as file:
                 items = json.load(file)
                 for key in languageKeys:
@@ -187,7 +185,7 @@ def add_wikipedia_extracts(
 
             # overwrite file
             with open(
-                (json_file_path / filename).with_suffix(f".{JSON}"),
+                (create_new_path(filename)).with_suffix(f".{JSON}"),
                 "w",
                 newline="",
                 encoding="utf-8",

@@ -1,10 +1,11 @@
-from elasticsearch import Elasticsearch, helpers
-from pathlib import Path
+import datetime
 import json
 import time
-import datetime
 import uuid
+from pathlib import Path
+
 import requests
+from elasticsearch import Elasticsearch, helpers
 from shared.utils import language_config_to_list
 
 

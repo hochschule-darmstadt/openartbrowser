@@ -1,6 +1,9 @@
 import csv
-import pkgutil
 import logging
+import pkgutil
+from pathlib import Path
+
+from data_extraction.constants import CRAWLER_OUTPUT, INTERMEDIATE_FILES, JSON
 
 
 def language_config_to_list():
@@ -54,3 +57,7 @@ def chunks(lst, n):
     """Yield successive n-sized chunks from lst."""
     for i in range(0, len(lst), n):
         yield lst[i : i + n]
+
+
+def create_new_path(name, subpath="", file_type=JSON):
+    return Path.cwd() / CRAWLER_OUTPUT / INTERMEDIATE_FILES / file_type / name / subpath

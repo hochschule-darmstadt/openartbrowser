@@ -12,7 +12,7 @@ from urllib.error import HTTPError
 from data_extraction.constants import *
 from data_extraction.request_utils import send_http_request
 from pywikibot import WbTime
-from shared.utils import language_config_to_list, setup_logger, chunks
+from shared.utils import chunks, create_new_path, language_config_to_list, setup_logger
 from SPARQLWrapper import JSON, SPARQLWrapper
 
 DEV = True
@@ -570,10 +570,6 @@ def bundle_class_union_calls(distinct_classes, data_list):
             CLASS[PLURAL], item
         )
     return distinct_classes
-
-
-def create_new_path(name, subpath="", file_type=JSON):
-    return Path.cwd() / CRAWLER_OUTPUT / INTERMEDIATE_FILES / file_type / name / subpath
 
 
 def bundle_extract_data_calls(name_list, merged_artworks):

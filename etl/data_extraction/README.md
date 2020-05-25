@@ -2,9 +2,9 @@
 
 To install the required python packages for the crawler script use following command in the scripts directory:
 
-> pip3 install -r requirements.txt
+> pip3 install .
 
-This will install amongst other things pywikibot and requests (see requirements.txt)
+This will install amongst other things pywikibot and requests (see setup.py)
 
 ## Execution
 

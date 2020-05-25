@@ -8,7 +8,7 @@ This will install every need dependency (see package.json)
 
 Also the python requirements have to installed by using following command in the script directory:
 
-> pip3 install -r requirements.txt
+> pip3 install .
 
 ## Execution
 

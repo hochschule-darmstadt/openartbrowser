@@ -2,9 +2,9 @@
 
 To install the required python packages for the ElasticSearch upload script use following command in the scripts directory:
 
-> pip3 install -r requirements.txt
+> pip3 install .
 
-This will install amongst other things elasticsearch and ijson (see requirements.txt)
+This will install amongst other things elasticsearch and ijson (see setup.py)
 
 ## Execution
 

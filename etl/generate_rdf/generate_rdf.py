@@ -45,7 +45,7 @@ def generate_rdf(
 
     configs = {
         # ToDo: If classes should be used again they have to be loaded above
-        # They're only contained in the classes.csv 
+        # They're only contained in the classes.csv
         # there is no JSON for classes generated
         # 'classes': {'json_array': 'classes.csv', 'class': 'rdfs:Class'},
         "movements": {"json_array": json.dumps(movements), "class": ":movement"},

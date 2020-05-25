@@ -3,7 +3,6 @@ import datetime
 import hashlib
 import inspect
 import json
-import logging
 import re
 import sys
 import time
@@ -14,15 +13,16 @@ from data_extraction.constants import *
 from data_extraction.request_utils import send_http_request
 from data_extraction.utils import chunks
 from pywikibot import WbTime
-from shared.utils import language_config_to_list
+from shared.utils import language_config_to_list, setup_logger
 from SPARQLWrapper import JSON, SPARQLWrapper
-
-logging.basicConfig(
-    filename=GET_WIKIDATA_ITEMS_LOG_FILENAME, filemode="w", level=logging.DEBUG
-)
 
 DEV = True
 DEV_CHUNK_LIMIT = 2  # Not entry but chunks of 50
+
+logger = setup_logger(
+    "data_extraction.get_wikidata_items",
+    Path(__file__).parent.parent.absolute() / "logs" / GET_WIKIDATA_ITEMS_LOG_FILENAME,
+)
 
 
 def query_artwork_qids(type_name, wikidata_id):
@@ -96,7 +96,7 @@ def wikidata_entity_request(
         parameters,
         HTTP_HEADER,
         url,
-        logging,
+        logger,
         initial_timeout=initial_timeout,
         items=qids,
         timeout=timeout,
@@ -137,7 +137,7 @@ def return_on_failure(return_value):
                 for index, param in enumerate(inspect.getfullargspec(func)[0][1:], 1):
                     error_message += ", {0} {1}".format(param, args[index])
                 error_message += ", error {0}".format(error)
-                logging.info(error_message)
+                logger.info(error_message)
 
                 return return_value
 
@@ -175,7 +175,7 @@ def try_get_dimension_unit(entity_dict, property_id):
     if is_qid:
         return unit_qid
     else:
-        logging.error(
+        logger.error(
             "Error on item {0}, property {1}, Unit was provided but isn't a QID reference".format(
                 entity_dict[ID], property_id
             )
@@ -267,14 +267,14 @@ def extract_artworks(
     artwork_id_chunks = chunks(artwork_ids, chunk_size)
     for chunk in artwork_id_chunks:
         if DEV and chunk_count == DEV_CHUNK_LIMIT:
-            logging.debug(
+            logger.info(
                 f"DEV_CHUNK_LIMIT of {type_name} reached. End extraction for {type_name}"
             )
             break
 
         query_result = wikidata_entity_request(chunk)
         if ENTITIES not in query_result:
-            logging.warn("Skipping chunk")
+            logger.error("Skipping chunk")
             continue
 
         for result in query_result[ENTITIES].values():
@@ -288,7 +288,7 @@ def extract_artworks(
                     ][VALUE]
                 )
             except Exception as error:
-                logging.warning(
+                logger.error(
                     "Error on qid or image, skipping item. Error: {0}".format(error)
                 )
                 continue
@@ -739,7 +739,7 @@ def try_map_response_to_subject(
     try:
         qid = response[ID]
     except Exception as error:
-        logging.warning("Error on qid, skipping item. Error: {0}".format(error))
+        logger.error("Error on qid, skipping item. Error: {0}".format(error))
         return None
 
     # ToDo: Extract to function
@@ -853,7 +853,7 @@ def try_map_response_to_location(response):
         lat = coordinate[LATITUDE[SINGULAR]]
         lon = coordinate[LONGITUDE[SINGULAR]]
     except Exception as error:
-        logging.info(
+        logger.info(
             "Error on item {0}, property {1}, error {2}".format(
                 response[ID], PROPERTY_NAME_TO_PROPERTY_ID[COORDINATE], error
             )
@@ -882,7 +882,7 @@ def get_subject(
         query_result = wikidata_entity_request(chunk)
 
         if ENTITIES not in query_result:
-            logging.warn("Skipping chunk")
+            logger.error("Skipping chunk")
             continue
 
         for result in query_result[ENTITIES].values():
@@ -924,14 +924,14 @@ def get_entity_labels(
         )  # country entities take longer so timeout is increased
 
         if ENTITIES not in query_result:
-            logging.warn("Skipping chunk")
+            logger.error("Skipping chunk")
             continue
 
         for result in query_result[ENTITIES].values():
             try:
                 qid = result[ID]
             except Exception as error:
-                logging.warning("Error on qid, skipping item. Error: {0}".format(error))
+                logger.error("Error on qid, skipping item. Error: {0}".format(error))
                 continue
 
             label = try_get_label_or_description(result, LABEL[PLURAL], EN)
@@ -981,15 +981,15 @@ def get_classes(
         query_result = wikidata_entity_request(chunk)
 
         if ENTITIES not in query_result:
-            logging.warn("Skipping chunk")
+            logger.error("Skipping chunk")
             continue
 
         for result in query_result[ENTITIES].values():
             try:
                 qid = result[ID]
             except Exception as error:
-                logging.warning("Error on qid, skipping item. Error: {0}".format(error))
-
+                logger.error("Error on qid, skipping item. Error: {0}".format(error))
+                continue
             label = try_get_label_or_description(result, LABEL[PLURAL], EN)
             description = try_get_label_or_description(result, DESCRIPTION[PLURAL], EN)
             subclass_of = try_get_qid_reference_list(
@@ -1053,14 +1053,14 @@ def get_unit_symbols(qids):
         query_result = wikidata_entity_request(chunk, props=[CLAIMS], timeout=10)
 
         if ENTITIES not in query_result:
-            logging.warn("Skipping chunk")
+            logger.error("Skipping chunk")
             continue
 
         for result in query_result[ENTITIES].values():
             try:
                 qid = result[ID]
             except Exception as error:
-                logging.warning("Error on qid, skipping item. Error: {0}".format(error))
+                logger.error("Error on qid, skipping item. Error: {0}".format(error))
                 continue
 
             unit_symbol = try_get_unit_symbol(
@@ -1131,5 +1131,5 @@ if __name__ == "__main__":
         print("DEV MODE: on, DEV_LIM={0}".format(DEV_CHUNK_LIMIT))
         DEV = True
 
-    logging.debug("Extracting Art Ontology")
+    logger.info("Extracting Art Ontology")
     extract_art_ontology()

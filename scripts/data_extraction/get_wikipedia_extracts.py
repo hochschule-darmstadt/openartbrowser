@@ -1,14 +1,20 @@
 import datetime
 import json
-import logging
 from pathlib import Path
 
 from data_extraction.constants import *
 from data_extraction.request_utils import send_http_request
 from data_extraction.utils import chunks
-from shared.utils import language_config_to_list
+from shared.utils import language_config_to_list, setup_logger
 
 json_file_path = Path.cwd() / CRAWLER_OUTPUT / INTERMEDIATE_FILES / JSON
+
+logger = setup_logger(
+    "data_extraction.get_wikipedia_extracts",
+    Path(__file__).parent.parent.absolute()
+    / "logs"
+    / GET_WIKIPEDIA_EXTRACS_LOG_FILENAME,
+)
 
 
 def get_wikipedia_page_ids(
@@ -41,7 +47,7 @@ def get_wikipedia_page_ids(
         parameters,
         HTTP_HEADER,
         url,
-        logging,
+        logger,
         items=title_indice_dictionary.keys(),
         timeout=TIMEOUT,
         sleep_time=SLEEP_TIME,
@@ -92,7 +98,7 @@ def get_wikipedia_extracts(
         parameters,
         HTTP_HEADER,
         url,
-        logging,
+        logger,
         items=page_id_index_dictionary.keys(),
         abstracts=True,
         timeout=TIMEOUT,
@@ -118,9 +124,6 @@ def get_wikipedia_extracts(
 def add_wikipedia_extracts(
     languageKeys=[item[0] for item in language_config_to_list()],
 ):
-    logging.basicConfig(
-        filename=GET_WIKIPEDIA_EXTRACS_LOG_FILENAME, filemode="w", level=logging.DEBUG
-    )
     for filename in [
         ARTWORK[PLURAL],
         MOTIF[PLURAL],

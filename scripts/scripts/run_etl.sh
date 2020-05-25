@@ -13,4 +13,4 @@ if ! mkdir $LOCKFILE 2>/dev/null; then
     exit 1
 fi
 
-script -q -c "./etl.sh" /dev/null | tee etl.log
+script -q -c "./etl.sh" /dev/null | tee logs/etl.log

@@ -13,4 +13,4 @@ if ! mkdir $LOCKFILE 2>/dev/null; then
     exit 1
 fi
 
-script -q -c "./update_elasticsearch_production_from_staging.sh" /dev/null | tee update_production.log
+script -q -c "./update_elasticsearch_production_from_staging.sh" /dev/null | tee logs/update_production.log

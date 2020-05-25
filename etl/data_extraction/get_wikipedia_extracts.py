@@ -4,8 +4,7 @@ from pathlib import Path
 
 from data_extraction.constants import *
 from data_extraction.request_utils import send_http_request
-from data_extraction.utils import chunks
-from shared.utils import language_config_to_list, setup_logger
+from shared.utils import language_config_to_list, setup_logger, chunks
 
 json_file_path = Path.cwd() / CRAWLER_OUTPUT / INTERMEDIATE_FILES / JSON
 

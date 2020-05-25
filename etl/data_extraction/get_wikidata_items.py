@@ -11,9 +11,8 @@ from urllib.error import HTTPError
 
 from data_extraction.constants import *
 from data_extraction.request_utils import send_http_request
-from data_extraction.utils import chunks
 from pywikibot import WbTime
-from shared.utils import language_config_to_list, setup_logger
+from shared.utils import language_config_to_list, setup_logger, chunks
 from SPARQLWrapper import JSON, SPARQLWrapper
 
 DEV = True

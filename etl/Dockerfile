@@ -9,7 +9,7 @@ RUN pip install pywikibot
 #copy necessary files
 COPY ["./data_extraction/", "/app/data_extraction"]
 COPY ["./user-config.py", "/app"]
-COPY ["./utils/", "/app/utils"]
+COPY ["./shared/", "/app/shared"]
 # run ArtOntologyCrawler in development mode
 RUN pip install SPARQLWrapper
 RUN ["python", "/app/data_extraction/get_wikidata_items.py", "-d"]
@@ -49,7 +49,7 @@ WORKDIR /app
 COPY --from=data_ranking /app/art_ontology.json/ /app/crawler_output/
 
 COPY ["./data_manipulation/", "/app/data_manipulation/"]
-COPY --from=Wikicrawler /app/utils/ /app/utils/
+COPY --from=Wikicrawler /app/shared/ /app/shared/
 
 COPY ["./upload_to_elasticsearch/", "/app/upload_to_elasticsearch/"]
 
@@ -87,7 +87,7 @@ COPY --chown=elasticsearch:elasticsearch elasticsearch.yml /usr/share/elasticsea
 
 #copy other necessary files
 COPY --from=post_data_ranking /app/crawler_output/ /app/crawler_output/
-COPY ["./utils/", "/app/utils"]
+COPY ["./shared/", "/app/shared"]
 COPY ["./upload_to_elasticsearch/", "/app/upload_to_elasticsearch/"]
 
 RUN ls -lah /app

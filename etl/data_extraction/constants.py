@@ -17,6 +17,8 @@ CRAWLER_OUTPUT = "crawler_output"
 INTERMEDIATE_FILES = "intermediate_files"
 GET_WIKIDATA_ITEMS_LOG_FILENAME = "get_wikidata_items.log"
 GET_WIKIPEDIA_EXTRACS_LOG_FILENAME = "get_wikipedia_extracts.log"
+WIKIDATA_DICT_LOG_FILENAME = "dict_utils.log"
+WIKIDATA_MAP_RESPONSE_LOG_FILENAME = "map_wd_response.log"
 ARTWORK_IDS_QUERY_FILENAME = "artwork_ids_query.sparql"
 WIKIDATA_SPARQL_URL = "https://query.wikidata.org/sparql"
 WIKIDATA_ENTITY_URL = "http://www.wikidata.org/entity/"
@@ -43,7 +45,8 @@ DRAWING = {PLURAL: "drawings", ID: "wd:Q93184"}
 SCULPTURE = {PLURAL: "sculptures", ID: "wd:Q860861"}
 PAINTING = {PLURAL: "paintings", ID: "wd:Q3305213"}
 ABSTRACT = "abstract"
-WIKIPEDIA_LINK = "wikipediaLink"  # TODO: Change to snakecase wikipedia_link (requires changes in the frontend)
+# TODO: Change to snakecase wikipedia_link (requires changes in the frontend)
+WIKIPEDIA_LINK = "wikipediaLink"
 LATITUDE = {SINGULAR: "latitude", ABBREVIATION: "lat"}
 LONGITUDE = {SINGULAR: "longitude", ABBREVIATION: "lon"}
 

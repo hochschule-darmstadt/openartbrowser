@@ -50,7 +50,7 @@
 
           <app-information i18n-label="Main Subject label@@mainSubject" label="Main Subjects" [values]="artwork?.main_subjects"> </app-information>
 
-          <app-information i18n-label="Motif label@@motif" label="Motifs" [values]="artwork?.motifs"> </app-information>
+          <app-information i18n-label="Motif label@@motif" label="Motifs" [values]="filterDuplicateMotifs()"> </app-information>
 
           <app-iconclass [iconclasses]="artwork.iconclasses"></app-iconclass>
 

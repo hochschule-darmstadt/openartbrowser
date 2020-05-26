@@ -109,6 +109,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       this.artwork = (await this.dataService.findById<Artwork>(artworkId, EntityType.ARTWORK)) as Artwork;
 
       if (this.artwork) {
+        this.mergeMotifs();
         this.resolveIds('main_subjects');
 
         /* Count meta data to show more on load */
@@ -125,6 +126,25 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   async resolveIds(key: string) {
     this.artwork[key] = await this.dataService.findMultipleById(this.artwork[key] as string[]);
+  }
+
+  /**
+   * merges main_subjects into motifs for display in the 'all' and 'motifs' tab of the artwork page
+   */
+  mergeMotifs() {
+    this.artwork.main_subjects.map(motifId => {
+      if (!this.artwork.motifs.includes(motifId)) {
+        this.artwork.motifs.push(motifId);
+      }
+    });
+  }
+
+  /**
+   * function to restrict the displayed motifs on the artwork component
+   */
+  filterDuplicateMotifs() {
+    const mainIds = this.artwork.main_subjects.map(motif => motif.id);
+    return this.artwork.motifs.filter(motif => !mainIds.includes(motif.id));
   }
 
   /**

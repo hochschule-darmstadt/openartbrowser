@@ -121,7 +121,11 @@ export class TimelineComponent {
       }
       this.sortItems();
       this.items = this.items.filter(item => item.date);
-      this.value = +this.items[0].date;
+      //this.value = +this.items[0].date;
+      const firstPeriod = this.items[0].date - this.items[0].date % this.periodSpan;
+      const lastPeriod =  this.items[this.items.length - 1].date - (this.items[this.items.length - 1].date % this.periodSpan) + this.periodSpan;
+      this.value = (firstPeriod + lastPeriod) / 2;
+      console.log('ngOnChange', this.value)
       this.previousValue = this.value;
       this.refreshComponent();
     }
@@ -157,6 +161,8 @@ export class TimelineComponent {
     /** get the biggest multiple of periodSpan that is less than firstDate / same for lastDate */
     const firstPeriod = firstDate - (firstDate % this.periodSpan);
     const lastPeriod = lastDate - (lastDate % this.periodSpan) + this.periodSpan;
+    console.log('firstperiode', firstPeriod);
+    console.log('lastperiod', lastPeriod);
 
     /** Fill the slider steps with period legends respectively steps */
     for (let i = firstPeriod; i <= lastPeriod; i++) {
@@ -204,6 +210,8 @@ export class TimelineComponent {
       // between
       this.slideStart = referenceIndex - this.referenceItem;
     }
+    console.log('slideStart', this.slideStart);
+    console.log('value', this.value);
   }
 
   /** This refreshes the ending index of the displayed items according to the start value */

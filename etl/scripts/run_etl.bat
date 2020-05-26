@@ -1,5 +1,8 @@
 @ECHO OFF
 REM Batch script for executing ETL. No error handling!
+CD ..
+REM Use the parent directory as pywikibot-dir (user-config.py is in there)
+SETX PYWIKIBOT_DIR "%~dp0.." /m
 
 python ".\data_extraction\get_wikidata_items.py"
 python ".\data_extraction\get_wikipedia_extracts.py"

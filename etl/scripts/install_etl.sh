@@ -1,6 +1,5 @@
 #!/bin/sh
 cd ..
-pip3 install -r requirements.txt
-pip3 install . # Install own packages
+pip3 install . # Install own packages + dependencies
 cd data_manipulation
 npm install

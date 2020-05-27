@@ -116,7 +116,7 @@ export class TimelineComponent {
           this.items = this.items.concat(artists);
           this.sortItems();
           this.refreshComponent();
-          this.value = this.items[0].date;
+          //this.value = this.items[0].date;
         });
       }
       this.sortItems();

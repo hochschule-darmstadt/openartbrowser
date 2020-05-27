@@ -37,8 +37,9 @@
 
   .more {
     cursor: pointer;
+    margin-bottom: 5px;
 
-    i {
+    i:not(.fa-youtube) {
       margin-left: 5px;
     }
   }

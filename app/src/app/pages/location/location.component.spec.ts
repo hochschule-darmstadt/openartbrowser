@@ -12,7 +12,6 @@ import { AbstractComponent } from 'src/app/shared/components/abstract/abstract.c
 import { InformationComponent } from 'src/app/shared/components/information/information.component';
 import { TitleComponent } from 'src/app/shared/components/title/title.component';
 import { BadgeComponent } from 'src/app/shared/components/badge/badge.component';
-import {HyperlinkComponent} from 'src/app/shared/components/hyperlink/hyperlink.component';
 
 describe('LocationComponent', () => {
   let component: LocationComponent;
@@ -29,8 +28,7 @@ describe('LocationComponent', () => {
         BadgeComponent,
         AbstractComponent,
         TitleComponent,
-        InformationComponent,
-        HyperlinkComponent
+        InformationComponent
       ],
       providers: [DataService]
     }).compileComponents();

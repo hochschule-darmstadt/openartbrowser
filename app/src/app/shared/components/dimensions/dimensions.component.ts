@@ -19,14 +19,45 @@ export class DimensionsComponent implements OnInit {
    */
   dimensionLabel: string;
 
+  illustrationHeight: number;
+  illustrationWidth: number;
+
+  hideIllustration = false;
+
   constructor() { }
 
   ngOnInit() {
     if (this.artwork) {
       this.setDimensions();
+      this.calculateIllustrationDimensions();
     }
   }
+  calculateIllustrationDimensions() {
+    if (this.artwork.height && this.artwork.width) {
+      const scalingFactor = 0.53;
+      switch (this.artwork.height_unit) {
+        case 'ft': this.illustrationHeight = scalingFactor * 30.48 * this.artwork.height; break;
+        case 'm': this.illustrationHeight = scalingFactor * 100 * this.artwork.height; break;
+        case 'cm': this.illustrationHeight = scalingFactor * this.artwork.height; break;
+        case 'mm':  this.illustrationHeight = scalingFactor / 10 * this.artwork.height; break;
+        case 'in':  this.illustrationHeight = scalingFactor * this.artwork.height * 2.54; break;
+        default: break;
+      }
 
+      switch (this.artwork.width_unit) {
+        case 'ft': this.illustrationWidth = scalingFactor * 30.48 * this.artwork.width; break;
+        case 'm': this.illustrationWidth = scalingFactor * 100 * this.artwork.width; break;
+        case 'cm': this.illustrationWidth = scalingFactor * this.artwork.width; break;
+        case 'mm':  this.illustrationWidth = scalingFactor / 10 * this.artwork.width; break;
+        case 'in':  this.illustrationWidth = scalingFactor * this.artwork.width * 2.54; break;
+        default: break;
+      }
+      // Hide Dimension Illustration if Artwork is bigger then 550cm or smaller then 5cm x 5cm
+      if (this.illustrationHeight > 290 || this.illustrationWidth > 290 || (this.illustrationHeight < 3 && this.illustrationWidth < 3)) {
+        this.hideIllustration = true;
+      }
+    }
+  }
   setDimensions() {
     if (this.artwork.diameter) {
       this.dimensionLabel = 'Diameter';

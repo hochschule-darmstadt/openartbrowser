@@ -82,7 +82,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
     Iterates over the movements and adds all videos to uniqueEntityVideos.
     Only Videos whose id and link are not in uniqueEntityVideos & uniqueVideosLinks will be added.
   */
-  addMovmentVideos() {
+  addMovementVideos() {
     for ( const movement of this.artist.movements) {
       if (!this.uniqueEntityVideos[movement.id] && movement.videos && !this.uniqueVideosLinks.includes(this.getVideoUrl(movement))) {
         this.uniqueEntityVideos[movement.id] = movement;
@@ -103,7 +103,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
         artwork.movements.forEach(movement => {
           if (movement !== '') {
             allMovements.push(movement);
-            this.addMovmentVideos();
+            this.addMovementVideos();
           }
         });
       });
@@ -112,7 +112,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
           this.artist.movements.push(movement);
         });
         this.artist.movements = _.uniqWith(this.artist.movements, _.isEqual);
-        this.addMovmentVideos();
+        this.addMovementVideos();
       });
     });
   }

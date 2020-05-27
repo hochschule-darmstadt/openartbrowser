@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ImpressComponent } from './impress.component';
+import { ImpressComponent } from './imprint.component';
 
 describe('ImpressComponent', () => {
   let component: ImpressComponent;

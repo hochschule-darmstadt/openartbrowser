@@ -21,10 +21,12 @@
        [routerLink]="['/movement', currentMovementId]"
        angulartics2On="click"
        angularticsCategory="Navigation"
-       angularticsAction="Timeline">
+       angularticsAction="Timeline"
+       [@newThumb]="showThumbnail ? 'show' : 'hide' "
+       (@newThumb.start)="resetShowThumbnail()">
       <div class="overlay-container">
         <img *ngIf="thumbnail"
-             class=" img_self"
+             class="img_self"
              src="{{ thumbnail?.imageMedium }}"
              alt="{{ thumbnail?.label }}"
              (error)="onLoadingError(thumbnail)"/>

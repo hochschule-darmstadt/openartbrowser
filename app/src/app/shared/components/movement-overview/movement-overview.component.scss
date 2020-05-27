@@ -1,6 +1,7 @@
 :host::ng-deep {
   .custom-slider {
     pointer-events: none !important;
+
     .ng5-slider-tick {
       cursor: default !important;
 
@@ -211,5 +212,9 @@ a {
   }
   .item-caption {
     font-size: small;
+  }
+
+  .overlay-container {
+    margin: 0 0;
   }
 }

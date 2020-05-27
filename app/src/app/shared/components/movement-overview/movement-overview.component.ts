@@ -6,6 +6,7 @@ import {Artwork} from '../../models/artwork.interface';
 import {Subject, timer} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import {Movement} from '../../models/movement.interface';
+import {animate, state, style, transition, trigger} from '@angular/animations';
 
 interface MovementItem extends Movement {
   artworks: Artwork[]; // holds url to thumbnail images
@@ -15,7 +16,15 @@ interface MovementItem extends Movement {
 @Component({
   selector: 'app-movement-overview',
   templateUrl: './movement-overview.component.html',
-  styleUrls: ['./movement-overview.component.scss']
+  styleUrls: ['./movement-overview.component.scss'],
+  animations: [
+    trigger('newThumb', [
+      state('hide', style({opacity: '0'})), // transform: 'scale(0)'})),
+      state('show', style({opacity: '1'})), // transform: 'scale(1)'})),
+      transition('show => hide', [animate(0)]),
+      transition('hide => show', [animate(500)])
+    ])
+  ]
 })
 export class MovementOverviewComponent implements OnInit, AfterViewInit {
   dataService: DataService;
@@ -65,6 +74,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
   /** variables to control automatic periodical selection of a random movement  */
   private nextRandomMovementTime = 0; // number in seconds, set to '0' to disable
   private randomMovementTimer$ = new Subject();
+  showThumbnail: boolean;
 
   constructor(data: DataService) {
 
@@ -127,7 +137,6 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    console.log("AFTER VIEW INIT");
     if (this.currentMovementId !== undefined) {
       this.drawThumbnail(this.currentMovementId);
     }
@@ -136,7 +145,6 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
   /** Determine values based on screen width (responsivity) */
   @HostListener('window:resize', ['$event'])
   onResize() {
-    console.log("ON RESIZE");
     const screenWidth = window.innerWidth;
     /** Determine the amount of marked steps in the slider, depending on screen width */
     this.averagePeriodCount = Math.min(7, Math.floor(screenWidth / 125));
@@ -168,7 +176,6 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
     /** get the biggest multiple of firstStart that is less than firstDate / same for lastDate */
     this.timelineStart = firstStart - (firstStart % this.periodSpan);
     this.timelineEnd = lastEnd - (lastEnd % this.periodSpan) + this.periodSpan;
-
 
 
     /** Set slider options */
@@ -258,22 +265,16 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
     const y1 = clickedMovement.offsetTop + clickedMovement.offsetHeight;
 
     const thumbnail = document.getElementById('thumbnail');
-    // hide thumbnail
-    thumbnail.setAttribute('style',
-      'margin-left: ' + (x1 - (thumbnail.offsetWidth / 2) - 15).toString() + 'px;' +
-      '-webkit-transform: scale(0); -ms-transform: scale(0); transform: scale(0); transition: 0s ease;');
-    // scale up again at other location
-    thumbnail.setAttribute('style',
-      'margin-left: ' + (x1 - (thumbnail.offsetWidth / 2) - 15).toString() + 'px;' +
-      '-webkit-transform: scale(1); -ms-transform: scale(1); transform: scale(1); transition: 0.3s ease;');
 
-    const x2 = thumbnail.offsetLeft + (thumbnail.offsetWidth / 2);
+    const offset = (x1 - (thumbnail.scrollWidth / 2) - 15);
+    // move thumbnail
+    thumbnail.setAttribute('style', 'margin-left: ' + offset.toString() + 'px;');
     const y2 = thumbnail.offsetTop;
 
     const line = document.getElementById('line');
     line.setAttribute('x1', x1.toString());
     line.setAttribute('y1', y1.toString());
-    line.setAttribute('x2', x2.toString());
+    line.setAttribute('x2', x1.toString());
     line.setAttribute('y2', y2.toString());
 
     // restart css animation by removing and adding it again
@@ -283,6 +284,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
 
   /** This method gets called when movement box gets clicked and calls drawThumbnail() */
   onClickMovementBox(event) {
+    this.showThumbnail = false;
     // this resets the 'randomMovementTimer$'
     this.randomMovementTimer$.next();
 
@@ -345,6 +347,11 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
       1
     );
     this.setRandomThumbnail(this.currentMovementId);
+  }
+
+  resetShowThumbnail() {
+    console.log('reset');
+    this.showThumbnail = true;
   }
 }
 

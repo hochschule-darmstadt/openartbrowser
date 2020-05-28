@@ -72,7 +72,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
   };
 
   /** variables to control automatic periodical selection of a random movement  */
-  private nextRandomMovementTime = 0; // number in seconds, set to '0' to disable
+  private nextRandomMovementTime = 15; // number in seconds, set to '0' to disable
   private randomMovementTimer$ = new Subject();
   showThumbnail: boolean;
 

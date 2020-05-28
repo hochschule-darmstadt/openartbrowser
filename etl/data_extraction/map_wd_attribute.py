@@ -8,9 +8,10 @@ from shared.utils import setup_logger
 
 # TODO Find better solution to logger import
 logger = setup_logger(
-    "data_extraction.dict_utils",
-    Path(".")
-    / "logs" / WIKIDATA_DICT_LOG_FILENAME,
+    "data_extraction.map_wd_attribute",
+    Path(__file__).parent.parent.absolute()
+    / "logs"
+    / WIKIDATA_MAP_ATTRIBUTE_LOG_FILENAME,
 )
 
 
@@ -53,8 +54,7 @@ def try_get_label_or_description(entity_dict, fieldname, langkey):
 @return_on_failure("")
 def try_get_wikipedia_link(entity_dict, langkey):
     return "https://{0}.wikipedia.org/wiki/{1}".format(
-        langkey, entity_dict[SITELINKS][f"{langkey}wiki"]["title"].replace(
-            " ", "_"),
+        langkey, entity_dict[SITELINKS][f"{langkey}wiki"]["title"].replace(" ", "_"),
     )
 
 

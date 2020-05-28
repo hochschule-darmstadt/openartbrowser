@@ -7,12 +7,11 @@ import time
 from pathlib import Path
 from urllib.error import HTTPError
 
-import data_extraction.dict_utils as dict_utils
+import data_extraction.map_wd_attribute as map_wd_attribute
 import data_extraction.map_wd_response as map_wd_response
 from data_extraction.constants import *
 from data_extraction.request_utils import send_http_request
-from shared.utils import (chunks, create_new_path, language_config_to_list,
-                          setup_logger)
+from shared.utils import chunks, create_new_path, language_config_to_list, setup_logger
 from SPARQLWrapper import JSON, SPARQLWrapper
 
 DEV = True
@@ -20,15 +19,13 @@ DEV_CHUNK_LIMIT = 2  # Not entry but chunks of 50
 
 logger = setup_logger(
     "data_extraction.get_wikidata_items",
-    Path(__file__).parent.parent.absolute()
-    / "logs" / GET_WIKIDATA_ITEMS_LOG_FILENAME,
+    Path(__file__).parent.parent.absolute() / "logs" / GET_WIKIDATA_ITEMS_LOG_FILENAME,
 )
 
 
 def query_artwork_qids(type_name, wikidata_id):
     """ Extracts all artwork QIDs from the wikidata SPARQL endpoint https://query.wikidata.org/ """
-    artwork_ids_filepath = Path(
-        __file__).parent.absolute() / ARTWORK_IDS_QUERY_FILENAME
+    artwork_ids_filepath = Path(__file__).parent.absolute() / ARTWORK_IDS_QUERY_FILENAME
     QID_BY_ARTWORK_TYPE_QUERY = (
         open(artwork_ids_filepath, "r", encoding="utf8")
         .read()
@@ -57,8 +54,7 @@ def query_artwork_qids(type_name, wikidata_id):
 
     artwork_ids = list(
         map(
-            lambda result: result["item"][VALUE].replace(
-                WIKIDATA_ENTITY_URL, ""),
+            lambda result: result["item"][VALUE].replace(WIKIDATA_ENTITY_URL, ""),
             query_result["results"]["bindings"],
         )
     )
@@ -176,15 +172,16 @@ def extract_artworks(
                 )
             except Exception as error:
                 logger.error(
-                    "Error on qid or image, skipping item. Error: {0}".format(
-                        error)
+                    "Error on qid or image, skipping item. Error: {0}".format(error)
                 )
                 continue
 
-            label = dict_utils.try_get_label_or_description(
-                result, LABEL[PLURAL], EN)
-            description = dict_utils.try_get_label_or_description(
-                result, DESCRIPTION[PLURAL], EN)
+            label = map_wd_attribute.try_get_label_or_description(
+                result, LABEL[PLURAL], EN
+            )
+            description = map_wd_attribute.try_get_label_or_description(
+                result, DESCRIPTION[PLURAL], EN
+            )
 
             (
                 classes,
@@ -207,23 +204,25 @@ def extract_artworks(
                     MOTIF[SINGULAR],
                     MAIN_SUBJECT[SINGULAR],
                 ],
-                dict_utils.try_get_qid_reference_list,
+                map_wd_attribute.try_get_qid_reference_list,
             )
 
-            iconclasses = dict_utils.try_get_value_list(
+            iconclasses = map_wd_attribute.try_get_value_list(
                 result, PROPERTY_NAME_TO_PROPERTY_ID[ICONCLASS[SINGULAR]]
             )
-            inception = dict_utils.try_get_year_from_property_timestamp(
+            inception = map_wd_attribute.try_get_year_from_property_timestamp(
                 result, PROPERTY_NAME_TO_PROPERTY_ID[INCEPTION]
             )
-            country = dict_utils.try_get_first_qid(
-                result, PROPERTY_NAME_TO_PROPERTY_ID[COUNTRY])
+            country = map_wd_attribute.try_get_first_qid(
+                result, PROPERTY_NAME_TO_PROPERTY_ID[COUNTRY]
+            )
 
             # Resolve dimensions
             # The units are qids which have to be resolved later
             height, width, length, diameter = get_attribute_values_with_try_get_func(
-                result, [HEIGHT, WIDTH, LENGTH,
-                         DIAMETER], dict_utils.try_get_dimension_value,
+                result,
+                [HEIGHT, WIDTH, LENGTH, DIAMETER],
+                map_wd_attribute.try_get_dimension_value,
             )
             (
                 height_unit,
@@ -231,8 +230,9 @@ def extract_artworks(
                 length_unit,
                 diameter_unit,
             ) = get_attribute_values_with_try_get_func(
-                result, [HEIGHT, WIDTH, LENGTH,
-                         DIAMETER], dict_utils.try_get_dimension_unit,
+                result,
+                [HEIGHT, WIDTH, LENGTH, DIAMETER],
+                map_wd_attribute.try_get_dimension_unit,
             )
 
             artwork_dictionary = {
@@ -262,14 +262,15 @@ def extract_artworks(
             }
 
             for langkey in languageKeys:
-                label_lang = dict_utils.try_get_label_or_description(
+                label_lang = map_wd_attribute.try_get_label_or_description(
                     result, LABEL[PLURAL], langkey
                 )
-                description_lang = dict_utils.try_get_label_or_description(
+                description_lang = map_wd_attribute.try_get_label_or_description(
                     result, DESCRIPTION[PLURAL], langkey
                 )
-                wikipedia_link_lang = dict_utils.try_get_wikipedia_link(
-                    result, langkey)
+                wikipedia_link_lang = map_wd_attribute.try_get_wikipedia_link(
+                    result, langkey
+                )
                 artwork_dictionary.update(
                     {
                         f"{LABEL[SINGULAR]}_{langkey}": label_lang,
@@ -382,8 +383,7 @@ def extract_art_ontology():
 
 
 def extract_motifs_and_main_subjects(merged_artworks):
-    motifs = get_distinct_attribute_values_from_dict(
-        MOTIF[PLURAL], merged_artworks)
+    motifs = get_distinct_attribute_values_from_dict(MOTIF[PLURAL], merged_artworks)
     main_subjects = get_distinct_attribute_values_from_dict(
         MAIN_SUBJECT[PLURAL], merged_artworks
     )
@@ -405,16 +405,11 @@ def write_data_to_json(
 ):
     generate_json(MOTIF[SINGULAR], motifs, create_new_path(MOTIF[PLURAL]))
     generate_json(GENRE[SINGULAR], genres, create_new_path(GENRE[PLURAL]))
-    generate_json(CLASS[SINGULAR], extracted_classes,
-                  create_new_path(CLASS[PLURAL]))
-    generate_json(MATERIAL[SINGULAR], materials,
-                  create_new_path(MATERIAL[PLURAL]))
-    generate_json(MOVEMENT[SINGULAR], movements,
-                  create_new_path(MOVEMENT[PLURAL]))
-    generate_json(LOCATION[SINGULAR], locations,
-                  create_new_path(LOCATION[PLURAL]))
-    generate_json(ARTWORK[SINGULAR], merged_artworks,
-                  create_new_path(ARTWORK[PLURAL]))
+    generate_json(CLASS[SINGULAR], extracted_classes, create_new_path(CLASS[PLURAL]))
+    generate_json(MATERIAL[SINGULAR], materials, create_new_path(MATERIAL[PLURAL]))
+    generate_json(MOVEMENT[SINGULAR], movements, create_new_path(MOVEMENT[PLURAL]))
+    generate_json(LOCATION[SINGULAR], locations, create_new_path(LOCATION[PLURAL]))
+    generate_json(ARTWORK[SINGULAR], merged_artworks, create_new_path(ARTWORK[PLURAL]))
     generate_json(ARTIST[SINGULAR], artists, create_new_path(ARTIST[PLURAL]))
 
 
@@ -432,8 +427,7 @@ def get_unit_symbols_from_qid(merged_artworks):
 
 def get_labels_for_artists(artists, prop_list):
     for item in prop_list:
-        distinct_label = get_distinct_attribute_values_from_dict(
-            item, artists, True)
+        distinct_label = get_distinct_attribute_values_from_dict(item, artists, True)
         extracted_labels = get_entity_labels(item, distinct_label)
         resolve_entity_id_to_label(item, artists, extracted_labels)
     return artists
@@ -446,8 +440,7 @@ def get_distinct_extracted_classes(
         CLASS[PLURAL], merged_artworks
     )
     distinct_classes = bundle_class_union_calls(
-        distinct_classes, [motifs, genres, materials,
-                           movements, artists, locations],
+        distinct_classes, [motifs, genres, materials, movements, artists, locations],
     )
     return get_classes(CLASS[PLURAL], distinct_classes)
 
@@ -460,8 +453,7 @@ def get_country_labels_for_merged_artworks_and_locations(
         get_distinct_attribute_values_from_dict(COUNTRY, item, True) for item in tmp
     ]
 
-    distinct_country_ids = distinct_ids[0].union(
-        distinct_ids[1], distinct_ids[2])
+    distinct_country_ids = distinct_ids[0].union(distinct_ids[1], distinct_ids[2])
     country_labels_extracted = get_entity_labels(COUNTRY, distinct_country_ids)
 
     for item in tmp:
@@ -560,8 +552,7 @@ def generate_csv(name, extract_dicts, fields, filename):
     with open(
         filename.with_suffix(f".{CSV}"), "w", newline="", encoding="utf-8"
     ) as file:
-        writer = csv.DictWriter(file, fieldnames=fields,
-                                delimiter=";", quotechar='"')
+        writer = csv.DictWriter(file, fieldnames=fields, delimiter=";", quotechar='"')
         writer.writeheader()
         for extract_dict in extract_dicts:
             writer.writerow(extract_dict)
@@ -630,8 +621,7 @@ def get_distinct_attribute_values_from_dict(
 
 
 def get_subject(
-    type_name, qids, languageKeys=[item[0]
-                                   for item in language_config_to_list()],
+    type_name, qids, languageKeys=[item[0] for item in language_config_to_list()],
 ):
     print(datetime.datetime.now(), f"Starting with {type_name}")
     print(f"Total {type_name} to extract: {len(qids)}")
@@ -648,36 +638,36 @@ def get_subject(
 
         for result in query_result[ENTITIES].values():
             subject_dict = map_wd_response.try_map_response_to_subject(
-                result, type_name)
+                result, type_name
+            )
             if subject_dict is None:
                 continue
             if type_name == MOVEMENT[PLURAL] or type_name == ARTIST[PLURAL]:
-                influenced_by = dict_utils.try_get_qid_reference_list(
+                influenced_by = map_wd_attribute.try_get_qid_reference_list(
                     result, PROPERTY_NAME_TO_PROPERTY_ID[INFLUENCED_BY]
                 )
                 subject_dict.update({INFLUENCED_BY: influenced_by})
             if type_name == MOVEMENT[PLURAL]:
                 subject_dict.update(
-                    map_wd_response.try_map_response_to_movement(result))
+                    map_wd_response.try_map_response_to_movement(result)
+                )
             if type_name == ARTIST[PLURAL]:
-                subject_dict.update(
-                    map_wd_response.try_map_response_to_artist(result))
+                subject_dict.update(map_wd_response.try_map_response_to_artist(result))
             if type_name == LOCATION[PLURAL]:
                 subject_dict.update(
-                    map_wd_response.try_map_response_to_location(result))
+                    map_wd_response.try_map_response_to_location(result)
+                )
             extract_dicts.append(subject_dict)
 
         item_count += len(chunk)
-        print(f"Status of {type_name}: {item_count}/{len(qids)}",
-              end="\r", flush=True)
+        print(f"Status of {type_name}: {item_count}/{len(qids)}", end="\r", flush=True)
 
     print(datetime.datetime.now(), f"Finished with {type_name}")
     return extract_dicts
 
 
 def get_entity_labels(
-    type_name, qids, languageKeys=[item[0]
-                                   for item in language_config_to_list()],
+    type_name, qids, languageKeys=[item[0] for item in language_config_to_list()],
 ):
     print(datetime.datetime.now(), f"Starting with {type_name} {LABEL[PLURAL]}")
     print(f"Total {type_name} {LABEL[PLURAL]} to extract: {len(qids)}")
@@ -698,23 +688,22 @@ def get_entity_labels(
             try:
                 qid = result[ID]
             except Exception as error:
-                logger.error(
-                    "Error on qid, skipping item. Error: {0}".format(error))
+                logger.error("Error on qid, skipping item. Error: {0}".format(error))
                 continue
 
-            label = dict_utils.try_get_label_or_description(
-                result, LABEL[PLURAL], EN)
+            label = map_wd_attribute.try_get_label_or_description(
+                result, LABEL[PLURAL], EN
+            )
             subject_dict = {
                 ID: qid,
                 LABEL[SINGULAR]: label,
             }
 
             for langkey in languageKeys:
-                label_lang = dict_utils.try_get_label_or_description(
+                label_lang = map_wd_attribute.try_get_label_or_description(
                     result, LABEL[PLURAL], langkey
                 )
-                subject_dict.update(
-                    {f"{LABEL[SINGULAR]}_{langkey}": label_lang})
+                subject_dict.update({f"{LABEL[SINGULAR]}_{langkey}": label_lang})
             extract_dicts.append(subject_dict)
 
         item_count += len(chunk)
@@ -732,8 +721,7 @@ already_extracted_superclass_ids = set()
 
 
 def get_classes(
-    type_name, qids, languageKeys=[item[0]
-                                   for item in language_config_to_list()],
+    type_name, qids, languageKeys=[item[0] for item in language_config_to_list()],
 ):
     print(datetime.datetime.now(), f"Starting with {type_name}")
     if type_name == CLASS[PLURAL]:
@@ -759,14 +747,15 @@ def get_classes(
             try:
                 qid = result[ID]
             except Exception as error:
-                logger.error(
-                    "Error on qid, skipping item. Error: {0}".format(error))
+                logger.error("Error on qid, skipping item. Error: {0}".format(error))
                 continue
-            label = dict_utils.try_get_label_or_description(
-                result, LABEL[PLURAL], EN)
-            description = dict_utils.try_get_label_or_description(
-                result, DESCRIPTION[PLURAL], EN)
-            subclass_of = dict_utils.try_get_qid_reference_list(
+            label = map_wd_attribute.try_get_label_or_description(
+                result, LABEL[PLURAL], EN
+            )
+            description = map_wd_attribute.try_get_label_or_description(
+                result, DESCRIPTION[PLURAL], EN
+            )
+            subclass_of = map_wd_attribute.try_get_qid_reference_list(
                 result, PROPERTY_NAME_TO_PROPERTY_ID[SUBCLASS_OF]
             )
             class_dict = {
@@ -777,10 +766,10 @@ def get_classes(
             }
 
             for langkey in languageKeys:
-                label_lang = dict_utils.try_get_label_or_description(
+                label_lang = map_wd_attribute.try_get_label_or_description(
                     result, LABEL[PLURAL], langkey
                 )
-                description_lang = dict_utils.try_get_label_or_description(
+                description_lang = map_wd_attribute.try_get_label_or_description(
                     result, DESCRIPTION[PLURAL], langkey
                 )
                 class_dict.update(
@@ -792,8 +781,7 @@ def get_classes(
             extract_dicts.append(class_dict)
 
         item_count += len(chunk)
-        print(f"Status of {type_name}: {item_count}/{len(qids)}",
-              end="\r", flush=True)
+        print(f"Status of {type_name}: {item_count}/{len(qids)}", end="\r", flush=True)
 
     superclasses_qids = get_distinct_attribute_values_from_dict(
         SUBCLASS_OF, extract_dicts
@@ -825,8 +813,7 @@ def get_unit_symbols(qids):
     chunk_size = 50  # The chunksize 50 is allowed by the wikidata api, bigger numbers need special permissions
     id_chunks = chunks(list(qids), chunk_size)
     for chunk in id_chunks:
-        query_result = wikidata_entity_request(
-            chunk, props=[CLAIMS], timeout=10)
+        query_result = wikidata_entity_request(chunk, props=[CLAIMS], timeout=10)
 
         if ENTITIES not in query_result:
             logger.error("Skipping chunk")
@@ -836,11 +823,10 @@ def get_unit_symbols(qids):
             try:
                 qid = result[ID]
             except Exception as error:
-                logger.error(
-                    "Error on qid, skipping item. Error: {0}".format(error))
+                logger.error("Error on qid, skipping item. Error: {0}".format(error))
                 continue
 
-            unit_symbol = dict_utils.try_get_unit_symbol(
+            unit_symbol = map_wd_attribute.try_get_unit_symbol(
                 result, PROPERTY_NAME_TO_PROPERTY_ID[UNIT_SYMBOL]
             )
 
@@ -848,8 +834,7 @@ def get_unit_symbols(qids):
             extract_dicts.append(subject_dict)
 
         item_count += len(chunk)
-        print(
-            f"Status of unit symbols: {item_count}/{len(qids)}", end="\r", flush=True)
+        print(f"Status of unit symbols: {item_count}/{len(qids)}", end="\r", flush=True)
 
     print(datetime.datetime.now(), f"Finished with unit symbols")
     return extract_dicts

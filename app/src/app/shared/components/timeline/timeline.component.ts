@@ -125,7 +125,6 @@ export class TimelineComponent {
       const firstPeriod = this.items[0].date - this.items[0].date % this.periodSpan;
       const lastPeriod =  this.items[this.items.length - 1].date - (this.items[this.items.length - 1].date % this.periodSpan) + this.periodSpan;
       this.value = (firstPeriod + lastPeriod) / 2;
-      console.log('ngOnChange', this.value)
       this.previousValue = this.value;
       this.refreshComponent();
     }

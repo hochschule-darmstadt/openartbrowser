@@ -54,8 +54,8 @@ export class DimensionsComponent implements OnInit {
         default: break;
       }
     }
-    // Hide Dimension Illustration if Artwork is bigger then 550cm or smaller then 5cm x 5cm
-    if (this.illustrationHeight > 290 || this.illustrationWidth > 290 || (this.illustrationHeight < 3 && this.illustrationWidth < 3)) {
+    // Hide Dimension Illustration if Artwork is smaller than 550cm or bigger than 9cm x 9cm
+    if (this.illustrationHeight > 290 || this.illustrationWidth > 290 || (this.illustrationHeight < 5 && this.illustrationWidth < 5)) {
         this.hideIllustration = true;
     }
   }

@@ -47,7 +47,7 @@
 <div
   class="size-example"
   [ngClass]="{ 'align-bottom': illustrationHeight > 92, 'align-top': illustrationHeight < 92 }"
-  *ngIf="illustrationHeight && illustrationHeight < 1855 && hideIllustration"
+  *ngIf="illustrationHeight && illustrationHeight < 1855 && illustrationHeight > 290 && hideIllustration"
 >
   <svg
     xmlns="http://www.w3.org/2000/svg"

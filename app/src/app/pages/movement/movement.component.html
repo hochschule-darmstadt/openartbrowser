@@ -41,7 +41,7 @@
           <ng-container i18n="Timeline toggle label@@toggleartworks">Artworks</ng-container>
         </a>
       </li>
-      <li *ngIf="movement && movement.has_part.length > 0"  class="nav-item">
+      <li *ngIf="movement && hasPartMovements.length > 0"  class="nav-item">
         <a class="nav-link" (click)="setActiveTab(Tab.MovementOverview)" [ngClass]="{ active: activeTab === Tab.MovementOverview }" data-toggle="tab" href="#movement_overview_tab">
           <i class="mr-1 fa fa-wind"></i>
           <ng-container i18n="Timeline toggle label@@toggleartworks">Related Movements</ng-container>
@@ -56,7 +56,7 @@
         <app-slider [items]="sliderItems"></app-slider>
       </div>
       <div class="tab-pane fade" [ngClass]="{ 'show active': activeTab === Tab.MovementOverview }" id="movement_overview_tab">
-        <app-movement-overview *ngIf="(activeTab === Tab.MovementOverview || movementOverviewLoaded) && movement && movement.has_part.length > 0"  [movementIds]="movement.has_part"></app-movement-overview>
+        <app-movement-overview *ngIf="(activeTab === Tab.MovementOverview || movementOverviewLoaded) && movement && movement.has_part.length > 0"  [inputMovements]="hasPartMovements"></app-movement-overview>
       </div>
     </div>
   </div>

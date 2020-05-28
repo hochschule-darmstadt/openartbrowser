@@ -45,6 +45,7 @@ export class MovementComponent implements OnInit, OnDestroy {
 
   /** Toggle bool for displaying either timeline or artworks carousel component */
   movementOverviewLoaded = false;
+  hasPartMovements: Movement[] = [];
 
   /** a video was found */
   videoExists = false;
@@ -71,6 +72,12 @@ export class MovementComponent implements OnInit, OnDestroy {
       /** dereference influenced_bys  */
       this.dataService.findMultipleById(this.movement.influenced_by as any, EntityType.ARTIST)
         .then(influences => (this.movement.influenced_by = influences));
+
+      /** get part movements */
+      this.dataService.getHasPartMovements(movementId)
+        .then(movements => {
+          this.hasPartMovements = movements;
+        });
 
       this.calculateCollapseState();
     });

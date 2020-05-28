@@ -44,7 +44,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
     'Q46825',     // Gothic art
     'Q170292',    // classicism
   ];
-  @Input() movementIds: string[];
+  @Input() inputMovements: Movement[];
 
   /** 2d array holding items to be displayed */
   boxes: MovementItem[][] = [[]];
@@ -84,62 +84,65 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    if (!this.movementIds) {
-      this.movementIds = this.defaultMovementIds;
+
+    if (this.inputMovements !== undefined) {
+      this.movements = this.inputMovements as MovementItem[];
+      console.log('usung input movements:', this.inputMovements);
+      this.initializeMovements();
+    } else {
+      this.dataService.findMultipleById<Movement>(this.defaultMovementIds, EntityType.MOVEMENT)
+        .then(movements => {
+          console.log('Using default movements:', movements);
+          this.movements = movements.filter(m => m.start_time && m.end_time) as MovementItem[];
+          this.initializeMovements();
+        });
     }
-
-    // sort movements by their inception/start
-    this.dataService.findMultipleById<Movement>(this.movementIds, EntityType.MOVEMENT)
-      .then(movements => {
-        this.movements = movements.filter(m => m.start_time && m.end_time) as MovementItem[];
-        console.log('Missing movement start or end:');
-        for (const mov of movements.filter(m => !this.movements.includes(m as MovementItem))) {
-          console.log('https://www.wikidata.org/wiki/' + mov.id, mov.label);
-        }
-        for (const movement of this.movements) {
-          movement.artworks = [];
-        }
-        console.log('movements: ', this.movements);
-
-        this.movements.sort((a, b) => (a.start_time > b.start_time ? 1 : -1));
-        this.currentMovementId = this.movements[0].id;
-
-        // get all movementIds except currentMovementId
-        const movementIds = this.movements.filter(value => value.id !== this.currentMovementId).map(A => A.id);
-        // get all images if current movement first.
-        this.getMovementImages([this.currentMovementId]).then(() => {
-          this.setRandomThumbnail(this.currentMovementId);
-          console.log('CURRENT ID ARTWORKS SHOULD HAVE LOADED\n', this.movements[0].artworks);
-
-          // setup timer for period random movement selection
-          // This will run the function 'selectRandomMovement' every 'nextRandomMovementTime' seconds
-          if (this.nextRandomMovementTime > 0) {
-            this.randomMovementTimer$.pipe(
-              switchMap(() => timer(this.nextRandomMovementTime * 1000, this.nextRandomMovementTime * 1000)),
-            ).subscribe(() => this.selectRandomMovement());
-            // start timer
-            this.randomMovementTimer$.next();
-          }
-
-          if (this.currentMovementId !== undefined) {
-            this.drawThumbnail(this.currentMovementId);
-          }
-        });
-        // now get those which are not displayed
-        this.getMovementImages(movementIds).then(() => {
-          console.log('OTHER ARTWORKS SHOULD HAVE LOADED\n', this.movements.map(movementId => movementId.artworks));
-        });
-        // find start and end of displayed period
-        this.setTimeline();
-        // fill this.boxes
-        this.fillTimeline();
-      });
   }
 
   ngAfterViewInit() {
     if (this.currentMovementId !== undefined) {
       this.drawThumbnail(this.currentMovementId);
     }
+  }
+
+  initializeMovements() {
+    for (const movement of this.movements) {
+      movement.artworks = [];
+    }
+    console.log('movements: ', this.movements);
+
+    this.movements.sort((a, b) => (a.start_time > b.start_time ? 1 : -1));
+    this.currentMovementId = this.movements[0].id;
+
+    // get all movementIds except currentMovementId
+    const movementIds = this.movements.filter(value => value.id !== this.currentMovementId).map(A => A.id);
+    // get all images if current movement first.
+    this.getMovementImages([this.currentMovementId]).then(() => {
+      this.setRandomThumbnail(this.currentMovementId);
+      console.log('CURRENT ID ARTWORKS SHOULD HAVE LOADED\n', this.movements[0].artworks);
+
+      // setup timer for period random movement selection
+      // This will run the function 'selectRandomMovement' every 'nextRandomMovementTime' seconds
+      if (this.nextRandomMovementTime > 0) {
+        this.randomMovementTimer$.pipe(
+          switchMap(() => timer(this.nextRandomMovementTime * 1000, this.nextRandomMovementTime * 1000)),
+        ).subscribe(() => this.selectRandomMovement());
+        // start timer
+        this.randomMovementTimer$.next();
+      }
+
+      if (this.currentMovementId !== undefined) {
+        this.drawThumbnail(this.currentMovementId);
+      }
+    });
+    // now get those which are not displayed
+    this.getMovementImages(movementIds).then(() => {
+      console.log('OTHER ARTWORKS SHOULD HAVE LOADED\n', this.movements.map(movementId => movementId.artworks));
+    });
+    // find start and end of displayed period
+    this.setTimeline();
+    // fill this.boxes
+    this.fillTimeline();
   }
 
   /** Determine values based on screen width (responsivity) */

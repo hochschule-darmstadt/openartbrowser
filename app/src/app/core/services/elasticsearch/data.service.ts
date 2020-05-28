@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import {HttpClient} from '@angular/common/http';
-import {Injectable, Inject, LOCALE_ID} from '@angular/core';
-import {EntityType, Artwork, ArtSearch, Entity, Iconclass, EntityIcon} from 'src/app/shared/models/models';
+import {Inject, Injectable, LOCALE_ID} from '@angular/core';
+import {ArtSearch, Artwork, Entity, EntityIcon, EntityType, Iconclass, Movement} from 'src/app/shared/models/models';
 import {elasticEnvironment} from 'src/environments/environment';
 import QueryBuilder from './query.builder';
 import {usePlural} from 'src/app/shared/models/entity.interface';
@@ -65,6 +65,16 @@ export class DataService {
       .ofType(EntityType.ARTWORK);
     ids.forEach(id => query.shouldMatch(usePlural(type), `${id}`));
     return this.performQuery<Artwork>(query);
+  }
+
+  public getHasPartMovements(topMovementId: string): Promise<Movement[]> {
+    return this.findById<Movement>(topMovementId, EntityType.MOVEMENT)
+      .then(topMovement => {
+        return this.findMultipleById<Movement>(topMovement.has_part, EntityType.MOVEMENT)
+          .then(hasPartMovements => {
+            return hasPartMovements.filter(m => m.start_time && m.end_time);
+          });
+      });
   }
 
   /**
@@ -182,7 +192,7 @@ export class DataService {
     const entities: T[] = [];
     _.each(
       data.hits.hits,
-      function (val) {
+      function(val) {
         if (!filterBy || (filterBy && val._source.type == filterBy)) {
           entities.push(this.addThumbnails(val._source));
         }

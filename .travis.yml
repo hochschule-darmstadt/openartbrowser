@@ -31,9 +31,10 @@ jobs:
       python: 3.7
       before_install:
         - cd etl/
+        - export PYTHONPATH="${PYTHONPATH}:${pwd}"
         - python --version
       install:
-        - pip3 install .
+        - pip install -r requirements.txt
       script:
         - python data_extraction/get_wikidata_items.py -d 1
         - python data_extraction/get_wikipedia_extracts.py

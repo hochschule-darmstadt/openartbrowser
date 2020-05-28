@@ -6,6 +6,9 @@ import {elasticEnvironment} from 'src/environments/environment';
 import QueryBuilder from './query.builder';
 import {usePlural} from 'src/app/shared/models/entity.interface';
 
+const defaultSortField = 'relativeRank';
+
+
 /**
  * Service that handles the requests to the API
  */
@@ -60,7 +63,7 @@ export class DataService {
   public findArtworksByType(type: EntityType, ids: string[]): Promise<Artwork[]> {
     const query = new QueryBuilder()
       .size(200)
-      .sort()
+      .sort(defaultSortField)
       .minimumShouldMatch(1)
       .ofType(EntityType.ARTWORK);
     ids.forEach(id => query.shouldMatch(usePlural(type), `${id}`));
@@ -102,7 +105,7 @@ export class DataService {
   public findArtworksByLabel(label: string): Promise<Artwork[]> {
     const query = new QueryBuilder()
       .size(20)
-      .sort()
+      .sort(defaultSortField)
       .mustMatch('type', 'artwork')
       .shouldMatch('label', `${label}`);
     return this.performQuery<Artwork>(query);
@@ -131,7 +134,7 @@ export class DataService {
   public searchArtworks(searchObj: ArtSearch, keywords: string[] = []): Promise<Artwork[]> {
     const query = new QueryBuilder()
       .size(400)
-      .sort()
+      .sort(defaultSortField)
       .mustMatch('type', 'artwork');
 
     _.each(searchObj, (arr, key) => {
@@ -157,7 +160,7 @@ export class DataService {
     const query = new QueryBuilder()
       .shouldMatch('label', `${label}`)
       .shouldWildcard('label', `${label}`)
-      .sort()
+      .sort(defaultSortField)
       .size(200);
     return this.performQuery(query);
   }
@@ -170,7 +173,7 @@ export class DataService {
     const query = new QueryBuilder()
       .mustMatch('type', type)
       .mustPrefix('image', 'http')
-      .sort()
+      .sort(defaultSortField)
       .size(20);
     return this.performQuery<T>(query);
   }

@@ -16,27 +16,78 @@ import datetime
 import ast
 import sys
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util import Retry
 import json
 from pathlib import Path
+from urllib.error import HTTPError
+import logging
+import time
 
 DEV = False
 DEV_LIMIT = 10
 
 
-def get_abstract(page_id, language_code):
+def agent_header():
+    return "<nowiki>https://cai-artbrowserstaging.fbi.h-da.de/</nowiki>; tilo.w.michel@stud.h-da.de"
+
+
+def requests_retry_session(
+    retries=3, backoff_factor=0.3, status_forcelist=(500, 502, 504), session=None,
+):
+    session = session or requests.Session()
+    retry = Retry(
+        total=retries,
+        read=retries,
+        connect=retries,
+        backoff_factor=backoff_factor,
+        status_forcelist=status_forcelist,
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+    return session
+
+
+def get_abstract(page_id, language_code, timeout=5, maxlag=10):
     """Extracts the abstract for a given page_id and language
 
     page_id -- The wikipedia internal page id. This can be received from pywikibot pages.
     language_code -- e.g. 'en', 'de', ...
+
+    Example call for the mona lisa extract:
+    https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&pageids=70889
     """
-
-    url = "https://{}.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&pageids={}".format(
-        language_code, page_id
-    )
-    resp = requests.get(url)
-    resp_obj = json.loads(resp.text)
-
-    return resp_obj["query"]["pages"][str(page_id)]["extract"]
+    parameters = {
+        "format": "json",
+        "action": "query",
+        "prop": "extracts",
+        "exintro": True,
+        "explaintext": True,
+        "pageids": page_id,
+    }
+    header = {"Content-Type": "application/json", "user_agent": agent_header()}
+    try:
+        t0 = time.time()
+        response = requests_retry_session().get(
+            f"https://{language_code}.wikipedia.org/w/api.php",
+            params=parameters,
+            headers=header,
+            timeout=timeout,
+        )
+        response = response.json()
+    except HTTPError as http_error:
+        logging.error(
+            f"Request error was fatal. Ending Crawl at {datetime.datetime.now()}. Error: {http_error}"
+        )
+        return ""
+    except Exception as error:
+        print(f"Unknown error: {error}")
+        return ""
+    finally:
+        t1 = time.time()
+        logging.info(f"The wikipedia request took {t1 - t0} seconds")
+        return response["query"]["pages"][str(page_id)]["extract"]
 
 
 def language_config_to_list(
@@ -151,6 +202,10 @@ def extract_artworks(
             iconclasses = list(map(lambda clm: clm.getTarget(), clm_dict["P1257"]))
         except:
             iconclasses = []
+        try:
+            main_subjects = list(map(lambda clm: clm.getTarget().id, clm_dict["P921"]))
+        except:
+            main_subjects = []
 
         # print(str(count) + " ", end='')
         dict = {
@@ -170,6 +225,7 @@ def extract_artworks(
             "height": height,
             "width": width,
             "iconclasses": iconclasses,
+            "main_subjects": main_subjects,
         }
 
         # print(classes, item, label, description, image, artists, locations, genres, movements, inception, materials, motifs,  country, height, width)
@@ -246,9 +302,14 @@ def extract_subjects(
         with open(file_name, newline="", encoding="utf-8") as file:
             reader = csv.DictReader(file, delimiter=";", quotechar='"')
             for row in reader:
-                item_subjects = ast.literal_eval(
-                    row[subject_type]
+                item_subjects = list(
+                    ast.literal_eval(row[subject_type])
                 )  # parses list from string
+                if subject_type == "motifs":
+                    main_subjects = list(ast.literal_eval(row["main_subjects"]))
+                    for main_subject in main_subjects:
+                        if main_subject not in item_subjects:
+                            item_subjects.append(main_subject)
                 for subject in item_subjects:
                     subjects.add(subject)
 
@@ -555,8 +616,8 @@ def extract_class(
 
 
 def merge_artworks():
-    """ Merges artworks from files 'paintings.json', 'drawings.json', 
-        'sculptures.json' (function extract_artworks) and 
+    """ Merges artworks from files 'paintings.json', 'drawings.json',
+        'sculptures.json' (function extract_artworks) and
         stores them in a dictionary.
     """
     print(datetime.datetime.now(), "Starting with", "merging artworks")
@@ -610,6 +671,7 @@ def get_fields(type_name, languageKeys=[item[0] for item in language_config_to_l
             "height",
             "width",
             "iconclasses",
+            "main_subjects",
         ]
         for langkey in languageKeys:
             fields += ["country_" + langkey]

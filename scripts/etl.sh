@@ -12,20 +12,19 @@ trap "curl -F file=@${WD}/etl.log -F \"initial_comment=Oops! Something went wron
 
 curl -X POST https://slack.com/api/chat.postMessage -H "Authorization: Bearer ${TOKEN}" -H 'Content-type: application/json' --data '{"channel":"CSY0DLRDG","text":"The ETL-process is starting on server '${SERVERNAME}' at '${DATE}'","as_user":"true"}'
 
-./install_etl.sh
-
-python3 data_extraction/art_ontology_crawler.py
+python3 data_extraction/get_wikidata_items.py
+python3 data_extraction/get_wikipedia_extracts.py
 
 cd crawler_output/intermediate_files/json/
 
-node ../../../data_manipulation/script_artworks_rank.js
+node --max-old-space-size=4096 ../../../data_manipulation/script_artworks_rank.js
 
-node ../../../data_manipulation/script_genres_rank.js
-node ../../../data_manipulation/script_artist_rank.js
-node ../../../data_manipulation/script_locations_rank.js
-node ../../../data_manipulation/script_materials_rank.js
-node ../../../data_manipulation/script_movements_rank.js
-node ../../../data_manipulation/script_motifs_rank.js
+node --max-old-space-size=4096 ../../../data_manipulation/script_genres_rank.js
+node --max-old-space-size=4096 ../../../data_manipulation/script_artist_rank.js
+node --max-old-space-size=4096 ../../../data_manipulation/script_locations_rank.js
+node --max-old-space-size=4096 ../../../data_manipulation/script_materials_rank.js
+node --max-old-space-size=4096 ../../../data_manipulation/script_movements_rank.js
+node --max-old-space-size=4096 ../../../data_manipulation/script_motifs_rank.js
 
 # Merges all *_rank.json files into art_ontology.json
 node --max-old-space-size=4096 ../../../data_manipulation/merge_art_data.js

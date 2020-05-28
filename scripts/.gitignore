@@ -3,7 +3,7 @@ crawler_output
 *.pyc
 /data_manipulation/google_dev_key.txt
 /data_manipulation/google_dev_key.txt
-etl.log
-update_production.log
 bot_user_oauth_token
 crawler_output.tar.gz
+*.log
+data_extraction_statistics.txt

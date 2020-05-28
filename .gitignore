@@ -8,3 +8,5 @@ apicache-py3
 *.ctrl
 *.lwp
 /.idea/
+/scripts/logs
+.vscode

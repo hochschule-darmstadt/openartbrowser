@@ -67,12 +67,30 @@ export class DataService {
     return this.performQuery<Artwork>(query);
   }
 
+  /**
+   * Find all movements which are part of topMovement and have start_time and end_time set
+   * @param topMovementId Id of 'parent' movement
+   */
   public getHasPartMovements(topMovementId: string): Promise<Movement[]> {
     return this.findById<Movement>(topMovementId, EntityType.MOVEMENT)
       .then(topMovement => {
         return this.findMultipleById<Movement>(topMovement.has_part, EntityType.MOVEMENT)
           .then(hasPartMovements => {
             return hasPartMovements.filter(m => m.start_time && m.end_time);
+          });
+      });
+  }
+
+  /**
+   * Find all movements which movement is part of and have start_time and end_time set
+   * @param subMovementId Id of 'sub' movement
+   */
+  public getPartOfMovements(subMovementId: string): Promise<Movement[]> {
+    return this.findById<Movement>(subMovementId, EntityType.MOVEMENT)
+      .then(subMovement => {
+        return this.findMultipleById<Movement>(subMovement.part_of, EntityType.MOVEMENT)
+          .then(partOfMovements => {
+            return partOfMovements.filter(m => m.start_time && m.end_time);
           });
       });
   }
@@ -92,7 +110,7 @@ export class DataService {
 
   /**
    * Find an artwork by movement
-   * @param label artwork label
+   * @param movement label of movement
    */
   public findArtworksByMovement(movement: string): Promise<Artwork[]> {
     const query = new QueryBuilder()
@@ -186,14 +204,14 @@ export class DataService {
   /**
    * filters the data that is fetched from the server
    * @param data Elasticsearch Data
-   * @param type optional: type of entities that should be filtered
+   * @param filterBy optional: type of entities that should be filtered
    */
   private filterData<T>(data: any, filterBy?: EntityType): T[] {
     const entities: T[] = [];
     _.each(
       data.hits.hits,
       function(val) {
-        if (!filterBy || (filterBy && val._source.type == filterBy)) {
+        if (!filterBy || (filterBy && val._source.type === filterBy)) {
           entities.push(this.addThumbnails(val._source));
         }
       }.bind(this)
@@ -208,8 +226,10 @@ export class DataService {
   private addThumbnails(entity: Entity) {
     const prefix = 'https://upload.wikimedia.org/wikipedia/commons/';
     if (entity.image && !entity.image.endsWith('.tif') && !entity.image.endsWith('.tiff')) {
-      entity.imageSmall = entity.image.replace(prefix, prefix + 'thumb/') + '/256px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1);
-      entity.imageMedium = entity.image.replace(prefix, prefix + 'thumb/') + '/512px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1);
+      entity.imageSmall = entity.image.replace(prefix, prefix + 'thumb/') + '/256px-' +
+        entity.image.substring(entity.image.lastIndexOf('/') + 1);
+      entity.imageMedium = entity.image.replace(prefix, prefix + 'thumb/') + '/512px-' +
+        entity.image.substring(entity.image.lastIndexOf('/') + 1);
     } else {
       entity.imageSmall = entity.image;
       entity.imageMedium = entity.image;

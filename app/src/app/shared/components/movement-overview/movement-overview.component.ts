@@ -87,12 +87,10 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
 
     if (this.inputMovements !== undefined) {
       this.movements = this.inputMovements as MovementItem[];
-      console.log('usung input movements:', this.inputMovements);
       this.initializeMovements();
     } else {
       this.dataService.findMultipleById<Movement>(this.defaultMovementIds, EntityType.MOVEMENT)
         .then(movements => {
-          console.log('Using default movements:', movements);
           this.movements = movements.filter(m => m.start_time && m.end_time) as MovementItem[];
           this.initializeMovements();
         });
@@ -109,7 +107,6 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
     for (const movement of this.movements) {
       movement.artworks = [];
     }
-    console.log('movements: ', this.movements);
 
     this.movements.sort((a, b) => (a.start_time > b.start_time ? 1 : -1));
     this.currentMovementId = this.movements[0].id;
@@ -119,7 +116,6 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
     // get all images if current movement first.
     this.getMovementImages([this.currentMovementId]).then(() => {
       this.setRandomThumbnail(this.currentMovementId);
-      console.log('CURRENT ID ARTWORKS SHOULD HAVE LOADED\n', this.movements[0].artworks);
 
       // setup timer for period random movement selection
       // This will run the function 'selectRandomMovement' every 'nextRandomMovementTime' seconds
@@ -136,9 +132,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
       }
     });
     // now get those which are not displayed
-    this.getMovementImages(movementIds).then(() => {
-      console.log('OTHER ARTWORKS SHOULD HAVE LOADED\n', this.movements.map(movementId => movementId.artworks));
-    });
+    this.getMovementImages(movementIds);
     // find start and end of displayed period
     this.setTimeline();
     // fill this.boxes
@@ -187,8 +181,6 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
     newOptions.floor = this.timelineStart;
     newOptions.tickStep = this.periodSpan;
     this.options = newOptions;
-
-    console.log(this.timelineStart, this.timelineEnd, this.periodSpan, this.averagePeriodCount);
   }
 
   /** this method splits movements into different rows where they overlap and sets their widths. It adds spacers, too */
@@ -226,18 +218,11 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
       }
     }
 
-    console.log(this.boxes);
-
     // get period length
     const timelineLen = this.timelineEnd - this.timelineStart;
     // this fills in the spaces between items and assigns all widths to all items
     let row: MovementItem[];
     for (row of this.boxes) {
-      // for (let i = 0; i < this.boxes.length; i++) {
-      // no need for this atm, but sums up duration of all movements in this row. Feeling cute, might delete later.
-      const sumRow = row.reduce((a, b) => {
-        return a + b.end_time - b.start_time;
-      }, 0);
       // fill in first space
       row.splice(0, 0, {
         width: (row[0].start_time - this.timelineStart) / (timelineLen / 100)
@@ -258,12 +243,18 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
         width: (this.timelineEnd - row.slice(-1)[0].end_time) / (timelineLen / 100)
       } as MovementItem);
     }
-    console.log(this.boxes);
   }
 
   /** draws Line between thumbnail and movement box and aligns thumbnail properly under the box */
   private drawThumbnail(targetId) {
+    if (!targetId) {
+      return;
+    }
     const clickedMovement = document.getElementById(targetId);
+    if (!clickedMovement) {
+      return;
+    }
+
     const x1 = clickedMovement.offsetLeft + (clickedMovement.offsetWidth / 2);
     const y1 = clickedMovement.offsetTop + clickedMovement.offsetHeight;
 
@@ -287,12 +278,12 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
 
   /** This method gets called when movement box gets clicked and calls drawThumbnail() */
   onClickMovementBox(event) {
-    this.showThumbnail = false;
     // this resets the 'randomMovementTimer$'
     this.randomMovementTimer$.next();
 
     const boxId = event.target.attributes.id.nodeValue;
     if (boxId && boxId !== this.currentMovementId) {
+      this.showThumbnail = false;
       this.updateShownMovement(boxId);
     }
   }
@@ -317,7 +308,6 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
   private setRandomThumbnail(movementId) {
     const currMovementIndex = this.movements.findIndex(move => move.id === movementId);
     if (!this.movements[currMovementIndex].artworks.length) {
-      console.error('Artworks not loaded yet!');
       return;
     }
     // choose random new thumb out of first n-1
@@ -333,17 +323,14 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
 
   selectRandomMovement() {
     let randIndex = Math.floor(Math.random() * this.movements.length);
-    let randomMovement = this.movements[randIndex];
-    if (randomMovement.id === this.currentMovementId) {
+    if (this.movements[randIndex].id === this.currentMovementId) {
       randIndex = (randIndex + 1) % this.movements.length;
-      randomMovement = this.movements[randIndex];
     }
-    this.updateShownMovement(randomMovement.id);
+    this.updateShownMovement(this.movements[randIndex].id);
   }
 
   /** Removes items from the component which cannot be displayed */
   onLoadingError(item: Artwork) {
-    console.log('ERROR', item, this.movements);
     const currMovementIndex = this.movements.findIndex(move => move.id === this.currentMovementId);
     this.movements[currMovementIndex].artworks.splice(
       this.movements[currMovementIndex].artworks.findIndex(i => i.id === item.id),
@@ -353,7 +340,6 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
   }
 
   resetShowThumbnail() {
-    console.log('reset');
     this.showThumbnail = true;
   }
 }

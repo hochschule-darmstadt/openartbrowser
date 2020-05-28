@@ -67,11 +67,9 @@
   pointer-events: none;
 }
 
-
 .box-container {
   margin: 0 15px;
 }
-
 
 .item {
   min-height: 2em;
@@ -109,11 +107,6 @@
     -ms-transform: scale(1);
     transform: scale(1);
   }
-}
-
-#fittest {
-  border: 1px solid red;
-  width: 30%;
 }
 
 .overlay-container {

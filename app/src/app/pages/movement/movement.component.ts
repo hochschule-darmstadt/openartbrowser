@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {DataService} from 'src/app/core/services/elasticsearch/data.service';
 import {ActivatedRoute} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
@@ -21,7 +21,7 @@ enum Tab {
 
 export class MovementComponent implements OnInit, OnDestroy {
   /* TODO:REVIEW
-     Similiarities in every page-Component:
+     Similarities in every page-Component:
      - variables: ngUnsubscribe, collapse, sliderItems, dataService, route
      - ngOnDestroy, calculateCollapseState, ngOnInit
 
@@ -29,7 +29,7 @@ export class MovementComponent implements OnInit, OnDestroy {
      2. Inject entity instead of movement
    */
   Tab = Tab;
-  private activeTab: Tab = Tab.Timeline;
+  activeTab: Tab = Tab.Timeline;
 
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();
@@ -45,10 +45,11 @@ export class MovementComponent implements OnInit, OnDestroy {
 
   /** Toggle bool for displaying either timeline or artworks carousel component */
   movementOverviewLoaded = false;
-  hasPartMovements: Movement[] = [];
 
   /** a video was found */
   videoExists = false;
+
+  relatedMovements: Movement[] = [];
 
   constructor(private dataService: DataService, private route: ActivatedRoute) {
   }
@@ -73,13 +74,19 @@ export class MovementComponent implements OnInit, OnDestroy {
       this.dataService.findMultipleById(this.movement.influenced_by as any, EntityType.ARTIST)
         .then(influences => (this.movement.influenced_by = influences));
 
-      /** get part movements */
-      this.dataService.getHasPartMovements(movementId)
-        .then(movements => {
-          this.hasPartMovements = movements;
-        });
-
       this.calculateCollapseState();
+
+      /** get is part movements */
+      let movements = await this.dataService.getHasPartMovements(movementId);
+      this.relatedMovements.push(...movements);
+
+      /** get part of movements */
+      movements = await this.dataService.getPartOfMovements(movementId);
+      this.relatedMovements.push(...movements);
+
+      if (this.relatedMovements.length >= 1 && this.movement.start_time && this.movement.end_time) {
+        this.relatedMovements.push(this.movement);
+      }
     });
   }
 

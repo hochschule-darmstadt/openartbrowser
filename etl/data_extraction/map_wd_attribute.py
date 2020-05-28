@@ -28,7 +28,7 @@ def return_on_failure(return_value):
             try:
                 return func(*args, **kwargs)
             except Exception as error:
-                error_message = "Error in function {0} on item {1}".format(
+                error_message = "Missing attribute in function {0} on item {1}".format(
                     func.__name__, args[0][ID]
                 )
                 # iterate over argument names
@@ -75,7 +75,7 @@ def try_get_dimension_unit(entity_dict, property_id):
         return unit_qid
     else:
         logger.error(
-            "Error on item {0}, property {1}, Unit was provided but isn't a QID reference".format(
+            "Missing attribute on item {0}, property {1}, Unit was provided but isn't a QID reference".format(
                 entity_dict[ID], property_id
             )
         )

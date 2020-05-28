@@ -1,3 +1,7 @@
+"""
+Functions to map a wikidata entity response to an openArtBrowser model.
+"""
+
 from pathlib import Path
 
 import data_extraction.map_wd_attribute as map_wd_attribute
@@ -5,9 +9,6 @@ from data_extraction.constants import *
 from data_extraction.get_wikidata_items import get_image_url_by_name
 from shared.utils import language_config_to_list, setup_logger
 
-"""
-Functions to map a wikidata entity response to an openArtBrowser model.
-"""
 
 # TODO Find better solution to logger import
 logger = setup_logger(

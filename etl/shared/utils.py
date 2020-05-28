@@ -1,9 +1,14 @@
 import csv
-import logging
 import pkgutil
+import logging
 from pathlib import Path
 
 from data_extraction.constants import CRAWLER_OUTPUT, INTERMEDIATE_FILES, JSON
+
+root_logger = logging.getLogger()  # setup root logger
+root_logger.setLevel(
+    logging.DEBUG
+)  # the root logger needs a debug level so that everything works correctly
 
 
 def language_config_to_list():
@@ -28,7 +33,7 @@ def language_config_to_list():
 
 def setup_logger(logger_name, filename):
     """Setup a logger for a python script.
-
+    The root logging object is created within this helper script.
     Args:
         logger_name (str): Package + module name e.g. 'data_extraction.get_wikidata_items'
         filename (str): String to the path and file the logger writes to
@@ -36,20 +41,23 @@ def setup_logger(logger_name, filename):
     Returns:
         Logger object
     """
-    logging.basicConfig(
-        filename=filename,
-        filemode="w",
-        level=logging.DEBUG,
-        format="%(asctime)s %(name)-12s %(levelname)-8s %(message)s",
-        datefmt="%d.%m.%Y %H:%M",
-    )
+    format = "%(asctime)s %(name)-12s %(levelname)-8s %(message)s"
+    date_format = "%d.%m.%Y %H:%M"
+    file_formatter = logging.Formatter(format, date_format)
+    console_formatter = logging.Formatter("%(name)-12s: %(levelname)-8s %(message)s")
 
     logger = logging.getLogger(logger_name)
-    console = logging.StreamHandler()
-    console.setLevel(logging.WARNING)  # Print warnings and errors to console
-    formatter = logging.Formatter("%(name)-12s: %(levelname)-8s %(message)s")
-    console.setFormatter(formatter)
-    logger.addHandler(console)
+
+    file_handler = logging.FileHandler(filename)
+    file_handler.setFormatter(file_formatter)
+    file_handler.setLevel(logging.DEBUG)
+
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.WARNING)  # Print warnings and errors to console
+    console_handler.setFormatter(console_formatter)
+
+    logger.addHandler(file_handler)
+    logger.addHandler(console_handler)
     return logger
 
 

@@ -1,4 +1,12 @@
 .size-example{
     display: flex;
+}
+.align-bottom{
     align-items: flex-end;
+}
+.align-top{
+    align-items: flex-start;
+}
+.illustration-margin{
+    margin-top: 8px;
 }

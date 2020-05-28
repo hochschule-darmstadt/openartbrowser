@@ -33,8 +33,8 @@ export class DimensionsComponent implements OnInit {
     }
   }
   calculateIllustrationDimensions() {
-    if (this.artwork.height && this.artwork.width) {
-      const scalingFactor = 0.53;
+    const scalingFactor = 0.53;
+    if (this.artwork.height) {
       switch (this.artwork.height_unit) {
         case 'ft': this.illustrationHeight = scalingFactor * 30.48 * this.artwork.height; break;
         case 'm': this.illustrationHeight = scalingFactor * 100 * this.artwork.height; break;
@@ -43,7 +43,8 @@ export class DimensionsComponent implements OnInit {
         case 'in':  this.illustrationHeight = scalingFactor * this.artwork.height * 2.54; break;
         default: break;
       }
-
+    }
+    if (this.artwork.width) {
       switch (this.artwork.width_unit) {
         case 'ft': this.illustrationWidth = scalingFactor * 30.48 * this.artwork.width; break;
         case 'm': this.illustrationWidth = scalingFactor * 100 * this.artwork.width; break;
@@ -52,10 +53,10 @@ export class DimensionsComponent implements OnInit {
         case 'in':  this.illustrationWidth = scalingFactor * this.artwork.width * 2.54; break;
         default: break;
       }
-      // Hide Dimension Illustration if Artwork is bigger then 550cm or smaller then 5cm x 5cm
-      if (this.illustrationHeight > 290 || this.illustrationWidth > 290 || (this.illustrationHeight < 3 && this.illustrationWidth < 3)) {
+    }
+    // Hide Dimension Illustration if Artwork is bigger then 550cm or smaller then 5cm x 5cm
+    if (this.illustrationHeight > 290 || this.illustrationWidth > 290 || (this.illustrationHeight < 3 && this.illustrationWidth < 3)) {
         this.hideIllustration = true;
-      }
     }
   }
   setDimensions() {

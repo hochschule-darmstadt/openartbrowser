@@ -34,7 +34,7 @@ import { DimensionsComponent } from './components/dimensions/dimensions.componen
     AbstractComponent,
     IconclassComponent,
     CollapseComponent,
-    DimensionsComponent
+    DimensionsComponent,
     CollapseComponent,
     MovementOverviewComponent
   ],

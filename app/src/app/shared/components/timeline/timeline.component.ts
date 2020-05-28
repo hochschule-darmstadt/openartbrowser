@@ -160,8 +160,6 @@ export class TimelineComponent {
     /** get the biggest multiple of periodSpan that is less than firstDate / same for lastDate */
     const firstPeriod = firstDate - (firstDate % this.periodSpan);
     const lastPeriod = lastDate - (lastDate % this.periodSpan) + this.periodSpan;
-    console.log('firstperiode', firstPeriod);
-    console.log('lastperiod', lastPeriod);
 
     /** Fill the slider steps with period legends respectively steps */
     for (let i = firstPeriod; i <= lastPeriod; i++) {
@@ -209,8 +207,6 @@ export class TimelineComponent {
       // between
       this.slideStart = referenceIndex - this.referenceItem;
     }
-    console.log('slideStart', this.slideStart);
-    console.log('value', this.value);
   }
 
   /** This refreshes the ending index of the displayed items according to the start value */

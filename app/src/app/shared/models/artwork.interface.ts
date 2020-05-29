@@ -13,6 +13,7 @@ export interface Artwork extends Entity {
   inception?: number;
   materials: Partial<Material>[];
   motifs: Partial<Motif>[];
+  main_subjects: Partial<Motif>[];
   country?: string;
   height?: number;
   height_unit?: string;

@@ -18,14 +18,14 @@
         [value]="artist?.date_of_death + (artist?.place_of_death ? ' in ' + artist.place_of_death : '')"
       >
       </app-information>
-
       <div *ngIf="artist?.gender || artist?.citizenship || artist?.movements?.length || artist?.influenced_by?.length || artist?.abstract">
         <app-collapse collapse="{{ collapse }}" [showVideo]="videoExists">
           <app-abstract [entity]="artist"></app-abstract>
 
           <div class="video">
-            <app-video [entity]="artist" (videoFound)="videoFound($event)"></app-video>
-            <app-video *ngFor="let movement of artist.movements.slice(0, 1)" [entity]="movement" (videoFound)="videoFound($event)"></app-video>
+            <div  *ngFor="let item of uniqueEntityVideos | keyvalue;  let i=index">
+              <app-video *ngIf="(i < 3)" [entity]="item.value" (videoFound)="videoFound($event)"></app-video>
+            </div>
           </div>
 
           <table class="table-fit">

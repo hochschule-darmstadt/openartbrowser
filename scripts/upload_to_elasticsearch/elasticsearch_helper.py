@@ -7,6 +7,11 @@ import uuid
 import requests
 import csv
 
+# Increase timeout because snapshot-operations have exceeded the default timeout of 10 seconds
+# This depends on the size of the indices on the elasticsearch server.
+# It's easier to set an estimated value here than calculate it. The value varies within seconds.
+SNAPSHOT_TIMEOUT = 40
+
 
 def create_empty_index(index_name) -> bool:
     """
@@ -188,8 +193,7 @@ def create_snapshot_for_index(
                                - Following entry in elasticsearch.yml required:
                                path.repo: ["path_to_folder"]
     """
-    # Increase timeout because creating snapshots had exceeded the default timeout of 10 seconds
-    es = Elasticsearch(timeout=30)
+    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT)
 
     try:
         # Check if repository already was created
@@ -230,7 +234,7 @@ def apply_snapshot_from_repository(
     :arg repository_name: Name of the repository the snapshot is in.
     :arg snapshot_name: Name of the snapshot.
     """
-    es = Elasticsearch()
+    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT)
 
     try:
         es.indices.close(index=index_name)
@@ -262,8 +266,7 @@ def delete_snapshot_from_repository(
     :arg backup_directory: Directory in which the repository is located.
                            See create_snapshot_for_index for more information on that.
     """
-    # Increase timeout because deleting snapshots had exceeded the default timeout of 10 seconds
-    es = Elasticsearch(timeout=30)
+    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT)
 
     try:
         # Check if repository already was created

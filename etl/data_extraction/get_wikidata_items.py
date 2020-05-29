@@ -15,7 +15,7 @@ from shared.utils import chunks, create_new_path, language_config_to_list, setup
 from shared.constants import JSON, CSV
 from SPARQLWrapper import SPARQLWrapper
 
-DEV = True
+DEV = False
 DEV_CHUNK_LIMIT = 2  # Not entry but chunks of 50
 
 logger = setup_logger(
@@ -178,10 +178,10 @@ def extract_artworks(
                 continue
 
             label = map_wd_attribute.try_get_label_or_description(
-                result, LABEL[PLURAL], EN
+                result, LABEL[PLURAL], EN, type_name
             )
             description = map_wd_attribute.try_get_label_or_description(
-                result, DESCRIPTION[PLURAL], EN
+                result, DESCRIPTION[PLURAL], EN, type_name
             )
 
             (
@@ -205,17 +205,18 @@ def extract_artworks(
                     MOTIF[SINGULAR],
                     MAIN_SUBJECT[SINGULAR],
                 ],
+                type_name,
                 map_wd_attribute.try_get_qid_reference_list,
             )
 
             iconclasses = map_wd_attribute.try_get_value_list(
-                result, PROPERTY_NAME_TO_PROPERTY_ID[ICONCLASS[SINGULAR]]
+                result, PROPERTY_NAME_TO_PROPERTY_ID[ICONCLASS[SINGULAR]], type_name
             )
             inception = map_wd_attribute.try_get_year_from_property_timestamp(
-                result, PROPERTY_NAME_TO_PROPERTY_ID[INCEPTION]
+                result, PROPERTY_NAME_TO_PROPERTY_ID[INCEPTION], type_name
             )
             country = map_wd_attribute.try_get_first_qid(
-                result, PROPERTY_NAME_TO_PROPERTY_ID[COUNTRY]
+                result, PROPERTY_NAME_TO_PROPERTY_ID[COUNTRY], type_name
             )
 
             # Resolve dimensions
@@ -223,6 +224,7 @@ def extract_artworks(
             height, width, length, diameter = get_attribute_values_with_try_get_func(
                 result,
                 [HEIGHT, WIDTH, LENGTH, DIAMETER],
+                type_name,
                 map_wd_attribute.try_get_dimension_value,
             )
             (
@@ -233,6 +235,7 @@ def extract_artworks(
             ) = get_attribute_values_with_try_get_func(
                 result,
                 [HEIGHT, WIDTH, LENGTH, DIAMETER],
+                type_name,
                 map_wd_attribute.try_get_dimension_unit,
             )
 
@@ -264,13 +267,13 @@ def extract_artworks(
 
             for langkey in languageKeys:
                 label_lang = map_wd_attribute.try_get_label_or_description(
-                    result, LABEL[PLURAL], langkey
+                    result, LABEL[PLURAL], langkey, type_name
                 )
                 description_lang = map_wd_attribute.try_get_label_or_description(
-                    result, DESCRIPTION[PLURAL], langkey
+                    result, DESCRIPTION[PLURAL], langkey, type_name
                 )
                 wikipedia_link_lang = map_wd_attribute.try_get_wikipedia_link(
-                    result, langkey
+                    result, langkey, type_name
                 )
                 artwork_dictionary.update(
                     {
@@ -295,9 +298,9 @@ def extract_artworks(
     return extract_dicts
 
 
-def get_attribute_values_with_try_get_func(result, item_list, try_get_func):
+def get_attribute_values_with_try_get_func(result, item_list, type_name, try_get_func):
     for item in item_list:
-        yield try_get_func(result, PROPERTY_NAME_TO_PROPERTY_ID[item])
+        yield try_get_func(result, PROPERTY_NAME_TO_PROPERTY_ID[item], type_name)
 
 
 def extract_art_ontology():
@@ -645,7 +648,7 @@ def get_subject(
                 continue
             if type_name == MOVEMENT[PLURAL] or type_name == ARTIST[PLURAL]:
                 influenced_by = map_wd_attribute.try_get_qid_reference_list(
-                    result, PROPERTY_NAME_TO_PROPERTY_ID[INFLUENCED_BY]
+                    result, PROPERTY_NAME_TO_PROPERTY_ID[INFLUENCED_BY], type_name
                 )
                 subject_dict.update({INFLUENCED_BY: influenced_by})
             if type_name == MOVEMENT[PLURAL]:
@@ -693,7 +696,7 @@ def get_entity_labels(
                 continue
 
             label = map_wd_attribute.try_get_label_or_description(
-                result, LABEL[PLURAL], EN
+                result, LABEL[PLURAL], EN, type_name
             )
             subject_dict = {
                 ID: qid,
@@ -702,7 +705,7 @@ def get_entity_labels(
 
             for langkey in languageKeys:
                 label_lang = map_wd_attribute.try_get_label_or_description(
-                    result, LABEL[PLURAL], langkey
+                    result, LABEL[PLURAL], langkey, type_name
                 )
                 subject_dict.update({f"{LABEL[SINGULAR]}_{langkey}": label_lang})
             extract_dicts.append(subject_dict)
@@ -751,13 +754,13 @@ def get_classes(
                 logger.error("Error on qid, skipping item. Error: {0}".format(error))
                 continue
             label = map_wd_attribute.try_get_label_or_description(
-                result, LABEL[PLURAL], EN
+                result, LABEL[PLURAL], EN, type_name
             )
             description = map_wd_attribute.try_get_label_or_description(
-                result, DESCRIPTION[PLURAL], EN
+                result, DESCRIPTION[PLURAL], EN, type_name
             )
             subclass_of = map_wd_attribute.try_get_qid_reference_list(
-                result, PROPERTY_NAME_TO_PROPERTY_ID[SUBCLASS_OF]
+                result, PROPERTY_NAME_TO_PROPERTY_ID[SUBCLASS_OF], type_name
             )
             class_dict = {
                 ID: qid,
@@ -768,10 +771,10 @@ def get_classes(
 
             for langkey in languageKeys:
                 label_lang = map_wd_attribute.try_get_label_or_description(
-                    result, LABEL[PLURAL], langkey
+                    result, LABEL[PLURAL], langkey, type_name
                 )
                 description_lang = map_wd_attribute.try_get_label_or_description(
-                    result, DESCRIPTION[PLURAL], langkey
+                    result, DESCRIPTION[PLURAL], langkey, type_name
                 )
                 class_dict.update(
                     {
@@ -828,7 +831,7 @@ def get_unit_symbols(qids):
                 continue
 
             unit_symbol = map_wd_attribute.try_get_unit_symbol(
-                result, PROPERTY_NAME_TO_PROPERTY_ID[UNIT_SYMBOL]
+                result, PROPERTY_NAME_TO_PROPERTY_ID[UNIT_SYMBOL], UNIT_SYMBOL
             )
 
             subject_dict = {ID: qid, UNIT_SYMBOL: unit_symbol}

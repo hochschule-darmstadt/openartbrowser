@@ -46,27 +46,27 @@ def return_on_failure(return_value):
 
 
 @return_on_failure("")
-def try_get_label_or_description(entity_dict, fieldname, langkey):
+def try_get_label_or_description(entity_dict, fieldname, langkey, oab_type):
     """ Method to extract the label or description """
     return entity_dict[fieldname][langkey][VALUE]
 
 
 @return_on_failure("")
-def try_get_wikipedia_link(entity_dict, langkey):
+def try_get_wikipedia_link(entity_dict, langkey, oab_type):
     return "https://{0}.wikipedia.org/wiki/{1}".format(
         langkey, entity_dict[SITELINKS][f"{langkey}wiki"]["title"].replace(" ", "_"),
     )
 
 
 @return_on_failure("")
-def try_get_dimension_value(entity_dict, property_id):
+def try_get_dimension_value(entity_dict, property_id, oab_type):
     return float(
         entity_dict[CLAIMS][property_id][0][MAINSNAK][DATAVALUE][VALUE][AMOUNT]
     )
 
 
 @return_on_failure("")
-def try_get_dimension_unit(entity_dict, property_id):
+def try_get_dimension_unit(entity_dict, property_id, oab_type):
     unit_qid = entity_dict[CLAIMS][property_id][0][MAINSNAK][DATAVALUE][VALUE][
         UNIT
     ].replace(WIKIDATA_ENTITY_URL, "")
@@ -83,7 +83,7 @@ def try_get_dimension_unit(entity_dict, property_id):
 
 
 @return_on_failure([])
-def try_get_qid_reference_list(entity_dict, property_id):
+def try_get_qid_reference_list(entity_dict, property_id, oab_type):
     """ Method to extract the references (which are qids) as a list """
     return list(
         map(
@@ -94,12 +94,12 @@ def try_get_qid_reference_list(entity_dict, property_id):
 
 
 @return_on_failure("")
-def try_get_first_value(entity_dict, property_id):
+def try_get_first_value(entity_dict, property_id, oab_type):
     return entity_dict[CLAIMS][property_id][0][MAINSNAK][DATAVALUE][VALUE]
 
 
 @return_on_failure([])
-def try_get_value_list(entity_dict, property_id):
+def try_get_value_list(entity_dict, property_id, oab_type):
     """ Method to extract iconclasses """
     return list(
         map(
@@ -110,20 +110,20 @@ def try_get_value_list(entity_dict, property_id):
 
 
 @return_on_failure("")
-def try_get_year_from_property_timestamp(entity_dict, property_id):
+def try_get_year_from_property_timestamp(entity_dict, property_id, oab_type):
     """ Method to extract the year from an inception timestamp """
     timestr = entity_dict[CLAIMS][property_id][0][MAINSNAK][DATAVALUE][VALUE][TIME]
     return WbTime.fromTimestr(timestr).year
 
 
 @return_on_failure("")
-def try_get_first_qid(entity_dict, property_id):
+def try_get_first_qid(entity_dict, property_id, oab_type):
     """ Method to extract the first qid """
     return entity_dict[CLAIMS][property_id][0][MAINSNAK][DATAVALUE][VALUE][ID]
 
 
 @return_on_failure("no unit")
-def try_get_unit_symbol(entity_dict, property_id):
+def try_get_unit_symbol(entity_dict, property_id, oab_type):
     unit_symbol_entries = entity_dict[CLAIMS][property_id]
     for unit_symbol_entry in unit_symbol_entries:
         if unit_symbol_entry[MAINSNAK][DATAVALUE][VALUE]["language"] == EN:

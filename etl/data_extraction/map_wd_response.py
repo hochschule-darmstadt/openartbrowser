@@ -43,12 +43,14 @@ def try_map_response_to_subject(
     except:
         image = ""
 
-    label = map_wd_attribute.try_get_label_or_description(response, LABEL[PLURAL], EN)
+    label = map_wd_attribute.try_get_label_or_description(
+        response, LABEL[PLURAL], EN, type_name
+    )
     description = map_wd_attribute.try_get_label_or_description(
-        response, DESCRIPTION[PLURAL], EN
+        response, DESCRIPTION[PLURAL], EN, type_name
     )
     classes = map_wd_attribute.try_get_qid_reference_list(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[CLASS[SINGULAR]]
+        response, PROPERTY_NAME_TO_PROPERTY_ID[CLASS[SINGULAR]], type_name
     )
 
     subject_dict = {
@@ -61,12 +63,14 @@ def try_map_response_to_subject(
 
     for langkey in languageKeys:
         label_lang = map_wd_attribute.try_get_label_or_description(
-            response, LABEL[PLURAL], langkey
+            response, LABEL[PLURAL], langkey, type_name
         )
         description_lang = map_wd_attribute.try_get_label_or_description(
-            response, DESCRIPTION[PLURAL], langkey
+            response, DESCRIPTION[PLURAL], langkey, type_name
         )
-        wikipedia_link_lang = map_wd_attribute.try_get_wikipedia_link(response, langkey)
+        wikipedia_link_lang = map_wd_attribute.try_get_wikipedia_link(
+            response, langkey, type_name
+        )
         subject_dict.update(
             {
                 f"{LABEL[SINGULAR]}_{langkey}": label_lang,
@@ -80,28 +84,28 @@ def try_map_response_to_subject(
 
 def try_map_response_to_artist(response):
     gender = map_wd_attribute.try_get_first_qid(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[GENDER]
+        response, PROPERTY_NAME_TO_PROPERTY_ID[GENDER], ARTIST[SINGULAR]
     )
     date_of_birth = map_wd_attribute.try_get_year_from_property_timestamp(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[DATE_OF_BIRTH]
+        response, PROPERTY_NAME_TO_PROPERTY_ID[DATE_OF_BIRTH], ARTIST[SINGULAR]
     )
     date_of_death = map_wd_attribute.try_get_year_from_property_timestamp(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[DATE_OF_DEATH]
+        response, PROPERTY_NAME_TO_PROPERTY_ID[DATE_OF_DEATH], ARTIST[SINGULAR]
     )
     # labels to be resolved later
     place_of_birth = map_wd_attribute.try_get_first_qid(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[PLACE_OF_BIRTH]
+        response, PROPERTY_NAME_TO_PROPERTY_ID[PLACE_OF_BIRTH], ARTIST[SINGULAR]
     )
     # labels to be resolved later
     place_of_death = map_wd_attribute.try_get_first_qid(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[PLACE_OF_DEATH]
+        response, PROPERTY_NAME_TO_PROPERTY_ID[PLACE_OF_DEATH], ARTIST[SINGULAR]
     )
     # labels to be resolved later
     citizenship = map_wd_attribute.try_get_first_qid(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[CITIZENSHIP]
+        response, PROPERTY_NAME_TO_PROPERTY_ID[CITIZENSHIP], ARTIST[SINGULAR]
     )
     movements = map_wd_attribute.try_get_qid_reference_list(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[MOVEMENT[SINGULAR]]
+        response, PROPERTY_NAME_TO_PROPERTY_ID[MOVEMENT[SINGULAR]], ARTIST[SINGULAR]
     )
     return {
         GENDER: gender,
@@ -116,20 +120,20 @@ def try_map_response_to_artist(response):
 
 def try_map_response_to_movement(response):
     start_time = map_wd_attribute.try_get_year_from_property_timestamp(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[START_TIME]
+        response, PROPERTY_NAME_TO_PROPERTY_ID[START_TIME], MOVEMENT[SINGULAR]
     )
     end_time = map_wd_attribute.try_get_year_from_property_timestamp(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[END_TIME]
+        response, PROPERTY_NAME_TO_PROPERTY_ID[END_TIME], MOVEMENT[SINGULAR]
     )
     # labels to be resolved later
     country = map_wd_attribute.try_get_first_qid(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[COUNTRY]
+        response, PROPERTY_NAME_TO_PROPERTY_ID[COUNTRY], MOVEMENT[SINGULAR]
     )
     has_part = map_wd_attribute.try_get_qid_reference_list(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[HAS_PART]
+        response, PROPERTY_NAME_TO_PROPERTY_ID[HAS_PART], MOVEMENT[SINGULAR]
     )
     part_of = map_wd_attribute.try_get_qid_reference_list(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[PART_OF]
+        response, PROPERTY_NAME_TO_PROPERTY_ID[PART_OF], MOVEMENT[SINGULAR]
     )
     return {
         START_TIME: start_time,
@@ -142,13 +146,13 @@ def try_map_response_to_movement(response):
 
 def try_map_response_to_location(response):
     country = map_wd_attribute.try_get_first_qid(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[COUNTRY]
+        response, PROPERTY_NAME_TO_PROPERTY_ID[COUNTRY], LOCATION[SINGULAR]
     )
     website = map_wd_attribute.try_get_first_value(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[WEBSITE]
+        response, PROPERTY_NAME_TO_PROPERTY_ID[WEBSITE], LOCATION[SINGULAR]
     )
     part_of = map_wd_attribute.try_get_qid_reference_list(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[PART_OF]
+        response, PROPERTY_NAME_TO_PROPERTY_ID[PART_OF], LOCATION[SINGULAR]
     )
     try:
         coordinate = response[CLAIMS][PROPERTY_NAME_TO_PROPERTY_ID[COORDINATE]][0][
@@ -158,8 +162,11 @@ def try_map_response_to_location(response):
         lon = coordinate[LONGITUDE[SINGULAR]]
     except Exception as error:
         logger.info(
-            "Error on item {0}, property {1}, error {2}".format(
-                response[ID], PROPERTY_NAME_TO_PROPERTY_ID[COORDINATE], error
+            "Error on item {0}, property {1}, type {2}, error {3}".format(
+                response[ID],
+                PROPERTY_NAME_TO_PROPERTY_ID[COORDINATE],
+                LOCATION[SINGULAR],
+                error,
             )
         )
         lat = ""

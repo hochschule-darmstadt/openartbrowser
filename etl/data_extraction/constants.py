@@ -11,10 +11,6 @@ TIMEOUT = 5  # Time to timeout a request
 
 QID_PATTERN = r"^Q[1-9]\d*"  # Possible QIDs regex starting from Q1
 
-JSON = "json"
-CSV = "csv"
-CRAWLER_OUTPUT = "crawler_output"
-INTERMEDIATE_FILES = "intermediate_files"
 GET_WIKIDATA_ITEMS_LOG_FILENAME = "get_wikidata_items.log"
 GET_WIKIPEDIA_EXTRACS_LOG_FILENAME = "get_wikipedia_extracts.log"
 WIKIDATA_MAP_ATTRIBUTE_LOG_FILENAME = "map_wd_attribute.log"

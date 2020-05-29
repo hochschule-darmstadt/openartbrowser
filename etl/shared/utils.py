@@ -3,7 +3,7 @@ import pkgutil
 import logging
 from pathlib import Path
 
-from data_extraction.constants import CRAWLER_OUTPUT, INTERMEDIATE_FILES, JSON
+from shared.constants import CRAWLER_OUTPUT, INTERMEDIATE_FILES, JSON
 
 root_logger = logging.getLogger()  # setup root logger
 root_logger.setLevel(

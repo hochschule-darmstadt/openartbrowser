@@ -12,7 +12,8 @@ import data_extraction.map_wd_response as map_wd_response
 from data_extraction.constants import *
 from data_extraction.request_utils import send_http_request
 from shared.utils import chunks, create_new_path, language_config_to_list, setup_logger
-from SPARQLWrapper import JSON, SPARQLWrapper
+from shared.constants import JSON, CSV
+from SPARQLWrapper import SPARQLWrapper
 
 DEV = True
 DEV_CHUNK_LIMIT = 2  # Not entry but chunks of 50

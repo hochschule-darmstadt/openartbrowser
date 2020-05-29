@@ -41,7 +41,8 @@ def send_http_request(
             if "error" in response:
                 # ToDo: more specific error handling since unknown ids error throws a different message
                 print(
-                    f"The maxlag of the server exceeded ({maxlag} seconds) waiting a minute before retry. Response: {response}"
+                    f"The maxlag of the server exceeded ({maxlag} seconds) waiting a minute before retry. Response: {response}",
+                    flush=True,
                 )
                 time.sleep(sleep_time)
                 continue

@@ -19,9 +19,19 @@ export class DimensionsComponent implements OnInit {
    */
   dimensionLabel: string;
 
+  /**
+   * @description indicates the height of the illustration.
+   */
   illustrationHeight: number;
+
+  /**
+   * @description indicates the width of the illustration.
+   */
   illustrationWidth: number;
 
+  /**
+   * @description hides/shows illustration.
+   */
   hideIllustration = false;
 
   constructor() { }
@@ -29,36 +39,33 @@ export class DimensionsComponent implements OnInit {
   ngOnInit() {
     if (this.artwork) {
       this.setDimensions();
-      this.calculateIllustrationDimensions();
+      this.setIllustrationDimensions();
     }
   }
-  calculateIllustrationDimensions() {
-    const scalingFactor = 0.53;
-    if (this.artwork.height) {
-      switch (this.artwork.height_unit) {
-        case 'ft': this.illustrationHeight = scalingFactor * 30.48 * this.artwork.height; break;
-        case 'm': this.illustrationHeight = scalingFactor * 100 * this.artwork.height; break;
-        case 'cm': this.illustrationHeight = scalingFactor * this.artwork.height; break;
-        case 'mm':  this.illustrationHeight = scalingFactor / 10 * this.artwork.height; break;
-        case 'in':  this.illustrationHeight = scalingFactor * this.artwork.height * 2.54; break;
-        default: break;
-      }
-    }
-    if (this.artwork.width) {
-      switch (this.artwork.width_unit) {
-        case 'ft': this.illustrationWidth = scalingFactor * 30.48 * this.artwork.width; break;
-        case 'm': this.illustrationWidth = scalingFactor * 100 * this.artwork.width; break;
-        case 'cm': this.illustrationWidth = scalingFactor * this.artwork.width; break;
-        case 'mm':  this.illustrationWidth = scalingFactor / 10 * this.artwork.width; break;
-        case 'in':  this.illustrationWidth = scalingFactor * this.artwork.width * 2.54; break;
-        default: break;
-      }
-    }
-    // Hide Dimension Illustration if Artwork is smaller than 550cm or bigger than 9cm x 9cm
-    if (this.illustrationHeight > 290 || this.illustrationWidth > 290 || (this.illustrationHeight < 5 && this.illustrationWidth < 5)) {
+  setIllustrationDimensions() {
+    this.illustrationHeight = this.calculateIllustrationDimension(this.artwork.height_unit, this.artwork.height);
+    this.illustrationWidth = this.calculateIllustrationDimension(this.artwork.width_unit, this.artwork.width);
+    // Hide Dimension Illustration if Artwork is smaller than 9cm x 9cm or bigger than 35m
+    if (this.illustrationHeight > 1855 || (this.illustrationHeight < 5 && this.illustrationWidth < 5)) {
         this.hideIllustration = true;
     }
   }
+
+  calculateIllustrationDimension(dimensionUnit, dimension) {
+    if (!dimension) {
+      return 0;
+    }
+    const scalingFactor = 0.53;
+    switch (dimensionUnit) {
+      case 'ft': return scalingFactor * 30.48 * dimension;
+      case 'm': return  scalingFactor * 100 * dimension;
+      case 'cm': return  scalingFactor * dimension;
+      case 'mm': return  scalingFactor / 10 * dimension;
+      case 'in': return  scalingFactor * dimension * 2.54;
+      default: return 0;
+    }
+  }
+
   setDimensions() {
     if (this.artwork.diameter) {
       this.dimensionLabel = 'Diameter';

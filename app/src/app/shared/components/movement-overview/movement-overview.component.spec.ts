@@ -5,8 +5,9 @@ import {Ng5SliderModule} from 'ng5-slider';
 import {NgxFitTextModule} from 'ngx-fit-text';
 import {RouterModule} from '@angular/router';
 import {DataService} from '../../../core/services/elasticsearch/data.service';
-import {HttpClient, HttpHandler} from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpHandler } from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('MovementOverviewComponent', () => {
   let component: MovementOverviewComponent;
@@ -14,9 +15,9 @@ describe('MovementOverviewComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [Ng5SliderModule, NgxFitTextModule, RouterModule.forRoot([]), BrowserAnimationsModule],
+      imports: [Ng5SliderModule, NgxFitTextModule, RouterModule.forRoot([]), BrowserAnimationsModule, HttpClientModule],
       declarations: [ MovementOverviewComponent ],
-      providers: [DataService, HttpClient, HttpHandler]
+      providers: [DataService]
     })
     .compileComponents();
   }));

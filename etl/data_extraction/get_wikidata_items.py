@@ -7,8 +7,8 @@ import time
 from pathlib import Path
 from urllib.error import HTTPError
 
-import data_extraction.map_wd_attribute as map_wd_attribute
-import data_extraction.map_wd_response as map_wd_response
+from data_extraction import map_wd_attribute
+from data_extraction import map_wd_response
 from data_extraction.constants import *
 from data_extraction.request_utils import send_http_request
 from shared.utils import chunks, create_new_path, language_config_to_list, setup_logger
@@ -374,7 +374,7 @@ def extract_art_ontology():
     resolve_unit_id_to_unit_symbol(merged_artworks, unit_symbols)
 
     # Write to JSON
-    write_data_to_json(
+    write_data_to_json_and_csv(
         motifs,
         genres,
         extracted_classes,
@@ -397,7 +397,7 @@ def extract_motifs_and_main_subjects(merged_artworks):
     return motifs
 
 
-def write_data_to_json(
+def write_data_to_json_and_csv(
     motifs,
     genres,
     extracted_classes,
@@ -408,13 +408,61 @@ def write_data_to_json(
     artists,
 ):
     generate_json(MOTIF[SINGULAR], motifs, create_new_path(MOTIF[PLURAL]))
+    generate_csv(
+        MOTIF[SINGULAR],
+        motifs,
+        get_fields(MOTIF[PLURAL]) + [TYPE],
+        create_new_path(MOTIF[PLURAL], file_type=CSV),
+    )
     generate_json(GENRE[SINGULAR], genres, create_new_path(GENRE[PLURAL]))
+    generate_csv(
+        GENRE[SINGULAR],
+        genres,
+        get_fields(GENRE[PLURAL]) + [TYPE],
+        create_new_path(GENRE[PLURAL], file_type=CSV),
+    )
     generate_json(CLASS[SINGULAR], extracted_classes, create_new_path(CLASS[PLURAL]))
+    generate_csv(
+        CLASS[SINGULAR],
+        extracted_classes,
+        get_fields(CLASS[PLURAL]) + [TYPE],
+        create_new_path(CLASS[PLURAL], file_type=CSV),
+    )
     generate_json(MATERIAL[SINGULAR], materials, create_new_path(MATERIAL[PLURAL]))
+    generate_csv(
+        MATERIAL[SINGULAR],
+        materials,
+        get_fields(MATERIAL[PLURAL]) + [TYPE],
+        create_new_path(MATERIAL[PLURAL], file_type=CSV),
+    )
     generate_json(MOVEMENT[SINGULAR], movements, create_new_path(MOVEMENT[PLURAL]))
+    generate_csv(
+        MOVEMENT[SINGULAR],
+        movements,
+        get_fields(MOVEMENT[PLURAL]) + [TYPE],
+        create_new_path(MOVEMENT[PLURAL], file_type=CSV),
+    )
     generate_json(LOCATION[SINGULAR], locations, create_new_path(LOCATION[PLURAL]))
+    generate_csv(
+        LOCATION[SINGULAR],
+        locations,
+        get_fields(LOCATION[PLURAL]) + [TYPE],
+        create_new_path(LOCATION[PLURAL], file_type=CSV),
+    )
     generate_json(ARTWORK[SINGULAR], merged_artworks, create_new_path(ARTWORK[PLURAL]))
+    generate_csv(
+        ARTWORK[SINGULAR],
+        merged_artworks,
+        get_fields(ARTWORK[PLURAL]) + [TYPE],
+        create_new_path(ARTWORK[SINGULAR], file_type=CSV),
+    )
     generate_json(ARTIST[SINGULAR], artists, create_new_path(ARTIST[PLURAL]))
+    generate_csv(
+        ARTIST[SINGULAR],
+        artists,
+        get_fields(ARTIST[PLURAL]) + [TYPE],
+        create_new_path(ARTIST[PLURAL], file_type=CSV),
+    )
 
 
 def get_unit_symbols_from_qid(merged_artworks):
@@ -516,6 +564,8 @@ def get_fields(type_name, languageKeys=[item[0] for item in language_config_to_l
         for langkey in languageKeys:
             fields += [f"{COUNTRY}_{langkey}"]
     elif type_name == ARTIST[PLURAL]:
+        for langkey in languageKeys:
+            fields += [f"{PLACE_OF_BIRTH}_{langkey}", f"{PLACE_OF_DEATH}_{langkey}"]
         fields += [
             GENDER,
             DATE_OF_BIRTH,
@@ -529,7 +579,9 @@ def get_fields(type_name, languageKeys=[item[0] for item in language_config_to_l
         for langkey in languageKeys:
             fields += [f"{GENDER}_{langkey}", f"{CITIZENSHIP}_{langkey}"]
     elif type_name == MOVEMENT[PLURAL]:
-        fields += [INFLUENCED_BY]
+        for langkey in languageKeys:
+            fields += [f"{COUNTRY}_{langkey}"]
+        fields += [INFLUENCED_BY, PART_OF, END_TIME, COUNTRY, HAS_PART, START_TIME]
     elif type_name == LOCATION[PLURAL]:
         fields += [
             COUNTRY,

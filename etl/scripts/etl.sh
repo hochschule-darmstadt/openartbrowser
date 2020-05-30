@@ -3,7 +3,7 @@ set -eE
 set -x
 
 LOCKFILE=/tmp/etl.lock
-TOKEN=$(cat bot_user_oauth_token)
+TOKEN=$(cat tokens/bot_user_oauth_token)
 WD=$(pwd)
 DATE=$(date +%T_%d-%m-%Y) # German format
 SERVERNAME=$(uname -n)
@@ -12,10 +12,10 @@ trap "curl -F file=@${WD}/logs/etl.log -F \"initial_comment=Oops! Something went
 
 curl -X POST https://slack.com/api/chat.postMessage -H "Authorization: Bearer ${TOKEN}" -H 'Content-type: application/json' --data '{"channel":"CSY0DLRDG","text":"The ETL-process is starting on server '${SERVERNAME}' at '${DATE}'","as_user":"true"}'
 
-python3 ../data_extraction/get_wikidata_items.py
-python3 ../data_extraction/get_wikipedia_extracts.py
+python3 data_extraction/get_wikidata_items.py
+python3 data_extraction/get_wikipedia_extracts.py
 
-cd ../crawler_output/intermediate_files/json/
+cd crawler_output/intermediate_files/json/
 
 node --max-old-space-size=4096 ../../../data_manipulation/script_artworks_rank.js
 

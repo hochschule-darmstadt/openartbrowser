@@ -3,7 +3,7 @@ set -eE
 set -x
 
 LOCKFILE=/tmp/update_production.lock
-TOKEN=$(cat bot_user_oauth_token)
+TOKEN=$(cat tokens/bot_user_oauth_token)
 WD=$(pwd)
 DATE=$(date +%T_%d-%m-%Y) # German format
 SERVERNAME=$(uname -n)
@@ -22,7 +22,7 @@ wget -4 http://cai-artbrowserstaging.fbi.h-da.de/crawler_output.tar.gz
 # Unpack
 tar xfvz crawler_output.tar.gz
 
-python3 ../upload_to_elasticsearch/elasticsearch_helper.py
+python3 upload_to_elasticsearch/elasticsearch_helper.py
 
 # Move current frontend to html_DATE and copy master deployment to /var/www/html
 mv /var/www/html /var/www/html_$DATE && cp -R /var/sftp/deployment/ /var/www/html

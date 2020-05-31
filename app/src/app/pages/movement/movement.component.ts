@@ -55,10 +55,12 @@ export class MovementComponent implements OnInit, OnDestroy {
       this.movement = await this.dataService.findById<Movement>(movementId, EntityType.MOVEMENT);
 
       /** load slider items */
-      await this.dataService.findArtworksByType(EntityType.MOVEMENT, [this.movement.id]).then(artworks => (this.sliderItems = shuffle(artworks)));
+      await this.dataService.findArtworksByType(EntityType.MOVEMENT, [this.movement.id])
+        .then(artworks => (this.sliderItems = shuffle(artworks)));
 
       /** dereference influenced_bys  */
-      this.dataService.findMultipleById(this.movement.influenced_by as any, EntityType.ARTIST).then(influences => (this.movement.influenced_by = influences));
+      this.dataService.findMultipleById(this.movement.influenced_by as any, EntityType.ARTIST)
+        .then(influences => (this.movement.influenced_by = influences));
 
       this.calculateCollapseState();
     });

@@ -1,16 +1,16 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { AppComponent } from './app.component';
-import { BrowserModule } from '@angular/platform-browser';
-import { CoreModule } from './core/core.module';
-import { SharedModule } from './shared/shared.module';
-import { HttpClientModule } from '@angular/common/http';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {AppComponent} from './app.component';
+import {BrowserModule} from '@angular/platform-browser';
+import {CoreModule} from './core/core.module';
+import {SharedModule} from './shared/shared.module';
+import {HttpClientModule} from '@angular/common/http';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 /** routes to our feature modules.
  * advantage of routing to modules instead of components: lazy loading.
- **/
+ */
 const routes: Routes = [
   {
     path: '',
@@ -27,6 +27,34 @@ const routes: Routes = [
   {
     path: 'about',
     loadChildren: './pages/about/about.routing.module#AboutRoutingModule'
+  },
+  {
+    path: 'movements',
+    loadChildren: './pages/entities/entities.routing.module#EntitiesRoutingModule'
+  },
+  {
+    path: 'artists',
+    loadChildren: './pages/entities/entities.routing.module#EntitiesRoutingModule'
+  },
+  {
+    path: 'artworks',
+    loadChildren: './pages/entities/entities.routing.module#EntitiesRoutingModule'
+  },
+  {
+    path: 'genres',
+    loadChildren: './pages/entities/entities.routing.module#EntitiesRoutingModule'
+  },
+  {
+    path: 'motifs',
+    loadChildren: './pages/entities/entities.routing.module#EntitiesRoutingModule'
+  },
+  {
+    path: 'locations',
+    loadChildren: './pages/entities/entities.routing.module#EntitiesRoutingModule'
+  },
+  {
+    path: 'materials',
+    loadChildren: './pages/entities/entities.routing.module#EntitiesRoutingModule'
   },
   {
     path: 'artist/:artistId',
@@ -75,8 +103,9 @@ const routes: Routes = [
     SharedModule,
     NgbModule,
     BrowserAnimationsModule,
-    RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' })
+    RouterModule.forRoot(routes, {scrollPositionRestoration: 'enabled'})
   ],
   bootstrap: [AppComponent]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule {
+}

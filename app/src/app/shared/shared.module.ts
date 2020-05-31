@@ -17,6 +17,7 @@ import { Ng5SliderModule } from 'ng5-slider';
 import { CollapseComponent } from './components/collapse/collapse.component';
 import { Angulartics2Module } from 'angulartics2';
 import { DimensionsComponent } from './components/dimensions/dimensions.component';
+import { InfiniteScrollComponent } from './components/infinite-scroll/infinite-scroll.component';
 
 /** Everything that should be used within multiple feature modules but isn't always required goes here */
 @NgModule({
@@ -32,22 +33,24 @@ import { DimensionsComponent } from './components/dimensions/dimensions.componen
     AbstractComponent,
     IconclassComponent,
     CollapseComponent,
-    DimensionsComponent
+    DimensionsComponent,
+    InfiniteScrollComponent
   ],
   imports: [CommonModule, NgbModule, RouterModule, FormsModule, Ng5SliderModule, Angulartics2Module],
-  exports: [
-    CarouselComponent,
-    SearchComponent,
-    VideoComponent,
-    TimelineComponent,
-    BadgeComponent,
-    NgbModule,
-    TitleComponent,
-    InformationComponent,
-    AbstractComponent,
-    IconclassComponent,
-    CollapseComponent,
-    DimensionsComponent
-  ]
+    exports: [
+        CarouselComponent,
+        SearchComponent,
+        VideoComponent,
+        TimelineComponent,
+        BadgeComponent,
+        NgbModule,
+        TitleComponent,
+        InformationComponent,
+        AbstractComponent,
+        IconclassComponent,
+        CollapseComponent,
+        DimensionsComponent,
+        InfiniteScrollComponent
+    ]
 })
 export class SharedModule {}

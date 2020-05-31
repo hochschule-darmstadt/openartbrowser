@@ -1,10 +1,10 @@
 import * as _ from 'lodash';
-import { HttpClient } from '@angular/common/http';
-import { Injectable, Inject, LOCALE_ID } from '@angular/core';
-import { EntityType, Artwork, ArtSearch, Entity, Iconclass, EntityIcon } from 'src/app/shared/models/models';
-import { elasticEnvironment } from 'src/environments/environment';
+import {HttpClient} from '@angular/common/http';
+import {Injectable, Inject, LOCALE_ID} from '@angular/core';
+import {EntityType, Artwork, ArtSearch, Entity, Iconclass, EntityIcon} from 'src/app/shared/models/models';
+import {elasticEnvironment} from 'src/environments/environment';
 import QueryBuilder from './query.builder';
-import { usePlural } from 'src/app/shared/models/entity.interface';
+import {usePlural} from 'src/app/shared/models/entity.interface';
 
 const defaultSortField = 'relativeRank';
 
@@ -103,11 +103,30 @@ export class DataService {
 
     keywords.forEach(keyword =>
       query.mustShouldMatch([
-        { key: 'label', value: keyword },
-        { key: 'description', value: keyword }
+        {key: 'label', value: keyword},
+        {key: 'description', value: keyword}
       ])
     );
     return this.performQuery(query);
+  }
+
+  public async getEntityItems<T>(type: EntityType, count = 20, from = 0): Promise<T[]> {
+    const query = new QueryBuilder()
+      .mustMatch('type', type)
+      // .mustPrefix('image', 'http')
+      .sort(defaultSortField)
+      .size(count)
+      .from(from);
+    return this.performQuery<T>(query);
+  }
+
+  public async getRandomMovementArtwork<T>(movementId: string, count = 20): Promise<T[]> {
+    const query = new QueryBuilder()
+      .mustMatch('type', 'artwork')
+      .mustPrefix('image', 'http')
+      .sort(defaultSortField)
+      .size(count);
+    return this.performQuery<T>(query);
   }
 
   /**
@@ -126,13 +145,14 @@ export class DataService {
   /**
    * Return 20 items for an specific category.
    * @param type category type
+   * @param count size of return set
    */
-  public async getCategoryItems<T>(type: EntityType): Promise<T[]> {
+  public async getCategoryItems<T>(type: EntityType, count = 20): Promise<T[]> {
     const query = new QueryBuilder()
       .mustMatch('type', type)
       .mustPrefix('image', 'http')
       .sort(defaultSortField)
-      .size(20);
+      .size(count);
     return this.performQuery<T>(query);
   }
 
@@ -165,14 +185,14 @@ export class DataService {
   /**
    * filters the data that is fetched from the server
    * @param data Elasticsearch Data
-   * @param type optional: type of entities that should be filtered
+   * @param filterBy optional: type of entities that should be filtered
    */
   private filterData<T>(data: any, filterBy?: EntityType): T[] {
     const entities: T[] = [];
     _.each(
       data.hits.hits,
       function(val) {
-        if (!filterBy || (filterBy && val._source.type == filterBy)) {
+        if (!filterBy || (filterBy && val._source.type === filterBy)) {
           entities.push(this.addThumbnails(val._source));
         }
       }.bind(this)
@@ -187,8 +207,10 @@ export class DataService {
   private addThumbnails(entity: Entity) {
     const prefix = 'https://upload.wikimedia.org/wikipedia/commons/';
     if (entity.image && !entity.image.endsWith('.tif') && !entity.image.endsWith('.tiff')) {
-      entity.imageSmall = entity.image.replace(prefix, prefix + 'thumb/') + '/256px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1);
-      entity.imageMedium = entity.image.replace(prefix, prefix + 'thumb/') + '/512px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1);
+      entity.imageSmall = entity.image.replace(prefix, prefix + 'thumb/') + '/256px-' +
+        entity.image.substring(entity.image.lastIndexOf('/') + 1);
+      entity.imageMedium = entity.image.replace(prefix, prefix + 'thumb/') + '/512px-' +
+        entity.image.substring(entity.image.lastIndexOf('/') + 1);
     } else {
       entity.imageSmall = entity.image;
       entity.imageMedium = entity.image;

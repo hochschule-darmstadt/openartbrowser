@@ -1,56 +1,52 @@
-<div class="row" *ngIf="dimensionLabel && artwork && dimensionValue">
-  <div class="col-md-1 dimension-label">
-    <div [ngSwitch]="dimensionLabel">
-      <p class="mb-1 text-muted" *ngSwitchCase="'Dimension'"><span i18n="Artwork Dimension label@@dimension">Dimension</span>:</p>
+<div *ngIf="dimensionLabel && artwork && dimensionValue">
+  <div
+    class="col-md-11 illustration-container"
+    [ngClass]="{ 'align-bottom': illustrationHeight > 92, 'align-top': illustrationHeight < 92 }"
+    *ngIf="illustrationHeight && !hideIllustration"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      xml:space="preserve"
+      height="100px"
+      [attr.height.px]="illustrationHeight < 1855 && illustrationHeight > 290 ? (140 / illustrationHeight) * 180 : 100"
+      x="0px"
+      y="0px"
+      enable-background="new 0 0 124.189 124.189"
+      viewBox="0 0 90.189 124.189"
+    >
+      <g>
+        <path
+          class="person-svg"
+          stroke-width="0.8"
+          d="m42.096 8.5859c-5.208 0-9.424 4.2191-9.424 9.4261 0.001 5.203 4.217 9.424 9.424 9.424 5.202 0 9.422-4.221 9.422-9.424 0-5.208-4.22-9.4261-9.422-9.4261zm-10.41 21.268c-6.672 0-12.131 5.407-12.131 12.07v29.23c0 2.275 1.791 4.123 4.07 4.123 2.28 0 4.127-1.846 4.127-4.123v-26.355h2.102s0.048 68.811 0.048 73.331c0 3.05 2.478 5.53 5.532 5.53 3.052 0 5.525-2.48 5.525-5.53v-42.581h2.27v42.581c0 3.05 2.473 5.53 5.531 5.53 3.054 0 5.549-2.48 5.549-5.53v-73.331h2.127v26.355c0 2.275 1.85 4.123 4.126 4.123 2.28 0 4.073-1.846 4.073-4.123v-29.23c0-6.663-5.463-12.07-12.129-12.07h-20.82z"
+        />
+      </g>
+    </svg>
 
-      <p class="mb-1 text-muted" *ngSwitchCase="'Width'"><span i18n="Artwork Dimension label@@width">Width</span>:</p>
-
-      <p class="mb-1 text-muted" *ngSwitchCase="'Height'"><span i18n="Artwork Dimension label@@height">Height</span>:</p>
-
-      <p class="mb-1 text-muted" *ngSwitchCase="'Length'"><span i18n="Artwork Dimension label@@length">Length</span>:</p>
-
-      <p class="mb-1 text-muted" *ngSwitchCase="'Diameter'"><span i18n="Artwork Dimension label@@diameter">Diameter</span>:</p>
-    </div>
+    <svg
+      [ngClass]="{ 'illustration-margin': illustrationHeight < 92 }"
+      xml:space="preserve"
+      [attr.width.px]="illustrationHeight < 1855 && illustrationHeight > 290 ? 40 : illustrationWidth ? illustrationWidth : 40"
+      [attr.height.px]="illustrationHeight < 1855 && illustrationHeight > 290 ? 140 : illustrationHeight"
+    >
+      <rect class="rect"/>
+    </svg>
   </div>
 
-  <div class="col-md-11">
-    <div
-      class="illustration-container"
-      [ngClass]="{ 'align-bottom': illustrationHeight > 92, 'align-top': illustrationHeight < 92 }"
-      *ngIf="illustrationHeight && !hideIllustration"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        xml:space="preserve"
-        height="100px"
-        [attr.height.px]="illustrationHeight < 1855 && illustrationHeight > 290 ? (140 / illustrationHeight) * 180 : 100"
-        version="1.1"
-        x="0px"
-        y="0px"
-        xmlns:ns="&amp;#38;ns_ai;"
-        enable-background="new 0 0 124.189 124.189"
-        viewBox="0 0 90.189 124.189"
-      >
-        <g ns:extraneous="self">
-          <path
-            class="person-svg"
-            stroke-width="0.8"
-            d="m42.096 8.5859c-5.208 0-9.424 4.2191-9.424 9.4261 0.001 5.203 4.217 9.424 9.424 9.424 5.202 0 9.422-4.221 9.422-9.424 0-5.208-4.22-9.4261-9.422-9.4261zm-10.41 21.268c-6.672 0-12.131 5.407-12.131 12.07v29.23c0 2.275 1.791 4.123 4.07 4.123 2.28 0 4.127-1.846 4.127-4.123v-26.355h2.102s0.048 68.811 0.048 73.331c0 3.05 2.478 5.53 5.532 5.53 3.052 0 5.525-2.48 5.525-5.53v-42.581h2.27v42.581c0 3.05 2.473 5.53 5.531 5.53 3.054 0 5.549-2.48 5.549-5.53v-73.331h2.127v26.355c0 2.275 1.85 4.123 4.126 4.123 2.28 0 4.073-1.846 4.073-4.123v-29.23c0-6.663-5.463-12.07-12.129-12.07h-20.82z"
-          />
-        </g>
-      </svg>
+  <div [ngSwitch]="dimensionLabel">
+    <app-information *ngSwitchCase="'Dimension'" i18n-label="Artwork Dimension label@@dimension" label="Dimension"
+                     [value]="dimensionValue"></app-information>
 
-      <svg
-        [ngClass]="{ 'illustration-margin': illustrationHeight < 92 }"
-        xml:space="preserve"
-        [attr.width.px]="illustrationHeight < 1855 && illustrationHeight > 290 ? 40 : illustrationWidth ? illustrationWidth : 40"
-        [attr.height.px]="illustrationHeight < 1855 && illustrationHeight > 290 ? 140 : illustrationHeight"
-      >
-        <rect class="rect" />
-      </svg>
-    </div>
-    <p class="mb-1 add-padding notchip">
-      {{ dimensionValue }}
-    </p>
+    <app-information *ngSwitchCase="'Width'" i18n-label="Artwork Dimension label@@width" label="Width"
+                     [value]="dimensionValue"></app-information>
+
+    <app-information *ngSwitchCase="'Height'" i18n-label="Artwork Dimension label@@height" label="Height"
+                     [value]="dimensionValue"></app-information>
+
+    <app-information *ngSwitchCase="'Length'" i18n-label="Artwork Dimension label@@length" label="Length"
+                     [value]="dimensionValue"></app-information>
+
+    <app-information *ngSwitchCase="'Diameter'" i18n-label="Artwork Dimension label@@diameter" label="Diameter"
+                     [value]="dimensionValue"></app-information>
   </div>
 </div>

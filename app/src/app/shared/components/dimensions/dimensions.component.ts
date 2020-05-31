@@ -19,11 +19,50 @@ export class DimensionsComponent implements OnInit {
    */
   dimensionLabel: string;
 
+  /**
+   * @description indicates the height of the illustration.
+   */
+  illustrationHeight: number;
+
+  /**
+   * @description indicates the width of the illustration.
+   */
+  illustrationWidth: number;
+
+  /**
+   * @description hides/shows illustration.
+   */
+  hideIllustration = false;
+
   constructor() { }
 
   ngOnInit() {
     if (this.artwork) {
       this.setDimensions();
+      this.setIllustrationDimensions();
+    }
+  }
+  setIllustrationDimensions() {
+    this.illustrationHeight = this.calculateIllustrationDimension(this.artwork.height_unit, this.artwork.height);
+    this.illustrationWidth = this.calculateIllustrationDimension(this.artwork.width_unit, this.artwork.width);
+    // Hide Dimension Illustration if Artwork is smaller than 9cm x 9cm or bigger than 35m
+    if (this.illustrationHeight > 1855 || (this.illustrationHeight < 5 && this.illustrationWidth < 5)) {
+        this.hideIllustration = true;
+    }
+  }
+
+  calculateIllustrationDimension(dimensionUnit, dimension) {
+    if (!dimension) {
+      return 0;
+    }
+    const scalingFactor = 0.53;
+    switch (dimensionUnit) {
+      case 'ft': return scalingFactor * 30.48 * dimension;
+      case 'm': return  scalingFactor * 100 * dimension;
+      case 'cm': return  scalingFactor * dimension;
+      case 'mm': return  scalingFactor / 10 * dimension;
+      case 'in': return  scalingFactor * dimension * 2.54;
+      default: return 0;
     }
   }
 

@@ -1,0 +1,25 @@
+.align-bottom{
+    align-items: flex-end;
+}
+.align-top{
+    align-items: flex-start;
+}
+.illustration-margin{
+    margin-top: 8px;
+}
+.illustration-container{
+    margin: .5rem 7%;
+    display: flex;
+}
+.rect{
+    width:calc(100% - 0.5px);
+    height:calc(100% - 0.5px);
+    fill:#888;
+    stroke:white;
+    stroke-width:2;
+    opacity:0.5
+}
+.person-svg{
+    fill: #888;
+    stroke: black;
+}

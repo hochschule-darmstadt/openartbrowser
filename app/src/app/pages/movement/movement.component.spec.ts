@@ -15,6 +15,8 @@ import { InformationComponent } from 'src/app/shared/components/information/info
 import { TitleComponent } from 'src/app/shared/components/title/title.component';
 import { AbstractComponent } from 'src/app/shared/components/abstract/abstract.component';
 import { Angulartics2RouterlessModule } from 'angulartics2/routerlessmodule';
+import {MovementOverviewComponent} from '../../shared/components/movement-overview/movement-overview.component';
+import {NgxFitTextModule} from 'ngx-fit-text';
 
 describe('MovementComponent', () => {
   let component: MovementComponent;
@@ -22,9 +24,17 @@ describe('MovementComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [NgbModule, HttpClientModule, Ng5SliderModule, RouterModule.forRoot([]), Angulartics2RouterlessModule.forRoot()],
+      imports: [
+        NgbModule,
+        HttpClientModule,
+        Ng5SliderModule,
+        RouterModule.forRoot([]),
+        Angulartics2RouterlessModule.forRoot(),
+        NgxFitTextModule
+      ],
       declarations: [
         MovementComponent,
+        MovementOverviewComponent,
         SlideComponent,
         TimelineComponent,
         BadgeComponent,

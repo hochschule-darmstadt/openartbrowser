@@ -16,6 +16,8 @@ import { TimelineComponent } from './components/timeline/timeline.component';
 import { Ng5SliderModule } from 'ng5-slider';
 import { CollapseComponent } from './components/collapse/collapse.component';
 import { Angulartics2Module } from 'angulartics2';
+import { MovementOverviewComponent } from './components/movement-overview/movement-overview.component';
+import { NgxFitTextModule } from 'ngx-fit-text';
 import { DimensionsComponent } from './components/dimensions/dimensions.component';
 
 /** Everything that should be used within multiple feature modules but isn't always required goes here */
@@ -32,9 +34,11 @@ import { DimensionsComponent } from './components/dimensions/dimensions.componen
     AbstractComponent,
     IconclassComponent,
     CollapseComponent,
-    DimensionsComponent
+    DimensionsComponent,
+    CollapseComponent,
+    MovementOverviewComponent
   ],
-  imports: [CommonModule, NgbModule, RouterModule, FormsModule, Ng5SliderModule, Angulartics2Module],
+  imports: [CommonModule, NgbModule, RouterModule, FormsModule, Ng5SliderModule, Angulartics2Module, NgxFitTextModule],
   exports: [
     CarouselComponent,
     SearchComponent,
@@ -47,7 +51,9 @@ import { DimensionsComponent } from './components/dimensions/dimensions.componen
     AbstractComponent,
     IconclassComponent,
     CollapseComponent,
-    DimensionsComponent
+    DimensionsComponent,
+    CollapseComponent,
+    MovementOverviewComponent
   ]
 })
 export class SharedModule {}

@@ -10,12 +10,9 @@
       <span>open</span>
       <h1>ArtBrowser</h1>
     </div>
-    <div class="search-control">
-      <app-search class="search" id="homeSearch"> </app-search>
-    </div>
   </div>
 
-  <div class="row pt-4">
+  <div class="row pt-4 mb-4">
     <div class="mb-4 container-category" *ngFor="let category of categories; let i = index" [ngClass]="categories.length / 2 > i + 1 ? 'col-lg-4' : 'col-lg-3'">
       <ngb-carousel>
         <div *ngFor="let item of category.items">
@@ -44,4 +41,5 @@
       </ngb-carousel>
     </div>
   </div>
+  <app-movement-overview id="mv_overview"></app-movement-overview>
 </div>

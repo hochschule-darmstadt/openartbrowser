@@ -1,11 +1,11 @@
-import { Component, Input, HostListener } from '@angular/core';
-import { Artist, Artwork, Entity, EntityType } from 'src/app/shared/models/models';
-import { CustomStepDefinition, Options } from 'ng5-slider';
-import { animate, state, style, transition, trigger } from '@angular/animations';
-import { DataService } from 'src/app/core/services/elasticsearch/data.service';
+import {Component, Input, HostListener} from '@angular/core';
+import {Artist, Artwork, Entity, EntityType} from 'src/app/shared/models/models';
+import {CustomStepDefinition, Options} from 'ng5-slider';
+import {animate, state, style, transition, trigger} from '@angular/animations';
+import {DataService} from 'src/app/core/services/elasticsearch/data.service';
 
 interface TimelineItem extends Entity {
-  date: number; // represents the value the item is located at in the timeline
+  date: number; // represents the value the item is located in the timeline
 }
 
 @Component({
@@ -14,14 +14,14 @@ interface TimelineItem extends Entity {
   styleUrls: ['./timeline.component.scss'],
   animations: [
     trigger('slideNext', [
-      state('out', style({ transform: 'translateX(7%)', opacity: 0 })),
-      state('in', style({ transform: 'translateX(0)', opacity: 1 })),
+      state('out', style({transform: 'translateX(7%)', opacity: 0})),
+      state('in', style({transform: 'translateX(0)', opacity: 1})),
       transition('in => out', [animate(0)]),
       transition('out => in', [animate(300)])
     ]),
     trigger('slidePrev', [
-      state('out', style({ transform: 'translateX(-7%)', opacity: 0 })),
-      state('in', style({ transform: 'translateX(0)', opacity: 1 })),
+      state('out', style({transform: 'translateX(-7%)', opacity: 0})),
+      state('in', style({transform: 'translateX(0)', opacity: 1})),
       transition('in => out', [animate(0)]),
       transition('out => in', [animate(300)])
     ])
@@ -154,7 +154,8 @@ export class TimelineComponent {
     const reasonablePeriodDistance = 5;
     const minimumPeriodDistance = 1;
     /** Example:  30/7 = 4,28 ; 4,28 / 5 = 0,85 ; Math.max( Math.round(0.85)*5, 1) = 5 */
-    this.periodSpan = Math.max(Math.round(dateSpan / this.averagePeriodCount / reasonablePeriodDistance) * reasonablePeriodDistance, minimumPeriodDistance);
+    this.periodSpan = Math.max(Math.round(dateSpan / this.averagePeriodCount / reasonablePeriodDistance)
+      * reasonablePeriodDistance, minimumPeriodDistance);
 
     /** get the biggest multiple of periodSpan that is less than firstDate / same for lastDate */
     const firstPeriod = firstDate - (firstDate % this.periodSpan);
@@ -163,9 +164,9 @@ export class TimelineComponent {
     /** Fill the slider steps with period legends respectively steps */
     for (let i = firstPeriod; i <= lastPeriod; i++) {
       if (i % this.periodSpan === 0) {
-        sliderSteps.push({ value: i, legend: '' + i });
+        sliderSteps.push({value: i, legend: '' + i});
       } else {
-        sliderSteps.push({ value: i });
+        sliderSteps.push({value: i});
       }
     }
 

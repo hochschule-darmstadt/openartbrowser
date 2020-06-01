@@ -1,16 +1,15 @@
 FROM python:3 as Wikicrawler
 
 WORKDIR /app
+# The pythonpath is needed for package/module imports
+ENV PYTHONPATH "${PYTHONPATH}:/app"
 
 RUN pip install pywikibot
 
 #copy necessary files
 COPY ["./data_extraction/", "/app/data_extraction"]
 COPY ["./user-config.py", "/app"]
-COPY ["./languageconfig.csv/", "/app"]
-# Comment in if #129 language_helper.py import problem is fixed
-#COPY ["./language_helper.py/", "/app"]
-
+COPY ["./shared/", "/app/shared"]
 # run ArtOntologyCrawler in development mode
 RUN pip install SPARQLWrapper
 RUN ["python", "/app/data_extraction/get_wikidata_items.py", "-d"]
@@ -19,6 +18,7 @@ RUN ["python", "/app/data_extraction/get_wikipedia_extracts.py"]
 # ------------------------------------------------
 
 FROM node:latest as data_ranking
+ENV PYTHONPATH "${PYTHONPATH}:/app"
 
 WORKDIR /app
 
@@ -41,6 +41,7 @@ RUN node script_artworks_rank.js && \
 # ------------------------------------------------
 
 FROM python:3 as post_data_ranking
+ENV PYTHONPATH "${PYTHONPATH}:/app"
 
 WORKDIR /app
 
@@ -48,9 +49,7 @@ WORKDIR /app
 COPY --from=data_ranking /app/art_ontology.json/ /app/crawler_output/
 
 COPY ["./data_manipulation/", "/app/data_manipulation/"]
-COPY --from=Wikicrawler /app/languageconfig.csv/ /app/
-# Comment in if #129 language_helper.py import problem is fixed
-#COPY ["./language_helper.py/", "/app"]
+COPY --from=Wikicrawler /app/shared/ /app/shared/
 
 COPY ["./upload_to_elasticsearch/", "/app/upload_to_elasticsearch/"]
 
@@ -66,14 +65,15 @@ COPY ["./crawler_output/", "/root/crawler_output/"]
 # ------------------------------------------------
 
 FROM docker.elastic.co/elasticsearch/elasticsearch:7.4.2
+ENV PYTHONPATH "${PYTHONPATH}:/app"
 
 WORKDIR /app
 
 RUN yum update -y && \
-    yum install -y https://centos7.iuscommunity.org/ius-release.rpm && \
+    yum install -y https://repo.ius.io/ius-release-el7.rpm && \
     yum install -y python36u python36u-pip
 
-RUN python --version
+RUN python3 --version
 
 RUN pip3 install elasticsearch ijson requests
 
@@ -87,9 +87,7 @@ COPY --chown=elasticsearch:elasticsearch elasticsearch.yml /usr/share/elasticsea
 
 #copy other necessary files
 COPY --from=post_data_ranking /app/crawler_output/ /app/crawler_output/
-COPY ["./languageconfig.csv/", "/app"]
-# Comment in if #129 language_helper.py import problem is fixed
-#COPY ["./language_helper.py/", "/app"]
+COPY ["./shared/", "/app/shared"]
 COPY ["./upload_to_elasticsearch/", "/app/upload_to_elasticsearch/"]
 
 RUN ls -lah /app

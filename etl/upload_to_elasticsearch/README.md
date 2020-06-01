@@ -4,13 +4,13 @@ To install the required python packages for the ElasticSearch upload script use 
 
 > pip3 install -r requirements.txt
 
-This will install amongst other things elasticsearch and ijson (see requirements.txt)
+This will install amongst other things elasticsearch and ijson (see setup.py)
 
 ## Execution
 
 To execute the upload to ElasticSearch:
 
-> python3 elasticsearch_helper.py
+> python3 upload_to_elasticsearch/elasticsearch_helper.py
 
 If you want to create an index on another environment than the preconfigured server(s) you have to setup a backup directory
 and change the ElasticSearch configuration file. More information in the script comments and the wiki (link below)

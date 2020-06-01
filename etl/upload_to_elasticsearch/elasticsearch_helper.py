@@ -1,11 +1,12 @@
-from elasticsearch import Elasticsearch, helpers
-from pathlib import Path
+import datetime
 import json
 import time
-import datetime
 import uuid
+from pathlib import Path
+
 import requests
-import csv
+from elasticsearch import Elasticsearch, helpers
+from shared.utils import language_config_to_list
 
 # Increase timeout because snapshot-operations have exceeded the default timeout of 10 seconds
 # This depends on the size of the indices on the elasticsearch server.
@@ -312,24 +313,6 @@ def list_all_indices(elastic_search_url="localhost:9200") -> None:
         print(req.text)
     except Exception as e:
         print(str(e))
-
-
-def language_config_to_list(
-    config_file=Path(__file__).parent.parent.absolute() / "languageconfig.csv",
-):
-    """[Reads languageconfig.csv and returns array that contains its
-    full contents]
-
-    Returns:
-        [list] -- [contents of languageconfig.csv as list]
-    """
-    languageValues = []
-    with open(config_file, encoding="utf-8") as file:
-        configReader = csv.reader(file, delimiter=";")
-        for row in configReader:
-            if row[0] != "langkey":
-                languageValues.append(row)
-    return languageValues
 
 
 def create_index_for_each_language(

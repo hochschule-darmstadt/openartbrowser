@@ -1,9 +1,10 @@
 # splits art_ontology file into language art_ontology_files
 
-import simplejson as json
-import ijson
 from pathlib import Path
-import csv
+
+import ijson
+import simplejson as json
+from shared.utils import language_config_to_list
 
 
 def get_language_attributes():
@@ -151,24 +152,6 @@ def generate_langjson_files(name, extract_dicts):
         encoding="utf-8",
     ) as file:
         file.write(json.dumps(extract_dicts, ensure_ascii=False))
-
-
-def language_config_to_list(
-    config_file=Path(__file__).parent.parent.absolute() / "languageconfig.csv",
-):
-    """[Reads languageconfig.csv and returns array that contains its
-    full contents]
-
-    Returns:
-        [list] -- [contents of languageconfig.csv as list]
-    """
-    languageValues = []
-    with open(config_file, encoding="utf-8") as file:
-        configReader = csv.reader(file, delimiter=";")
-        for row in configReader:
-            if row[0] != "langkey":
-                languageValues.append(row)
-    return languageValues
 
 
 # load languageconfig file with keys / language dicts

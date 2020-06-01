@@ -5,7 +5,7 @@ if [ $(id -u) -ne 0 ]
 fi
 
 LOCKFILE=/tmp/etl.lock
-TOKEN=$(cat bot_user_oauth_token)
+TOKEN=$(cat tokens/bot_user_oauth_token)
 SERVERNAME=$(uname -n)
 
 if ! mkdir $LOCKFILE 2>/dev/null; then
@@ -13,4 +13,5 @@ if ! mkdir $LOCKFILE 2>/dev/null; then
     exit 1
 fi
 
-script -q -c "./etl.sh" /dev/null | tee etl.log
+mkdir -p logs
+script -q -c "./scripts/etl.sh" /dev/null | tee ./logs/etl.log

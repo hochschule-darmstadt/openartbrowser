@@ -1,6 +1,5 @@
 @ECHO OFF
 REM Batch script for executing ETL. No error handling!
-
 python ".\data_extraction\get_wikidata_items.py"
 python ".\data_extraction\get_wikipedia_extracts.py"
 

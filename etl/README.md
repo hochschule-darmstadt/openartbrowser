@@ -39,7 +39,7 @@ Folders and scripts are structured by their ETL task.
 | data_manipulation       | Data transformations after the extraction                                |
 | upload_to_elasticsearch | Upload the extracted and transformed data to an ElasticSearch server     |
 | generate_rdf            | Everything related to generating a rdf file (turtle format .ttl) from the crawler_output's art_ontology_en.json |
-| scripts | Bash (Unix) and Batch (Windows) scripts to execute the full ETL process + scripts for usage on our staging and production server |
+| scripts | Bash (Unix) and Batch (Windows) scripts to execute the full ETL process + scripts for usage on our staging and production server. :warning: These scripts should all be executed from the parent directory (etl) otherwise they won't work e. g. `./scripts/run_etl.sh`|
 | shared | Shared python functions as module for the python scripts |
 | crawler_ouput (generated on execution)| Final and intermediate files which are generated and used by the python scripts |
 | logs (generated on execution) | Different log files are saved here |

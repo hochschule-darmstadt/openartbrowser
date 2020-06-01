@@ -8,6 +8,8 @@ WD=$(pwd)
 DATE=$(date +%T_%d-%m-%Y) # German format
 SERVERNAME=$(uname -n)
 
+export PYTHONPATH="${PYTHONPATH}:${WD}"
+
 trap "curl -F file=@${WD}/logs/update_production.log -F \"initial_comment=Oops! Something went wrong while updating the production server on server ${SERVERNAME}. Here is the log file: \" -F channels=CSY0DLRDG -H \"Authorization: Bearer ${TOKEN}\" https://slack.com/api/files.upload" ERR
 
 curl -X POST https://slack.com/api/chat.postMessage -H "Authorization: Bearer ${TOKEN}" -H 'Content-type: application/json' --data '{"channel":"CSY0DLRDG","text":"The update-production-server process is starting on server '${SERVERNAME}' current date is '${DATE}'","as_user":"true"}'

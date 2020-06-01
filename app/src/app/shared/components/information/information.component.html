@@ -1,11 +1,12 @@
-<div class="row" *ngIf="value || values?.length">
+<div class="row" *ngIf="value || values?.length || isHref">
   <div class="col-md-1">
     <p class="mb-1 text-muted">{{ label }}:</p>
   </div>
 
   <div class="col-md-11">
     <p *ngIf="value" class="mb-1 add-padding notchip">
-      {{ value }}
+      <span *ngIf="!isHref">{{ value }}</span>
+      <a *ngIf="isHref" href="{{ value }}" target="_blank">{{ value }}</a>
     </p>
 
     <p *ngIf="values?.length" class="mb-1 add-padding ">

@@ -24,7 +24,7 @@ export class VideoComponent implements OnInit, OnChanges {
 
   initVideo(): void {
     if (this.entity && this.entity.videos) {
-      const videoUrl = Array.isArray(this.entity.videos) ? this.entity.videos.pop() : this.entity.videos;
+      const videoUrl = Array.isArray(this.entity.videos) ? this.entity.videos[0] : this.entity.videos;
       if (videoUrl) {
         this.safeUrl = this.getTrustedUrl(videoUrl);
         this.validateVideoExists(videoUrl).then(exists => {

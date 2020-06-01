@@ -425,7 +425,7 @@
         <note priority="1" from="description">Location label</note>
       </trans-unit>
       <trans-unit id="motif" datatype="html">
-        <source>Motif</source><target state="final">Motive</target>
+        <source>Motifs</source><target state="final">Motive</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/search-result/search-result.component.html</context>
           <context context-type="linenumber">87</context>
@@ -525,7 +525,7 @@
         <note priority="1" from="description">Artist gender label</note>
       </trans-unit>
       <trans-unit id="citizenship" datatype="html">
-        <source>Citizenship</source><target state="final">Staatsangehörigkeit</target>
+        <source>Citizenship</source><target state="final">Land</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artist/artist.component.html</context>
           <context context-type="linenumber">56</context>
@@ -583,6 +583,38 @@
           <context context-type="linenumber">196</context>
         </context-group>
         <note priority="1" from="description">Dimension label</note>
+      </trans-unit>
+      <trans-unit id="width" datatype="html">
+        <source>Width</source><target state="final">Breite</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
+          <context context-type="linenumber">196</context>
+        </context-group>
+        <note priority="1" from="description">Dimension-Width label</note>
+      </trans-unit>
+      <trans-unit id="length" datatype="html">
+        <source>Length</source><target state="final">Länge</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
+          <context context-type="linenumber">196</context>
+        </context-group>
+        <note priority="1" from="description">Dimension-Length label</note>
+      </trans-unit>
+      <trans-unit id="height" datatype="html">
+        <source>Height</source><target state="final">Höhe</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
+          <context context-type="linenumber">196</context>
+        </context-group>
+        <note priority="1" from="description">Dimension-Height label</note>
+      </trans-unit>
+      <trans-unit id="diameter" datatype="html">
+        <source>Diameter</source><target state="final">Durchmesser</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
+          <context context-type="linenumber">196</context>
+        </context-group>
+        <note priority="1" from="description">Dimension-Diameter label</note>
       </trans-unit>
       <trans-unit id="related_artworks" datatype="html">
         <source>Related Artworks</source><target state="final">Verwandte Kunstwerke</target>
@@ -643,7 +675,7 @@
         <note priority="1" from="description">Country label</note>
       </trans-unit>
       <trans-unit id="official_page" datatype="html">
-        <source>Official page</source><target state="final">Offizielle Webseite</target>
+        <source>Web</source><target state="final">Web</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/location/location.component.html</context>
           <context context-type="linenumber">22</context>
@@ -657,6 +689,10 @@
           <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/toast/toast.d.ts</context>
           <context context-type="linenumber">8</context>
         </context-group>
+      </trans-unit>
+      <trans-unit id="main_motif" datatype="html">
+        <source>Main Motif</source>
+        <target state="final">Hauptmotiv</target>
       </trans-unit>
     </body>
   </file>

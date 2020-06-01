@@ -116,12 +116,14 @@ export class TimelineComponent {
           this.items = this.items.concat(artists);
           this.sortItems();
           this.refreshComponent();
-          this.value = this.items[0].date;
         });
       }
       this.sortItems();
       this.items = this.items.filter(item => item.date);
-      this.value = +this.items[0].date;
+      const beginOfTimeline = this.items[0].date - this.items[0].date % this.periodSpan;
+      const endOfTimeline =  this.items[this.items.length - 1].date - (this.items[this.items.length - 1].date % this.periodSpan) + this.periodSpan;
+      // Set the slider of the timeline to the middle!
+      this.value = (beginOfTimeline + endOfTimeline) / 2;
       this.previousValue = this.value;
       this.refreshComponent();
     }

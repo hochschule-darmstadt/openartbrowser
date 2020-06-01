@@ -3,29 +3,28 @@
     <div class="col-sm-7" *ngIf="artist">
       <app-title [entity]="artist"></app-title>
 
-      <app-information
-        *ngIf="artist?.date_of_birth"
-        i18n-label="Born infos label@@born"
-        label="Born"
-        [value]="artist?.date_of_birth + (artist?.place_of_birth ? ' in ' + artist?.place_of_birth : '')"
-      >
-      </app-information>
+      <table class="table-fit">
+        <tbody>
+          <tr *ngIf="artist?.date_of_birth">
+            <td class="text-muted"><ng-container i18n="Born infos @@born">Born</ng-container>:</td>
+            <td>{{ artist?.date_of_birth + (artist?.place_of_birth ? ' in ' + artist?.place_of_birth : '') }}</td>
+          </tr>
 
-      <app-information
-        *ngIf="artist?.date_of_death"
-        i18n-label="Died infos label@@died"
-        label="Died"
-        [value]="artist?.date_of_death + (artist?.place_of_death ? ' in ' + artist.place_of_death : '')"
-      >
-      </app-information>
+          <tr *ngIf="artist?.date_of_death">
+            <td class="text-muted"><span i18n="Died infos label@@died">Died</span>:</td>
+            <td>{{ artist?.date_of_death + (artist?.place_of_death ? ' in ' + artist.place_of_death : '') }}</td>
+          </tr>
+        </tbody>
+      </table>  
 
       <div *ngIf="artist?.gender || artist?.citizenship || artist?.movements?.length || artist?.influenced_by?.length || artist?.abstract">
         <app-collapse collapse="{{ collapse }}" [showVideo]="videoExists">
           <app-abstract [entity]="artist"></app-abstract>
 
           <div class="video">
-            <app-video [entity]="artist" (videoFound)="videoFound($event)"></app-video>
-            <app-video *ngFor="let movement of artist.movements.slice(0, 1)" [entity]="movement" (videoFound)="videoFound($event)"></app-video>
+            <div  *ngFor="let item of uniqueEntityVideos | keyvalue;  let i=index">
+              <app-video *ngIf="(i < 3)" [entity]="item.value" (videoFound)="videoFound($event)"></app-video>
+            </div>
           </div>
 
           <table class="table-fit">

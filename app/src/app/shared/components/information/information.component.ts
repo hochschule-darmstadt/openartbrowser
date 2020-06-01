@@ -14,6 +14,9 @@ export class InformationComponent {
   value: string;
 
   @Input()
+  isHref: boolean;
+
+  @Input()
   values: Entity[];
 
   constructor() {}

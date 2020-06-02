@@ -32,7 +32,6 @@ export class EntitiesComponent implements OnInit {
     this.route.pathFromRoot[1].url.subscribe(val => {
       const lastPathSegment = val[0].path.substr(0, val[0].path.length - 1);
       this.type = EntityType[lastPathSegment.toUpperCase() as keyof typeof EntityType];
-      this.getEntities(this.offset);
     });
   }
 

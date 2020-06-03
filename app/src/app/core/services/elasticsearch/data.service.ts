@@ -254,5 +254,5 @@ The performed es-query did not yield any results. This might result in strange b
 
 If you encounter any such issues please consider opening a bug report: https://github.com/hochschule-darmstadt/openartbrowser/issues/new?assignees=&labels=&template=bug_report.md&title=
 
-  Query: ${query.toString()}
+Query: ${query.toString()}
 `;

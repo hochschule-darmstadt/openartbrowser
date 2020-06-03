@@ -15,7 +15,7 @@
             <td>{{ artist?.date_of_death + (artist?.place_of_death ? ' in ' + artist.place_of_death : '') }}</td>
           </tr>
         </tbody>
-      </table>  
+      </table>
 
       <div *ngIf="artist?.gender || artist?.citizenship || artist?.movements?.length || artist?.influenced_by?.length || artist?.abstract">
         <app-collapse collapse="{{ collapse }}" [showVideo]="videoExists">
@@ -73,7 +73,7 @@
       <li class="nav-item">
         <a class="nav-link" [ngClass]="{ active: !showTimelineNotArtworks }" data-toggle="tab" href="#artworks_tab">
           <i class="mr-1 fa fa-palette"></i>
-          <span class="ml-1 mt-auto mb-auto mr-1 artworks-amount">{{ sliderItems?.length }}</span>
+          <span class="ml-1 mt-auto mb-auto mr-1 artworks-amount">{{ artist?.absoluteRank }}</span>
           <ng-container i18n="Timeline toggle label@@toggleartworks">Artworks</ng-container>
         </a>
       </li>

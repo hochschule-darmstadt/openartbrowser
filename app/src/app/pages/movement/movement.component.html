@@ -41,7 +41,7 @@
            [ngClass]="{ active: activeTab === Tab.Artworks }"
            data-toggle="tab" href="#artworks_tab">
           <i class="mr-1 fa fa-palette"></i>
-          <span class="ml-1 mt-auto mb-auto mr-1 artworks-amount">{{ sliderItems?.length }}</span>
+          <span class="ml-1 mt-auto mb-auto mr-1 artworks-amount">{{ movement?.absoluteRank }}</span>
           <ng-container i18n="Timeline toggle label@@toggleartworks">Artworks</ng-container>
         </a>
       </li>

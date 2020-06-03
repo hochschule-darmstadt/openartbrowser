@@ -22,6 +22,7 @@
       <img class="img-fluid rounded-circle" src="{{ motif?.imageSmall }}" alt="" />
     </div>
   </div>
-  <h3 i18n="Artworks label@@artworks">Artworks</h3>
+  <span class="artworks-amount">{{ motif?.absoluteRank }}</span>
+  <span class="ml-1 slider-heading" i18n="Artworks label@@artworks">Artworks</span>
   <app-slider [items]="sliderItems"></app-slider>
 </div>

@@ -1,13 +1,12 @@
 import * as _ from 'lodash';
-import {HttpClient} from '@angular/common/http';
-import {Inject, Injectable, LOCALE_ID} from '@angular/core';
-import {ArtSearch, Artwork, Entity, EntityIcon, EntityType, Iconclass, Movement} from 'src/app/shared/models/models';
-import {elasticEnvironment} from 'src/environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { Inject, Injectable, LOCALE_ID } from '@angular/core';
+import { ArtSearch, Artwork, Entity, EntityIcon, EntityType, Iconclass, Movement } from 'src/app/shared/models/models';
+import { elasticEnvironment } from 'src/environments/environment';
 import QueryBuilder from './query.builder';
-import {usePlural} from 'src/app/shared/models/entity.interface';
+import { usePlural } from 'src/app/shared/models/entity.interface';
 
 const defaultSortField = 'relativeRank';
-
 
 /**
  * Service that handles the requests to the API
@@ -75,13 +74,11 @@ export class DataService {
    * @param topMovementId Id of 'parent' movement
    */
   public getHasPartMovements(topMovementId: string): Promise<Movement[]> {
-    return this.findById<Movement>(topMovementId, EntityType.MOVEMENT)
-      .then(topMovement => {
-        return this.findMultipleById<Movement>(topMovement.has_part, EntityType.MOVEMENT)
-          .then(hasPartMovements => {
-            return hasPartMovements.filter(m => m.start_time && m.end_time);
-          });
+    return this.findById<Movement>(topMovementId, EntityType.MOVEMENT).then(topMovement => {
+      return this.findMultipleById<Movement>(topMovement.has_part, EntityType.MOVEMENT).then(hasPartMovements => {
+        return hasPartMovements.filter(m => m.start_time && m.end_time);
       });
+    });
   }
 
   /**
@@ -89,13 +86,11 @@ export class DataService {
    * @param subMovementId Id of 'sub' movement
    */
   public getPartOfMovements(subMovementId: string): Promise<Movement[]> {
-    return this.findById<Movement>(subMovementId, EntityType.MOVEMENT)
-      .then(subMovement => {
-        return this.findMultipleById<Movement>(subMovement.part_of, EntityType.MOVEMENT)
-          .then(partOfMovements => {
-            return partOfMovements.filter(m => m.start_time && m.end_time);
-          });
+    return this.findById<Movement>(subMovementId, EntityType.MOVEMENT).then(subMovement => {
+      return this.findMultipleById<Movement>(subMovement.part_of, EntityType.MOVEMENT).then(partOfMovements => {
+        return partOfMovements.filter(m => m.start_time && m.end_time);
       });
+    });
   }
 
   /**
@@ -124,7 +119,6 @@ export class DataService {
     return this.performQuery<Artwork>(query);
   }
 
-
   /**
    * Returns the artworks that contain all the given arguments.
    * @param searchObj the arguments to search for.
@@ -145,8 +139,8 @@ export class DataService {
 
     keywords.forEach(keyword =>
       query.mustShouldMatch([
-        {key: 'label', value: keyword},
-        {key: 'description', value: keyword}
+        { key: 'label', value: keyword },
+        { key: 'description', value: keyword }
       ])
     );
     return this.performQuery(query);
@@ -201,6 +195,11 @@ export class DataService {
     const entities = this.filterData<T>(response, type);
     // set type specific attributes
     entities.forEach(entity => this.setTypes(entity));
+
+    if (!entities.length) {
+      console.warn(NoResultsWarning(query));
+    }
+
     return entities;
   }
 
@@ -229,10 +228,8 @@ export class DataService {
   private addThumbnails(entity: Entity) {
     const prefix = 'https://upload.wikimedia.org/wikipedia/commons/';
     if (entity.image && !entity.image.endsWith('.tif') && !entity.image.endsWith('.tiff')) {
-      entity.imageSmall = entity.image.replace(prefix, prefix + 'thumb/') + '/256px-' +
-        entity.image.substring(entity.image.lastIndexOf('/') + 1);
-      entity.imageMedium = entity.image.replace(prefix, prefix + 'thumb/') + '/512px-' +
-        entity.image.substring(entity.image.lastIndexOf('/') + 1);
+      entity.imageSmall = entity.image.replace(prefix, prefix + 'thumb/') + '/256px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1);
+      entity.imageMedium = entity.image.replace(prefix, prefix + 'thumb/') + '/512px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1);
     } else {
       entity.imageSmall = entity.image;
       entity.imageMedium = entity.image;
@@ -251,3 +248,11 @@ export class DataService {
     }
   }
 }
+
+const NoResultsWarning = query => `
+The performed es-query did not yield any results. This might result in strange behavior in the application.
+
+If you encounter any such issues please consider opening a bug report: https://github.com/hochschule-darmstadt/openartbrowser/issues/new?assignees=&labels=&template=bug_report.md&title=
+
+  Query: ${query.toString()}
+`;

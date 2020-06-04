@@ -1,10 +1,10 @@
 import * as _ from 'lodash';
-import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable, LOCALE_ID } from '@angular/core';
-import { ArtSearch, Artwork, Entity, EntityIcon, EntityType, Iconclass, Movement } from 'src/app/shared/models/models';
-import { elasticEnvironment } from 'src/environments/environment';
+import {HttpClient} from '@angular/common/http';
+import {Inject, Injectable, LOCALE_ID} from '@angular/core';
+import {ArtSearch, Artwork, Entity, EntityIcon, EntityType, Iconclass, Movement} from 'src/app/shared/models/models';
+import {elasticEnvironment} from 'src/environments/environment';
 import QueryBuilder from './query.builder';
-import { usePlural } from 'src/app/shared/models/entity.interface';
+import {usePlural} from 'src/app/shared/models/entity.interface';
 
 const defaultSortField = 'relativeRank';
 
@@ -139,8 +139,8 @@ export class DataService {
 
     keywords.forEach(keyword =>
       query.mustShouldMatch([
-        { key: 'label', value: keyword },
-        { key: 'description', value: keyword }
+        {key: 'label', value: keyword},
+        {key: 'description', value: keyword}
       ])
     );
     return this.performQuery(query);
@@ -228,8 +228,10 @@ export class DataService {
   private addThumbnails(entity: Entity) {
     const prefix = 'https://upload.wikimedia.org/wikipedia/commons/';
     if (entity.image && !entity.image.endsWith('.tif') && !entity.image.endsWith('.tiff')) {
-      entity.imageSmall = entity.image.replace(prefix, prefix + 'thumb/') + '/256px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1);
-      entity.imageMedium = entity.image.replace(prefix, prefix + 'thumb/') + '/512px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1);
+      entity.imageSmall = entity.image.replace(prefix, prefix + 'thumb/') + '/256px-' +
+        entity.image.substring(entity.image.lastIndexOf('/') + 1);
+      entity.imageMedium = entity.image.replace(prefix, prefix + 'thumb/') + '/512px-' +
+        entity.image.substring(entity.image.lastIndexOf('/') + 1);
     } else {
       entity.imageSmall = entity.image;
       entity.imageMedium = entity.image;

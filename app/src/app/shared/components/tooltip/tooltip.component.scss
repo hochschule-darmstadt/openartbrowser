@@ -1,0 +1,87 @@
+:host{
+    display: inline-block;
+}
+
+.container{
+    display: inline-block;
+    position: relative;
+}
+
+.tooltip-container {
+  background: white;
+  position: absolute;
+  z-index: 110;
+  box-shadow: 0 30px 90px -20px rgba(0, 0, 0, 0.3), 0 0 1px 1px rgba(0, 0, 0, 0.05);
+  padding: 0;
+  font-size: 14px;
+  border-radius: 2px;
+  display: flex;
+  flex-direction: row;
+  min-width: 200px;
+  //width: min-content;
+  max-width: 400px;
+  min-height: 200px;
+  color: black;
+  visibility: hidden;
+}
+.tooltip-text-container {
+  padding: 16px;
+  flex: 1 1 0px;
+  word-wrap: anywhere;
+}
+.tooltip-text{
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 15;
+  -webkit-box-orient: vertical;
+}
+.tooltip-image-container {
+  padding: 0;
+  flex: 1 1 0px;
+}
+.tooltip-image{
+  height: 100%;
+  object-fit: cover;
+  max-width: 100%;
+  max-height: 100%;
+  width: 100%;
+}
+.show-tooltip{
+  visibility: visible;
+}
+
+.right:before {
+  right: 10px;
+}
+.left:before {
+  left: 10px;
+}
+.top{
+  margin-bottom: 4px;
+  bottom: 100%;
+}
+.bottom{
+  margin-top: 4px;
+}
+.top:before {
+  content: '';
+  position: absolute;
+  border: 8px solid transparent;
+  border-bottom: 0;
+  border-top: 8px solid white;
+  bottom: -7px;
+}
+
+.bottom:before {
+  content: '';
+  position: absolute;
+  border: 8px solid transparent;
+  border-top: 0;
+  border-bottom: 8px solid white;
+  top: -7px;
+}
+
+.highlighting {
+    color: lightgray;
+    text-decoration: underline;
+}

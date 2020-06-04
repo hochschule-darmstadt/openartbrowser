@@ -121,7 +121,8 @@ export class TimelineComponent {
       this.sortItems();
       this.items = this.items.filter(item => item.date);
       const beginOfTimeline = this.items[0].date - this.items[0].date % this.periodSpan;
-      const endOfTimeline =  this.items[this.items.length - 1].date - (this.items[this.items.length - 1].date % this.periodSpan) + this.periodSpan;
+      const endOfTimeline = this.items[this.items.length - 1].date -
+        (this.items[this.items.length - 1].date % this.periodSpan) + this.periodSpan;
       // Set the slider of the timeline to the middle!
       this.value = (beginOfTimeline + endOfTimeline) / 2;
       this.previousValue = this.value;
@@ -306,46 +307,46 @@ export class TimelineComponent {
         }
       });
     /** Transform artists into Timeline items and set description */
-    await this.dataService.findMultipleById(Array.from(artistIds) as any, EntityType.ARTIST).then((artworkArtists: Artist[]) => {
-      artworkArtists.forEach(artist => {
-        if (artist.imageSmall && (artist.date_of_birth || artist.date_of_death)) {
-          artist.date_of_birth = undefined;
+    await this.dataService.findMultipleById(Array.from(artistIds) as any, EntityType.ARTIST)
+      .then((artworkArtists: Artist[]) => {
+        artworkArtists.forEach(async artist => {
+          if (artist.imageSmall && (artist.date_of_birth || artist.date_of_death)) {
+            // decide whether to use date of birth or date of death for sorting (default: date of birth)
+            // and set description accordingly
+            let artistDescription;
+            if (artist.date_of_birth && artist.date_of_death) {
+              artistDescription = `${artist.date_of_birth} - ${artist.date_of_death}`;
+            } else if (artist.date_of_birth) {
+              artistDescription = `*${artist.date_of_birth}`;
+            } else {
+              artistDescription = '†' + artist.date_of_death;
+            }
+            let artistSortDate;
+            if (artist.date_of_birth && artist.date_of_death) {
+              artistSortDate = Math.floor(artist.date_of_birth + (artist.date_of_death - artist.date_of_birth) * 0.33);
+            } else if (artist.date_of_birth) {
+              artistSortDate = artist.date_of_birth;
+            } else {
+              artistSortDate = artist.date_of_death;
+            }
 
-          // decide whether to use date of birth or date of death for sorting (default: date of birth)
-          // and set description accordingly
-          let artistDescription;
-          let artistSortDate;
-          if (artist.date_of_birth && artist.date_of_death) {
-            artistDescription = `${artist.date_of_birth} - ${artist.date_of_death}`;
-            artistSortDate = artist.date_of_birth;
-          } else if (artist.date_of_birth) {
-            artistDescription = `*${artist.date_of_birth}`;
-            artistSortDate = artist.date_of_birth;
-          } else {
-            artistDescription = '†' + artist.date_of_death;
-            artistSortDate = artist.date_of_death;
+            artists.push({
+              id: artist.id,
+              label: artist.label,
+              description: artistDescription,
+              abstract: artist.abstract,
+              wikipediaLink: artist.wikipediaLink,
+              image: artist.image,
+              imageSmall: artist.imageSmall,
+              imageMedium: artist.imageMedium,
+              type: artist.type,
+              absoluteRank: artist.absoluteRank,
+              relativeRank: artist.relativeRank,
+              date: artistSortDate
+            } as TimelineItem);
           }
-
-          artists.push({
-            id: artist.id,
-            label: artist.label,
-            description: artistDescription,
-            abstract: artist.abstract,
-            wikipediaLink: artist.wikipediaLink,
-            image: artist.image,
-            imageSmall: artist.imageSmall,
-            imageMedium: artist.imageMedium,
-            type: artist.type,
-            absoluteRank: artist.absoluteRank,
-            relativeRank: artist.relativeRank,
-            /* TODO:REVIEW
-                Determine better value (and fitting description) for artistSortDate
-              */
-            date: artistSortDate
-          } as TimelineItem);
-        }
+        });
       });
-    });
     return artists;
   }
 

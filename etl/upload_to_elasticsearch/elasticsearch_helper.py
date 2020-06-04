@@ -3,7 +3,7 @@ import json
 import time
 import uuid
 from pathlib import Path
-
+from typing import List, Optional
 import requests
 from elasticsearch import Elasticsearch, helpers
 from shared.utils import language_config_to_list
@@ -13,15 +13,17 @@ from shared.utils import language_config_to_list
 # It's easier to set an estimated value here than calculate it. The value varies within seconds.
 SNAPSHOT_TIMEOUT = 40
 
+lang_keys = [item[0] for item in language_config_to_list()]
 
-def create_empty_index(index_name) -> bool:
-    """
-    Creates an empty index (meaning no documents inside).
 
-    :arg index_name: Name of the index to be created.
+def create_empty_index(index_name: str) -> bool:
+    """Creates an empty index (meaning no documents inside)
+
+    Args:
+        index_name: Name of the index to be created
 
     Returns:
-        True if index didn't exist and could be created else False.
+        True if index didn't exist and could be created else False
     """
     es = Elasticsearch()
 
@@ -32,14 +34,14 @@ def create_empty_index(index_name) -> bool:
     return True
 
 
-def delete_index(index_name) -> bool:
-    """
-    Delete an index by it's name.
+def delete_index(index_name: str) -> bool:
+    """Delete an index by it's name
 
-    :arg index_name: Name of the index to be deleted.
+    Args:
+        index_name: Name of the index to be deleted
 
     Returns:
-        True if index extists and could be deleted else False.
+        True if index extists and could be deleted else False
     """
     es = Elasticsearch()
     if es.indices.exists(index=index_name):
@@ -50,13 +52,12 @@ def delete_index(index_name) -> bool:
     return False
 
 
-def create_index(index_name, filename) -> None:
-    """
-    Creates an index with new documents from art_ontology_<language_code>.json.
+def create_index(index_name: str, filename: str) -> None:
+    """Creates an index with new documents from art_ontology_<language_code>.json
 
-    :arg index_name: Index name in which documents should be created.
-    :arg filename: Name of the filename which contains the documents to be created
-               e. g. art_ontology_<language_code>.json.
+    Args:
+        index_name: Index name in which documents should be created
+        filename: Name of the filename which contains the documents to be created e. g. art_ontology_<language_code>.json
     """
     # Uses localhost:9200 (elasticsearch default) to create the index with it's documents
     es = Elasticsearch()
@@ -99,18 +100,19 @@ def create_index(index_name, filename) -> None:
     )
 
 
-def swap_index(index_name_new, index_name_current, index_name_old) -> bool:
-    """
-    Swaps the new index with the current one the current will
-    be backed up in index_name_old.
-    This is possible because the backup and restore feature of elasticsearch
-    allows renaming when restoring a snapshot.
+def swap_index(
+    index_name_new: str, index_name_current: str, index_name_old: str
+) -> bool:
+    """Swaps the new index with the current one the current will be backed up in index_name_old
+    This is possible because the backup and restore feature of elasticsearch allows renaming when restoring a snapshot
 
-    :arg index_name_new: Newly created index which replaces the current index.
-    :arg index_name_current: The current index which replaces the old index.
-    :arg index_name_old: The old index which will be deleted.
+    Args:
+        index_name_new: Newly created index which replaces the current index
+        index_name_current: The current index which replaces the old index
+        index_name_old: The old index which will be deleted
+
     Returns:
-        True when the index swap worked else False.
+        True when the index swap worked else False
     """
     es = Elasticsearch()
     print("Checking if current index exists")
@@ -176,23 +178,25 @@ def swap_index(index_name_new, index_name_current, index_name_old) -> bool:
 
 
 def create_snapshot_for_index(
-    index_name,
-    snapshot_name,
-    repository_name="openartbrowser_index_backup",
-    backup_directory="/var/lib/elasticsearch/backup",
+    index_name: str,
+    snapshot_name: str,
+    repository_name: Optional[str] = "openartbrowser_index_backup",
+    backup_directory: Optional[str] = "/var/lib/elasticsearch/backup",
 ) -> None:
-    """
-    :arg index_name: Index for which the snapshot should be created for.
-    :arg snapshot_name: Name for the snapshot.
-    :arg repository_name: Name for a repository which stores snapshots.
-                          The openartbrowser repository is 'openartbrowser_index_backup'.
-    :arg backup_directory: Directory in which the repository is located.
-                           The openartbrowser backup directory is /var/lib/elasticsearch/backup
-                           IMPORTANT:
-                           1. The directory has to exist before execution
-                           2. This directory is also needed in the elasticsearch.yaml configuration file
-                               - Following entry in elasticsearch.yml required:
-                               path.repo: ["path_to_folder"]
+    """Creates a snapshot for an given index
+
+    Args:
+        index_name: Index for which the snapshot should be created for
+        snapshot_name: Name for the snapshot
+        repository_name: Name for a repository which stores snapshots
+                            The openartbrowser repository is 'openartbrowser_index_backup'
+        backup_directory: Directory in which the repository is located
+                            The openartbrowser backup directory is /var/lib/elasticsearch/backup
+                            IMPORTANT:
+                            1. The directory has to exist before execution
+                            2. This directory is also needed in the elasticsearch.yaml configuration file
+                                - Following entry in elasticsearch.yml required:
+                                path.repo: ["path_to_folder"]
     """
     es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT)
 
@@ -223,17 +227,17 @@ def create_snapshot_for_index(
 
 
 def apply_snapshot_from_repository(
-    snapshot_name,
-    index_name,
-    new_index_name,
-    repository_name="openartbrowser_index_backup",
+    snapshot_name: str,
+    index_name: str,
+    new_index_name: str,
+    repository_name: Optional[str] = "openartbrowser_index_backup",
 ) -> None:
-    """
-    Applies a snapshot created in an earlier creation from a repository.
+    """Applies a snapshot created in an earlier creation from a repository
 
-    :arg index_name: Name of the index the snapshot should be applied.
-    :arg repository_name: Name of the repository the snapshot is in.
-    :arg snapshot_name: Name of the snapshot.
+    Args:
+        index_name: Name of the index the snapshot should be applied
+        repository_name: Name of the repository the snapshot is in
+        snapshot_name: Name of the snapshot
     """
     es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT)
 
@@ -255,17 +259,17 @@ def apply_snapshot_from_repository(
 
 
 def delete_snapshot_from_repository(
-    snapshot_name,
-    repository_name="openartbrowser_index_backup",
-    backup_directory="/var/lib/elasticsearch/backup",
+    snapshot_name: str,
+    repository_name: Optional[str] = "openartbrowser_index_backup",
+    backup_directory: Optional[str] = "/var/lib/elasticsearch/backup",
 ) -> None:
-    """
-    Delete a snapshot from the repository.
+    """Delete a snapshot from the repository
 
-    :arg snapshot_name: Name of the snapshot to be deleted.
-    :arg repository_name: Name of the repository the snapshot is in.
-    :arg backup_directory: Directory in which the repository is located.
-                           See create_snapshot_for_index for more information on that.
+    Args:
+        snapshot_name: Name of the snapshot to be deleted
+        repository_name: Name of the repository the snapshot is in
+        backup_directory: Directory in which the repository is located
+                           See create_snapshot_for_index for more information on that
     """
     es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT)
 
@@ -285,13 +289,14 @@ def delete_snapshot_from_repository(
 
 
 def list_all_snapshots_from_repository(
-    elastic_search_url="localhost:9200", repository_name="openartbrowser_index_backup"
+    elastic_search_url: Optional[str] = "localhost:9200",
+    repository_name: Optional[str] = "openartbrowser_index_backup",
 ) -> None:
-    """
-    Lists all created snapshots in a repository.
+    """Lists all created snapshots in a repository
 
-    :arg elastic_search_url: Url of the ElasticSearch server. The default is 'localhost:9200'.
-    :arg repository_name: Name of the repository which contains the snapshots.
+    Args:
+        elastic_search_url: Url of the ElasticSearch server. The default is 'localhost:9200'
+        repository_name: Name of the repository which contains the snapshots
     """
     try:
         req = requests.get(
@@ -302,11 +307,11 @@ def list_all_snapshots_from_repository(
         print(str(e))
 
 
-def list_all_indices(elastic_search_url="localhost:9200") -> None:
-    """
-    List all indices.
+def list_all_indices(elastic_search_url: Optional[str] = "localhost:9200") -> None:
+    """List all indices
 
-    :arg elastic_search_url: Url of the ElasticSearch server. The default is 'localhost:9200'.
+    Args:
+        elastic_search_url: Url of the ElasticSearch server. The default is 'localhost:9200'
     """
     try:
         req = requests.get(url="http://" + elastic_search_url + "/_cat/indices")
@@ -316,17 +321,17 @@ def list_all_indices(elastic_search_url="localhost:9200") -> None:
 
 
 def create_index_for_each_language(
-    lang_keys=[item[0] for item in language_config_to_list()],
-    filepath=Path(__file__).resolve().parent.parent / "crawler_output",
+    language_keys: Optional[List[str]] = lang_keys,
+    filepath: Optional[str] = Path(__file__).resolve().parent.parent / "crawler_output",
 ) -> None:
-    """
-    Creates a new index for each language in the languageconfig.csv.
-    The new indice name convention is <indexname>_new.
+    """Creates a new index for each language in the languageconfig.csv
+    The new indice name convention is <indexname>_new
 
-    :arg lang_leys: Languagekeys for which the index has to be created.
-    :arg filepath: Location of the art_ontology_*.json language files.
+    Args:
+        language_keys: Languagekeys for which the index has to be created
+        filepath: Location of the art_ontology_*.json language files
     """
-    for key in lang_keys:
+    for key in language_keys:
         create_index(
             filename=filepath / str("art_ontology_" + key + ".json"),
             index_name=key + "_new",
@@ -334,15 +339,15 @@ def create_index_for_each_language(
 
 
 def swap_index_for_each_language(
-    lang_keys=[item[0] for item in language_config_to_list()],
+    language_keys: Optional[List[str]] = lang_keys,
 ) -> None:
-    """
-    Swaps a newly created index (identified by it's name *_new) with the current one.
-    The current index is saved to *_old.
+    """Swaps a newly created index (identified by it's name *_new) with the current one
+    The current index is saved to *_old
 
-    :arg lang_leys: Languagekeys for which the index has to be created.
+    Args:
+        language_keys: Languagekeys for which the index has to be created
     """
-    for key in lang_keys:
+    for key in language_keys:
         swap_index(
             index_name_new=key + "_new",
             index_name_current=key,
@@ -351,20 +356,21 @@ def swap_index_for_each_language(
 
 
 def swap_to_backup_for_each_language(
-    lang_keys=[item[0] for item in language_config_to_list()],
-    delete_non_working_indices=True,
+    language_keys: Optional[List[str]] = lang_keys,
+    delete_non_working_indices: Optional[bool] = True,
 ) -> None:
-    """
-    Can be used if the current indices aren't working. This resets the indices to the <languagecode>_old
-    indices. The current non working indices can be saved to an index with the restoration date as name.
-    This is only possible once because of the renaming of the indices <languagecode>_old to <languagecode>.
+    """Can be used if the current indices aren't working
+    This resets the indices to the <languagecode>_old indices
+    he current non working indices can be saved to an index with the restoration date as name
+    This is only possible once because of the renaming of the indices <languagecode>_old to <languagecode>
 
-    :arg lang_leys: Languagekeys for which the index has to be created.
-    :arg delete_non_working_indices: If this is set to True the non working indices will be deleted.
-                                     For debugging purposes set to this False.
+    Args:
+        language_keys: Languagekeys for which the index has to be created
+        delete_non_working_indices: If this is set to True the non working indices will be deleted
+                                    For debugging purposes set to this False
     """
     es = Elasticsearch()
-    for key in lang_keys:
+    for key in language_keys:
         not_working_index_name = key + time.strftime("%Y%m%d-%H%M%S")
         es.indices.open(key + "_old")  # open old index for reapplying
         if swap_index(
@@ -393,16 +399,16 @@ def swap_to_backup_for_each_language(
 
 
 def count_check_for_each_language(
-    lang_keys=[item[0] for item in language_config_to_list()],
-    filepath=Path(__file__).resolve().parent.parent / "crawler_output",
+    language_keys: Optional[List[str]] = lang_keys,
+    filepath: Optional[str] = Path(__file__).resolve().parent.parent / "crawler_output",
 ) -> bool:
-    """
-    After the indices were created check that the indice document count
-    equals the JSON object count of the corresponding JSON file.
-    The corresponding JSON file is located within the filepath parameters path.
+    """After the indices were created check that the indice document count
+    equals the JSON object count of the corresponding JSON file
+    The corresponding JSON file is located within the filepath parameters path
 
-    :arg lang_leys: Languagekeys for which the check has to be satisfied.
-    :arg filepath: Location of the art_ontology_*.json language files.
+    Args:
+        lang_leys: Languagekeys for which the check has to be satisfied.
+        filepath: Location of the art_ontology_*.json language files.
     """
     es = Elasticsearch()
     for key in lang_keys:

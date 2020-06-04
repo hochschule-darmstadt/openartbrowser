@@ -47,7 +47,11 @@
         </ngb-carousel>
 
         <a class="entities-link" [routerLink]="['/' + category.type + 's']">
-        <span class="entities-caption">All {{category.type + 's' | titlecase}}
+        <span class="entities-caption">
+          <span i18n="All@@all">all</span>
+          <span class="ml-1 mr-1" i18n="Entities Type Labels@@entities_labels" *ngIf="category.type; let type">
+            {type, select, artwork {Artworks} motif {Motifs} artist {Artists} location {Locations} genre {Genres} movement {Movements} material {Materials}}
+          </span>
           <i class="fas fa-chevron-right"></i>
         </span>
         </a>

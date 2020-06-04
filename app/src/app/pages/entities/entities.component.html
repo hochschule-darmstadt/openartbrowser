@@ -1,4 +1,11 @@
 <div class="container">
+  <h2>
+    <span i18n="All@@all">all</span>
+    <span class="ml-2" i18n="Entities Type Labels@@entities_labels" *ngIf="type; let type">
+    {type, select, artwork {Artworks} motif {Motifs} artist {Artists} location {Locations} genre {Genres} movement {Movements} material {Materials}}
+  </span>
+  </h2>
+
   <app-infinite-scroll (scrolled)="onScroll()">
     <div class="d-flex flex-wrap bd-highlight mb-3 m-auto justify-content-around">
       <a *ngFor="let entity of entities" class="item"

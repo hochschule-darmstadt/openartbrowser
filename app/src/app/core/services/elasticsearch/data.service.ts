@@ -60,9 +60,9 @@ export class DataService {
    * @param type the type to search in
    * @param ids the ids to search for
    */
-  public findArtworksByType(type: EntityType, ids: string[]): Promise<Artwork[]> {
+  public findArtworksByType(type: EntityType, ids: string[], size = 200): Promise<Artwork[]> {
     const query = new QueryBuilder()
-      .size(200)
+      .size(size)
       .sort(defaultSortField)
       .minimumShouldMatch(1)
       .ofType(EntityType.ARTWORK);

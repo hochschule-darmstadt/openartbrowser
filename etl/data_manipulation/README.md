@@ -34,6 +34,10 @@ The next step is merging all files into one:
 
 > node --max-old-space-size=4096 ../data_manipulation/merge_art_data.js
 
+Next estimate start and end for all movements
+
+> python3 ../data_manipulation/estimate_movement_period.py
+
 After this step add youtube videos
 
 > python3 ../data_manipulation/add_youtube_videos.py

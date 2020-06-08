@@ -5,7 +5,7 @@ HTTP_HEADER = {
     "user_agent": AGENT_HEADER,
 }
 
-MAX_LAG = 10  # see https://www.mediawiki.org/wiki/Manual:Maxlag_parameter
+MAX_LAG = 30  # see https://www.mediawiki.org/wiki/Manual:Maxlag_parameter
 SLEEP_TIME = 60  # Time in seconds to sleep if a request failed
 TIMEOUT = 5  # Time to timeout a request
 

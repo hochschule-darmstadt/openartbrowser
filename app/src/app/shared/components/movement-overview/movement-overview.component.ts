@@ -1,12 +1,13 @@
 import {AfterViewInit, Component, HostListener, Input, OnInit} from '@angular/core';
-import {EntityType} from '../../models/entity.interface';
+import {animate, state, style, transition, trigger} from '@angular/animations';
 import {Options} from 'ng5-slider';
-import {DataService} from '../../../core/services/elasticsearch/data.service';
-import {Artwork} from '../../models/artwork.interface';
 import {Subject, timer} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
+import {DataService} from '../../../core/services/elasticsearch/data.service';
+import {EntityType} from '../../models/entity.interface';
+import {Artwork} from '../../models/artwork.interface';
 import {Movement} from '../../models/movement.interface';
-import {animate, state, style, transition, trigger} from '@angular/animations';
+import * as ConfigJson from 'src/config/home_movements.conf.json';
 
 interface MovementItem extends Movement {
   artworks: Artwork[]; // holds url to thumbnail images
@@ -31,19 +32,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
 
   /** initial movements to be displayed by the component */
   movements: MovementItem[] = [];
-  defaultMovementIds: string[] = [
-    'Q1474884',   // High Renaissance
-    'Q443153',    // Flemish Primitives
-    'Q37853',     // Baroque
-    'Q1404472',   // Italian Renaissance
-    'Q2352880',   // Dutch Golden Age painting
-    'Q37068',     // Romanticism
-    'Q122960',    // Rococo
-    'Q14378',     // neoclassicism
-    'Q4692',      // Renaissance
-    'Q46825',     // Gothic art
-    'Q170292',    // classicism
-  ];
+  defaultMovementIds: string[] = Object.keys(ConfigJson.movementIds);
   @Input() inputMovements: Movement[];
 
   /** 2d array holding items to be displayed */
@@ -91,7 +80,15 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
     } else {
       this.dataService.findMultipleById<Movement>(this.defaultMovementIds, EntityType.MOVEMENT)
         .then(movements => {
-          this.movements = movements.filter(m => m.start_time && m.end_time) as MovementItem[];
+          this.movements = movements.filter(m => {
+            if ((m.start_time || m.start_time_est) && (m.end_time || m.end_time_est)) {
+              return true;
+            } else {
+              m.start_time_est = 1242;
+              m.end_time_est = 1542;
+              return true;
+            }
+          }) as MovementItem[];
           this.initializeMovements();
         });
     }
@@ -108,7 +105,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
       movement.artworks = [];
     }
 
-    this.movements.sort((a, b) => (a.start_time > b.start_time ? 1 : -1));
+    this.movements.sort((a, b) => (this.getStartTime(a) > this.getEndTime(b) ? 1 : -1));
     this.currentMovementId = this.movements[0].id;
 
     // get all movementIds except currentMovementId
@@ -152,12 +149,8 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
 
   /** finds start and end of displayed period */
   private setTimeline() {
-    const firstStart = Math.min.apply(Math, this.movements.map((m) => {
-      return m.start_time;
-    }));
-    const lastEnd = Math.max.apply(Math, this.movements.map((m) => {
-      return m.end_time;
-    }));
+    const firstStart = Math.min.apply(Math, this.movements.map((m) => this.getStartTime(m)));
+    const lastEnd = Math.max.apply(Math, this.movements.map((m) => this.getEndTime(m)));
 
 
     const dateSpan = lastEnd - firstStart;
@@ -202,7 +195,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
           this.boxes[rowNum].push(this.movements[i]); // if first item in row, insert
           rowNum = 0; // start again at first row
           set = true;
-        } else if (this.movements[i].start_time < this.boxes[rowNum].slice(-1)[0].end_time) {
+        } else if (this.getStartTime(this.movements[i]) < this.getEndTime(this.boxes[rowNum].slice(-1)[0])) {
           // if overlapping, continue at next row
           rowNum++;
         } else {
@@ -225,22 +218,22 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
     for (row of this.boxes) {
       // fill in first space
       row.splice(0, 0, {
-        width: (row[0].start_time - this.timelineStart) / (timelineLen / 100)
+        width: (this.getStartTime(row[0]) - this.timelineStart) / (timelineLen / 100)
       } as MovementItem);
       // fill in spaces between all movements in one row
       for (let j = 1; j < row.length; j++) {
         // set width of current movement
-        row[j].width = (row[j].end_time - row[j].start_time) / (timelineLen / 100);
+        row[j].width = (this.getEndTime(row[j]) - this.getStartTime(row[j])) / (timelineLen / 100);
         // fill in space between predecessor and current item
-        if (row[j].start_time > row[j - 1].end_time) {
+        if (this.getStartTime(row[j]) > this.getEndTime(row[j - 1])) {
           row.splice(j, 0, {
-            width: (row[j].start_time - row[j - 1].end_time) / (timelineLen / 100)
+            width: (this.getStartTime(row[j]) - this.getEndTime(row[j - 1])) / (timelineLen / 100)
           } as MovementItem);
         }
       }
       // fill space between last movement and end of period
       row.push({
-        width: (this.timelineEnd - row.slice(-1)[0].end_time) / (timelineLen / 100)
+        width: (this.timelineEnd - this.getEndTime(row.slice(-1)[0])) / (timelineLen / 100)
       } as MovementItem);
     }
   }
@@ -318,7 +311,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
 
     // TODO: move this?
     this.currentMovementLabel = this.movements[currMovementIndex].label;
-    this.currentDate = this.movements[currMovementIndex].start_time + ' - ' + this.movements[currMovementIndex].end_time;
+    this.currentDate = this.getStartTime(this.movements[currMovementIndex]) + ' - ' + this.getEndTime(this.movements[currMovementIndex]);
   }
 
   selectRandomMovement() {
@@ -342,5 +335,14 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
   resetShowThumbnail() {
     this.showThumbnail = true;
   }
+
+  private getStartTime(movement: Movement): number {
+    return movement.start_time ? movement.start_time : movement.start_time_est;
+  }
+
+  private getEndTime(movement: Movement): number {
+    return movement.end_time ? movement.end_time : movement.end_time_est;
+  }
+
 }
 

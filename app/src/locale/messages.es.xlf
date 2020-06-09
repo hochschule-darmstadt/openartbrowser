@@ -707,6 +707,10 @@
         <source>Main Motif</source>
         <target state="final">Motivo Principal</target>
       </trans-unit>
+      <trans-unit id="iconography" datatype="html">
+        <source>Iconography</source>
+        <target state="final">Iconografía</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

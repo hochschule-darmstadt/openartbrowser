@@ -30,12 +30,14 @@ jobs:
     - language: python
       python: 3.7
       before_install:
-        - cd scripts/
+        - cd etl/
+        - export PYTHONPATH="${PYTHONPATH}:${pwd}"
         - python --version
       install:
-        - pip3 install -r requirements.txt
+        - pip install -r requirements.txt
       script:
         - python data_extraction/get_wikidata_items.py -d 1
+        - python data_extraction/get_wikipedia_extracts.py
 
     - stage: deploy-to-staging
       if: branch = staging AND type = push

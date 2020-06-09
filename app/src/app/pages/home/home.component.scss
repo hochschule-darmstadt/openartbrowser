@@ -32,7 +32,7 @@ $color1: #00bc8c;
   margin-left: auto;
   margin-right: auto;
   margin-top: 0;
-  margin-bottom: 6rem;
+  margin-bottom: 2rem;
   position: relative;
 
   @media (min-width: 577px) and (max-width: 767px) {
@@ -44,16 +44,14 @@ $color1: #00bc8c;
 
   .logo {
     width: 100%;
-    margin-bottom: 6rem;
 
     span {
       font-size: 4vh;
-      padding-top: 1vh;
       letter-spacing: 0;
       color: $color1;
 
       @media (min-width: 768px) and (max-width: 991px) {
-        font-size: 3vh;
+        font-size: 4vh;
       }
       @media (min-width: 577px) and (max-width: 767px) {
         font-size: 3vh;
@@ -64,27 +62,27 @@ $color1: #00bc8c;
         padding-top: 0;
       }
       @media (min-width: 0px) and (max-width: 376px) {
-        font-size: 1.5vh;
+        font-size: 1vh;
         padding-top: 0;
       }
     }
 
     h1 {
-      font-size: 12vh;
+      font-size: 7vh;
       letter-spacing: 0;
       color: $color1;
 
       @media (min-width: 768px) and (max-width: 991px) {
-        font-size: 9vh;
-      }
-      @media (min-width: 577px) and (max-width: 767px) {
         font-size: 7vh;
       }
-      @media (min-width: 377px) and (max-width: 576px) {
+      @media (min-width: 577px) and (max-width: 767px) {
         font-size: 5vh;
       }
+      @media (min-width: 377px) and (max-width: 576px) {
+        font-size: 3.5vh;
+      }
       @media (min-width: 0px) and (max-width: 376px) {
-        font-size: 4vh;
+        font-size: 2vh;
       }
     }
   }
@@ -287,4 +285,12 @@ $color1: #00bc8c;
 ::ng-deep .container-category .carousel-control-next:hover {
   border-radius: 0 15px 15px 0;
   background: linear-gradient(270deg, #000000, #44444400);
+}
+
+
+/** do not display movement overview in mobile version **/
+@media only screen and (max-width: 500px) {
+  #mv_overview {
+    display: none;
+  }
 }

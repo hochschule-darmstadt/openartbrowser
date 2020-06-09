@@ -40,6 +40,7 @@
     "es-query-builder": "github:hochschule-darmstadt/es-query-builder#master",
     "lodash": "^4.17.15",
     "ng5-slider": "^1.2.4",
+    "ngx-fit-text": "0.0.10",
     "ngx-image-viewer": "github:hochschule-darmstadt/ngx-image-viewer#build",
     "rxjs": "^6.5.3",
     "tslib": "^1.10.0",

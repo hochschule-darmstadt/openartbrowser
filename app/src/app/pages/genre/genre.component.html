@@ -13,9 +13,10 @@
     </div>
 
     <div class="col-sm-5 img" *ngIf="genre?.imageSmall">
-      <img class="img-fluid rounded-circle" src="{{ genre?.imageSmall }}" alt="" />
+      <img class="img-fluid rounded-circle" src="{{ genre?.imageSmall }}" alt=""/>
     </div>
   </div>
-  <h3 i18n="Artworks label@@artworks">Artworks</h3>
+  <span class="artworks-amount">{{ genre?.absoluteRank }}</span>
+  <span class="ml-1 slider-heading" i18n="Artworks label@@artworks">Artworks</span>
   <app-slider [items]="sliderItems"></app-slider>
 </div>

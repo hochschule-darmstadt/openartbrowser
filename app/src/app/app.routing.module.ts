@@ -18,7 +18,7 @@ const routes: Routes = [
   },
   {
     path: 'imprint',
-    loadChildren: './pages/imprint/imprint.routing.module#ImpressRoutingModule'
+    loadChildren: './pages/imprint/imprint.routing.module#ImprintRoutingModule'
   },
   {
     path: 'data-protection',

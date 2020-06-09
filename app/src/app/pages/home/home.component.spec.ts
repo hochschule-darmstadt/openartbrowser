@@ -11,6 +11,10 @@ import { CarouselComponent } from 'src/app/shared/components/carousel/carousel.c
 import { SlideComponent } from 'src/app/shared/components/carousel/slide/slide.component';
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 import { Angulartics2RouterlessModule } from 'angulartics2/routerlessmodule';
+import { MovementOverviewComponent } from '../../shared/components/movement-overview/movement-overview.component';
+import { Ng5SliderModule } from 'ng5-slider';
+import { NgxFitTextModule } from 'ngx-fit-text';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
@@ -18,8 +22,24 @@ describe('HomeComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [NgbModule, FormsModule, HttpClientModule, RouterModule.forRoot([]), Angulartics2RouterlessModule.forRoot()],
-      declarations: [HomeComponent, SearchComponent, SearchResultComponent, CarouselComponent, SlideComponent],
+      imports: [
+        NgbModule,
+        FormsModule,
+        HttpClientModule,
+        RouterModule.forRoot([]),
+        Angulartics2RouterlessModule.forRoot(),
+        Ng5SliderModule,
+        NgxFitTextModule,
+        BrowserAnimationsModule
+      ],
+      declarations: [
+        HomeComponent,
+        SearchComponent,
+        SearchResultComponent,
+        CarouselComponent,
+        SlideComponent,
+        MovementOverviewComponent
+      ],
       providers: [DataService]
     }).compileComponents();
   }));

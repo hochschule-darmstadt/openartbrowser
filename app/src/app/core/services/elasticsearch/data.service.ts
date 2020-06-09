@@ -1,13 +1,12 @@
 import * as _ from 'lodash';
 import {HttpClient} from '@angular/common/http';
-import {Injectable, Inject, LOCALE_ID} from '@angular/core';
-import {EntityType, Artwork, ArtSearch, Entity, Iconclass, EntityIcon} from 'src/app/shared/models/models';
+import {Inject, Injectable,LOCALE_ID} from '@angular/core';
+import {ArtSearch, Artwork, Entity,  EntityIcon, EntityType, Iconclass, Movement} from 'src/app/shared/models/models';
 import {elasticEnvironment} from 'src/environments/environment';
 import QueryBuilder from './query.builder';
 import {usePlural} from 'src/app/shared/models/entity.interface';
 
 const defaultSortField = 'relativeRank';
-
 
 /**
  * Service that handles the requests to the API
@@ -71,6 +70,30 @@ export class DataService {
   }
 
   /**
+   * Find all movements which are part of topMovement and have start_time and end_time set
+   * @param topMovementId Id of 'parent' movement
+   */
+  public getHasPartMovements(topMovementId: string): Promise<Movement[]> {
+    return this.findById<Movement>(topMovementId, EntityType.MOVEMENT).then(topMovement => {
+      return this.findMultipleById<Movement>(topMovement.has_part, EntityType.MOVEMENT).then(hasPartMovements => {
+        return hasPartMovements.filter(m => m.start_time && m.end_time);
+      });
+    });
+  }
+
+  /**
+   * Find all movements which movement is part of and have start_time and end_time set
+   * @param subMovementId Id of 'sub' movement
+   */
+  public getPartOfMovements(subMovementId: string): Promise<Movement[]> {
+    return this.findById<Movement>(subMovementId, EntityType.MOVEMENT).then(subMovement => {
+      return this.findMultipleById<Movement>(subMovement.part_of, EntityType.MOVEMENT).then(partOfMovements => {
+        return partOfMovements.filter(m => m.start_time && m.end_time);
+      });
+    });
+  }
+
+  /**
    * Find an artwork by label
    * @param label artwork label
    */
@@ -80,6 +103,19 @@ export class DataService {
       .sort(defaultSortField)
       .mustMatch('type', 'artwork')
       .shouldMatch('label', `${label}`);
+    return this.performQuery<Artwork>(query);
+  }
+
+  /**
+   * Find an artwork by movement
+   * @param movement label of movement
+   */
+  public findArtworksByMovement(movement: string): Promise<Artwork[]> {
+    const query = new QueryBuilder()
+      .size(5)
+      .sort(defaultSortField)
+      .mustMatch('type', 'artwork')
+      .mustMatch('movements', `${movement}`);
     return this.performQuery<Artwork>(query);
   }
 
@@ -179,6 +215,11 @@ export class DataService {
     const entities = this.filterData<T>(response, type);
     // set type specific attributes
     entities.forEach(entity => this.setTypes(entity));
+
+    if (!entities.length) {
+      console.warn(NoResultsWarning(query));
+    }
+
     return entities;
   }
 
@@ -229,3 +270,11 @@ export class DataService {
     }
   }
 }
+
+const NoResultsWarning = query => `
+The performed es-query did not yield any results. This might result in strange behavior in the application.
+
+If you encounter any such issues please consider opening a bug report: https://github.com/hochschule-darmstadt/openartbrowser/issues/new?assignees=&labels=&template=bug_report.md&title=
+
+Query: ${query.toString()}
+`;

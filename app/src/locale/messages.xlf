@@ -669,6 +669,14 @@
         </context-group>
         <note priority="1" from="description">Official page label</note>
       </trans-unit>
+      <trans-unit id="iconography" datatype="html">
+        <source>Iconography</source>
+        <context-group purpose="iconography">
+          <context context-type="sourcefile">app/shared/components/iconclass/iconclass.component.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+        <note priority="1" from="description">Iconography</note>
+      </trans-unit>
     </body>
   </file>
 </xliff>

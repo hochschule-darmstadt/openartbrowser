@@ -32,7 +32,7 @@ COPY ["./data_manipulation/estimate_movement_period.py", "/app/data_manipulation
 RUN ls -lah /app/crawler_output/intermediate_files/json
 
 RUN pip install pathlib ijson
-RUN ["python", "./data_manipulation/estimate_movement_period.py", "-d"]
+RUN ["python", "./data_manipulation/estimate_movement_period.py"]
 
 # ------------------------------------------------
 

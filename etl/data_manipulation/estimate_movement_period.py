@@ -4,6 +4,7 @@ import ijson
 
 inceptions = {}
 
+
 def find_start_end_in_artworks(artworks_file):
     artworks_list = ijson.items(open(artworks_file, "r", encoding="utf-8"), "item")
     # find first and last inception for each movement in artworks
@@ -24,19 +25,12 @@ if __name__ == "__main__":
     # start = datetime.now()
     movements_file = (Path(
         __file__).resolve().parent.parent / "crawler_output" / "intermediate_files" / "json" / "movements.json")
-    drawings_file = (Path(
-        __file__).resolve().parent.parent / "crawler_output" / "intermediate_files" / "json" / "artworks" / "drawings.json")
-    paintings_file = (Path(
-        __file__).resolve().parent.parent / "crawler_output" / "intermediate_files" / "json" / "artworks" / "paintings.json")
-    sculptures_file = (Path(
-        __file__).resolve().parent.parent / "crawler_output" / "intermediate_files" / "json" / "artworks" / "sculptures.json")
-    movements_output_file = (Path(
-        __file__).resolve().parent.parent / "crawler_output" / "intermediate_files" / "json" / "movements.json")
+    artworks_file = (Path(
+        __file__).resolve().parent.parent / "crawler_output" / "intermediate_files" / "json" / "artworks.json")
+    movements_output_file = movements_file  # Change here for different output file
     movements_list = ijson.items(open(movements_file, "r", encoding="utf-8"), 'item')
 
-    find_start_end_in_artworks(drawings_file)
-    find_start_end_in_artworks(paintings_file)
-    find_start_end_in_artworks(sculptures_file)
+    find_start_end_in_artworks(artworks_file)
 
     movements_modified = []
     # for each movement check if start/end needs to be estimated
@@ -48,7 +42,6 @@ if __name__ == "__main__":
                 movement['start_time_est'] = inceptions[movement['id']]['start']
             else:
                 movement['start_time_est'] = ''
-
 
             if (not movement['end_time'] and (
                     not movement['start_time'] or inceptions[movement['id']]['end'] > movement['start_time'])) or (

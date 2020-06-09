@@ -33,11 +33,13 @@ export class EntitiesComponent implements OnInit {
   }
 
   ngOnInit() {
-    /** get type which shall be handled from url */
-    this.route.pathFromRoot[1].url.subscribe(val => {
-      const lastPathSegment = val[0].path.substr(0, val[0].path.length - 1);
-      this.type = EntityType[lastPathSegment.toUpperCase() as keyof typeof EntityType];
-    });
+    if (this.route.pathFromRoot[1]) {
+      /** get type which shall be handled from url */
+      this.route.pathFromRoot[1].url.subscribe(val => {
+        const lastPathSegment = val[0].path.substr(0, val[0].path.length - 1);
+        this.type = EntityType[lastPathSegment.toUpperCase() as keyof typeof EntityType];
+      });
+    }
   }
 
   /** This gets called by the app-infinite-scroll component and fetches new data */

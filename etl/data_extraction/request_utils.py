@@ -1,6 +1,9 @@
+"""Helper functions for requests
+"""
 import datetime
 import time
 from urllib.error import HTTPError
+from typing import Dict, Any, List, Tuple, Optional
 
 import requests
 from data_extraction.constants import MAX_LAG, SLEEP_TIME, TIMEOUT
@@ -9,17 +12,34 @@ from urllib3.util import Retry
 
 
 def send_http_request(
-    parameters,
-    header,
-    url,
-    logging,
-    initial_timeout=0,
-    items=[],
-    abstracts=False,
-    timeout=TIMEOUT,
-    sleep_time=SLEEP_TIME,
-    maxlag=MAX_LAG,
-):
+    parameters: Dict,
+    header: Dict,
+    url: str,
+    logging: Any,
+    initial_timeout: Optional[int] = 0,
+    items: Optional[List[str]] = [],
+    abstracts: Optional[bool] = False,
+    timeout: Optional[int] = TIMEOUT,
+    sleep_time: Optional[int] = SLEEP_TIME,
+    maxlag: Optional[int] = MAX_LAG,
+) -> Dict:
+    """Send a HTTP request to an endpoint
+
+    Args:
+        parameters: Dict of params
+        header: HTTP header to send as dict
+        url: URL of an endpoint
+        logging (Logger): Logger from the calling script
+        initial_timeout: Initial timeout if specific errors occur. If the timeout is exceeded the data extraction exits with an error. Defaults to 0.
+        items: List of qids to extract, relevant for wikidata extraction. Defaults to empty list.
+        abstracts: True if wikipedia extracts are extracted. Defaults to False.
+        timeout: Seconds how long the request should wait until it times out. Defaults to TIMEOUT.
+        sleep_time: How long should the process sleep until trying again. Defaults to SLEEP_TIME.
+        maxlag: If the server exceeds maxlag seconds then the HTTP request should try again in maxlag seconds. Defaults to MAX_LAG.
+
+    Returns:
+        A dict containing the response from the called endpoint
+    """
     while True:
         try:
             t0 = time.time()
@@ -86,10 +106,24 @@ def send_http_request(
 
 
 def requests_retry_session(
-    retries=3, backoff_factor=0.3, status_forcelist=(500, 502, 504), session=None,
-):
-    """ Request session with retry possibility
-        Source: https://www.peterbe.com/plog/best-practice-with-retries-with-requests
+    retries: Optional[int] = 3,
+    backoff_factor: Optional[float] = 0.3,
+    status_forcelist: Optional[Tuple[int, int, int]] = (500, 502, 504),
+    session: Optional[Any] = None,
+) -> Any:
+    """Request session with retry possibility
+
+    Args:
+        retries: Number of retries for a session. Defaults to 3.
+        backoff_factor: Backoff factor for next try. Defaults to 0.3.
+        status_forcelist: Retry on given status codes. Defaults to (500, 502, 504).
+        session (Session): Session object. Defaults to None.
+
+    Returns:
+        Session with retry possibility
+
+    Source:
+        https://www.peterbe.com/plog/best-practice-with-retries-with-requests
     """
     session = session or requests.Session()
     retry = Retry(

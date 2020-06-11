@@ -1,8 +1,8 @@
-"""
-Functions to map a wikidata entity response to an openArtBrowser model.
+"""Functions to map a wikidata entity response to an openArtBrowser model
 """
 
 from pathlib import Path
+from typing import List, Dict, Optional
 
 import data_extraction.map_wd_attribute as map_wd_attribute
 from data_extraction.constants import *
@@ -10,7 +10,6 @@ from data_extraction.get_wikidata_items import get_image_url_by_name
 from shared.utils import language_config_to_list, setup_logger
 
 
-# TODO Find better solution to logger import
 logger = setup_logger(
     "data_extraction.map_wd_response",
     Path(__file__).parent.parent.absolute()
@@ -18,13 +17,22 @@ logger = setup_logger(
     / WIKIDATA_MAP_RESPONSE_LOG_FILENAME,
 )
 
+lang_keys = [item[0] for item in language_config_to_list()]
+
 
 def try_map_response_to_subject(
-    response, type_name, languageKeys=[item[0] for item in language_config_to_list()],
-):
-    """
-    Maps the default attributes which every subject has:
+    response: Dict, type_name: str, language_keys: Optional[List[str]] = lang_keys,
+) -> Dict:
+    """Maps the default attributes which every subject has:
     qid, image, label, description, classes, wikipediaLink (including language specific attributes)
+
+    Args:
+        response: The wikidata entity which should be mapped to an openArtBrowser entity
+        type_name: Type name of the entity
+        language_keys: All language keys which should be extracted. Defaults to languageconfig.csv
+
+    Returns:
+        A dict of an openArtBrowser entity
     """
     try:
         qid = response[ID]
@@ -61,7 +69,7 @@ def try_map_response_to_subject(
         IMAGE: image,
     }
 
-    for langkey in languageKeys:
+    for langkey in language_keys:
         label_lang = map_wd_attribute.try_get_label_or_description(
             response, LABEL[PLURAL], langkey, type_name
         )
@@ -82,7 +90,15 @@ def try_map_response_to_subject(
     return subject_dict
 
 
-def try_map_response_to_artist(response):
+def try_map_response_to_artist(response: Dict) -> Dict:
+    """Maps the oab artist attributes from the wikidata entity to the artist entity
+
+    Args:
+        response: wikidata entity to map to an oab entity
+
+    Returns:
+        A dict of an artist entity
+    """
     gender = map_wd_attribute.try_get_first_qid(
         response, PROPERTY_NAME_TO_PROPERTY_ID[GENDER], ARTIST[SINGULAR]
     )
@@ -118,7 +134,15 @@ def try_map_response_to_artist(response):
     }
 
 
-def try_map_response_to_movement(response):
+def try_map_response_to_movement(response: Dict) -> Dict:
+    """Maps the oab movement attributes from the wikidata entity to the movement entity
+
+    Args:
+        response: wikidata entity to map to an oab entity
+
+    Returns:
+        A dict of an movement entity
+    """
     start_time = map_wd_attribute.try_get_year_from_property_timestamp(
         response, PROPERTY_NAME_TO_PROPERTY_ID[START_TIME], MOVEMENT[SINGULAR]
     )
@@ -145,6 +169,14 @@ def try_map_response_to_movement(response):
 
 
 def try_map_response_to_location(response):
+    """Maps the oab location attributes from the wikidata entity to the location entity
+
+    Args:
+        response: wikidata entity to map to an oab entity
+
+    Returns:
+        A dict of an location entity
+    """
     country = map_wd_attribute.try_get_first_qid(
         response, PROPERTY_NAME_TO_PROPERTY_ID[COUNTRY], LOCATION[SINGULAR]
     )

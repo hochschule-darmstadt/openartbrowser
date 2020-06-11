@@ -1,19 +1,35 @@
+"""Generate an rdf file from the art_ontology_en.json file
+
+Example:
+    python3 generate_rdf.py
+
+Raises:
+    Exception: If an unexpected type is in the art_ontology_en.json an error is thrown
+"""
 import datetime
 import json
 from pathlib import Path
 
 
 def generate_rdf(
-    file=Path(__file__).parent.parent.absolute()
+    file: str = Path(__file__).parent.parent.absolute()
     / "crawler_output"
     / "art_ontology_en.json",
-    header=Path(__file__).parent.absolute() / "art_ontology_header.txt",
-    ontology=Path(__file__).parent.parent.absolute()
+    header: str = Path(__file__).parent.absolute() / "art_ontology_header.txt",
+    ontology: str = Path(__file__).parent.parent.absolute()
     / "crawler_output"
     / "art_ontology_en.ttl",
-):
-    """Generates an RDF Turtle file 'art_ontology_en.ttl' from *.json files"""
+) -> None:
+    """Generates an RDF Turtle file 'art_ontology_en.ttl' from *.json files
 
+    Args:
+        file: Input file to generate the rdf from. Defaults to "crawler_output/art_ontology_en.json".
+        header: Header for the rdf file which is inserted at the begining. Defaults to "art_ontology_header.txt".
+        ontology: Output file. Defaults to "crawler_output/art_ontology_en.ttl".
+
+    Raises:
+        Exception: If an unexpected type is in the art_ontology_en.json an error is thrown
+    """
     print(datetime.datetime.now(), "Start reading the JSON-file")
     print("filename is " + str(file))
 
@@ -44,7 +60,7 @@ def generate_rdf(
                 artists.append(json_object)
 
     configs = {
-        # ToDo: If classes should be used again they have to be loaded above
+        # TODO: If classes should be used again they have to be loaded above
         # They're only contained in the classes.csv
         # there is no JSON for classes generated
         # 'classes': {'json_array': 'classes.csv', 'class': 'rdfs:Class'},

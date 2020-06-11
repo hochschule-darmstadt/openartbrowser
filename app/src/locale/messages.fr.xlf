@@ -557,6 +557,10 @@
         </context-group>
         <note priority="1" from="description">Artworks toggle label</note>
       </trans-unit>
+      <trans-unit id="togglerelatedmovements" datatype="html">
+        <source>Artworks</source><target state="final">Mouvements Associés</target>
+        <note priority="1" from="description">Related movements toggle label</note>
+      </trans-unit>
       <trans-unit id="artwork" datatype="html">
         <source>Artwork</source><target state="final">Œuvre d'art</target>
         <context-group purpose="location">

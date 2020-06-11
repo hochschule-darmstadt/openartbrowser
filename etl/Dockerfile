@@ -55,8 +55,8 @@ COPY ["./upload_to_elasticsearch/", "/app/upload_to_elasticsearch/"]
 
 RUN pip install elasticsearch requests simplejson ijson
 
-RUN ["python", "data_manipulation/add_youtube_videos.py", "-d"]
-RUN ["python", "data_manipulation/split_languages.py", "-d"]
+RUN ["python", "data_manipulation/add_youtube_videos.py"]
+RUN ["python", "data_manipulation/split_languages.py"]
 
 # art_ontology.json is moved to /root because elasticsearch_helper.py
 # expects the json file in the home directory

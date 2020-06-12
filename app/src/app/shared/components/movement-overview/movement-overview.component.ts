@@ -53,6 +53,12 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
   currentDate: string;
   thumbnail: Artwork;
 
+  /** used to only show the image if it is already loaded (this prevents flickering when changing thumbnails */
+  thumbnailLoaded = false;
+
+  /** used for the in/out animation when the thumbnail changes */
+  showThumbnail: boolean;
+
   /** Settings for slider component, which does most of the scaling for us. Sliding is obv. disabled. */
   options: Options = {
     hidePointerLabels: true,
@@ -63,17 +69,14 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
   /** variables to control automatic periodical selection of a random movement  */
   private nextRandomMovementTime = 15; // number in seconds, set to '0' to disable
   private randomMovementTimer$ = new Subject();
-  showThumbnail: boolean;
 
   constructor(data: DataService) {
-
     this.dataService = data;
 
     this.onResize();
   }
 
   ngOnInit() {
-
     if (this.inputMovements !== undefined) {
       this.movements = this.inputMovements as MovementItem[];
       this.initializeMovements();
@@ -82,10 +85,6 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
         .then(movements => {
           this.movements = movements.filter(m => {
             if ((m.start_time || m.start_time_est) && (m.end_time || m.end_time_est)) {
-              return true;
-            } else {
-              m.start_time_est = 1242;
-              m.end_time_est = 1542;
               return true;
             }
           }) as MovementItem[];
@@ -276,15 +275,22 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
 
     const boxId = event.target.attributes.id.nodeValue;
     if (boxId && boxId !== this.currentMovementId) {
-      this.showThumbnail = false;
       this.updateShownMovement(boxId);
     }
   }
 
-  private updateShownMovement(newMovementId) {
+  private async updateShownMovement(newMovementId) {
+    this.showThumbnail = false;
+    this.thumbnailLoaded = false;
     this.currentMovementId = newMovementId;
-    this.setRandomThumbnail(this.currentMovementId);
-    this.drawThumbnail(this.currentMovementId);
+    await this.setRandomThumbnail(this.currentMovementId)
+      .then(() => {
+        this.drawThumbnail(this.currentMovementId);
+      });
+  }
+
+  onThumbnailLoaded() {
+    this.thumbnailLoaded = true;
   }
 
   /** get image sample of each movement in list of ids */
@@ -298,7 +304,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
   }
 
   /** choose random image out of artworks of current movement */
-  private setRandomThumbnail(movementId) {
+  private async setRandomThumbnail(movementId) {
     const currMovementIndex = this.movements.findIndex(move => move.id === movementId);
     if (!this.movements[currMovementIndex].artworks.length) {
       return;

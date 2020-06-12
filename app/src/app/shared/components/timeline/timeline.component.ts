@@ -37,6 +37,7 @@ export class TimelineComponent {
   items: TimelineItem[] = [];
   private periodSpan = 1;
 
+  private maxSliderSteps = 1000;
   /** Specifies the amount of items displayed once at a time */
   private itemCountPerPeriod = 4;
   /** Specifies the average amount of labels on the slider */
@@ -144,7 +145,7 @@ export class TimelineComponent {
    *  this influences not the amount of steps of the slider
    */
   private calculatePeriod() {
-    const sliderSteps: CustomStepDefinition[] = [];
+    let sliderSteps: CustomStepDefinition[] = [];
 
     const firstDate = +this.items[0].date;
     const lastDate = +this.items[this.items.length - 1].date;
@@ -163,13 +164,31 @@ export class TimelineComponent {
     const lastPeriod = lastDate - (lastDate % this.periodSpan) + this.periodSpan;
 
     /** Fill the slider steps with period legends respectively steps */
-    for (let i = firstPeriod; i <= lastPeriod; i++) {
-      if (i % this.periodSpan === 0) {
-        sliderSteps.push({value: i, legend: '' + i});
-      } else {
-        sliderSteps.push({value: i});
+    const timeDifference = lastPeriod - firstPeriod;
+    if (timeDifference <= this.maxSliderSteps) {
+      for (let i = firstPeriod; i <= lastPeriod; i++) {
+        if (i % this.periodSpan === 0) {
+          sliderSteps.push({value: i, legend: '' + i});
+        } else {
+          sliderSteps.push({value: i});
+        }
       }
+    } else {
+      /** if timeDifference bigger than maxSliderSteps, use the date values of the items */
+      sliderSteps = this.items.map((item, index) => {
+        const step = {
+          value: item.date,
+          legend: ''
+        };
+        console.log(this.items.length, this.averagePeriodCount);
+        if (index % Math.floor(this.items.length / this.averagePeriodCount) === 0) {
+          step.legend = item.date.toString();
+        }
+        return step;
+      });
+      console.log('SliderSteps: ', sliderSteps.length);
     }
+
 
     /** Set slider options */
     const newOptions: Options = Object.assign({}, this.options);

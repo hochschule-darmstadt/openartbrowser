@@ -157,14 +157,7 @@ def generate_rdf(
                                         if count != len(value):
                                             output.write(" , ")
                                 else:
-                                    # Workaround for unencoded URL characters
-                                    # TODO #389 this should be resolved in the data extraction
-                                    value = (
-                                        str(value)
-                                        .replace('"', "%22")
-                                        .replace("^", "%5E")
-                                        .replace("`", "%60")
-                                    )
+                                    value = str(value)
                                     if value != "":  # cell not empty
                                         if t == "string" and '"' in value:
                                             value = value.replace(

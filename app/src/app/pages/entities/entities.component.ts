@@ -1,6 +1,6 @@
-import {Component, OnInit} from '@angular/core';
-import {DataService} from '../../core/services/elasticsearch/data.service';
-import {ActivatedRoute} from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { DataService } from '../../core/services/elasticsearch/data.service';
+import { ActivatedRoute } from '@angular/router';
 import {
   Entity,
   Movement,
@@ -28,6 +28,8 @@ export class EntitiesComponent implements OnInit {
   type: EntityType;
   /** the grater this is, the bigger the fetch */
   fetchSize = 20;
+  /** the max number of elements */
+  queryCount: number;
 
   constructor(private dataService: DataService, private route: ActivatedRoute) {
   }
@@ -38,14 +40,23 @@ export class EntitiesComponent implements OnInit {
       this.route.pathFromRoot[1].url.subscribe(val => {
         const lastPathSegment = val[0].path.substr(0, val[0].path.length - 1);
         this.type = EntityType[lastPathSegment.toUpperCase() as keyof typeof EntityType];
+        /** get max number of elements */
+        this.dataService.countEntityItems(this.type).then(value => this.queryCount = value);
       });
     }
   }
 
   /** This gets called by the app-infinite-scroll component and fetches new data */
   onScroll() {
+    /** if there is no more to get, don't fetch again */
+    if (this.offset > this.queryCount) {
+      return;
+    }
+
     if (this.type) {
-      this.getEntities(this.offset);
+      this.entities.push(...Array(this.fetchSize).fill({}));
+      console.log(this.entities);
+      // this.getEntities(this.offset);
 
       /** Fetch dependant on type. Maybe there is potential for improvement here. */
       switch (this.type) {
@@ -88,10 +99,11 @@ export class EntitiesComponent implements OnInit {
         }
         // insert further entity processing here
       });
-      this.entities.push(...entities);
+      /** replace empty objects with fetched objects.
+       *  This has the advantage of no further sorting of this.entities (which may be very large)
+       */
+      this.entities.splice(offset, this.fetchSize, ...entities);
     });
-
-
   }
 
   /** run query */
@@ -121,8 +133,8 @@ export class EntitiesComponent implements OnInit {
   /** Removes items from the component which cannot be displayed */
   onLoadingError(item: Entity) {
     this.entities.splice(
-      this.entities.findIndex(i => i.id === item.id), 1
-    );
+      this.entities.findIndex(i => {
+        return i ? i.id === item.id : true;
+      }), 1);
   }
-
 }

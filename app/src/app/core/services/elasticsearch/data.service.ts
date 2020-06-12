@@ -1,10 +1,10 @@
 import * as _ from 'lodash';
-import {HttpClient} from '@angular/common/http';
-import {Inject, Injectable,LOCALE_ID} from '@angular/core';
-import {ArtSearch, Artwork, Entity,  EntityIcon, EntityType, Iconclass, Movement} from 'src/app/shared/models/models';
-import {elasticEnvironment} from 'src/environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { Inject, Injectable, LOCALE_ID } from '@angular/core';
+import { ArtSearch, Artwork, Entity, EntityIcon, EntityType, Iconclass, Movement } from 'src/app/shared/models/models';
+import { elasticEnvironment } from 'src/environments/environment';
 import QueryBuilder from './query.builder';
-import {usePlural} from 'src/app/shared/models/entity.interface';
+import { usePlural } from 'src/app/shared/models/entity.interface';
 
 const defaultSortField = 'relativeRank';
 
@@ -15,14 +15,15 @@ const defaultSortField = 'relativeRank';
 export class DataService {
   /** base url of elasticSearch server */
   private readonly baseUrl: string;
+  private readonly ISO_639_1_LOCALE: string;
 
   /**
    * Constructor
    */
   constructor(private http: HttpClient, @Inject(LOCALE_ID) localeId: string) {
     // build backend api url with specific index by localeId
-    const ISO_639_1_LOCALE = localeId.substr(0, 2);
-    this.baseUrl = elasticEnvironment.serverURI + '/' + (ISO_639_1_LOCALE || 'en') + '/_search';
+    this.ISO_639_1_LOCALE = localeId.substr(0, 2);
+    this.baseUrl = elasticEnvironment.serverURI + '/' + (this.ISO_639_1_LOCALE || 'en') + '/_search';
   }
 
   /**
@@ -59,9 +60,9 @@ export class DataService {
    * @param type the type to search in
    * @param ids the ids to search for
    */
-  public findArtworksByType(type: EntityType, ids: string[], size = 200): Promise<Artwork[]> {
+  public findArtworksByType(type: EntityType, ids: string[], count = 200): Promise<Artwork[]> {
     const query = new QueryBuilder()
-      .size(size)
+      .size(count)
       .sort(defaultSortField)
       .minimumShouldMatch(1)
       .ofType(EntityType.ARTWORK);
@@ -139,8 +140,8 @@ export class DataService {
 
     keywords.forEach(keyword =>
       query.mustShouldMatch([
-        {key: 'label', value: keyword},
-        {key: 'description', value: keyword}
+        { key: 'label', value: keyword },
+        { key: 'description', value: keyword }
       ])
     );
     return this.performQuery(query);
@@ -149,11 +150,17 @@ export class DataService {
   public async getEntityItems<T>(type: EntityType, count = 20, from = 0): Promise<T[]> {
     const query = new QueryBuilder()
       .mustMatch('type', type)
-      // .mustPrefix('image', 'http')
       .sort(defaultSortField)
       .size(count)
       .from(from);
     return this.performQuery<T>(query);
+  }
+
+  public async countEntityItems<T>(type: EntityType) {
+    const response: any = await this.http.get(
+      'https://openartbrowser.org/' + elasticEnvironment.serverURI + '/'
+      + (this.ISO_639_1_LOCALE || 'en') + '/_count?q=type:' + type).toPromise();
+    return (response && response.count) ? response.count : undefined;
   }
 
   public async getRandomMovementArtwork<T>(movementId: string, count = 20): Promise<T[]> {

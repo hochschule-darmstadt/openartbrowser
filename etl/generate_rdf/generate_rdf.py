@@ -88,7 +88,13 @@ def generate_rdf(
         "motifs": {"property": ":motif", "type": "list"},
         "country": {"property": ":country", "type": "string"},
         "height": {"property": ":height", "type": "number"},
+        "height_unit": {"property": ":height_unit", "type": "string"},
         "width": {"property": ":width", "type": "number"},
+        "width_unit": {"property": ":width_unit", "type": "string"},
+        "length": {"property": ":length", "type": "number"},
+        "length_unit": {"property": ":length_unit", "type": "string"},
+        "diameter": {"property": ":diameter", "type": "number"},
+        "diameter_unit": {"property": ":diameter_unit", "type": "string"},
         "gender": {"property": ":gender", "type": "string"},
         "date_of_birth": {"property": ":date_of_birth", "type": "number"},
         "date_of_death": {"property": ":date_of_death", "type": "number"},
@@ -97,10 +103,14 @@ def generate_rdf(
         "influenced_by": {"property": ":influenced_by", "type": "list"},
         "website": {"property": ":website", "type": "url"},
         "part_of": {"property": ":part_of", "type": "list"},
+        "has_part": {"property": ":has_part", "type": "list"},
         "lat": {"property": ":lat", "type": "number"},
         "lon": {"property": ":lon", "type": "number"},
         "subclass_of": {"property": "rdfs:subClassOf", "type": "list"},
         "videos": {"property": ":videos", "type": "url"},
+        "main_subjects": {"property": ":main_subjects", "type": "list"},
+        "start_time": {"property": ":start_time", "type": "number"},
+        "end_time": {"property": ":end_time", "type": "number"},
     }
 
     quotechars = {

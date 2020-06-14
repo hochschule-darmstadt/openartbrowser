@@ -2,11 +2,13 @@
 """
 import inspect
 import re
+import urllib
 from pathlib import Path
-from typing import List, Dict, Any, Callable
+from typing import Any, Callable, Dict, List
+
+from pywikibot import WbTime
 
 from data_extraction.constants import *
-from pywikibot import WbTime
 from shared.utils import setup_logger
 
 logger = setup_logger(
@@ -102,7 +104,10 @@ def try_get_wikipedia_link(entity_dict: Dict, langkey: str, oab_type: str) -> st
         Wikipedia URL from wikidata response
     """
     return "https://{0}.wikipedia.org/wiki/{1}".format(
-        langkey, entity_dict[SITELINKS][f"{langkey}wiki"]["title"].replace(" ", "_"),
+        langkey,
+        urllib.parse.quote(
+            entity_dict[SITELINKS][f"{langkey}wiki"]["title"].replace(" ", "_")
+        ),
     )
 
 

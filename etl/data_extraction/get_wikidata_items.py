@@ -32,6 +32,7 @@ import sys
 import time
 from pathlib import Path
 from urllib.error import HTTPError
+import urllib
 from typing import List, Dict, Set, Iterator, Optional
 
 from data_extraction import map_wd_attribute
@@ -176,6 +177,9 @@ def get_image_url_by_name(image_name: str) -> str:
     """
     image_name = image_name.replace(" ", "_")
     hash = hashlib.md5(image_name.encode("utf-8")).hexdigest()
+    image_name = urllib.parse.quote(
+        image_name
+    )  # apply quote encoding always after hash calculation
     hash_index_1 = hash[0]
     hash_index_1_and_2 = hash[0] + hash[1]
     url = "https://upload.wikimedia.org/wikipedia/commons/{0}/{1}/{2}".format(

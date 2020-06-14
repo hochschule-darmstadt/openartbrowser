@@ -5,6 +5,7 @@ apicache-py3
 !languageconfig.csv
 !youtube_videos.csv
 *.json
+!package.json
 *.ctrl
 *.lwp
 /.idea/

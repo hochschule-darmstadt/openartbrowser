@@ -25,7 +25,7 @@ export class TooltipComponent implements OnInit {
 
   tooltipTimer: any;
 
-  tooltipXPosition: 'left' | 'right' = 'left';
+  tooltipXPosition: 'left' | 'right';
   tooltipYPosition: 'top' | 'bottom' = 'bottom';
 
   constructor() {}
@@ -37,17 +37,13 @@ export class TooltipComponent implements OnInit {
   calculateTooltipPosition() {
     this.tooltipTimer = setTimeout(() => {
       const tooltipDiv = document.getElementById('tooltip-container').getBoundingClientRect();
-      const parentDiv = document.getElementById('tooltip-container2').getBoundingClientRect();
-      const parentPositionRight = parentDiv.left + parentDiv.width;
-      const positionRight = tooltipDiv.left + tooltipDiv.width;
       const positionBottom = tooltipDiv.top + tooltipDiv.height;
-
       const windowHeight = window.innerHeight;
 
-      if (positionRight < parentPositionRight) {
-        this.tooltipXPosition = 'right';
-      } else {
+      if ( tooltipDiv.right <= (window.innerWidth || document. documentElement.clientWidth)) {
         this.tooltipXPosition = 'left';
+      } else {
+        this.tooltipXPosition = 'right';
       }
 
       if (positionBottom + 32 < windowHeight) {

@@ -56,6 +56,9 @@
 .left:before {
   left: 10px;
 }
+.right{
+ right: 0;
+}
 .top{
   margin-bottom: 4px;
   bottom: 100%;
@@ -84,4 +87,5 @@
 .highlighting {
     color: lightgray;
     text-decoration: underline;
+    cursor: pointer;
 }

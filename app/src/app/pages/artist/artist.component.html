@@ -21,8 +21,8 @@
         <app-collapse collapse="{{ collapse }}" [showVideo]="videoExists">
           <app-abstract [entity]="artist"></app-abstract>
 
-          <div class="video">
-            <div  *ngFor="let item of uniqueEntityVideos | keyvalue;  let i=index">
+          <div class="videos">
+            <div class="video" *ngFor="let item of uniqueEntityVideos | keyvalue;  let i=index">
               <app-video *ngIf="(i < 3)" [entity]="item.value" (videoFound)="videoFound($event)"></app-video>
             </div>
           </div>

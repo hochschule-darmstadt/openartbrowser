@@ -3,7 +3,7 @@
   class="badge badge-pill badge-secondary first-letter chip"
   [ngClass]="{ 'badge-transparent': isHoverBadge, 'badge-light': highlight }"
   tooltipClass="tooltip"
-  ngbTooltip="{{ tooltip }}"
+  [ngbTooltip]="htmlContent"
   [routerLink]="[redirectUrl]"
   angulartics2On="click"
   angularticsAction="Badge"
@@ -12,3 +12,15 @@
   <i class="mr-1" class="fas {{ entity?.icon }}"></i>
   {{ entity?.label }}
 </a>
+
+
+<ng-template #htmlContent>
+  <div class="tooltip-container">
+    <div class="tooltip-text-container">
+      <span  class="tooltip-text">
+        {{ tooltip }}
+      </span>
+    </div>
+    <div *ngIf="image" class="tooltip-image-container"><img id="tooltip-image" [src]="image" /></div>
+  </div>
+</ng-template>

@@ -19,7 +19,6 @@ import { Angulartics2Module } from 'angulartics2';
 import { MovementOverviewComponent } from './components/movement-overview/movement-overview.component';
 import { NgxFitTextModule } from 'ngx-fit-text';
 import { DimensionsComponent } from './components/dimensions/dimensions.component';
-import { TooltipComponent } from './components/tooltip/tooltip.component';
 
 /** Everything that should be used within multiple feature modules but isn't always required goes here */
 @NgModule({
@@ -37,8 +36,7 @@ import { TooltipComponent } from './components/tooltip/tooltip.component';
     CollapseComponent,
     DimensionsComponent,
     CollapseComponent,
-    MovementOverviewComponent,
-    TooltipComponent
+    MovementOverviewComponent
   ],
   imports: [CommonModule, NgbModule, RouterModule, FormsModule, Ng5SliderModule, Angulartics2Module, NgxFitTextModule],
   exports: [
@@ -55,8 +53,7 @@ import { TooltipComponent } from './components/tooltip/tooltip.component';
     CollapseComponent,
     DimensionsComponent,
     CollapseComponent,
-    MovementOverviewComponent,
-    TooltipComponent
+    MovementOverviewComponent
   ]
 })
 export class SharedModule {}

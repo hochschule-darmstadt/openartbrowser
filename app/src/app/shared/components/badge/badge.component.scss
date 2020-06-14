@@ -1,0 +1,26 @@
+
+.tooltip-container {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+}
+.tooltip-text-container {
+  padding: 16px;
+  flex: 1 1 0px;
+  word-wrap: anywhere;
+}
+.tooltip-text{
+  overflow: hidden;
+  display: -webkit-box;
+}
+.tooltip-image-container {
+  padding: 0;
+  flex: 1 1 0px;
+}
+#tooltip-image{
+  height: 100%;
+  object-fit: cover;
+  max-width: 100%;
+  max-height: 100%;
+  width: 100%;
+}

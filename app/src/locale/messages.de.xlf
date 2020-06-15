@@ -53,6 +53,16 @@
           <context context-type="linenumber">28</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="entities_labels" datatype="html">
+        <source>{type, select, artwork {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}</source>
+        <target state="final">{type, select, artwork {Kunstwerke} motif {Motive} artist {Künstler} location {Standorte} genre {Genres} movement {Stilrichtungen} material {Materialien}}</target>
+        <note priority="1" from="description">Entities Type Labels</note>
+      </trans-unit>
+      <trans-unit id="all" datatype="html">
+        <source>all</source>
+        <target state="final">Alle</target>
+        <note priority="1" from="description">All</note>
+      </trans-unit>
       <trans-unit id="menuHome" datatype="html">
         <source>Home</source><target state="final">Hauptseite</target>
         <context-group purpose="location">

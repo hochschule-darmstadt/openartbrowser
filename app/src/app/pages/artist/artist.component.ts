@@ -56,7 +56,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
       /** Use data service to fetch entity from database */
       this.artist = await this.dataService.findById<Artist>(artistId, EntityType.ARTIST);
       if (this.artist.videos) {
-        this.uniqueEntityVideos[this.artist.id] = this.artist;
+        this.uniqueEntityVideos[0] = this.artist;
         this.uniqueVideosLinks.push(this.getVideoUrl(this.artist));
       }
 
@@ -151,7 +151,6 @@ export class ArtistComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
-
   }
 
   toggleComponent() {

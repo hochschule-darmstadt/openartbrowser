@@ -12,7 +12,6 @@ export class BadgeComponent implements OnInit, OnChanges {
   @Input() entity: Entity;
   @Input() isHoverBadge: boolean;
   @Input() hoveredArtwork: Artwork;
-  @Input() image: string;
 
   icon: string;
   label: string;

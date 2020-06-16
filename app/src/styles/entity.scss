@@ -103,7 +103,8 @@
       -webkit-line-clamp: 6;
       -webkit-box-orient: vertical;
       overflow: hidden;
-      padding: 0.25rem 0.5rem 0.25rem 0.5rem;
+      padding: 0;
+      margin: 0;
     }
 
     .arrow::before {

@@ -37,9 +37,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
   /** a video was found */
   videoExists = false;
   /* List of unique Entities (Movements) with Videos */
-  uniqueEntityVideos: any;
-  /* List of unique Videolinks */
-  uniqueVideosLinks: string[];
+  uniqueEntityVideos: any[] = [];
 
   constructor(private dataService: DataService, private route: ActivatedRoute) {}
 
@@ -50,14 +48,11 @@ export class ArtistComponent implements OnInit, OnDestroy {
     });
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
-      this.uniqueEntityVideos = {};
-      this.uniqueVideosLinks = [];
       const artistId = params.get('artistId');
       /** Use data service to fetch entity from database */
       this.artist = await this.dataService.findById<Artist>(artistId, EntityType.ARTIST);
       if (this.artist.videos) {
-        this.uniqueEntityVideos[0] = this.artist;
-        this.uniqueVideosLinks.push(this.getVideoUrl(this.artist));
+        this.uniqueEntityVideos.unshift(this.artist);
       }
 
       /** load slider items */
@@ -87,11 +82,25 @@ export class ArtistComponent implements OnInit, OnDestroy {
   */
   addMovementVideos() {
     for ( const movement of this.artist.movements) {
-      if (!this.uniqueEntityVideos[movement.id] && movement.videos && !this.uniqueVideosLinks.includes(this.getVideoUrl(movement))) {
-        this.uniqueEntityVideos[movement.id] = movement;
-        this.uniqueVideosLinks.push(this.getVideoUrl(movement));
+      if (!this.videoDuplicationCheck(movement)) {
+        this.uniqueEntityVideos.push(movement);
       }
     }
+  }
+
+  /*
+    Checks if VideoUrl already exists on an entity in uniqueEntityVideos
+    returns true if video already exists
+  */
+  videoDuplicationCheck(inputEntity): boolean {
+    const inputVideoUrl = this.getVideoUrl(inputEntity);
+    for (const entity of this.uniqueEntityVideos) {
+      const videoUrl = this.getVideoUrl(entity);
+      if (videoUrl === inputVideoUrl) {
+        return true;
+      }
+    }
+    return false;
   }
   /**
    * Get all movements from the artworks of an artist and add them to the artist movements.

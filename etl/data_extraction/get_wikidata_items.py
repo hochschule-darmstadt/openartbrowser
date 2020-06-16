@@ -424,12 +424,13 @@ def extract_art_ontology() -> None:
         ],
         merged_artworks,
     )
+    print("Total movements after transitive closure loading: ", len(movements))
 
     # Get distinct classes from artworks, motifs, etc.
     extracted_classes = get_distinct_extracted_classes(
         merged_artworks, motifs, genres, materials, movements, artists, locations,
     )
-
+    print("Total classes after transitive closure loading: ", len(extracted_classes))
     # Get country labels for merged artworks and locations
     (
         locations,
@@ -989,11 +990,11 @@ def get_entity_labels(
     return extract_dicts
 
 
-already_extracted_superclass_ids = set()
-
-
 def get_classes(
-    type_name: str, qids: List[str], language_keys: Optional[List[str]] = lang_keys,
+    type_name: str,
+    qids: List[str],
+    language_keys: Optional[List[str]] = lang_keys,
+    already_extracted_superclass_ids: Set[str] = set(),
 ) -> List[Dict]:
     """Function to extract the classes of the extracted wikidata entities (meaning the 'instance of' attribute wikidata entity qids).
     Their subclasses are also extracted recursively (also called transitive closure)
@@ -1002,6 +1003,8 @@ def get_classes(
         type_name: oab type e. g. movement
         qids: List of qids to extract the labels from
         language_keys: All language keys which should be extracted. Defaults to languageconfig.csv
+        already_extracted_superclass_ids: A list of already extracted superclass ids for the recursive calls,
+        this is also the anchor to stop recursion
 
     Returns:
         Returns a list of dicts with the classes from the oab entities and their subclasses
@@ -1066,8 +1069,30 @@ def get_classes(
         item_count += len(chunk)
         print(f"Status of {type_name}: {item_count}/{len(qids)}", end="\r", flush=True)
 
+    return load_entities_by_attribute_with_transitive_closure(
+        extract_dicts, SUBCLASS_OF, already_extracted_superclass_ids
+    )
+
+
+def load_entities_by_attribute_with_transitive_closure(
+    extract_dicts: List[Dict],
+    attribute_name: str,
+    already_extracted_superclass_ids: Set[str],
+) -> List[Dict]:
+    """Recursive function to load all entities which a attribute contains.
+
+    Remarks:
+        This would be also possible with a SPARQL query however when we tested it
+        with the wikidata query service it was extremly unperformant and the API
+        only allows 1 minute queries
+
+    Args:
+        extract_dicts: Already extracted entities, the new entities are added to this list
+        attribute_name: Attribute which should be loaded with a transitive closure
+        already_extracted_superclass_ids: list that tracks the already extracted ids
+    """
     superclasses_qids = get_distinct_attribute_values_from_dict(
-        SUBCLASS_OF, extract_dicts
+        attribute_name, extract_dicts
     )
     missing_superclass_qids = []
 
@@ -1082,7 +1107,11 @@ def get_classes(
             already_extracted_superclass_ids.add(superclass_id)
             for superclass_id in superclasses_qids
         ]
-        superclasses = get_classes("subclasses", missing_superclass_qids)
+        superclasses = get_classes(
+            "subclasses",
+            missing_superclass_qids,
+            already_extracted_superclass_ids=already_extracted_superclass_ids,
+        )
         for superclass in superclasses:
             extract_dicts.append(superclass)
         return extract_dicts

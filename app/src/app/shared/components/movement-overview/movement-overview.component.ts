@@ -1,8 +1,8 @@
-import {AfterViewInit, Component, HostListener, Input, OnInit} from '@angular/core';
+import { AfterViewInit, Component, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {Options} from 'ng5-slider';
 import {Subject, timer} from 'rxjs';
-import {switchMap} from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import {DataService} from '../../../core/services/elasticsearch/data.service';
 import {EntityType} from '../../models/entity.interface';
 import {Artwork} from '../../models/artwork.interface';
@@ -27,7 +27,7 @@ interface MovementItem extends Movement {
     ])
   ]
 })
-export class MovementOverviewComponent implements OnInit, AfterViewInit {
+export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
   dataService: DataService;
 
   /** initial movements to be displayed by the component */
@@ -69,6 +69,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
   /** variables to control automatic periodical selection of a random movement  */
   private nextRandomMovementTime = 15; // number in seconds, set to '0' to disable
   private randomMovementTimer$ = new Subject();
+  private timerSubscription;
 
   constructor(data: DataService) {
     this.dataService = data;
@@ -99,6 +100,10 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
     }
   }
 
+  ngOnDestroy() {
+    this.timerSubscription.unsubscribe();
+  }
+
   initializeMovements() {
     for (const movement of this.movements) {
       movement.artworks = [];
@@ -116,7 +121,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit {
       // setup timer for period random movement selection
       // This will run the function 'selectRandomMovement' every 'nextRandomMovementTime' seconds
       if (this.nextRandomMovementTime > 0) {
-        this.randomMovementTimer$.pipe(
+        this.timerSubscription = this.randomMovementTimer$.pipe(
           switchMap(() => timer(this.nextRandomMovementTime * 1000, this.nextRandomMovementTime * 1000)),
         ).subscribe(() => this.selectRandomMovement());
         // start timer

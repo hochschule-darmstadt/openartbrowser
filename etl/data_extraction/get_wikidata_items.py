@@ -31,15 +31,15 @@ import json
 import sys
 import time
 from pathlib import Path
+from typing import Dict, Iterator, List, Optional, Set
 from urllib.error import HTTPError
-from typing import List, Dict, Set, Iterator, Optional
 
-from data_extraction import map_wd_attribute
-from data_extraction import map_wd_response
+from data_extraction import map_wd_attribute, map_wd_response
 from data_extraction.constants import *
 from data_extraction.request_utils import send_http_request
+from data_extraction.tif_substitute import get_replacement_url
+from shared.constants import CSV, JSON
 from shared.utils import chunks, create_new_path, language_config_to_list, setup_logger
-from shared.constants import JSON, CSV
 from SPARQLWrapper import SPARQLWrapper
 
 DEV = False
@@ -392,6 +392,9 @@ def extract_art_ontology() -> None:
         extracted_artwork = extract_artworks(
             artwork, wd, already_crawled_wikidata_items
         )
+
+        # Get jpg thumbnail as substitute for tif files
+        extracted_artwork = get_replacement_url(extracted_artwork, logger)
 
         path_name = create_new_path(ARTWORK[PLURAL], artwork, CSV)
         generate_csv(extracted_artwork, get_fields(artwork), path_name)

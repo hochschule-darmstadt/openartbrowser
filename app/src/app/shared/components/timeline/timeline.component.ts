@@ -180,13 +180,11 @@ export class TimelineComponent {
           value: item.date,
           legend: ''
         };
-        console.log(this.items.length, this.averagePeriodCount);
         if (index % Math.floor(this.items.length / this.averagePeriodCount) === 0) {
           step.legend = item.date.toString();
         }
         return step;
       });
-      console.log('SliderSteps: ', sliderSteps.length);
     }
 
 

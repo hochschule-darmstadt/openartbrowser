@@ -8,11 +8,18 @@ import {SignificantEvent} from "../../models/artwork.interface";
 })
 export class EventTableComponent implements OnInit {
   @Input()
-  values: SignificantEvent[];
+  events: SignificantEvent[];
 
   constructor() { }
 
   ngOnInit() {
+  }
+
+  getTimeLabel(event) {
+    if (event.end) {
+      return event.start + ' - ' + event.end;
+    }
+    return event.start;
   }
 
 }

@@ -1,0 +1,8 @@
+<div class="row" *ngIf="values?.length">
+  <div class="col-md-1">
+    <p class="mb-1 text-muted">Events:</p>
+  </div>
+  <div *ngFor="let entity of values">
+    <div>{{entity.start}}{{entity.end}}{{entity.label}}{{entity.description}}</div>
+  </div>
+</div>

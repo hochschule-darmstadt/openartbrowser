@@ -7,6 +7,7 @@ import * as _ from 'lodash';
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 import { shuffle } from 'src/app/core/services/utils.service';
 import { usePlural } from 'src/app/shared/models/entity.interface';
+import { mockdata } from './events';
 
 /** interface for the tabs */
 interface ArtworkTab {
@@ -107,6 +108,9 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       /** Use data service to fetch entity from database */
       const artworkId = params.get('artworkId');
       this.artwork = (await this.dataService.findById<Artwork>(artworkId, EntityType.ARTWORK)) as Artwork;
+
+      /** TODO remove once etl process is implemented */
+      this.artwork.events = mockdata;
 
       if (this.artwork) {
         this.mergeMotifs();

@@ -5,7 +5,8 @@
   <ul class="col-md-11">
       <li *ngFor="let event of events" class="event-entry">
         <div class="time-label">{{getTimeLabel(event)}}</div>
-        <div class="event-label">{{event.label}}</div>
+        <div class="event-label">{{getEventLabel(event)}}</div>
+        <div *ngIf="event.description" class="event-description">{{getEventDescription(event)}}</div>
       </li>
   </ul>
 </div>

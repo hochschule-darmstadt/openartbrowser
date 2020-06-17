@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {SignificantEvent} from "../../models/artwork.interface";
+import {SignificantEvent} from '../../models/artwork.interface';
 
 @Component({
   selector: 'app-event-table',
@@ -20,6 +20,19 @@ export class EventTableComponent implements OnInit {
       return event.start + ' - ' + event.end;
     }
     return event.start;
+  }
+
+  getEventLabel(event) {
+    if (event.type === 'exhibition') {
+      return event.label + ' (Exhibition)';
+    }
+    return event.label;
+  }
+
+  getEventDescription(event) {
+    if (event.type === 'exhibition') {
+      return event.description;
+    }
   }
 
 }

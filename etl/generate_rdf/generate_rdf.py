@@ -1,19 +1,52 @@
+"""Generate an rdf file from the art_ontology_en.json file
+
+Example:
+    python3 generate_rdf.py
+
+Raises:
+    Exception: If an unexpected type is in the art_ontology_en.json an error is thrown
+"""
 import datetime
 import json
+import urllib
 from pathlib import Path
 
 
+def uri_validator(uri: str) -> bool:
+    """Validates if a string is an URI
+
+    Args:
+        uri: String of an possible URI
+
+    Returns:
+        True if the string is an URI, else False
+    """
+    try:
+        result = urllib.parse.urlparse(uri)
+        return all([result.scheme, result.netloc, result.path])
+    except:
+        return False
+
+
 def generate_rdf(
-    file=Path(__file__).parent.parent.absolute()
+    file: str = Path(__file__).parent.parent.absolute()
     / "crawler_output"
     / "art_ontology_en.json",
-    header=Path(__file__).parent.absolute() / "art_ontology_header.txt",
-    ontology=Path(__file__).parent.parent.absolute()
+    header: str = Path(__file__).parent.absolute() / "art_ontology_header.txt",
+    ontology: str = Path(__file__).parent.parent.absolute()
     / "crawler_output"
     / "art_ontology_en.ttl",
-):
-    """Generates an RDF Turtle file 'art_ontology_en.ttl' from *.json files"""
+) -> None:
+    """Generates an RDF Turtle file 'art_ontology_en.ttl' from *.json files
 
+    Args:
+        file: Input file to generate the rdf from. Defaults to "crawler_output/art_ontology_en.json".
+        header: Header for the rdf file which is inserted at the begining. Defaults to "art_ontology_header.txt".
+        ontology: Output file. Defaults to "crawler_output/art_ontology_en.ttl".
+
+    Raises:
+        Exception: If an unexpected type is in the art_ontology_en.json an error is thrown
+    """
     print(datetime.datetime.now(), "Start reading the JSON-file")
     print("filename is " + str(file))
 
@@ -44,7 +77,7 @@ def generate_rdf(
                 artists.append(json_object)
 
     configs = {
-        # ToDo: If classes should be used again they have to be loaded above
+        # TODO: If classes should be used again they have to be loaded above
         # They're only contained in the classes.csv
         # there is no JSON for classes generated
         # 'classes': {'json_array': 'classes.csv', 'class': 'rdfs:Class'},
@@ -72,7 +105,13 @@ def generate_rdf(
         "motifs": {"property": ":motif", "type": "list"},
         "country": {"property": ":country", "type": "string"},
         "height": {"property": ":height", "type": "number"},
+        "height_unit": {"property": ":height_unit", "type": "string"},
         "width": {"property": ":width", "type": "number"},
+        "width_unit": {"property": ":width_unit", "type": "string"},
+        "length": {"property": ":length", "type": "number"},
+        "length_unit": {"property": ":length_unit", "type": "string"},
+        "diameter": {"property": ":diameter", "type": "number"},
+        "diameter_unit": {"property": ":diameter_unit", "type": "string"},
         "gender": {"property": ":gender", "type": "string"},
         "date_of_birth": {"property": ":date_of_birth", "type": "number"},
         "date_of_death": {"property": ":date_of_death", "type": "number"},
@@ -81,10 +120,14 @@ def generate_rdf(
         "influenced_by": {"property": ":influenced_by", "type": "list"},
         "website": {"property": ":website", "type": "url"},
         "part_of": {"property": ":part_of", "type": "list"},
+        "has_part": {"property": ":has_part", "type": "list"},
         "lat": {"property": ":lat", "type": "number"},
         "lon": {"property": ":lon", "type": "number"},
         "subclass_of": {"property": "rdfs:subClassOf", "type": "list"},
         "videos": {"property": ":videos", "type": "url"},
+        "main_subjects": {"property": ":main_subjects", "type": "list"},
+        "start_time": {"property": ":start_time", "type": "number"},
+        "end_time": {"property": ":end_time", "type": "number"},
     }
 
     quotechars = {
@@ -132,6 +175,9 @@ def generate_rdf(
                                             output.write(" , ")
                                 else:
                                     value = str(value)
+                                    if uri_validator(value):
+                                        result = urllib.parse.urlparse(value)
+                                        value = f"{result.scheme}://{result.netloc}{urllib.parse.quote(result.path)}"
                                     if value != "":  # cell not empty
                                         if t == "string" and '"' in value:
                                             value = value.replace(

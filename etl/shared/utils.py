@@ -1,7 +1,10 @@
+"""Shared util functions across all python scripts
+"""
 import csv
-import pkgutil
 import logging
+import pkgutil
 from pathlib import Path
+from typing import List
 
 from shared.constants import CRAWLER_OUTPUT, INTERMEDIATE_FILES, JSON
 
@@ -11,12 +14,11 @@ root_logger.setLevel(
 )  # the root logger needs a debug level so that everything works correctly
 
 
-def language_config_to_list():
-    """Reads languageconfig.csv and returns array that contains its
-    full contents
+def language_config_to_list() -> List[List[str]]:
+    """Reads languageconfig.csv and returns array that contains its full contents
 
     Returns:
-        list -- contents of languageconfig.csv as list
+        Contents of languageconfig.csv as List of lists
     """
     configReader = csv.reader(
         pkgutil.get_data("shared.utils", "languageconfig.csv")
@@ -31,12 +33,12 @@ def language_config_to_list():
     return languageValues
 
 
-def setup_logger(logger_name, filename):
+def setup_logger(logger_name: str, filename: str):
     """Setup a logger for a python script.
     The root logging object is created within this helper script.
     Args:
-        logger_name (str): Package + module name e.g. 'data_extraction.get_wikidata_items'
-        filename (str): String to the path and file the logger writes to
+        logger_name: Package + module name e.g. 'data_extraction.get_wikidata_items'
+        filename: String to the path and file the logger writes to
 
     Returns:
         Logger object

@@ -1,18 +1,46 @@
-# splits art_ontology file into language art_ontology_files
+"""Splits art_ontology.json file into language art_ontology_{langkey}.json files for each language in languageconfig.csv
 
+Pre-conditions:
+    The art_ontology.json file has to be existing in order for this script to be executable
+
+Examples:
+    python3 split_languages.py
+
+Returns:
+    An art_ontology.json file for each language in languageconfig.csv
+    The format for these files is art_ontology_{language_key}.json
+"""
 from pathlib import Path
+from typing import List, Dict, Any
 
 import ijson
 import simplejson as json
+
 from shared.utils import language_config_to_list
 
 
-def get_language_attributes():
-    """[Returns all attributes in crawler .csv/.json files that need
-    language handling]
+language_values = language_config_to_list()
+
+
+def generate_lang_container() -> List[List[Any]]:
+    """Generates a empty list of lists, one for each language defined in languageconfig.csv
 
     Returns:
-        [dict] -- [Dictionary containing all language attributes]
+        Empty list of lists, where index equals languages count of languageconfig.csv
+    """
+    return [[] for x in range(len(language_values))]
+
+
+# load languageconfig file with keys / language dicts
+language_skeleton = generate_lang_container()
+language_keys = [item[0] for item in language_values]
+
+
+def get_language_attributes() -> List[str]:
+    """Returns all attributes in crawler .csv/.json files that need language handling
+
+    Returns:
+        List containing all language attributes
     """
     return [
         "label",
@@ -25,12 +53,12 @@ def get_language_attributes():
     ]
 
 
-def get_ignored_by_gap_filling():
-    """[Returns all attributes in crawler .csv/.json files that are ignored when applying
-    gap filling algorithm for missing language data]
+def get_ignored_by_gap_filling() -> List[str]:
+    """Returns all attributes in data extraction *.csv/*.json files that are ignored when applying
+    gap filling algorithm for missing language data
 
     Returns:
-        [dict] -- [Dictionary containing all ignored attributes]
+        List containing all ignored attributes
     """
     return [
         "description",
@@ -42,30 +70,15 @@ def get_ignored_by_gap_filling():
     ]
 
 
-def generate_langdict_arrays():
-    """[Generates empty array of dictonaries, one for each language
-     defined in languageconfig.csv ]
+def fill_language_gaps(element: str, jsonobject: Dict) -> Dict:
+    """Fills language data into empty elements based on priority, which is the languageconfig.csv order
+
+    Args:
+        element: Name of the key which is in need of gap filling
+        jsonobject: Relevant dict which contains all data specific to the element
 
     Returns:
-        [array[]] -- [empty array of arrays, where index = languages
-         count of languageconfig.csv]
-    """
-    dictlist = [[] for x in range(len(language_config_to_list()))]
-    return dictlist
-
-
-def fill_language_gaps(element, jsonobject):
-    """[Fills language data into empty elements based on priority,
-    which is the languageconfig.csv order]
-
-    Arguments:
-        element {[string]} -- [Name of the key which is in need of
-         gap filling]
-        jsonobject {[dict]} -- [Relevant dict which contains all data
-         specific to the element]
-        Returns:
-        [dict] -- [Updated json file with language gaps filled in / or
-        not if no language data existant]
+        Updated json file with language gaps filled in / or not if no language data existant
     """
     for row in language_values:
         try:
@@ -84,23 +97,22 @@ def fill_language_gaps(element, jsonobject):
                     + ". Id of .json-object: "
                     + jsonobject["id"]
                 )
-            pass
     return jsonobject
 
 
-def modify_langdict(langdict, jsonobject, langkey):
-    """[modifies lang dictionary data by manipulating key values
-    or deleting keys mostly used to get rid of additional language keys]
+def modify_langdict(
+    lang_container: List[List[Any]], jsonobject: Dict, langkey: str
+) -> List[List[Any]]:
+    """Modifies lang dictionary data by manipulating key values or deleting keys
+    mostly used to get rid of additional language keys
 
-    Arguments:
-        langdict {[array[dict]]} -- [internal language container for the
-            language specified in langkey]
-        jsonobject {[dict]} -- [json object from art_ontology file that is passed to our
-            internal dictionaries]
-        langkey {[str]} -- [language key used for modification]
+    Args:
+        lang_container: Internal language container for the language specified in langkey
+        jsonobject: Json object from art_ontology file that is passed to our internal dictionaries
+        langkey: Language key used for modification
 
     Returns:
-        [array[dict]] -- [modified language container]
+        Modified language container
     """
     # Language keys that need language specific handling
     lang_attributes = get_language_attributes()
@@ -134,30 +146,27 @@ def modify_langdict(langdict, jsonobject, langkey):
     for key in delete_keys:
         del tempjson[key]
 
-    langdict.append(tempjson)
-    return langdict
+    lang_container.append(tempjson)
+    return lang_container
 
 
-def generate_langjson_files(name, extract_dicts):
-    """[writes temporary language specific data to language files]
+def generate_lang_json_files(filename: str, extract_dicts: List[Dict]) -> None:
+    """Writes temporary language specific data to language files
 
-    Arguments:
-        name {[str]} -- [Name of the generated json language file]
-        extract_dicts {[dict]} -- [dictionary that is written into the output file]
+    Args:
+        filename: Filename of the generated json language file
+        extract_dicts: List of dicts that is written into the output file
     """
     with open(
-        Path(__file__).resolve().parent.parent / "crawler_output" / str(name + ".json"),
+        Path(__file__).resolve().parent.parent
+        / "crawler_output"
+        / str(filename + ".json"),
         "w",
         newline="",
         encoding="utf-8",
     ) as file:
         file.write(json.dumps(extract_dicts, ensure_ascii=False))
 
-
-# load languageconfig file with keys / language dicts
-language_skeleton = generate_langdict_arrays()
-language_values = language_config_to_list()
-language_keys = [item[0] for item in language_values]
 
 if __name__ == "__main__":
     art_ontology_file = (
@@ -177,7 +186,7 @@ if __name__ == "__main__":
     # generate one art_ontology_<language_code> file per language defined in config file.
     # fill the contents of the respective language dicitonary arrays into the files
     while i < len(language_skeleton):
-        generate_langjson_files(
+        generate_lang_json_files(
             "art_ontology_" + language_keys[i], language_skeleton[i]
         )
         i += 1

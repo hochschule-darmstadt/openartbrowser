@@ -106,14 +106,25 @@
       padding: 0;
       margin: 0;
     }
+  }
 
-    .arrow::before {
-      border-top-color: $color1;
-      border-bottom-color: $color1;
-    }
+  .bs-tooltip-right > .arrow::before {
+    border-right-color: $color1;
+  }
+
+  .bs-tooltip-left > .arrow::before {
+    border-left-color: $color1;
+  }
+
+  .bs-tooltip-top > .arrow::before {
+    border-top-color: $color1;
+    border-bottom-color: $color1;
+  }
+
+  .bs-tooltip-bottom > .arrow::before {
+    border-bottom-color: $color1;
   }
 }
-
 .artworks-amount {
   font-size: 0.9em;
   opacity: 0.8;

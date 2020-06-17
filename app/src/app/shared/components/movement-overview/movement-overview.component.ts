@@ -20,8 +20,8 @@ interface MovementItem extends Movement {
   styleUrls: ['./movement-overview.component.scss'],
   animations: [
     trigger('newThumb', [
-      state('hide', style({opacity: '0'})), // transform: 'scale(0)'})),
-      state('show', style({opacity: '1'})), // transform: 'scale(1)'})),
+      state('hide', style({ opacity: '0' })), // transform: 'scale(0)'})),
+      state('show', style({ opacity: '1' })), // transform: 'scale(1)'})),
       transition('show => hide', [animate(0)]),
       transition('hide => show', [animate(500)])
     ])
@@ -63,7 +63,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
   options: Options = {
     hidePointerLabels: true,
     showTicksValues: true,
-    showTicks: true,
+    showTicks: true
   };
 
   /** variables to control automatic periodical selection of a random movement  */
@@ -101,7 +101,9 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   ngOnDestroy() {
-    this.timerSubscription.unsubscribe();
+    if (this.timerSubscription) {
+      this.timerSubscription.unsubscribe();
+    }
   }
 
   initializeMovements() {
@@ -122,7 +124,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
       // This will run the function 'selectRandomMovement' every 'nextRandomMovementTime' seconds
       if (this.nextRandomMovementTime > 0) {
         this.timerSubscription = this.randomMovementTimer$.pipe(
-          switchMap(() => timer(this.nextRandomMovementTime * 1000, this.nextRandomMovementTime * 1000)),
+          switchMap(() => timer(this.nextRandomMovementTime * 1000, this.nextRandomMovementTime * 1000))
         ).subscribe(() => this.selectRandomMovement());
         // start timer
         this.randomMovementTimer$.next();
@@ -180,8 +182,14 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
     this.options = newOptions;
   }
 
-  /** this method splits movements into different rows where they overlap and sets their widths. It adds spacers, too */
+  /** this method fills the timeline with clickable boxes */
   private fillTimeline() {
+    this.fillMovementBoxes();
+    this.fillSpaces();
+  }
+
+  /** this method splits movements into different rows where they overlap and sets their widths. */
+  private fillMovementBoxes() {
     this.boxes[0][0] = this.movements[0]; // first item is first to appear (top left corner)
     let rowNum = 0;
     this.movements[0].label = this.movements[0].label.charAt(0).toUpperCase() + this.movements[0].label.slice(1);
@@ -214,7 +222,10 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
         }
       }
     }
+  }
 
+  /** this method adds spacers between movement-boxes and should be executed after fillMovementBoxes */
+  private fillSpaces() {
     // get period length
     const timelineLen = this.timelineEnd - this.timelineStart;
     // this fills in the spaces between items and assigns all widths to all items
@@ -288,10 +299,9 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
     this.showThumbnail = false;
     this.thumbnailLoaded = false;
     this.currentMovementId = newMovementId;
-    await this.setRandomThumbnail(this.currentMovementId)
-      .then(() => {
-        this.drawThumbnail(this.currentMovementId);
-      });
+    this.setRandomThumbnail(this.currentMovementId).then(() => {
+      this.drawThumbnail(this.currentMovementId);
+    });
   }
 
   onThumbnailLoaded() {
@@ -301,10 +311,9 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
   /** get image sample of each movement in list of ids */
   private async getMovementImages(movementIds: string[]) {
     for (const id of movementIds) {
-      await this.dataService.findArtworksByMovement(id).then(artworks => {
-        const mvmntIndex = this.movements.findIndex(mvmnt => mvmnt.id === id);
-        this.movements[mvmntIndex].artworks = this.movements[mvmntIndex].artworks.concat(artworks);
-      });
+      const artworks = await this.dataService.findArtworksByMovement(id);
+      const mvmntIndex = this.movements.findIndex(mvmnt => mvmnt.id === id);
+      this.movements[mvmntIndex].artworks = this.movements[mvmntIndex].artworks.concat(artworks);
     }
   }
 
@@ -348,11 +357,11 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   private getStartTime(movement: Movement): number {
-    return movement.start_time ? movement.start_time : movement.start_time_est;
+    return movement.start_time || movement.start_time_est;
   }
 
   private getEndTime(movement: Movement): number {
-    return movement.end_time ? movement.end_time : movement.end_time_est;
+    return movement.end_time || movement.end_time_est;
   }
 
 }

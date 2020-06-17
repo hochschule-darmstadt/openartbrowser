@@ -7,7 +7,7 @@ import {DataService} from '../../../core/services/elasticsearch/data.service';
 import {EntityType} from '../../models/entity.interface';
 import {Artwork} from '../../models/artwork.interface';
 import {Movement} from '../../models/movement.interface';
-import * as ConfigJson from 'src/config/home_movements.conf.json';
+import * as ConfigJson from 'src/config/home_movements.json';
 
 interface MovementItem extends Movement {
   artworks: Artwork[]; // holds url to thumbnail images

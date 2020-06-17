@@ -2,7 +2,6 @@
 """
 import inspect
 import re
-import urllib
 from pathlib import Path
 from typing import Any, Callable, Dict, List
 
@@ -104,10 +103,7 @@ def try_get_wikipedia_link(entity_dict: Dict, langkey: str, oab_type: str) -> st
         Wikipedia URL from wikidata response
     """
     return "https://{0}.wikipedia.org/wiki/{1}".format(
-        langkey,
-        urllib.parse.quote(
-            entity_dict[SITELINKS][f"{langkey}wiki"]["title"].replace(" ", "_")
-        ),
+        langkey, entity_dict[SITELINKS][f"{langkey}wiki"]["title"].replace(" ", "_"),
     )
 
 

@@ -8,7 +8,24 @@ Raises:
 """
 import datetime
 import json
+import urllib
 from pathlib import Path
+
+
+def uri_validator(uri: str) -> bool:
+    """Validates if a string is an URI
+
+    Args:
+        uri: String of an possible URI
+
+    Returns:
+        True if the string is an URI, else False
+    """
+    try:
+        result = urllib.parse.urlparse(uri)
+        return all([result.scheme, result.netloc, result.path])
+    except:
+        return False
 
 
 def generate_rdf(
@@ -158,6 +175,9 @@ def generate_rdf(
                                             output.write(" , ")
                                 else:
                                     value = str(value)
+                                    if uri_validator(value):
+                                        result = urllib.parse.urlparse(value)
+                                        value = f"{result.scheme}://{result.netloc}{urllib.parse.quote(result.path)}"
                                     if value != "":  # cell not empty
                                         if t == "string" and '"' in value:
                                             value = value.replace(

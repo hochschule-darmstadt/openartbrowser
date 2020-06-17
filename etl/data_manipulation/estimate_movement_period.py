@@ -1,3 +1,5 @@
+"""Script to estimate start and end of each movement by finding first and last artwork of the movement."""
+
 import json
 from pathlib import Path
 import ijson
@@ -6,6 +8,15 @@ inceptions = {}
 
 
 def find_start_end_in_artworks(artworks_file):
+    """Finds the first and last inception for each movement in a batch of artworks.
+    Fills in inceptions dict.
+
+    Args:
+        artworks_file (path-like object): path to file containing the batch to process
+
+    Examples:
+        find_start_end_in_artworks(artworks_file)
+    """
     artworks_list = ijson.items(open(artworks_file, "r", encoding="utf-8"), "item")
     # find first and last inception for each movement in artworks
     for artwork in artworks_list:
@@ -22,6 +33,9 @@ def find_start_end_in_artworks(artworks_file):
 
 
 if __name__ == "__main__":
+    """Gets for all movements all first and last inceptions from the artworks file and
+       sets them to each movement if start_time/end_time is missing.    
+    """
     # start = datetime.now()
     movements_file = (Path(
         __file__).resolve().parent.parent / "crawler_output" / "intermediate_files" / "json" / "movements.json")

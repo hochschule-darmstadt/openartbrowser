@@ -69,11 +69,15 @@ export class MovementComponent implements OnInit, OnDestroy {
       /** load slider items */
       await this.dataService.findArtworksByType(EntityType.MOVEMENT, [this.movement.id])
         .then(artworks => {
-          // TODO: If start_time and end_time are not present, use estimated times
-          if (this.movement.start_time && this.movement.end_time) {
-            artworks = artworks.filter(artwork => artwork.inception >= this.movement.start_time && artwork.inception <= this.movement.end_time);
+          const referenceStartTime = this.movement.start_time || this.movement.start_time_est || -1;
+          const referenceEndTime = this.movement.end_time || this.movement.end_time_est || -1;
+          if (referenceStartTime !== -1) {
+            artworks = artworks.filter(artwork => artwork.inception >= referenceStartTime);
           }
-          (this.sliderItems = shuffle(artworks));
+          if (referenceEndTime !== -1) {
+            artworks = artworks.filter(artwork => artwork.inception <= referenceEndTime);
+          }
+          this.sliderItems = shuffle(artworks);
         });
 
       /** dereference influenced_bys  */

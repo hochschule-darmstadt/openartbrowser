@@ -31,8 +31,8 @@ import json
 import sys
 import time
 from pathlib import Path
-from typing import Dict, Iterator, List, Optional, Set
 from urllib.error import HTTPError
+from typing import List, Dict, Set, Iterator, Optional, Callable
 
 from data_extraction import map_wd_attribute, map_wd_response
 from data_extraction.constants import *
@@ -423,12 +423,13 @@ def extract_art_ontology() -> None:
         ],
         merged_artworks,
     )
+    print("Total movements after transitive closure loading: ", len(movements))
 
     # Get distinct classes from artworks, motifs, etc.
     extracted_classes = get_distinct_extracted_classes(
         merged_artworks, motifs, genres, materials, movements, artists, locations,
     )
-
+    print("Total classes after transitive closure loading: ", len(extracted_classes))
     # Get country labels for merged artworks and locations
     (
         locations,
@@ -872,7 +873,10 @@ def get_distinct_attribute_values_from_dict(
 
 
 def get_subject(
-    type_name: str, qids: List[str], language_keys: Optional[List[str]] = lang_keys,
+    type_name: str,
+    qids: List[str],
+    already_extracted_movement_ids: Set[str] = set(),
+    language_keys: Optional[List[str]] = lang_keys,
 ) -> List[Dict]:
     """Extract subjects (in our definition everything except artworks e. g. movements, motifs, etc.) from wikidata
 
@@ -912,6 +916,7 @@ def get_subject(
                 subject_dict.update(
                     map_wd_response.try_map_response_to_movement(result)
                 )
+                already_extracted_movement_ids.add(subject_dict[ID])
             if type_name == ARTIST[PLURAL]:
                 subject_dict.update(map_wd_response.try_map_response_to_artist(result))
             if type_name == LOCATION[PLURAL]:
@@ -922,6 +927,23 @@ def get_subject(
 
         item_count += len(chunk)
         print(f"Status of {type_name}: {item_count}/{len(qids)}", end="\r", flush=True)
+
+    if type_name == MOVEMENT[PLURAL]:
+        extract_dicts = load_entities_by_attribute_with_transitive_closure(
+            extract_dicts,
+            PART_OF,
+            MOVEMENT[PLURAL],
+            already_extracted_movement_ids,
+            get_subject,
+        )
+        extract_dicts = load_entities_by_attribute_with_transitive_closure(
+            extract_dicts,
+            HAS_PART,
+            MOVEMENT[PLURAL],
+            already_extracted_movement_ids,
+            get_subject,
+        )
+        return extract_dicts
 
     print(datetime.datetime.now(), f"Finished with {type_name}")
     return extract_dicts
@@ -988,11 +1010,11 @@ def get_entity_labels(
     return extract_dicts
 
 
-already_extracted_superclass_ids = set()
-
-
 def get_classes(
-    type_name: str, qids: List[str], language_keys: Optional[List[str]] = lang_keys,
+    type_name: str,
+    qids: List[str],
+    already_extracted_superclass_ids: Set[str] = set(),
+    language_keys: Optional[List[str]] = lang_keys,
 ) -> List[Dict]:
     """Function to extract the classes of the extracted wikidata entities (meaning the 'instance of' attribute wikidata entity qids).
     Their subclasses are also extracted recursively (also called transitive closure)
@@ -1001,6 +1023,8 @@ def get_classes(
         type_name: oab type e. g. movement
         qids: List of qids to extract the labels from
         language_keys: All language keys which should be extracted. Defaults to languageconfig.csv
+        already_extracted_superclass_ids: A list of already extracted superclass ids for the recursive calls,
+        this is also the anchor to stop recursion
 
     Returns:
         Returns a list of dicts with the classes from the oab entities and their subclasses
@@ -1065,25 +1089,58 @@ def get_classes(
         item_count += len(chunk)
         print(f"Status of {type_name}: {item_count}/{len(qids)}", end="\r", flush=True)
 
-    superclasses_qids = get_distinct_attribute_values_from_dict(
-        SUBCLASS_OF, extract_dicts
+    return load_entities_by_attribute_with_transitive_closure(
+        extract_dicts,
+        SUBCLASS_OF,
+        CLASS[PLURAL],
+        already_extracted_superclass_ids,
+        get_classes,
     )
-    missing_superclass_qids = []
 
-    for superclass_id in superclasses_qids:
-        if superclass_id not in already_extracted_superclass_ids:
-            missing_superclass_qids.append(superclass_id)
 
-    if len(missing_superclass_qids) == 0:
+def load_entities_by_attribute_with_transitive_closure(
+    extract_dicts: List[Dict],
+    attribute_name: str,
+    oab_type: str,
+    already_extracted_ids: Set[
+        str
+    ],  # TODO Remove since this is checked now in the function itself which is better
+    entity_extraction_func: Callable[
+        [str, List[str], Set[str], Optional[List[str]]], List[Dict]
+    ],
+) -> List[Dict]:
+    """Recursive function to load all entities which a attribute contains.
+
+    Remarks:
+        This would be also possible with a SPARQL query however when we tested it
+        with the wikidata query service it was extremly unperformant and the API
+        only allows 1 minute queries
+
+    Args:
+        extract_dicts: Already extracted entities, the new entities are added to this list
+        attribute_name: Attribute which should be loaded with a transitive closure
+        already_extracted_ids: list that tracks the already extracted ids
+
+    Returns:
+        Updated list of dicts with recursively loaded entities by an attribute
+    """
+    qids = get_distinct_attribute_values_from_dict(attribute_name, extract_dicts)
+    missing_qids = []
+
+    for id in qids:
+        if id not in already_extracted_ids:
+            missing_qids.append(id)
+
+    if len(missing_qids) == 0:
         return extract_dicts
     else:
-        [
-            already_extracted_superclass_ids.add(superclass_id)
-            for superclass_id in superclasses_qids
-        ]
-        superclasses = get_classes("subclasses", missing_superclass_qids)
-        for superclass in superclasses:
-            extract_dicts.append(superclass)
+        [already_extracted_ids.add(id) for id in qids]
+        entities = entity_extraction_func(oab_type, missing_qids, already_extracted_ids)
+        for entity in entities:
+            if not any(
+                e[ID] == entity[ID] for e in extract_dicts
+            ):  # Check if an entity with the same qid is in the dict, if not then add
+                extract_dicts.append(entity)
         return extract_dicts
 
 

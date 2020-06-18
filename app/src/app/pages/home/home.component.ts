@@ -1,13 +1,23 @@
-import { Component, OnInit, ViewChildren, QueryList } from '@angular/core';
-import { NgbCarouselConfig, NgbCarousel } from '@ng-bootstrap/ng-bootstrap';
-import { Entity, Artist, Artwork, Movement, Material, Location, Genre, Motif, EntityIcon, EntityType } from 'src/app/shared/models/models';
-import { DataService } from 'src/app/core/services/elasticsearch/data.service';
-import { shuffle } from 'src/app/core/services/utils.service';
+import {Component, OnInit, ViewChildren, QueryList} from '@angular/core';
+import {NgbCarouselConfig, NgbCarousel} from '@ng-bootstrap/ng-bootstrap';
+import {
+  Entity,
+  Artist,
+  Artwork,
+  Movement,
+  Material,
+  Location,
+  Genre,
+  Motif,
+  EntityIcon,
+  EntityType
+} from 'src/app/shared/models/models';
+import {DataService} from 'src/app/core/services/elasticsearch/data.service';
+import {shuffle} from 'src/app/core/services/utils.service';
 
 /**
  * @description Interface for the category sliders.
  * @export
- * @interface SliderCategory
  */
 export interface SliderCategory {
   items: Entity[];
@@ -23,36 +33,29 @@ export interface SliderCategory {
 export class HomeComponent implements OnInit {
   /**
    * @description all 7 carousels in the page.
-   * @type {QueryList<NgbCarousel>}
-   * @memberof HomeComponent
    */
   @ViewChildren(NgbCarousel) carousel: QueryList<NgbCarousel>;
 
   /**
    * @description random url image for the page background
-   * @type {string}
-   * @memberof HomeComponent
    */
   backgroundImageUrl: string;
 
   /**
    * @description variable of object to be fetch in html
-   * @memberof HomeComponent
    */
   Object = Object;
 
   /**
    * variable of the categories.
-   * @type {SliderCategory[]}
-   * @memberof HomeComponent
    */
   categories: SliderCategory[] = [];
 
-  constructor(public dataService: DataService, ngb_config: NgbCarouselConfig) {
+  constructor(public dataService: DataService, ngbConfig: NgbCarouselConfig) {
     /** set configuration of ngbCarousel */
-    ngb_config.interval = 10000;
-    ngb_config.keyboard = false;
-    ngb_config.pauseOnHover = true;
+    ngbConfig.interval = 10000;
+    ngbConfig.keyboard = false;
+    ngbConfig.pauseOnHover = true;
   }
 
   ngOnInit() {
@@ -80,7 +83,6 @@ export class HomeComponent implements OnInit {
 
   /**
    * @description Fetch items for each category using the service. Retrun an array of slider category items.
-   * @memberof HomeComponent
    */
   private getSlides = async (): Promise<SliderCategory[]> => {
     const cats = [];
@@ -92,26 +94,26 @@ export class HomeComponent implements OnInit {
     cats.push(await this.getSliderCategory<Genre>(EntityType.GENRE));
     cats.push(await this.getSliderCategory<Motif>(EntityType.MOTIF));
     return cats;
-  };
+  }
 
   /**
    * @description Get categories by entity type. Return SliderCategory object.
-   * @memberof HomeComponent
    */
   private async getSliderCategory<T>(category: EntityType): Promise<SliderCategory> {
     const items = shuffle(await this.dataService.getCategoryItems<T>(category));
-    return { items, type: category, icon: EntityIcon[category.toUpperCase()] };
+    return {items, type: category, icon: EntityIcon[category.toUpperCase()]};
   }
 
   private setBackground() {
     // assign backgroundImageUrl with a random image from one of the artworks.
     const artworks = this.categories && this.categories.length ? this.categories[0].items : [];
-    if (artworks.length > 0) this.backgroundImageUrl = artworks[Math.floor(Math.random() * artworks.length)].imageMedium;
+    if (artworks.length > 0) {
+      this.backgroundImageUrl = artworks[Math.floor(Math.random() * artworks.length)].imageMedium;
+    }
   }
 
   /**
    * @description make auto next carousel works after fetching categories.
-   * @memberof HomeComponent
    */
   private refreshCarousel(): void {
     this.carousel.forEach(item => item.cycle());

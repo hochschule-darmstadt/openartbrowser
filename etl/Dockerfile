@@ -15,6 +15,25 @@ RUN pip install SPARQLWrapper
 RUN ["python", "/app/data_extraction/get_wikidata_items.py", "-d"]
 RUN ["python", "/app/data_extraction/get_wikipedia_extracts.py"]
 
+
+# ------------------------------------------------
+
+FROM python:3 as pre_data_ranking
+ENV PYTHONPATH "${PYTHONPATH}:/app"
+
+WORKDIR /app
+
+# get files from previous stage
+COPY --from=Wikicrawler /app/crawler_output/ /app/crawler_output/
+
+RUN mkdir data_manipulation
+COPY ["./data_manipulation/estimate_movement_period.py", "/app/data_manipulation"]
+
+RUN ls -lah /app/crawler_output/intermediate_files/json
+
+RUN pip install ijson
+RUN ["python", "./data_manipulation/estimate_movement_period.py"]
+
 # ------------------------------------------------
 
 FROM node:latest as data_ranking
@@ -23,9 +42,9 @@ ENV PYTHONPATH "${PYTHONPATH}:/app"
 WORKDIR /app
 
 # get files from previous stage
-COPY --from=Wikicrawler /app/crawler_output/intermediate_files/json/ /app/
+COPY --from=pre_data_ranking /app/crawler_output/intermediate_files/json/ /app/
 
-COPY ["./data_manipulation/", "/app/"]
+COPY ["./data_enhancement/", "/app/"]
 
 RUN npm install
 
@@ -48,15 +67,15 @@ WORKDIR /app
 # copy necessary files
 COPY --from=data_ranking /app/art_ontology.json/ /app/crawler_output/
 
-COPY ["./data_manipulation/", "/app/data_manipulation/"]
+COPY ["./data_enhancement/", "/app/data_enhancement/"]
 COPY --from=Wikicrawler /app/shared/ /app/shared/
 
 COPY ["./upload_to_elasticsearch/", "/app/upload_to_elasticsearch/"]
 
 RUN pip install elasticsearch requests simplejson ijson
 
-RUN ["python", "data_manipulation/add_youtube_videos.py", "-d"]
-RUN ["python", "data_manipulation/split_languages.py", "-d"]
+RUN ["python", "data_enhancement/add_youtube_videos.py"]
+RUN ["python", "data_enhancement/split_languages.py"]
 
 # art_ontology.json is moved to /root because elasticsearch_helper.py
 # expects the json file in the home directory

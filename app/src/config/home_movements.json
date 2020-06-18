@@ -1,0 +1,14 @@
+{
+  "movementIds": {
+    "Q37853": "Baroque",
+    "Q4692": "Renaissance",
+    "Q46805": "Romanesque art",
+    "Q37068": "Romanticism",
+    "Q46825": "Gothic art",
+    "Q14378": "neoclassicism",
+
+    "Q40415": "Impressionism no start end",
+    "Q80113": "Expressionism no end",
+    "Q878985": "Modernism no end"
+  }
+}

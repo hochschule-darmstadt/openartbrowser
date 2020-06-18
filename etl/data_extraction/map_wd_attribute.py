@@ -3,10 +3,11 @@
 import inspect
 import re
 from pathlib import Path
-from typing import List, Dict, Any, Callable
+from typing import Any, Callable, Dict, List
+
+from pywikibot import WbTime
 
 from data_extraction.constants import *
-from pywikibot import WbTime
 from shared.utils import setup_logger
 
 logger = setup_logger(

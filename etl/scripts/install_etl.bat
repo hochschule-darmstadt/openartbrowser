@@ -3,5 +3,5 @@ setx PYTHONPATH "%PYTHONPATH%;%CD%" /M
 REM Add directory to PYWIKIBOT_DIR, this enables execution of data_extraction scripts in any directory
 setx PYWIKIBOT_DIR "%CD%" /M
 pip3 install -r requirements.txt
-cd data_manipulation
+cd data_enhancement
 npm install

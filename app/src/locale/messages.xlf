@@ -320,6 +320,18 @@
           <context context-type="linenumber">28</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="entities_labels" datatype="html">
+        <source>
+          <x id="ICU" equiv-text="{type, select, all {...} artworks {...} motifs {...} artists {...} locations {...} genres {...} movements {...} materials {...}}"/>
+        </source>
+        <note priority="1" from="description">Entities Type Labels</note>
+      </trans-unit>
+      <trans-unit id="all" datatype="html">
+        <source>
+          <x id="ICU" equiv-text="all"/>
+        </source>
+        <note priority="1" from="description">All</note>
+      </trans-unit>
       <trans-unit id="search_placeholder" datatype="html">
         <source>Search for something...</source>
         <context-group purpose="location">
@@ -469,6 +481,11 @@
           <context context-type="linenumber">67</context>
         </context-group>
         <note priority="1" from="description">Artworks toggle label</note>
+      </trans-unit>
+      <trans-unit id="togglerelatedmovements" datatype="html">
+        <source>Artworks
+        </source>
+        <note priority="1" from="description">Related movements toggle label</note>
       </trans-unit>
       <trans-unit id="location" datatype="html">
         <source>Location</source>

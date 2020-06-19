@@ -5,6 +5,8 @@ python ".\data_extraction\get_wikipedia_extracts.py"
 
 CD crawler_output\intermediate_files\json\
 
+python ../../../data_enhancement/estimate_movement_period.py
+
 node --max-old-space-size=4096 ..\..\..\data_enhancement\script_artworks_rank.js
 
 node --max-old-space-size=4096 ..\..\..\data_enhancement\script_genres_rank.js

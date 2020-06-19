@@ -157,10 +157,10 @@ export class DataService {
   }
 
   public async countEntityItems<T>(type: EntityType) {
-    const response: any = await this.http.get(
-      'https://openartbrowser.org/' + elasticEnvironment.serverURI + '/'
-      + (this.ISO_639_1_LOCALE || 'en') + '/_count?q=type:' + type).toPromise();
-    return (response && response.count) ? response.count : undefined;
+    const response: any = await this.http
+      .get('https://openartbrowser.org/' + elasticEnvironment.serverURI + '/' + (this.ISO_639_1_LOCALE || 'en') + '/_count?q=type:' + type)
+      .toPromise();
+    return response && response.count ? response.count : undefined;
   }
 
   public async getRandomMovementArtwork<T>(movementId: string, count = 20): Promise<T[]> {
@@ -254,11 +254,9 @@ export class DataService {
    */
   private addThumbnails(entity: Entity) {
     const prefix = 'https://upload.wikimedia.org/wikipedia/commons/';
-    if (entity.image && !entity.image.endsWith('.tif') && !entity.image.endsWith('.tiff')) {
-      entity.imageSmall = entity.image.replace(prefix, prefix + 'thumb/') + '/256px-' +
-        entity.image.substring(entity.image.lastIndexOf('/') + 1);
-      entity.imageMedium = entity.image.replace(prefix, prefix + 'thumb/') + '/512px-' +
-        entity.image.substring(entity.image.lastIndexOf('/') + 1);
+    if (entity.image && !entity.image.match('.tif') && !entity.image.match('.tiff')) {
+      entity.imageSmall = entity.image.replace(prefix, prefix + 'thumb/') + '/256px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1);
+      entity.imageMedium = entity.image.replace(prefix, prefix + 'thumb/') + '/512px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1);
     } else {
       entity.imageSmall = entity.image;
       entity.imageMedium = entity.image;

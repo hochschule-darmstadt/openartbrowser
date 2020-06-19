@@ -2,6 +2,7 @@
 REM Batch script for executing ETL. No error handling!
 python ".\data_extraction\get_wikidata_items.py"
 python ".\data_extraction\get_wikipedia_extracts.py"
+python ".\data_extraction\tif_substitute.py"
 
 CD crawler_output\intermediate_files\json\
 

@@ -65,7 +65,7 @@ def replace_tif_url(entity_list: List[Dict], filename: str) -> List[Dict]:
             "format": JSON,
             "prop": "pageimages",
             "piprop": "thumbnail",
-            "pithumbsize": "400",
+            "pithumbsize": "512",
             "maxlag": MAX_LAG,
         }
 

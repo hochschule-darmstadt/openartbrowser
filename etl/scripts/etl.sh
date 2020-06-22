@@ -21,7 +21,7 @@ python3 data_extraction/get_wikipedia_extracts.py
 # DATA ENRICHMENT
 
 cd crawler_output/intermediate_files/json/
-python3 ../../../data_manipulation/estimate_movement_period.py
+python3 ../../../data_enhancement/estimate_movement_period.py
 
 node --max-old-space-size=4096 ../../../data_enhancement/script_artworks_rank.js
 

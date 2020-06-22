@@ -84,6 +84,8 @@ PART_OF = "part_of"
 HAS_PART = "has_part"
 COORDINATE = "coordinate"
 SUBCLASS_OF = "subclass_of"
+EXHIBITION_HISTORY = "exhibition_history"
+EXHIBITION = "exhibition"
 
 # All properties extracted from the wikidata entities mapped to their openartbrowser key-label. They don't have a particular order.
 PROPERTY_NAME_TO_PROPERTY_ID = {
@@ -118,4 +120,5 @@ PROPERTY_NAME_TO_PROPERTY_ID = {
     HAS_PART: "P527",
     COORDINATE: "P625",  # Is called "coordinate location" in wikidata
     SUBCLASS_OF: "P279",
+    EXHIBITION_HISTORY: "P608",
 }

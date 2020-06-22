@@ -268,6 +268,7 @@ def extract_artworks(
                 materials,
                 motifs,
                 main_subjects,
+                exhibition_history,
             ) = map_wd_attribute.get_attribute_values_with_try_get_func(
                 result,
                 [
@@ -279,6 +280,7 @@ def extract_artworks(
                     MATERIAL[SINGULAR],
                     MOTIF[SINGULAR],
                     MAIN_SUBJECT[SINGULAR],
+                    EXHIBITION_HISTORY,
                 ],
                 type_name,
                 map_wd_attribute.try_get_qid_reference_list,
@@ -343,6 +345,7 @@ def extract_artworks(
                 DIAMETER_UNIT: diameter_unit,
                 ICONCLASS[PLURAL]: iconclasses,
                 MAIN_SUBJECT[PLURAL]: main_subjects,
+                EXHIBITION_HISTORY: exhibition_history,
             }
 
             for langkey in language_keys:
@@ -446,6 +449,9 @@ def extract_art_ontology() -> None:
     distinct_unit_qids = get_distinct_unit_symbol_qids(merged_artworks)
     unit_symbols = get_unit_symbols(distinct_unit_qids)
     resolve_unit_id_to_unit_symbol(merged_artworks, unit_symbols)
+
+    # Get exhibition histories as subdict
+    merged_artworks = resolve_exhibition_ids_to_exhibition_entities(merged_artworks)
 
     # Write to JSON
     write_data_to_json_and_csv(
@@ -727,6 +733,7 @@ def get_fields(
             LENGTH_UNIT,
             ICONCLASS[PLURAL],
             MAIN_SUBJECT[PLURAL],
+            EXHIBITION_HISTORY,
         ]
         for langkey in language_keys:
             fields += [f"{COUNTRY}_{langkey}"]
@@ -1100,9 +1107,7 @@ def load_entities_by_attribute_with_transitive_closure(
     extract_dicts: List[Dict],
     attribute_name: str,
     oab_type: str,
-    already_extracted_ids: Set[
-        str
-    ],  # TODO Remove since this is checked now in the function itself which is better
+    already_extracted_ids: Set[str],
     entity_extraction_func: Callable[
         [str, List[str], Set[str], Optional[List[str]]], List[Dict]
     ],
@@ -1252,6 +1257,107 @@ def resolve_entity_id_to_label(
                 artwork_object[f"{attribute_name}_{langkey}"] = ""
 
     return extract_dicts
+
+
+def get_exhibition_entities(
+    qids: Set[str],
+    language_keys: Optional[List[str]] = lang_keys,
+    type_name: str = EXHIBITION,
+) -> Dict[str, Dict]:
+    """Function to get the exhibition entities from wikidata
+
+    Args:
+        qids: Distinct qid set to get the entities from
+        language_keys: Language keys to extract label and description from. Defaults to languageconfig.csv
+        type_name: OAB type name. Defaults to EXHIBITION.
+
+    Returns:
+        A dict with the qids as key and the JSON object as value
+    """
+    print(datetime.datetime.now(), f"Starting with exhibition entities")
+    print(f"Total exhibition entities to extract: {len(qids)}")
+    item_count = 0
+    extract_dicts = {}
+    chunk_size = 50  # The chunksize 50 is allowed by the wikidata api, bigger numbers need special permissions
+    id_chunks = chunks(list(qids), chunk_size)
+    for chunk in id_chunks:
+        query_result = wikidata_entity_request(chunk)
+        for result in query_result[ENTITIES].values():
+            try:
+                qid = result[ID]
+            except Exception as error:
+                logger.error("Error on qid, skipping item. Error: {0}".format(error))
+                continue
+            label = map_wd_attribute.try_get_label_or_description(
+                result, LABEL[PLURAL], EN, type_name
+            )
+            description = map_wd_attribute.try_get_label_or_description(
+                result, DESCRIPTION[PLURAL], EN, type_name
+            )
+            start_time = map_wd_attribute.try_get_year_from_property_timestamp(
+                result, PROPERTY_NAME_TO_PROPERTY_ID[START_TIME], type_name
+            )
+            end_time = map_wd_attribute.try_get_year_from_property_timestamp(
+                result, PROPERTY_NAME_TO_PROPERTY_ID[END_TIME], type_name
+            )
+
+            extract_dicts.update(
+                {
+                    qid: {
+                        LABEL[SINGULAR]: label,
+                        DESCRIPTION[SINGULAR]: description,
+                        START_TIME: start_time,
+                        END_TIME: end_time,
+                        TYPE: EXHIBITION,
+                    }
+                }
+            )
+
+            for langkey in language_keys:
+                label_lang = map_wd_attribute.try_get_label_or_description(
+                    result, LABEL[PLURAL], langkey, type_name
+                )
+                description_lang = map_wd_attribute.try_get_label_or_description(
+                    result, DESCRIPTION[PLURAL], langkey, type_name
+                )
+                extract_dicts[qid][f"{LABEL[SINGULAR]}_{langkey}"] = label_lang
+                extract_dicts[qid][
+                    f"{DESCRIPTION[SINGULAR]}_{langkey}"
+                ] = description_lang
+
+        item_count += len(chunk)
+        print(
+            f"Status of exhibition entities: {item_count}/{len(qids)}",
+            end="\r",
+            flush=True,
+        )
+
+    print(datetime.datetime.now(), f"Finished with exhibition entities")
+    return extract_dicts
+
+
+def resolve_exhibition_ids_to_exhibition_entities(artwork_dict: List[Dict]):
+    """Function to resolve the exhibition qids to exhibition entities which are part of artwork entities
+
+    Args:
+        artwork_dict: List of artworks
+
+    Returns:
+        Modified artwork list with exhibition ids resolved to JSON objects
+    """
+    distinct_exhibition_ids = get_distinct_attribute_values_from_dict(
+        EXHIBITION_HISTORY, artwork_dict
+    )
+    qid_exhibition_entity_dict = get_exhibition_entities(distinct_exhibition_ids)
+
+    for artwork in artwork_dict:
+        if artwork[
+            EXHIBITION_HISTORY
+        ]:  # When there are exhibitions in the exhibition history attribute replace them with a dict (JSON object)
+            for i, qid in enumerate(artwork[EXHIBITION_HISTORY]):
+                artwork[EXHIBITION_HISTORY][i] = qid_exhibition_entity_dict[qid]
+
+    return artwork_dict
 
 
 if __name__ == "__main__":

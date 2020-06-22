@@ -15,6 +15,7 @@ from typing import List, Dict, Any
 
 import ijson
 import simplejson as json
+import copy
 
 from shared.utils import language_config_to_list
 
@@ -50,6 +51,9 @@ def get_language_attributes() -> List[str]:
         "country",
         "abstract",
         "wikipediaLink",
+        "place_of_birth",
+        "place_of_death",
+        "exhibition_history",
     ]
 
 
@@ -84,10 +88,11 @@ def fill_language_gaps(element: str, jsonobject: Dict) -> Dict:
         try:
             # Skip empty language data
             if not jsonobject[element + "_" + row[0]]:
-                next
+                continue
             # Assign language data to element
             else:
                 jsonobject[element] = jsonobject[element + "_" + row[0]]
+                break
         # Should not happen if key attributes in json are atleast existent
         except KeyError:
             if (element == "label") or (element == "description"):
@@ -117,10 +122,32 @@ def modify_langdict(
     # Language keys that need language specific handling
     lang_attributes = get_language_attributes()
     ignored_attributes = get_ignored_by_gap_filling()
-    tempjson = jsonobject.copy()
+    tempjson = copy.deepcopy(
+        jsonobject
+    )  # The deepcopy is needed since exhibition history is a sub dict
     delete_keys = []
     for element in lang_attributes:
+
         try:
+            # TODO maybe refactor with significant event usage
+            if element == "exhibition_history" and tempjson["exhibition_history"]:
+                for exhibition in tempjson["exhibition_history"]:
+                    try:
+                        for attribute in ["label", "description"]:
+                            if (
+                                not exhibition[attribute + "_" + langkey]
+                                and attribute not in ignored_attributes
+                            ):
+                                exhibition = fill_language_gaps(attribute, exhibition)
+                            else:
+                                exhibition[attribute] = exhibition[
+                                    attribute + "_" + langkey
+                                ]
+                    except KeyError as key_error:
+                        print(f"Error with attribute: {key_error}")
+
+                continue
+
             # Check if element has language data and if attribute needs to be ignored by gap filling
             if (
                 not tempjson[element + "_" + langkey]
@@ -130,8 +157,7 @@ def modify_langdict(
             else:
                 tempjson[element] = tempjson[element + "_" + langkey]
             # Using dictionary comprehension to find keys for deletion later
-            dltkey = [key for key in tempjson if element + "_" in key]
-            delete_keys.extend(dltkey)
+            delete_keys.extend([key for key in tempjson if element + "_" in key])
         # Ignore if key doesnt exist
         except KeyError:
             if (element == "label") or (element == "description"):
@@ -140,7 +166,6 @@ def modify_langdict(
                     + ". Id of .json-object: "
                     + tempjson["id"]
                 )
-            pass
 
     # delete the keys
     for key in delete_keys:
@@ -168,6 +193,29 @@ def generate_lang_json_files(filename: str, extract_dicts: List[Dict]) -> None:
         file.write(json.dumps(extract_dicts, ensure_ascii=False))
 
 
+def remove_language_key_attributes_in_exhibitions(
+    language_file: List[Dict], lang_keys: List[str] = language_keys
+) -> List[Dict]:
+    """Removes the language dependent attributes from the exhibitions objects
+
+    Args:
+        language_file: List of dicts which is written to e. g. art_ontology_en.json
+        lang_keys: All supported languages. Defaults to languageconfig.csv
+
+    Returns:
+        language_file without the language dependent attributes (e. g. label_en)
+    """
+    for entity in language_file:
+        if "exhibition_history" in entity and entity["exhibition_history"]:
+            for attribute in ["label", "description"]:
+                for key in lang_keys:
+                    for exhibition in entity["exhibition_history"]:
+                        if f"{attribute}_{key}" in exhibition:
+                            del exhibition[f"{attribute}_{key}"]
+
+    return language_file
+
+
 if __name__ == "__main__":
     art_ontology_file = (
         Path(__file__).resolve().parent.parent / "crawler_output" / "art_ontology.json"
@@ -186,6 +234,9 @@ if __name__ == "__main__":
     # generate one art_ontology_<language_code> file per language defined in config file.
     # fill the contents of the respective language dicitonary arrays into the files
     while i < len(language_skeleton):
+        language_skeleton[i] = remove_language_key_attributes_in_exhibitions(
+            language_skeleton[i]
+        )
         generate_lang_json_files(
             "art_ontology_" + language_keys[i], language_skeleton[i]
         )

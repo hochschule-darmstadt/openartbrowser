@@ -1,13 +1,12 @@
 import * as _ from 'lodash';
 import { HttpClient } from '@angular/common/http';
-import { Injectable, Inject, LOCALE_ID } from '@angular/core';
-import { EntityType, Artwork, ArtSearch, Entity, Iconclass, EntityIcon } from 'src/app/shared/models/models';
+import { Inject, Injectable, LOCALE_ID } from '@angular/core';
+import { ArtSearch, Artwork, Entity, EntityIcon, EntityType, Iconclass, Movement } from 'src/app/shared/models/models';
 import { elasticEnvironment } from 'src/environments/environment';
 import QueryBuilder from './query.builder';
 import { usePlural } from 'src/app/shared/models/entity.interface';
 
 const defaultSortField = 'relativeRank';
-
 
 /**
  * Service that handles the requests to the API
@@ -16,14 +15,15 @@ const defaultSortField = 'relativeRank';
 export class DataService {
   /** base url of elasticSearch server */
   private readonly baseUrl: string;
+  private readonly ISO_639_1_LOCALE: string;
 
   /**
    * Constructor
    */
   constructor(private http: HttpClient, @Inject(LOCALE_ID) localeId: string) {
     // build backend api url with specific index by localeId
-    const ISO_639_1_LOCALE = localeId.substr(0, 2);
-    this.baseUrl = elasticEnvironment.serverURI + '/' + (ISO_639_1_LOCALE || 'en') + '/_search';
+    this.ISO_639_1_LOCALE = localeId.substr(0, 2);
+    this.baseUrl = elasticEnvironment.serverURI + '/' + (this.ISO_639_1_LOCALE || 'en') + '/_search';
   }
 
   /**
@@ -60,14 +60,38 @@ export class DataService {
    * @param type the type to search in
    * @param ids the ids to search for
    */
-  public findArtworksByType(type: EntityType, ids: string[]): Promise<Artwork[]> {
+  public findArtworksByType(type: EntityType, ids: string[], count = 200): Promise<Artwork[]> {
     const query = new QueryBuilder()
-      .size(200)
+      .size(count)
       .sort(defaultSortField)
       .minimumShouldMatch(1)
       .ofType(EntityType.ARTWORK);
     ids.forEach(id => query.shouldMatch(usePlural(type), `${id}`));
     return this.performQuery<Artwork>(query);
+  }
+
+  /**
+   * Find all movements which are part of topMovement and have start_time and end_time set
+   * @param topMovementId Id of 'parent' movement
+   */
+  public getHasPartMovements(topMovementId: string): Promise<Movement[]> {
+    return this.findById<Movement>(topMovementId, EntityType.MOVEMENT).then(topMovement => {
+      return this.findMultipleById<Movement>(topMovement.has_part, EntityType.MOVEMENT).then(hasPartMovements => {
+        return hasPartMovements.filter(m => m.start_time && m.end_time);
+      });
+    });
+  }
+
+  /**
+   * Find all movements which movement is part of and have start_time and end_time set
+   * @param subMovementId Id of 'sub' movement
+   */
+  public getPartOfMovements(subMovementId: string): Promise<Movement[]> {
+    return this.findById<Movement>(subMovementId, EntityType.MOVEMENT).then(subMovement => {
+      return this.findMultipleById<Movement>(subMovement.part_of, EntityType.MOVEMENT).then(partOfMovements => {
+        return partOfMovements.filter(m => m.start_time && m.end_time);
+      });
+    });
   }
 
   /**
@@ -80,6 +104,19 @@ export class DataService {
       .sort(defaultSortField)
       .mustMatch('type', 'artwork')
       .shouldMatch('label', `${label}`);
+    return this.performQuery<Artwork>(query);
+  }
+
+  /**
+   * Find an artwork by movement
+   * @param movement label of movement
+   */
+  public findArtworksByMovement(movement: string): Promise<Artwork[]> {
+    const query = new QueryBuilder()
+      .size(5)
+      .sort(defaultSortField)
+      .mustMatch('type', 'artwork')
+      .mustMatch('movements', `${movement}`);
     return this.performQuery<Artwork>(query);
   }
 
@@ -110,6 +147,31 @@ export class DataService {
     return this.performQuery(query);
   }
 
+  public async getEntityItems<T>(type: EntityType, count = 20, from = 0): Promise<T[]> {
+    const query = new QueryBuilder()
+      .mustMatch('type', type)
+      .sort(defaultSortField)
+      .size(count)
+      .from(from);
+    return this.performQuery<T>(query);
+  }
+
+  public async countEntityItems<T>(type: EntityType) {
+    const response: any = await this.http.get(
+      'https://openartbrowser.org/' + elasticEnvironment.serverURI + '/'
+      + (this.ISO_639_1_LOCALE || 'en') + '/_count?q=type:' + type).toPromise();
+    return (response && response.count) ? response.count : undefined;
+  }
+
+  public async getRandomMovementArtwork<T>(movementId: string, count = 20): Promise<T[]> {
+    const query = new QueryBuilder()
+      .mustMatch('type', 'artwork')
+      .mustPrefix('image', 'http')
+      .sort(defaultSortField)
+      .size(count);
+    return this.performQuery<T>(query);
+  }
+
   /**
    * Find any obejct in the index by the field label with the given label
    * @param label object label
@@ -126,13 +188,14 @@ export class DataService {
   /**
    * Return 20 items for an specific category.
    * @param type category type
+   * @param count size of return set
    */
-  public async getCategoryItems<T>(type: EntityType): Promise<T[]> {
+  public async getCategoryItems<T>(type: EntityType, count = 20): Promise<T[]> {
     const query = new QueryBuilder()
       .mustMatch('type', type)
       .mustPrefix('image', 'http')
       .sort(defaultSortField)
-      .size(20);
+      .size(count);
     return this.performQuery<T>(query);
   }
 
@@ -159,20 +222,25 @@ export class DataService {
     const entities = this.filterData<T>(response, type);
     // set type specific attributes
     entities.forEach(entity => this.setTypes(entity));
+
+    if (!entities.length) {
+      console.warn(NoResultsWarning(query));
+    }
+
     return entities;
   }
 
   /**
    * filters the data that is fetched from the server
    * @param data Elasticsearch Data
-   * @param type optional: type of entities that should be filtered
+   * @param filterBy optional: type of entities that should be filtered
    */
   private filterData<T>(data: any, filterBy?: EntityType): T[] {
     const entities: T[] = [];
     _.each(
       data.hits.hits,
       function(val) {
-        if (!filterBy || (filterBy && val._source.type == filterBy)) {
+        if (!filterBy || (filterBy && val._source.type === filterBy)) {
           entities.push(this.addThumbnails(val._source));
         }
       }.bind(this)
@@ -187,8 +255,10 @@ export class DataService {
   private addThumbnails(entity: Entity) {
     const prefix = 'https://upload.wikimedia.org/wikipedia/commons/';
     if (entity.image && !entity.image.endsWith('.tif') && !entity.image.endsWith('.tiff')) {
-      entity.imageSmall = entity.image.replace(prefix, prefix + 'thumb/') + '/256px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1);
-      entity.imageMedium = entity.image.replace(prefix, prefix + 'thumb/') + '/512px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1);
+      entity.imageSmall = entity.image.replace(prefix, prefix + 'thumb/') + '/256px-' +
+        entity.image.substring(entity.image.lastIndexOf('/') + 1);
+      entity.imageMedium = entity.image.replace(prefix, prefix + 'thumb/') + '/512px-' +
+        entity.image.substring(entity.image.lastIndexOf('/') + 1);
     } else {
       entity.imageSmall = entity.image;
       entity.imageMedium = entity.image;
@@ -207,3 +277,11 @@ export class DataService {
     }
   }
 }
+
+const NoResultsWarning = query => `
+The performed es-query did not yield any results. This might result in strange behavior in the application.
+
+If you encounter any such issues please consider opening a bug report: https://github.com/hochschule-darmstadt/openartbrowser/issues/new?assignees=&labels=&template=bug_report.md&title=
+
+Query: ${query.toString()}
+`;

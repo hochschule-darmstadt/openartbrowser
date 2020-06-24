@@ -1,3 +1,6 @@
+"""Shared constants within the data_extraction package
+"""
+
 AGENT_HEADER = "<nowiki>https://cai-artbrowserstaging.fbi.h-da.de/; tilo.w.michel@stud.h-da.de</nowiki>"
 
 HTTP_HEADER = {

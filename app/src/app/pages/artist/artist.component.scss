@@ -1,3 +1,10 @@
-.video {
+.videos {
   width: 100%;
+}
+.video{
+  display: inline-block;
+  margin-right: 16px;
+}
+.video:last-child{
+  margin: 0;
 }

@@ -8,9 +8,8 @@
         </p>
       </div>
 
-      <app-information i18n-label="Country label@@country" label="Country" [value]="location?.country"> </app-information>
-
-      <app-information i18n-label="Official page label@@official_page" label="Web" [isHref]="true" [value]="location?.website"> </app-information>
+      <app-information *ngIf="location?.country" i18n-label="Country label@@country" label="Country" [value]="location?.country"> </app-information>
+      <app-information *ngIf="location?.website" i18n-label="Official page label@@official_page" label="Web" [isHref]="true" [value]="location?.website"> </app-information>
 
       <div *ngIf="location?.abstract">
         <app-collapse collapse="{{ collapse }}">
@@ -23,6 +22,7 @@
       <img class="img-fluid rounded-circle" src="{{ location?.imageSmall }}" alt="" />
     </div>
   </div>
-  <h3 i18n="Artworks label@@artworks">Artworks</h3>
+  <span class="artworks-amount">{{ location?.absoluteRank }}</span>
+  <span class="ml-1 slider-heading" i18n="Artworks label@@artworks">Artworks</span>
   <app-slider [items]="sliderItems"></app-slider>
 </div>

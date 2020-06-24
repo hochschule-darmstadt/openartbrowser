@@ -61,11 +61,14 @@ export class ArtistComponent implements OnInit, OnDestroy {
       }
 
       /** load slider items */
-      this.dataService.findArtworksByType(EntityType.ARTIST, [this.artist.id]).then(artworks => (this.sliderItems = shuffle(artworks)));
+      this.dataService.findArtworksByType(EntityType.ARTIST, [this.artist.id])
+        .then(artworks => (this.sliderItems = shuffle(artworks)));
       /** dereference movements  */
-      this.dataService.findMultipleById(this.artist.movements as any, EntityType.MOVEMENT).then(movements => (this.artist.movements = movements));
+      this.dataService.findMultipleById(this.artist.movements as any, EntityType.MOVEMENT)
+        .then(movements => (this.artist.movements = movements));
       /** dereference influenced_bys */
-      this.dataService.findMultipleById(this.artist.influenced_by as any, EntityType.ARTIST).then(influences => (this.artist.influenced_by = influences));
+      this.dataService.findMultipleById(this.artist.influenced_by as any, EntityType.ARTIST)
+        .then(influences => (this.artist.influenced_by = influences));
 
       /* Count meta data to show more on load */
       this.aggregatePictureMovementsToArtist();
@@ -148,7 +151,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
-    
+
   }
 
   toggleComponent() {

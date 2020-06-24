@@ -32,7 +32,7 @@ $color1: #00bc8c;
   margin-left: auto;
   margin-right: auto;
   margin-top: 0;
-  margin-bottom: 6rem;
+  margin-bottom: 2rem;
   position: relative;
 
   @media (min-width: 577px) and (max-width: 767px) {
@@ -44,16 +44,14 @@ $color1: #00bc8c;
 
   .logo {
     width: 100%;
-    margin-bottom: 6rem;
 
     span {
       font-size: 4vh;
-      padding-top: 1vh;
-      letter-spacing: 0rem;
+      letter-spacing: 0;
       color: $color1;
 
       @media (min-width: 768px) and (max-width: 991px) {
-        font-size: 3vh;
+        font-size: 4vh;
       }
       @media (min-width: 577px) and (max-width: 767px) {
         font-size: 3vh;
@@ -64,27 +62,27 @@ $color1: #00bc8c;
         padding-top: 0;
       }
       @media (min-width: 0px) and (max-width: 376px) {
-        font-size: 1.5vh;
+        font-size: 1vh;
         padding-top: 0;
       }
     }
 
     h1 {
-      font-size: 12vh;
-      letter-spacing: 0rem;
+      font-size: 7vh;
+      letter-spacing: 0;
       color: $color1;
 
       @media (min-width: 768px) and (max-width: 991px) {
-        font-size: 9vh;
-      }
-      @media (min-width: 577px) and (max-width: 767px) {
         font-size: 7vh;
       }
-      @media (min-width: 377px) and (max-width: 576px) {
+      @media (min-width: 577px) and (max-width: 767px) {
         font-size: 5vh;
       }
+      @media (min-width: 377px) and (max-width: 576px) {
+        font-size: 3.5vh;
+      }
       @media (min-width: 0px) and (max-width: 376px) {
-        font-size: 4vh;
+        font-size: 2vh;
       }
     }
   }
@@ -136,11 +134,42 @@ $color1: #00bc8c;
 
 /** Styling for the category boxes */
 .container-category {
-  height: 15rem;
-  padding: 0 10px;
+  .entities {
+    &-link {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 2rem;
+      background-color: #444444;
+      border-radius: 1rem;
+      text-align: center;
+
+      &:hover {
+        transform: translateY(25%) ;
+        transition: 0.3s ease;
+      }
+    }
+
+    &-caption {
+      position: relative;
+      width: 100%;
+      font-size: larger;
+      pointer-events: auto;
+      margin-top: auto;
+    }
+  }
+
+  .carousel-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    background-color: #444444;
+    border-radius: 15px;
+    text-align: center;
+  }
 
   .overlay {
-    position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
@@ -151,12 +180,15 @@ $color1: #00bc8c;
     -webkit-transition: 0.3s ease;
     transition: 0.3s ease;
     border-radius: 15px;
+
     i {
       margin-right: 5px;
     }
   }
 
   ngb-carousel {
+    pointer-events: auto;
+
     box-shadow: 0 0 30px 1px black;
     transition: all 0.5s ease;
     border-radius: 15px;
@@ -239,8 +271,22 @@ $color1: #00bc8c;
   width: 10%;
   padding: 0 2%;
   opacity: 0.4;
+}
 
-  &:hover {
-    cursor: default;
+::ng-deep .container-category .carousel-control-prev:hover {
+  border-radius: 15px 0 0 15px;
+  background: linear-gradient(90deg, #000000, #44444400);
+}
+
+::ng-deep .container-category .carousel-control-next:hover {
+  border-radius: 0 15px 15px 0;
+  background: linear-gradient(270deg, #000000, #44444400);
+}
+
+
+/** do not display movement overview in mobile version **/
+@media only screen and (max-width: 500px) {
+  #mv_overview {
+    display: none;
   }
 }

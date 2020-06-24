@@ -9,6 +9,9 @@ import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 })
 export class IconclassComponent {
   @Input()
+  label: string;
+
+  @Input()
   iconclasses: Iconclass[];
 
   iconclassData: Array<IconclassData> = [];

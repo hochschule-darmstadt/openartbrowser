@@ -1,6 +1,18 @@
+"""Extract the wikipedia extracts for the sitelinks from wikidata
+
+Pre-conditions:
+    get_wikipedia_items.py should've been run and crawler_output/intermediate_files/json contains required files
+
+Examples:
+    python3 get_wikipedia_extract.py
+
+Returns:
+    *.json files with added attributes wikipediaLink and abstract
+"""
 import datetime
 import json
 from pathlib import Path
+from typing import Optional, List, Dict
 
 from data_extraction.constants import *
 from data_extraction.request_utils import send_http_request
@@ -15,11 +27,35 @@ logger = setup_logger(
     / GET_WIKIPEDIA_EXTRACS_LOG_FILENAME,
 )
 
+lang_keys = [item[0] for item in language_config_to_list()]
+
 
 def get_wikipedia_page_ids(
-    items, indices, langkey, timeout=TIMEOUT, sleep_time=SLEEP_TIME, maxlag=MAX_LAG,
-):
-    """ Source: https://stackoverflow.com/questions/52787504/how-to-get-page-id-from-wikipedia-page-title """
+    items: List[Dict],
+    indices: List[int],
+    langkey: str,
+    timeout: Optional[int] = TIMEOUT,
+    sleep_time: Optional[int] = SLEEP_TIME,
+    maxlag: Optional[int] = MAX_LAG,
+) -> Dict:
+    """Function to get the wikipedia page ids from their label referenced in the sitelinks
+
+    sitelink de: Mona_Lisa is resolved to
+
+    Args:
+        items: List of items
+        indices: A list of indices which contain a sitelink
+        langkey: A specific language key e. g. 'en'
+        timeout: Timeout on the request. Defaults to TIMEOUT.
+        sleep_time: Waiting time if there are serverside problems. Defaults to SLEEP_TIME.
+        maxlag: Maxlag for the wikidata server see https://www.mediawiki.org/wiki/Manual:Maxlag_parameter. Defaults to MAX_LAG
+
+    Returns:
+        A dictionary which maps the wikipedia page id (which is not a qid like in wikidata) to an index in the items dictionary
+
+    Source:
+        https://stackoverflow.com/questions/52787504/how-to-get-page-id-from-wikipedia-page-title
+    """
     title_indice_dictionary = {}
     wikipedia_url = f"https://{langkey}.wikipedia.org/wiki/"
     for index in indices:
@@ -71,14 +107,29 @@ def get_wikipedia_page_ids(
 
 
 def get_wikipedia_extracts(
-    items,
-    page_id_index_dictionary,
-    langkey,
-    timeout=TIMEOUT,
-    sleep_time=SLEEP_TIME,
-    maxlag=MAX_LAG,
+    items: List[Dict],
+    page_id_index_dictionary: Dict,
+    langkey: str,
+    timeout: Optional[int] = TIMEOUT,
+    sleep_time: Optional[int] = SLEEP_TIME,
+    maxlag: Optional[int] = MAX_LAG,
 ):
-    """ https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&pageids=70889|1115370 """
+    """Get the wikipedia extracts (in our data model they're called abstracts)
+
+    Args:
+        items: List of entities
+        page_id_index_dictionary: Dictionary to resolve the page ids from the indices in the items list
+        langkey: A specific language key e. g. 'en'
+        timeout: Timeout on the request. Defaults to TIMEOUT.
+        sleep_time: Waiting time if there are serverside problems. Defaults to SLEEP_TIME.
+        maxlag: Maxlag for the wikidata server see https://www.mediawiki.org/wiki/Manual:Maxlag_parameter. Defaults to MAX_LAG
+
+    Returns:
+        A dictionary with index and abstract which is added to the entity of the index later
+
+    Source:
+            https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&pageids=70889|1115370
+    """
     parameters = {
         "action": "query",
         "format": JSON,
@@ -120,9 +171,12 @@ def get_wikipedia_extracts(
     return index_extract_dictionary
 
 
-def add_wikipedia_extracts(
-    languageKeys=[item[0] for item in language_config_to_list()],
-):
+def add_wikipedia_extracts(language_keys: Optional[List[str]] = lang_keys,) -> None:
+    """Add the wikipedia extracts to the already existing files
+
+    Args:
+        language_keys: Language keys to extract wikipedia abstracts for. Defaults to languageconfig.csv
+    """
     for filename in [
         ARTWORK[PLURAL],
         MOTIF[PLURAL],
@@ -142,7 +196,7 @@ def add_wikipedia_extracts(
                 (create_new_path(filename)).with_suffix(f".{JSON}"), encoding="utf-8"
             ) as file:
                 items = json.load(file)
-                for key in languageKeys:
+                for key in language_keys:
                     item_indices_with_wiki_link_for_lang = [
                         items.index(item)
                         for item in items
@@ -171,12 +225,12 @@ def add_wikipedia_extracts(
                             items, chunk, key
                         )
                         # Get Extracts from PageId https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&pageids=70889|1115370
-                        rawResponse = get_wikipedia_extracts(
+                        raw_response = get_wikipedia_extracts(
                             items, page_id_indices_dictionary, key
                         )
                         # add extracted abstracts to json objects
                         for i in chunk:
-                            items[i][f"{ABSTRACT}_{key}"] = rawResponse[i]
+                            items[i][f"{ABSTRACT}_{key}"] = raw_response[i]
 
                         extracted_count += len(chunk)
                         print(

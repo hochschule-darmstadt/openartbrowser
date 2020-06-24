@@ -92,3 +92,18 @@ hr {
   opacity: 1;
   height: 100%;
 }
+
+.tooltip-inner {
+  max-width: 350px;
+  /* If max-width does not work, try using width instead */
+}
+.tooltip > div {
+  animation-name: delayedFadeIn;
+  animation-duration: 0.5s; /* Adjust this duration */
+}
+
+@keyframes delayedFadeIn {
+  0% {opacity: 0;}
+  75% {opacity: 0;} /* Set this to 99% for no fade-in. */
+  100% {opacity: 1;}
+}

@@ -57,6 +57,16 @@
           <context context-type="linenumber">28</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="entities_labels" datatype="html">
+        <source>{type, select, artwork {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}</source>
+        <target state="final">{type, select, artwork {Opere d'arte} motif {Motives} artist {Artista} location {Sedi} genre {Generi} movement {Stili} material {Materiale}}</target>
+        <note priority="1" from="description">Entities Type Labels</note>
+      </trans-unit>
+      <trans-unit id="all" datatype="html">
+        <source>all</source>
+        <target state="final">Tutti</target>
+        <note priority="1" from="description">All</note>
+      </trans-unit>
       <trans-unit id="menuHome" datatype="html">
         <source>Home</source><target state="final">Pagina principale</target>
         <context-group purpose="location">
@@ -563,6 +573,10 @@
         </context-group>
         <note priority="1" from="description">Artworks toggle label</note>
       </trans-unit>
+      <trans-unit id="togglerelatedmovements" datatype="html">
+        <source>Artworks</source><target state="final">Movimenti Correlati</target>
+        <note priority="1" from="description">Related movements toggle label</note>
+      </trans-unit>
       <trans-unit id="artwork" datatype="html">
         <source>Artwork</source><target state="final">Opera d'arte</target>
         <context-group purpose="location">
@@ -695,6 +709,10 @@
       <trans-unit id="main_motif" datatype="html">
         <source>Main Motif</source>
         <target state="final">Motivo Principale</target>
+      </trans-unit>
+      <trans-unit id="iconography" datatype="html">
+        <source>Iconography</source>
+        <target state="final">Iconografia</target>
       </trans-unit>
     </body>
   </file>

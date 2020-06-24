@@ -1,8 +1,22 @@
+"""Adds the youtube video links to the art_ontology.json
+
+Pre-conditions:
+    The art_ontology.json file has to be existing
+
+Examples:
+    python3 add_youtube_videos.py
+
+    # check for valid youtube ids
+    python3 add_youtube_videos.py -c
+
+Returns:
+    Modified version of the art_ontology.json with youtube video links
+"""
 import csv
 import json
 import sys
 from pathlib import Path
-
+from typing import Optional
 import requests
 
 ADD_FOR_TYPES = ["artwork", "artist", "movement"]
@@ -12,8 +26,15 @@ except FileNotFoundError:
     GOOGLE_DEV_KEY = ""
 
 
-def check_yt_id_valid(id) -> bool:
-    """Connects to the YT API and checks if the is valid."""
+def check_yt_id_valid(id: str) -> bool:
+    """Connects to the YT API and checks if the is valid
+
+    Args:
+        id (str): Id of the youtube video
+
+    Returns:
+        True if video id still valid, else False
+    """
     api_request_url = "https://www.googleapis.com/youtube/v3/videos?part=player&id={0}&key={1}".format(
         id, GOOGLE_DEV_KEY
     )
@@ -31,16 +52,25 @@ def check_yt_id_valid(id) -> bool:
 
 
 def add_youtube_videos(
-    videofile_location=Path(__file__).resolve().parent / "youtube_videos.csv",
-    ontology_location=Path(__file__).resolve().parent.parent
+    videofile_location: Optional[str] = Path(__file__).resolve().parent
+    / "youtube_videos.csv",
+    ontology_location: Optional[str] = Path(__file__).resolve().parent.parent
     / "crawler_output/art_ontology.json",
-    ontology_output_location=Path(__file__).resolve().parent.parent
+    ontology_output_location: Optional[str] = Path(__file__).resolve().parent.parent
     / "crawler_output/art_ontology.json",
-    broken_ids_logging_location=Path(__file__).resolve().parent.parent
-    / "crawler_output/broken_links.json",
-    check_ids=True,
+    broken_ids_logging_location: Optional[str] = Path(__file__).resolve().parent.parent
+    / "logs/broken_links.json",
+    check_ids: bool = True,
 ) -> None:
-    """Load the video csv file and add the links to the ontology file"""
+    """Load the video csv file and add the links to the ontology file
+
+    Args:
+        videofile_location: Videofile location. Defaults to "youtube_videos.csv" in the directory of this script.
+        ontology_location: Input art_ontology.json location. Defaults to "crawler_output/art_ontology.json".
+        ontology_output_location: Output art_ontology.json location. Defaults to "crawler_output/art_ontology.json".
+        broken_ids_logging_location: Broken ids logging location. Defaults to "logs/broken_links.json".
+        check_ids: Check if ids still valid. Defaults to True.
+    """
     if GOOGLE_DEV_KEY == "":
         check_ids = False
 

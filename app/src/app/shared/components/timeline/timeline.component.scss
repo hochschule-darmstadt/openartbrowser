@@ -4,7 +4,7 @@ $container-height: 20em;
   margin-top: 1em;
 }
 
-::ng-deep {
+:host ::ng-deep {
   .custom-slider {
     .ng5-slider-tick {
       visibility: hidden;

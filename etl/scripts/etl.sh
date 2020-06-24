@@ -27,7 +27,7 @@ python3 data_enhancement/ranking.py
 cd crawler_output/intermediate_files/json/
 
 # Merges all *_rank.json files into art_ontology.json
-node --max-old-space-size=4096 ../../../data_enhancement/merge_art_data.js
+jq -s '[.[][]]' *_rank.json > art_ontology.json
 
 rm -f ../../../crawler_output/art_ontology.json
 

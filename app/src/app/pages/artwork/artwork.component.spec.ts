@@ -16,6 +16,7 @@ import { AbstractComponent } from 'src/app/shared/components/abstract/abstract.c
 import { TitleComponent } from 'src/app/shared/components/title/title.component';
 import { IconclassComponent } from 'src/app/shared/components/iconclass/iconclass.component';
 import { DimensionsComponent } from 'src/app/shared/components/dimensions/dimensions.component';
+import { EventTableComponent } from 'src/app/shared/components/event-table/event-table.component'
 
 describe('ArtworkComponent', () => {
   let component: ArtworkComponent;
@@ -33,6 +34,7 @@ describe('ArtworkComponent', () => {
         TitleComponent,
         InformationComponent,
         DimensionsComponent,
+        EventTableComponent,
         VideoComponent,
         CollapseComponent,
         InformationComponent,

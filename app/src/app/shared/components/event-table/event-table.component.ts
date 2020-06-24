@@ -15,15 +15,19 @@ export class EventTableComponent implements OnInit {
   ngOnInit() {
   }
 
+  isDisplayable(event) {
+    return typeof event.start_time === 'number' && event.label.length
+  }
+
   getTimeLabel(event) {
-    if (event.end) {
-      return event.start + ' - ' + event.end;
+    if (event.end_time && event.end_time !== event.start_time) {
+      return event.start_time + ' - ' + event.end_time;
     }
-    return event.start;
+    return event.start_time;
   }
 
   getEventLabel(event) {
-    if (event.type === 'exhibition') {
+    if (event.type === 'exhibition' && !event.description) {
       return event.label + ' (Exhibition)';
     }
     return event.label;

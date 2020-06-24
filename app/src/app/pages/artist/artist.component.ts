@@ -51,8 +51,8 @@ export class ArtistComponent implements OnInit, OnDestroy {
       const artistId = params.get('artistId');
       /** Use data service to fetch entity from database */
       this.artist = await this.dataService.findById<Artist>(artistId, EntityType.ARTIST);
-      if (this.artist.videos) {
-        this.uniqueEntityVideos.unshift(this.artist);
+      if (this.artist.videos && this.artist.videos.length > 0) {
+        this.uniqueEntityVideos.unshift(this.artist.videos[0]);
       }
 
       /** load slider items */
@@ -72,18 +72,14 @@ export class ArtistComponent implements OnInit, OnDestroy {
   }
 
 
-  getVideoUrl(entity) {
-    return Array.isArray(entity.videos) ? entity.videos[0] : entity.videos;
-  }
-
   /*
     Iterates over the movements and adds all videos to uniqueEntityVideos.
     Only Videos whose id and link are not in uniqueEntityVideos & uniqueVideosLinks will be added.
   */
   addMovementVideos() {
     for ( const movement of this.artist.movements) {
-      if (!this.videoDuplicationCheck(movement)) {
-        this.uniqueEntityVideos.push(movement);
+      if (movement.videos && movement.videos.length >  0 && !this.videoDuplicationCheck(movement.videos[0])) {
+        this.uniqueEntityVideos.push(movement.videos[0]);
       }
     }
   }
@@ -92,11 +88,9 @@ export class ArtistComponent implements OnInit, OnDestroy {
     Checks if VideoUrl already exists on an entity in uniqueEntityVideos
     returns true if video already exists
   */
-  videoDuplicationCheck(inputEntity): boolean {
-    const inputVideoUrl = this.getVideoUrl(inputEntity);
-    for (const entity of this.uniqueEntityVideos) {
-      const videoUrl = this.getVideoUrl(entity);
-      if (videoUrl === inputVideoUrl) {
+  videoDuplicationCheck(inputVideoUrl): boolean {
+    for (const uniqueVideo of this.uniqueEntityVideos) {
+      if (uniqueVideo === inputVideoUrl) {
         return true;
       }
     }

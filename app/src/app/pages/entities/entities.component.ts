@@ -55,8 +55,6 @@ export class EntitiesComponent implements OnInit {
 
     if (this.type) {
       this.entities.push(...Array(this.fetchSize).fill({}));
-      console.log(this.entities);
-      // this.getEntities(this.offset);
 
       /** Fetch dependant on type. Maybe there is potential for improvement here. */
       switch (this.type) {

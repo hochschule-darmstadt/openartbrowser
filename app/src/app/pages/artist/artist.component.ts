@@ -45,6 +45,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.route.params.subscribe(() => {
       this.videoExists = false;
+      this.uniqueEntityVideos = [];
     });
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
@@ -78,24 +79,12 @@ export class ArtistComponent implements OnInit, OnDestroy {
   */
   addMovementVideos() {
     for ( const movement of this.artist.movements) {
-      if (movement.videos && movement.videos.length >  0 && !this.videoDuplicationCheck(movement.videos[0])) {
+      if (movement.videos && movement.videos.length >  0 && !this.uniqueEntityVideos.includes(movement.videos[0])) {
         this.uniqueEntityVideos.push(movement.videos[0]);
       }
     }
   }
 
-  /*
-    Checks if VideoUrl already exists on an entity in uniqueEntityVideos
-    returns true if video already exists
-  */
-  videoDuplicationCheck(inputVideoUrl): boolean {
-    for (const uniqueVideo of this.uniqueEntityVideos) {
-      if (uniqueVideo === inputVideoUrl) {
-        return true;
-      }
-    }
-    return false;
-  }
   /**
    * Get all movements from the artworks of an artist and add them to the artist movements.
    * Since the first query only gives back the movement id and not the complete movement object,

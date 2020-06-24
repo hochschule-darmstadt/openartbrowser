@@ -8,8 +8,8 @@
           <app-abstract [entity]="movement"></app-abstract>
 
           <div class="video">
-            <app-video [entity]="movement" (videoFound)="videoFound($event)"></app-video>
-            <app-video *ngFor="let artwork of sliderItems.slice(0, 10)" [entity]="artwork" (videoFound)="videoFound($event)"></app-video>
+            <app-video [videoUrl]= "movement.videos && movement.videos.length > 0 ? movement.videos[0] : null" (videoFound)="videoFound($event)"></app-video>
+            <app-video *ngFor="let artwork of sliderItems.slice(0, 10)" [videoUrl]="artwork.videos && artwork.videos.length > 0 ? artwork.videos[0] : null" (videoFound)="videoFound($event)"></app-video>
           </div>
 
           <app-information i18n-label="Influenced by label@@influenced_by" label="Influenced by" [values]="movement?.influenced_by"> </app-information>

@@ -106,12 +106,13 @@ export class ArtworkComponent implements OnInit, OnDestroy {
 
       /** Use data service to fetch entity from database */
       const artworkId = params.get('artworkId');
-      this.artwork = (await this.dataService.findById<Artwork>(artworkId, EntityType.ARTWORK)) as Artwork;
+      this.artwork = (await this.dataService.findById<Artwork>(artworkId, EntityType.ARTWORK));
 
       if (this.artwork) {
         this.mergeMotifs();
-        this.resolveIds('main_subjects');
-
+        await this.resolveIds('main_subjects');
+        this.insertMainMotifTab();
+        
         /* Count meta data to show more on load */
         this.calculateCollapseState();
         /* load tabs content */
@@ -270,6 +271,25 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       type,
       items: []
     });
+  }
+
+  /**
+   * inserts a custom tab that displays related artworks by main motifs.
+   * since main motifs are of type motif and not a new entity type, this custom tab logic exists
+   */
+  async insertMainMotifTab() {
+    const main_motifs = this.artwork.main_subjects.map(entity => entity.id);
+    
+    const items = await this.dataService.findArtworksByType(EntityType.MOTIF, main_motifs)
+
+    const tab = { 
+      active: false,
+      icon: EntityIcon["MOTIF"],
+      type: "main_motif" as EntityType,
+      items 
+    };
+
+    this.artworkTabs.splice(1, 0, tab); // insert after first element (All, Main Motif, ...rest)
   }
 
   videoFound(event) {

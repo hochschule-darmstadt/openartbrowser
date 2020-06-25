@@ -8,7 +8,7 @@ import { Entity } from '../../models/models';
   styleUrls: ['./video.component.scss']
 })
 export class VideoComponent implements OnInit, OnChanges {
-  @Input() entity: Entity;
+  @Input() videoUrl: string;
 
   /**
    *  url that gets embedded in iframe in html
@@ -23,15 +23,12 @@ export class VideoComponent implements OnInit, OnChanges {
   ngOnInit(): void {}
 
   initVideo(): void {
-    if (this.entity && this.entity.videos) {
-      const videoUrl = Array.isArray(this.entity.videos) ? this.entity.videos[0] : this.entity.videos;
-      if (videoUrl) {
-        this.safeUrl = this.getTrustedUrl(videoUrl);
-        this.validateVideoExists(videoUrl).then(exists => {
+    if (this.videoUrl) {
+        this.safeUrl = this.getTrustedUrl(this.videoUrl);
+        this.validateVideoExists(this.videoUrl).then(exists => {
           this.videoExists = exists;
           this.videoFound.emit(this.videoExists);
         });
-      }
     } else {
       this.videoExists = false;
       this.videoFound.emit(this.videoExists);
@@ -68,7 +65,7 @@ export class VideoComponent implements OnInit, OnChanges {
    * Angular reuses the component instance when the entity changes.
    */
   ngOnChanges(changes): void {
-    if (changes.entity !== undefined) {
+    if (changes.videoUrl !== undefined) {
       this.initVideo();
     }
   }

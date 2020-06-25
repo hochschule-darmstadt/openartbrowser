@@ -22,8 +22,8 @@
           <app-abstract [entity]="artist"></app-abstract>
 
           <div class="videos">
-            <div class="video" *ngFor="let item of uniqueEntityVideos | keyvalue;  let i=index">
-              <app-video *ngIf="(i < 3)" [entity]="item.value" (videoFound)="videoFound($event)"></app-video>
+            <div class="video" *ngFor="let url of uniqueEntityVideos;  let i=index">
+              <app-video *ngIf="(i < 3)" [videoUrl]="url" (videoFound)="videoFound($event)"></app-video>
             </div>
           </div>
 

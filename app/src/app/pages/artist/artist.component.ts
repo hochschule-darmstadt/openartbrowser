@@ -36,10 +36,8 @@ export class ArtistComponent implements OnInit, OnDestroy {
 
   /** a video was found */
   videoExists = false;
-  /* List of unique Entities (Movements) with Videos */
-  uniqueEntityVideos: any;
-  /* List of unique Videolinks */
-  uniqueVideosLinks: string[];
+  /* List of unique Videos */
+  uniqueEntityVideos: string[] = [];
 
   constructor(private dataService: DataService, private route: ActivatedRoute) {}
 
@@ -47,17 +45,15 @@ export class ArtistComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.route.params.subscribe(() => {
       this.videoExists = false;
+      this.uniqueEntityVideos = [];
     });
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
-      this.uniqueEntityVideos = {};
-      this.uniqueVideosLinks = [];
       const artistId = params.get('artistId');
       /** Use data service to fetch entity from database */
       this.artist = await this.dataService.findById<Artist>(artistId, EntityType.ARTIST);
-      if (this.artist.videos) {
-        this.uniqueEntityVideos[this.artist.id] = this.artist;
-        this.uniqueVideosLinks.push(this.getVideoUrl(this.artist));
+      if (this.artist.videos && this.artist.videos.length > 0) {
+        this.uniqueEntityVideos.unshift(this.artist.videos[0]);
       }
 
       /** load slider items */
@@ -77,22 +73,18 @@ export class ArtistComponent implements OnInit, OnDestroy {
   }
 
 
-  getVideoUrl(entity) {
-    return Array.isArray(entity.videos) ? entity.videos[0] : entity.videos;
-  }
-
   /*
     Iterates over the movements and adds all videos to uniqueEntityVideos.
     Only Videos whose id and link are not in uniqueEntityVideos & uniqueVideosLinks will be added.
   */
   addMovementVideos() {
     for ( const movement of this.artist.movements) {
-      if (!this.uniqueEntityVideos[movement.id] && movement.videos && !this.uniqueVideosLinks.includes(this.getVideoUrl(movement))) {
-        this.uniqueEntityVideos[movement.id] = movement;
-        this.uniqueVideosLinks.push(this.getVideoUrl(movement));
+      if (movement.videos && movement.videos.length >  0 && !this.uniqueEntityVideos.includes(movement.videos[0])) {
+        this.uniqueEntityVideos.push(movement.videos[0]);
       }
     }
   }
+
   /**
    * Get all movements from the artworks of an artist and add them to the artist movements.
    * Since the first query only gives back the movement id and not the complete movement object,
@@ -151,7 +143,6 @@ export class ArtistComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
-
   }
 
   toggleComponent() {

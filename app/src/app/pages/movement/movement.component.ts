@@ -75,9 +75,16 @@ export class MovementComponent implements OnInit, OnDestroy {
       /** load slider items */
       await this.dataService.findArtworksByType(EntityType.MOVEMENT, [this.movement.id])
         .then(artworks => {
+          const referenceStartTime = this.movement.start_time || this.movement.start_time_est || -1;
+          const referenceEndTime = this.movement.end_time || this.movement.end_time_est || -1;
+          if (referenceStartTime !== -1) {
+            artworks = artworks.filter(artwork => artwork.inception >= referenceStartTime);
+          }
+          if (referenceEndTime !== -1) {
+            artworks = artworks.filter(artwork => artwork.inception <= referenceEndTime);
+          }
           this.sliderItems = shuffle(artworks);
           this.addUniqueVideos();
-          return this.sliderItems;
         });
 
       /** dereference influenced_bys  */

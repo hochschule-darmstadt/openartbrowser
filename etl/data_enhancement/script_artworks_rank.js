@@ -22,7 +22,7 @@ readStream
     let percentage = 0;
     _.each(monsterJson, function(obj) {
       let rank = 0;
-      _.each(obj, function(val, key) {
+      for (const [key, val] of Object.entries(obj)) {
         if (val !== '' && !_.isEqual(val, [''])) {
           if (_.isArray(val)) {
             rank += val.length;
@@ -30,7 +30,7 @@ readStream
             ++rank;
           }
         }
-      });
+      }
       obj.absoluteRank = rank;
     });
     let sortedByRank = sortByRank(monsterJson);

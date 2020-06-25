@@ -86,11 +86,28 @@ export class DimensionsComponent implements OnInit {
         }
 
         /* Displays units if available. If not cm will be displayed */
-        this.dimensionValue  = [
-          this.artwork.height ? this.artwork.height + (this.artwork.height_unit ? ' ' + this.artwork.height_unit : ' cm') : '',
-          this.artwork.width ? this.artwork.width + (this.artwork.width_unit ? ' ' + this.artwork.width_unit : ' cm') : '',
-          this.artwork.length ? this.artwork.length + (this.artwork.length_unit ? ' ' + this.artwork.length_unit : ' cm') : '',
-        ].filter(x => x).join(' x ');
+
+        if (
+          (this.artwork.height && this.artwork.width && this.artwork.height_unit !== this.artwork.width_unit) ||
+          (this.artwork.height && this.artwork.length && this.artwork.height_unit !== this.artwork.length_unit) ||
+          (this.artwork.width && this.artwork.length && this.artwork.width_unit !== this.artwork.length_unit)
+          ) {
+            this.dimensionValue  = [
+              this.artwork.height ? this.artwork.height + (this.artwork.height_unit ? ' ' + this.artwork.height_unit : ' cm') : '',
+              this.artwork.width ? this.artwork.width + (this.artwork.width_unit ? ' ' + this.artwork.width_unit : ' cm') : '',
+              this.artwork.length ? this.artwork.length + (this.artwork.length_unit ? ' ' + this.artwork.length_unit : ' cm') : '',
+            ].filter(x => x).join(' x ');
+          } else {
+
+            this.dimensionValue  = [
+              this.artwork.height ? this.artwork.height : '',
+              this.artwork.width ? this.artwork.width : '',
+              this.artwork.length ? this.artwork.length : '',
+            ].filter(x => x).join(' x ') + ' ' + (this.artwork.height ?
+               this.artwork.height_unit : (this.artwork.width ? this.artwork.width_unit :
+              (this.artwork.length ? this.artwork.width_unit : 'cm')
+              ));
+          }
       }
   }
 }

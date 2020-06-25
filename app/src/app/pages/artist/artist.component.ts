@@ -36,8 +36,8 @@ export class ArtistComponent implements OnInit, OnDestroy {
 
   /** a video was found */
   videoExists = false;
-  /* List of unique Entities (Movements) with Videos */
-  uniqueEntityVideos: any[] = [];
+  /* List of unique Videos */
+  uniqueEntityVideos: string[] = [];
 
   constructor(private dataService: DataService, private route: ActivatedRoute) {}
 

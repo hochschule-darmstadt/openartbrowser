@@ -38,12 +38,10 @@
         <app-collapse collapse="{{ detailsCollapsed }}" [showVideo]="videoExists">
           <app-abstract [entity]="artwork"></app-abstract>
 
-          <div class="video">
-            <app-video [videoUrl]= "artwork.videos && artwork.videos.length > 0 ? artwork.videos[0] : null" (videoFound)="videoFound($event)"></app-video>
-            <app-video *ngFor="let artist of artwork.artists.slice(0, 1)" [videoUrl]="artist.videos && artist.videos.length > 0 ? artist.videos[0] : null"
-                       (videoFound)="videoFound($event)"></app-video>
-            <app-video *ngFor="let movement of artwork.movements.slice(0, 1)" [videoUrl]="movement.videos && movement.videos.length > 0 ? movement.videos[0] : null"
-                       (videoFound)="videoFound($event)"></app-video>
+          <div class="videos">
+            <div class="video" *ngFor="let url of uniqueVideos;  let i=index">
+              <app-video *ngIf="(i < 3)" [videoUrl]="url" (videoFound)="videoFound($event)"></app-video>
+            </div>
           </div>
 
           <app-information i18n-label="Genre label@@genre" label="Genre" [values]="artwork?.genres"></app-information>
@@ -63,8 +61,7 @@
           <app-iconclass i18n="Iconography label@@iconography" [iconclasses]="artwork.iconclasses"
                          label="Iconography"></app-iconclass>
 
-          <app-dimensions *ngIf="artwork" [artwork]="
-          artwork"></app-dimensions>
+          <app-dimensions *ngIf="artwork" [artwork]="artwork"></app-dimensions>
         </app-collapse>
       </div>
     </div>

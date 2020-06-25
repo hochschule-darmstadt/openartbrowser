@@ -154,9 +154,9 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   }
 
   addUniqueVideos(inputArray) {
-    for ( const movement of inputArray) {
-      if (movement.videos && movement.videos.length >  0 && !this.uniqueVideos.includes(movement.videos[0])) {
-        this.uniqueVideos.push(movement.videos[0]);
+    for ( const entity of inputArray) {
+      if (entity.videos && entity.videos.length >  0 && !this.uniqueVideos.includes(entity.videos[0])) {
+        this.uniqueVideos.push(entity.videos[0]);
       }
     }
   }

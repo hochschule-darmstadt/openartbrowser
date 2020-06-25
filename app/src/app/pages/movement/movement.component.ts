@@ -127,9 +127,9 @@ export class MovementComponent implements OnInit, OnDestroy {
   }
 
   addUniqueVideos() {
-    for ( const movement of this.sliderItems) {
-      if (movement.videos && movement.videos.length >  0 && !this.uniqueEntityVideos.includes(movement.videos[0])) {
-        this.uniqueEntityVideos.push(movement.videos[0]);
+    for ( const entity of this.sliderItems) {
+      if (entity.videos && entity.videos.length >  0 && !this.uniqueEntityVideos.includes(entity.videos[0])) {
+        this.uniqueEntityVideos.push(entity.videos[0]);
       }
     }
   }

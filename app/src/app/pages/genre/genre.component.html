@@ -6,7 +6,7 @@
       <div class="mb-3 mt-5"></div>
 
       <div *ngIf="genre?.abstract">
-        <app-collapse collapse="{{ collapse }}">
+        <app-collapse>
           <app-abstract [entity]="genre"></app-abstract>
         </app-collapse>
       </div>

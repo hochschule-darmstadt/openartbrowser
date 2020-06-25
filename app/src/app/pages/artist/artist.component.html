@@ -18,7 +18,7 @@
       </table>
 
       <div *ngIf="artist?.gender || artist?.citizenship || artist?.movements?.length || artist?.influenced_by?.length || artist?.abstract">
-        <app-collapse collapse="{{ collapse }}" [showVideo]="videoExists">
+        <app-collapse [showVideo]="videoExists">
           <app-abstract [entity]="artist"></app-abstract>
 
           <div class="videos">

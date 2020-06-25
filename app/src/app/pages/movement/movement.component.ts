@@ -4,7 +4,6 @@ import {ActivatedRoute} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
 import {Movement, Artwork, EntityType} from 'src/app/shared/models/models';
 import {Subject} from 'rxjs';
-import * as _ from 'lodash';
 import {shuffle} from 'src/app/core/services/utils.service';
 
 enum Tab {
@@ -39,9 +38,6 @@ export class MovementComponent implements OnInit, OnDestroy {
 
   /** Related artworks */
   sliderItems: Artwork[] = [];
-
-  /** Change collapse icon; true if more infos are folded in */
-  collapse = true;
 
   /** Toggle bool for displaying either timeline or artworks carousel component */
   movementOverviewLoaded = false;
@@ -84,8 +80,6 @@ export class MovementComponent implements OnInit, OnDestroy {
       this.dataService.findMultipleById(this.movement.influenced_by as any, EntityType.ARTIST)
         .then(influences => (this.movement.influenced_by = influences));
 
-      this.calculateCollapseState();
-
       /** get is part movements */
       let movements = await this.dataService.getHasPartMovements(movementId);
       this.relatedMovements.push(...movements);
@@ -98,24 +92,6 @@ export class MovementComponent implements OnInit, OnDestroy {
         this.relatedMovements.push(this.movement);
       }
     });
-  }
-
-  /** Decides whether to show the 'more' section or not based on the amount of available data:
-   * calculates the size of meta data item section
-   * every attribute: +3
-   * if attribute is array and size > 3 -> + arraylength
-   */
-  private calculateCollapseState() {
-    let metaNumber = 0;
-    if (this.movement.abstract.length > 400) {
-      metaNumber += 10;
-    } else if (this.movement.abstract.length) {
-      metaNumber += 3;
-    }
-    if (!_.isEmpty(this.movement.influenced_by)) {
-      metaNumber += 3;
-    }
-    this.collapse = metaNumber >= 10;
   }
 
   setActiveTab(tab: Tab) {

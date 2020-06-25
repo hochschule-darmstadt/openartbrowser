@@ -40,6 +40,7 @@ def get_wikipedia_page_ids(
 ) -> Dict:
     """Function to get the wikipedia page ids from their label referenced in the sitelinks
 
+    https://en.wikipedia.org/w/api.php?action=help&modules=query
     sitelink de: Mona_Lisa is resolved to
 
     Args:
@@ -115,6 +116,8 @@ def get_wikipedia_extracts(
     maxlag: Optional[int] = MAX_LAG,
 ):
     """Get the wikipedia extracts (in our data model they're called abstracts)
+
+    https://en.wikipedia.org/w/api.php?action=help&modules=query
 
     Args:
         items: List of entities

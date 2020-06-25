@@ -144,6 +144,7 @@ def wikidata_entity_request(
         "languages": "|".join(language_keys),
         "sitefilter": "|".join(langkeyPlusWikiList),
         "props": "|".join(props),
+        "redirects": "no",
         # if the server needs more than maxlag seconds to process
         # the query an error response is returned
         "maxlag": maxlag,

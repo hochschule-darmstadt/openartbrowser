@@ -26,13 +26,13 @@ WORKDIR /app
 # get files from previous stage
 COPY --from=Wikicrawler /app/crawler_output/ /app/crawler_output/
 
-RUN mkdir data_manipulation
-COPY ["./data_manipulation/estimate_movement_period.py", "/app/data_manipulation"]
+RUN mkdir data_enhancement
+COPY ["./data_enhancement/estimate_movement_period.py", "/app/data_enhancement"]
 
 RUN ls -lah /app/crawler_output/intermediate_files/json
 
 RUN pip install ijson
-RUN ["python", "./data_manipulation/estimate_movement_period.py"]
+RUN ["python", "./data_enhancement/estimate_movement_period.py"]
 
 # ------------------------------------------------
 

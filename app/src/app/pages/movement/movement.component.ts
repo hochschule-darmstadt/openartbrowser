@@ -44,6 +44,8 @@ export class MovementComponent implements OnInit, OnDestroy {
 
   /** a video was found */
   videoExists = false;
+  /* List of unique Videos */
+  uniqueEntityVideos: string[] = [];
 
   relatedMovements: Movement[] = [];
 
@@ -54,6 +56,7 @@ export class MovementComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.route.params.subscribe(() => {
       this.videoExists = false;
+      this.uniqueEntityVideos = [];
     });
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
@@ -61,6 +64,9 @@ export class MovementComponent implements OnInit, OnDestroy {
 
       /** Use data service to fetch entity from database */
       this.movement = await this.dataService.findById<Movement>(movementId, EntityType.MOVEMENT);
+      if (this.movement.videos && this.movement.videos.length > 0) {
+        this.uniqueEntityVideos.unshift(this.movement.videos[0]);
+      }
 
       /** load slider items */
       await this.dataService.findArtworksByType(EntityType.MOVEMENT, [this.movement.id])
@@ -74,6 +80,7 @@ export class MovementComponent implements OnInit, OnDestroy {
             artworks = artworks.filter(artwork => artwork.inception <= referenceEndTime);
           }
           this.sliderItems = shuffle(artworks);
+          this.addUniqueVideos();
         });
 
       /** dereference influenced_bys  */
@@ -102,6 +109,13 @@ export class MovementComponent implements OnInit, OnDestroy {
     }
   }
 
+  addUniqueVideos() {
+    for ( const entity of this.sliderItems) {
+      if (entity.videos && entity.videos.length >  0 && !this.uniqueEntityVideos.includes(entity.videos[0])) {
+        this.uniqueEntityVideos.push(entity.videos[0]);
+      }
+    }
+  }
 
   ngOnDestroy() {
     this.ngUnsubscribe.next();

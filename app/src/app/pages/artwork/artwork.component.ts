@@ -68,6 +68,8 @@ export class ArtworkComponent implements OnInit, OnDestroy {
 
   /** a video was found */
   videoExists = false;
+  /* List of unique Videos */
+  uniqueVideos: string[] = [];
 
   constructor(private dataService: DataService, private route: ActivatedRoute) {}
 
@@ -89,6 +91,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
       /* reset properties */
+      this.uniqueVideos = [];
       this.videoExists = false;
       this.artwork = this.hoveredArtwork = this.hoveredArtwork = null;
       this.imageHidden = this.modalIsVisible = this.commonTagsCollapsed = false;
@@ -98,6 +101,9 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       /** Use data service to fetch entity from database */
       const artworkId = params.get('artworkId');
       this.artwork = (await this.dataService.findById<Artwork>(artworkId, EntityType.ARTWORK)) as Artwork;
+      if (this.artwork.videos && this.artwork.videos.length > 0) {
+        this.uniqueVideos.unshift(this.artwork.videos[0]);
+      }
 
       if (this.artwork) {
         this.mergeMotifs();
@@ -136,6 +142,13 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     return this.artwork.motifs.filter(motif => !mainIds.includes(motif.id));
   }
 
+  addUniqueVideos(inputArray) {
+    for ( const entity of inputArray) {
+      if (entity.videos && entity.videos.length >  0 && !this.uniqueVideos.includes(entity.videos[0])) {
+        this.uniqueVideos.push(entity.videos[0]);
+      }
+    }
+  }
   /**
    * hide artwork image
    */
@@ -193,6 +206,8 @@ export class ArtworkComponent implements OnInit, OnDestroy {
         // load entities
         this.dataService.findMultipleById(this.artwork[types] as any, tab.type).then(artists => {
           this.artwork[types] = artists;
+          this.addUniqueVideos(this.artwork.artists);
+          this.addUniqueVideos(this.artwork.movements);
         });
         // load related artworks by type
         return await this.dataService.findArtworksByType(tab.type, this.artwork[types] as any).then(artworks => {

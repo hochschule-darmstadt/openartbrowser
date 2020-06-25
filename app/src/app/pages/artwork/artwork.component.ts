@@ -219,7 +219,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
           this.artwork[types] = artists;
           this.addUniqueVideos(this.artwork.artists);
           this.addUniqueVideos(this.artwork.movements);
-          console.log(this.uniqueVideos);
         });
         // load related artworks by type
         return await this.dataService.findArtworksByType(tab.type, this.artwork[types] as any).then(artworks => {

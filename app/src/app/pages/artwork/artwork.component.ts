@@ -3,7 +3,6 @@ import { Artwork, EntityType, EntityIcon } from 'src/app/shared/models/models';
 import { takeUntil } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
-import * as _ from 'lodash';
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 import { shuffle } from 'src/app/core/services/utils.service';
 import { usePlural } from 'src/app/shared/models/entity.interface';
@@ -40,13 +39,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    * whether artwork image should be hidden
    */
   imageHidden = false;
-
-  /**
-   * @description to toggle details container.
-   * true if more infos are folded in.
-   * initial as true (closed).
-   */
-  detailsCollapsed = true;
 
   /**
    * @description to toggle common tags container.
@@ -103,7 +95,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       this.videoExists = false;
       this.artwork = this.hoveredArtwork = this.hoveredArtwork = null;
       this.imageHidden = this.modalIsVisible = this.commonTagsCollapsed = false;
-      this.detailsCollapsed = true;
       // clears items of all artwork tabs
       this.artworkTabs.forEach((tab: ArtworkTab) => (tab.items = []));
 
@@ -118,8 +109,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
         this.mergeMotifs();
         this.resolveIds('main_subjects');
 
-        /* Count meta data to show more on load */
-        this.calculateCollapseState();
         /* load tabs content */
         this.loadTabs();
       }
@@ -233,44 +222,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
         // filter duplicates and shuffles it
         (allTab.items = shuffle(Array.from(new Set(allTab.items))))
     );
-  }
-
-  /** Decides whether to show the 'more' section or not based on the amount of available data:
-   * calculates the size of meta data item section
-   * every attribute: +3
-   * if attribute is array and size > 3 -> + arraylength
-   */
-  private calculateCollapseState() {
-    let metaNumber = 0;
-    // set defauled (closed)
-    this.detailsCollapsed = true;
-
-    if (this.artwork.abstract.length > 400) {
-      metaNumber += 10;
-    } else if (this.artwork.abstract.length) {
-      metaNumber += 3;
-    }
-    if (!_.isEmpty(this.artwork.genres.filter(Boolean))) {
-      metaNumber += this.artwork.genres.length > 3 ? this.artwork.genres.length : 3;
-    }
-    if (!_.isEmpty(this.artwork.materials.filter(Boolean))) {
-      metaNumber += this.artwork.materials.length > 3 ? this.artwork.materials.length : 3;
-    }
-    if (!_.isEmpty(this.artwork.movements.filter(Boolean))) {
-      metaNumber += this.artwork.movements.length > 3 ? this.artwork.movements.length : 3;
-    }
-    if (!_.isEmpty(this.artwork.motifs.filter(Boolean))) {
-      metaNumber += this.artwork.motifs.length > 3 ? this.artwork.motifs.length : 3;
-    }
-    if (this.artwork.height && this.artwork.width) {
-      metaNumber += 3;
-    }
-    if (!_.isEmpty(this.artwork.iconclasses.filter(Boolean))) {
-      metaNumber += this.artwork.iconclasses.length > 3 ? this.artwork.iconclasses.length : 3;
-    }
-    if (metaNumber < 10) {
-      this.detailsCollapsed = false;
-    }
   }
 
   /**

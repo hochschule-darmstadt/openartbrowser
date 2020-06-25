@@ -26,8 +26,6 @@ export class ArtistComponent implements OnInit, OnDestroy {
   artist: Artist = null;
   /** Related artworks */
   sliderItems: Artwork[] = [];
-  /** Change collapse icon; true if more infos are folded in */
-  collapse = true;
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();
 
@@ -39,7 +37,8 @@ export class ArtistComponent implements OnInit, OnDestroy {
   /* List of unique Videos */
   uniqueEntityVideos: string[] = [];
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {}
+  constructor(private dataService: DataService, private route: ActivatedRoute) {
+  }
 
   /** hook that is executed at component initialization */
   ngOnInit() {
@@ -68,7 +67,6 @@ export class ArtistComponent implements OnInit, OnDestroy {
 
       /* Count meta data to show more on load */
       this.aggregatePictureMovementsToArtist();
-      this.calculateCollapseState();
     });
   }
 
@@ -78,7 +76,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
     Only Videos whose id and link are not in uniqueEntityVideos & uniqueVideosLinks will be added.
   */
   addMovementVideos() {
-    for ( const movement of this.artist.movements) {
+    for (const movement of this.artist.movements) {
       if (movement.videos && movement.videos.length >  0 && !this.uniqueEntityVideos.includes(movement.videos[0])) {
         this.uniqueEntityVideos.push(movement.videos[0]);
       }
@@ -110,34 +108,6 @@ export class ArtistComponent implements OnInit, OnDestroy {
         this.addMovementVideos();
       });
     });
-  }
-
-  /** calculates the size of meta data item section
-   * every attribute: +3
-   * if attribute is array and size > 3 -> + arraylength
-   */
-  private calculateCollapseState() {
-    let metaNumber = 0;
-    if (this.artist.abstract.length > 400) {
-      metaNumber += 10;
-    } else if (this.artist.abstract.length) {
-      metaNumber += 3;
-    }
-    if (this.artist.gender) {
-      metaNumber += 3;
-    }
-    if (!_.isEmpty(this.artist.influenced_by)) {
-      metaNumber += this.artist.influenced_by.length > 3 ? this.artist.influenced_by.length : 3;
-    }
-    if (!_.isEmpty(this.artist.movements)) {
-      metaNumber += this.artist.movements.length > 3 ? this.artist.movements.length : 3;
-    }
-    if (!_.isEmpty(this.artist.citizenship)) {
-      metaNumber += 3;
-    }
-    if (metaNumber < 10) {
-      this.collapse = false;
-    }
   }
 
   ngOnDestroy() {

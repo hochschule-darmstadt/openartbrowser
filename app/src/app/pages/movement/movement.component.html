@@ -4,7 +4,7 @@
       <app-title [entity]="movement"></app-title>
 
       <div *ngIf="movement?.abstract?.length || movement?.influenced_by?.length">
-        <app-collapse collapse="{{ collapse }}" [showVideo]="videoExists">
+        <app-collapse [showVideo]="videoExists">
           <app-abstract [entity]="movement"></app-abstract>
 
           <div class="videos">

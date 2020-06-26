@@ -38,8 +38,14 @@ from data_extraction import map_wd_attribute
 from data_extraction import map_wd_response
 from data_extraction.constants import *
 from data_extraction.request_utils import send_http_request
-from shared.utils import chunks, create_new_path, language_config_to_list, setup_logger
-from shared.constants import JSON, CSV
+from shared.utils import (
+    chunks,
+    create_new_path,
+    language_config_to_list,
+    setup_logger,
+    generate_json,
+)
+from shared.constants import *
 from SPARQLWrapper import SPARQLWrapper
 
 DEV = False
@@ -346,6 +352,7 @@ def extract_artworks(
                 ICONCLASS[PLURAL]: iconclasses,
                 MAIN_SUBJECT[PLURAL]: main_subjects,
                 EXHIBITION_HISTORY: exhibition_history,
+                TYPE: ARTWORK[SINGULAR],
             }
 
             for langkey in language_keys:
@@ -401,7 +408,7 @@ def extract_art_ontology() -> None:
         generate_csv(extracted_artwork, get_fields(artwork), path_name)
 
         path_name = create_new_path(ARTWORK[PLURAL], artwork, JSON)
-        generate_json(artwork, extracted_artwork, path_name)
+        generate_json(extracted_artwork, path_name)
 
     merged_artworks = merge_artworks()
 
@@ -412,7 +419,7 @@ def extract_art_ontology() -> None:
 
     # Get motifs and main subjects
     motifs = extract_motifs_and_main_subjects(merged_artworks)
-
+    [motif.update({TYPE: MOTIF[SINGULAR]}) for motif in motifs]
     # Get extracted genres, materials, etc.
     genres, materials, movements, artists, locations = bundle_extract_subjects_calls(
         [
@@ -426,10 +433,20 @@ def extract_art_ontology() -> None:
     )
     print("Total movements after transitive closure loading: ", len(movements))
 
+    for subject, type_name in [
+        (genres, GENRE[SINGULAR]),
+        (materials, MATERIAL[SINGULAR]),
+        (movements, MOVEMENT[SINGULAR]),
+        (artists, ARTIST[SINGULAR]),
+        (locations, LOCATION[SINGULAR]),
+    ]:
+        [entity.update({TYPE: type_name}) for entity in subject]
+
     # Get distinct classes from artworks, motifs, etc.
     extracted_classes = get_distinct_extracted_classes(
         merged_artworks, motifs, genres, materials, movements, artists, locations,
     )
+    [c.update({TYPE: CLASS[SINGULAR]}) for c in extracted_classes]
     print("Total classes after transitive closure loading: ", len(extracted_classes))
     # Get country labels for merged artworks and locations
     (
@@ -481,7 +498,7 @@ def extract_motifs_and_main_subjects(merged_artworks: List[Dict]) -> List[Dict]:
     )
 
     motifs_and_main_subjects = motifs | main_subjects
-    motifs = get_subject("motifs and main subjects", motifs_and_main_subjects)
+    motifs = get_subject(MOTIF[PLURAL], motifs_and_main_subjects)
     return motifs
 
 
@@ -507,52 +524,52 @@ def write_data_to_json_and_csv(
         merged_artworks: List of artworks
         artists: List of artists
     """
-    generate_json(MOTIF[SINGULAR], motifs, create_new_path(MOTIF[PLURAL]))
+    generate_json(motifs, create_new_path(MOTIF[PLURAL]))
     generate_csv(
         motifs,
-        get_fields(MOTIF[PLURAL]) + [TYPE],
+        get_fields(MOTIF[PLURAL]),
         create_new_path(MOTIF[PLURAL], file_type=CSV),
     )
-    generate_json(GENRE[SINGULAR], genres, create_new_path(GENRE[PLURAL]))
+    generate_json(genres, create_new_path(GENRE[PLURAL]))
     generate_csv(
         genres,
-        get_fields(GENRE[PLURAL]) + [TYPE],
+        get_fields(GENRE[PLURAL]),
         create_new_path(GENRE[PLURAL], file_type=CSV),
     )
-    generate_json(CLASS[SINGULAR], extracted_classes, create_new_path(CLASS[PLURAL]))
+    generate_json(extracted_classes, create_new_path(CLASS[PLURAL]))
     generate_csv(
         extracted_classes,
-        get_fields(CLASS[PLURAL]) + [TYPE],
+        get_fields(CLASS[PLURAL]),
         create_new_path(CLASS[PLURAL], file_type=CSV),
     )
-    generate_json(MATERIAL[SINGULAR], materials, create_new_path(MATERIAL[PLURAL]))
+    generate_json(materials, create_new_path(MATERIAL[PLURAL]))
     generate_csv(
         materials,
-        get_fields(MATERIAL[PLURAL]) + [TYPE],
+        get_fields(MATERIAL[PLURAL]),
         create_new_path(MATERIAL[PLURAL], file_type=CSV),
     )
-    generate_json(MOVEMENT[SINGULAR], movements, create_new_path(MOVEMENT[PLURAL]))
+    generate_json(movements, create_new_path(MOVEMENT[PLURAL]))
     generate_csv(
         movements,
-        get_fields(MOVEMENT[PLURAL]) + [TYPE],
+        get_fields(MOVEMENT[PLURAL]),
         create_new_path(MOVEMENT[PLURAL], file_type=CSV),
     )
-    generate_json(LOCATION[SINGULAR], locations, create_new_path(LOCATION[PLURAL]))
+    generate_json(locations, create_new_path(LOCATION[PLURAL]))
     generate_csv(
         locations,
-        get_fields(LOCATION[PLURAL]) + [TYPE],
+        get_fields(LOCATION[PLURAL]),
         create_new_path(LOCATION[PLURAL], file_type=CSV),
     )
-    generate_json(ARTWORK[SINGULAR], merged_artworks, create_new_path(ARTWORK[PLURAL]))
+    generate_json(merged_artworks, create_new_path(ARTWORK[PLURAL]))
     generate_csv(
         merged_artworks,
-        get_fields(ARTWORK[PLURAL]) + [TYPE],
+        get_fields(ARTWORK[PLURAL]),
         create_new_path(ARTWORK[SINGULAR], file_type=CSV),
     )
-    generate_json(ARTIST[SINGULAR], artists, create_new_path(ARTIST[PLURAL]))
+    generate_json(artists, create_new_path(ARTIST[PLURAL]))
     generate_csv(
         artists,
-        get_fields(ARTIST[PLURAL]) + [TYPE],
+        get_fields(ARTIST[PLURAL]),
         create_new_path(ARTIST[PLURAL], file_type=CSV),
     )
 
@@ -701,7 +718,7 @@ def get_fields(
     Returns:
         A list of column names for the given type name
     """
-    fields = [ID, CLASS[PLURAL], LABEL[SINGULAR], DESCRIPTION[SINGULAR], IMAGE]
+    fields = [ID, CLASS[PLURAL], LABEL[SINGULAR], DESCRIPTION[SINGULAR], IMAGE, TYPE]
     for langkey in language_keys:
         fields += [
             f"{LABEL[SINGULAR]}_{langkey}",
@@ -767,7 +784,7 @@ def get_fields(
         for langkey in language_keys:
             fields += [f"{COUNTRY}_{langkey}"]
     elif type_name == CLASS[PLURAL]:
-        fields = [ID, LABEL[SINGULAR], DESCRIPTION[SINGULAR], SUBCLASS_OF]
+        fields = [ID, LABEL[SINGULAR], DESCRIPTION[SINGULAR], SUBCLASS_OF, TYPE]
         for langkey in language_keys:
             fields += [
                 f"{LABEL[SINGULAR]}_{langkey}",
@@ -792,27 +809,6 @@ def generate_csv(extract_dicts: List[Dict], fields: List[str], filename: str) ->
         writer.writeheader()
         for extract_dict in extract_dicts:
             writer.writerow(extract_dict)
-
-
-def generate_json(name: str, extract_dicts: List[Dict], filename: str) -> None:
-    """Generates a JSON file from a dictionary
-
-    Args:
-        name: openArtBrowser type name e. g. 'artwork'
-        extract_dicts: List of dicts that containing wikidata entities transformed to oab entities
-        filename: Name of the file to write the data to
-    """
-    if len(extract_dicts) == 0:
-        return
-    filename.parent.mkdir(parents=True, exist_ok=True)
-    with open(
-        filename.with_suffix(f".{JSON}"), "w", newline="", encoding="utf-8"
-    ) as file:
-        arrayToDump = []
-        for extract_dict in extract_dicts:
-            extract_dict[TYPE] = name
-            arrayToDump.append(extract_dict)
-        file.write(json.dumps(arrayToDump, ensure_ascii=False))
 
 
 def merge_artworks() -> List[Dict]:

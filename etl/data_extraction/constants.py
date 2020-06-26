@@ -1,6 +1,8 @@
 """Shared constants within the data_extraction package
 """
 
+from shared.constants import *
+
 AGENT_HEADER = "<nowiki>https://cai-artbrowserstaging.fbi.h-da.de/; tilo.w.michel@stud.h-da.de</nowiki>"
 
 HTTP_HEADER = {
@@ -33,19 +35,11 @@ TIME = "time"
 EN = "en"
 ENTITIES = "entities"
 ID = "id"
-TYPE = "type"
-SINGULAR = "singular"
-PLURAL = "plural"
 ABBREVIATION = "abbreviation"
-LABEL = {SINGULAR: "label", PLURAL: "labels"}
-DESCRIPTION = {SINGULAR: "description", PLURAL: "descriptions"}
 ARTWORK = {SINGULAR: "artwork", PLURAL: "artworks"}
 DRAWING = {PLURAL: "drawings", ID: "wd:Q93184"}
 SCULPTURE = {PLURAL: "sculptures", ID: "wd:Q860861"}
 PAINTING = {PLURAL: "paintings", ID: "wd:Q3305213"}
-ABSTRACT = "abstract"
-# TODO: Change to snakecase wikipedia_link (requires changes in the frontend)
-WIKIPEDIA_LINK = "wikipediaLink"
 LATITUDE = {SINGULAR: "latitude", ABBREVIATION: "lat"}
 LONGITUDE = {SINGULAR: "longitude", ABBREVIATION: "lon"}
 
@@ -60,7 +54,6 @@ MOVEMENT = {SINGULAR: "movement", PLURAL: "movements"}
 INCEPTION = "inception"
 MATERIAL = {SINGULAR: "material", PLURAL: "materials"}
 MOTIF = {SINGULAR: "motif", PLURAL: "motifs"}
-COUNTRY = "country"
 HEIGHT = "height"
 HEIGHT_UNIT = f"{HEIGHT}_{UNIT}"
 WIDTH = "width"
@@ -73,18 +66,13 @@ UNIT_SYMBOL = f"{UNIT}_symbol"
 ICONCLASS = {SINGULAR: "iconclass", PLURAL: "iconclasses"}
 MAIN_SUBJECT = {SINGULAR: "main_subject", PLURAL: "main_subjects"}
 INFLUENCED_BY = "influenced_by"
-GENDER = "gender"
 DATE_OF_BIRTH = "date_of_birth"
 DATE_OF_DEATH = "date_of_death"
-PLACE_OF_BIRTH = "place_of_birth"
-PLACE_OF_DEATH = "place_of_death"
-CITIZENSHIP = "citizenship"
 WEBSITE = "website"
 PART_OF = "part_of"
 HAS_PART = "has_part"
 COORDINATE = "coordinate"
 SUBCLASS_OF = "subclass_of"
-EXHIBITION_HISTORY = "exhibition_history"
 EXHIBITION = "exhibition"
 
 # All properties extracted from the wikidata entities mapped to their openartbrowser key-label. They don't have a particular order.

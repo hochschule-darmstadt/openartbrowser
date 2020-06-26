@@ -34,7 +34,6 @@ UNIT = "unit"
 TIME = "time"
 EN = "en"
 ENTITIES = "entities"
-ID = "id"
 ABBREVIATION = "abbreviation"
 DRAWING = {PLURAL: "drawings", ID: "wd:Q93184"}
 SCULPTURE = {PLURAL: "sculptures", ID: "wd:Q860861"}

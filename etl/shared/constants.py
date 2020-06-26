@@ -27,3 +27,6 @@ MOVEMENT = {SINGULAR: "movement", PLURAL: "movements"}
 CLASS = {SINGULAR: "class", PLURAL: "classes"}
 ARTIST = {SINGULAR: "artist", PLURAL: "artists"}
 LOCATION = {SINGULAR: "location", PLURAL: "locations"}
+ABSOLUTE_RANK = "absoluteRank"
+RELATIVE_RANK = "relativeRank"
+ID = "id"

@@ -18,7 +18,7 @@ def rank_artworks(artworks: List[Dict], ignore_keys: List[str] = []) -> List[Dic
                 absolute_rank += 1
             elif value:
                 print(f"Unknown type {type(value)} with value {value}")
-        artwork.update({"absoluteRank": absolute_rank})
+        artwork.update({ABSOLUTE_RANK: absolute_rank})
 
     return calc_relative_rank(artworks)
 
@@ -26,7 +26,7 @@ def rank_artworks(artworks: List[Dict], ignore_keys: List[str] = []) -> List[Dic
 def rank_subjects(
     attribute_name: str, subjects: List[Dict], artworks: List[Dict]
 ) -> List[Dict]:
-    subject_count_dict = {subject["id"]: 0 for subject in subjects}
+    subject_count_dict = {subject[ID]: 0 for subject in subjects}
     for artwork in artworks:
         for attribute_qid in artwork[attribute_name]:
             if attribute_qid in subject_count_dict:
@@ -35,15 +35,15 @@ def rank_subjects(
                 print(f"{attribute_qid} not found in subject_count_dict")
 
     for subject in subjects:
-        subject.update({"absoluteRank": subject_count_dict[subject["id"]]})
+        subject.update({ABSOLUTE_RANK: subject_count_dict[subject[ID]]})
 
     return calc_relative_rank(subjects)
 
 
 def calc_relative_rank(entities: List[Dict]) -> List[Dict]:
-    sorted_entities = sorted(entities, key=lambda k: k["absoluteRank"])
+    sorted_entities = sorted(entities, key=lambda k: k[ABSOLUTE_RANK])
     for i, entity in enumerate(sorted_entities):
-        entity.update({"relativeRank": float(i / len(entities))})
+        entity.update({RELATIVE_RANK: float(i / len(entities))})
 
     return sorted_entities
 

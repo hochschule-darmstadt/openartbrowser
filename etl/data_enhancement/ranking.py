@@ -56,7 +56,7 @@ def rank_subjects(
     """
     subject_count_dict = {subject[ID]: 0 for subject in subjects}
     for artwork in artworks:
-        for attribute_qid in artwork[attribute_name]:
+        for attribute_qid in set(artwork[attribute_name]):  # Set to filter duplicates
             if attribute_qid in subject_count_dict:
                 subject_count_dict[attribute_qid] += 1
             else:

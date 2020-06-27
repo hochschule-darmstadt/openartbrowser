@@ -1,3 +1,10 @@
+"""Ranks the extracted wikidata entities with the oab data enhancement steps.
+
+Implemented as specified in https://github.com/hochschule-darmstadt/openartbrowser/wiki/System-architecture#ranking
+
+Returns:
+    The ranked entities which means the attributes absolute rank and relative rank.
+"""
 import json
 import datetime
 from numbers import Number
@@ -9,6 +16,15 @@ from shared.utils import create_new_path
 def rank_artworks(
     artworks: List[Dict], ignore_keys: List[str] = [ABSOLUTE_RANK, RELATIVE_RANK]
 ) -> List[Dict]:
+    """Ranks a list of artwork entities (JSON-Objects)
+
+    Args:
+        artworks: List of artworks
+        ignore_keys: Keys within the artwork entities which have to be ignored. Defaults to [ABSOLUTE_RANK, RELATIVE_RANK].
+
+    Returns:
+        Ranked artwork list
+    """
     for artwork in artworks:
         absolute_rank = 0
         for key, value in artwork.items():
@@ -28,6 +44,16 @@ def rank_artworks(
 def rank_subjects(
     attribute_name: str, subjects: List[Dict], artworks: List[Dict]
 ) -> List[Dict]:
+    """Ranks subjects like movements
+
+    Args:
+        attribute_name: Attribute name in the artwork JSON-objects
+        subjects: Subjects like movements, genres etc.
+        artworks: List of artwork JSON-objects
+
+    Returns:
+        Ranked subject list
+    """
     subject_count_dict = {subject[ID]: 0 for subject in subjects}
     for artwork in artworks:
         for attribute_qid in artwork[attribute_name]:
@@ -53,7 +79,7 @@ def calc_relative_rank(entities: List[Dict]) -> List[Dict]:
 if __name__ == "__main__":
     artworks = []
     for filename in [
-        ARTWORK[PLURAL],  # Artworks has to be first otherwise errors
+        ARTWORK[PLURAL],  # Artworks has to be first otherwise the ranking doesn't work
         MOTIF[PLURAL],  # Main subjects are not considered
         GENRE[PLURAL],
         MATERIAL[PLURAL],

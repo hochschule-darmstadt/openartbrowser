@@ -6,7 +6,9 @@ from shared.constants import *
 from shared.utils import create_new_path
 
 
-def rank_artworks(artworks: List[Dict], ignore_keys: List[str] = []) -> List[Dict]:
+def rank_artworks(
+    artworks: List[Dict], ignore_keys: List[str] = [ABSOLUTE_RANK, RELATIVE_RANK]
+) -> List[Dict]:
     for artwork in artworks:
         absolute_rank = 0
         for key, value in artwork.items():

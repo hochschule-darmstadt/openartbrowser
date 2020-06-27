@@ -3,8 +3,7 @@ REM Batch script for executing ETL. No error handling!
 python ".\data_extraction\get_wikidata_items.py" -d
 python ".\data_extraction\get_wikipedia_extracts.py"
 
-
-REM python ".\data_enhancement\estimate_movement_period.py"
+python ".\data_enhancement\estimate_movement_period.py"
 
 python ".\data_enhancement\ranking.py"
 

@@ -28,6 +28,7 @@ import csv
 import datetime
 import hashlib
 import json
+import re
 import sys
 import time
 from pathlib import Path
@@ -327,6 +328,8 @@ def extract_artworks(
                 map_wd_attribute.try_get_dimension_unit,
             )
 
+            significant_events = map_wd_attribute.try_get_significant_events(result)
+
             artwork_dictionary = {
                 ID: qid,
                 CLASS[PLURAL]: classes,
@@ -352,6 +355,7 @@ def extract_artworks(
                 ICONCLASS[PLURAL]: iconclasses,
                 MAIN_SUBJECT[PLURAL]: main_subjects,
                 EXHIBITION_HISTORY: exhibition_history,
+                SIGNIFICANT_EVENT: significant_events,
                 TYPE: ARTWORK[SINGULAR],
             }
 
@@ -469,6 +473,9 @@ def extract_art_ontology() -> None:
 
     # Get exhibition histories as subdict
     merged_artworks = resolve_exhibition_ids_to_exhibition_entities(merged_artworks)
+
+    # Significant events as subdict
+    merged_artworks = resolve_significant_event_id_entities_to_labels(merged_artworks)
 
     # Write to JSON
     write_data_to_json_and_csv(
@@ -751,6 +758,7 @@ def get_fields(
             ICONCLASS[PLURAL],
             MAIN_SUBJECT[PLURAL],
             EXHIBITION_HISTORY,
+            SIGNIFICANT_EVENT,
         ]
         for langkey in language_keys:
             fields += [f"{COUNTRY}_{langkey}"]
@@ -1352,6 +1360,66 @@ def resolve_exhibition_ids_to_exhibition_entities(artwork_dict: List[Dict]):
         ]:  # When there are exhibitions in the exhibition history attribute replace them with a dict (JSON object)
             for i, qid in enumerate(artwork[EXHIBITION_HISTORY]):
                 artwork[EXHIBITION_HISTORY][i] = qid_exhibition_entity_dict[qid]
+
+    return artwork_dict
+
+
+def resolve_significant_event_id_entities_to_labels(artwork_dict: List[Dict]):
+    """Function to resolve the labels from significant events entity ids
+
+    Args:
+        artwork_dict: List of artworks
+
+    Returns:
+        Modified artwork list with significant event ids resolved to JSON objects
+    """
+    distinct_entity_ids = set()
+    distinct_properties = set()
+    for artwork in artwork_dict:
+        if SIGNIFICANT_EVENT in artwork:
+            for event in artwork[SIGNIFICANT_EVENT]:
+                for key, value in event.items():
+                    if key == TYPE:
+                        continue
+                    if key in PROPERTY_ID_TO_PROPERTY_NAME:
+                        distinct_properties.add(PROPERTY_ID_TO_PROPERTY_NAME[key])
+                    elif (
+                        key == LABEL[SINGULAR]
+                        or key in PROPERTY_NAME_TO_PROPERTY_ID
+                        or key.endswith(UNIT)
+                    ):
+                        distinct_properties.add(key)
+                    else:
+                        logger.error(
+                            f"Unknown property was tried to extract. Please add the property {key} to the constants.py"
+                        )
+
+                    if value and type(value) is list:
+                        distinct_entity_ids.update(value)
+                    elif value and type(value) is str and re.match(QID_PATTERN, value):
+                        distinct_entity_ids.add(value)
+                    else:
+                        logger.info(f"The value: {value} is no list of qids or a qid")
+
+    entity_labels = {
+        item[ID]: item
+        for item in get_entity_labels("significant events", list(distinct_entity_ids))
+    }
+
+    for artwork in artwork_dict:
+        if SIGNIFICANT_EVENT in artwork:
+            for event in artwork[SIGNIFICANT_EVENT]:
+                for key, value in event.items():
+                    if value and type(value) is list:
+                        tmp_values = []
+                        for item in value:
+                            if type(item) is str and re.match(QID_PATTERN, item):
+                                tmp_values.append(entity_labels[item])
+                        event[key] = tmp_values
+                    elif value and type(value) is str and re.match(QID_PATTERN, value):
+                        event[key] = entity_labels[value]
+                    else:
+                        logger.info(f"The value: {value} is no list of qids or a qid")
 
     return artwork_dict
 

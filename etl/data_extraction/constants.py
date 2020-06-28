@@ -65,6 +65,47 @@ HAS_PART = "has_part"
 COORDINATE = "coordinate"
 SUBCLASS_OF = "subclass_of"
 EXHIBITION = "exhibition"
+SIGNIFICANT_EVENT = "significant_event"
+POINT_IN_TIME = "point_in_time"
+OF = "of"
+OWNED_BY = "owned_by"
+PRICE = "price"
+PARTICIPANT = "participant"
+ORGANIZER = "organizer"
+HAS_CAUSE = "has_cause"
+DONATED_BY = "donated_by"
+CAUSE_OF_DESTRUCTION = "cause_of_destruction"
+DESTINATION_POINT = "destination_point"
+CRITERION_USED = "criterion_used"
+STATEMENT_IS_SUBJECT_OF = "statement_is_subject_of"
+APPLIES_TO_PART = "applies_to_part"
+COMMISSIONED_BY = "commissioned_by"
+OPERATOR = "operator"
+SPEAKER = "speaker"
+DETERMINATION_METHOD = "determination_method"
+DATE_OF_DISAPPEARANCE = "date_of_disappearance"
+SPONSOR = "sponsor"
+EARLIEST_DATE = "earliest_date"
+LATEST_DATE = "latest_date"
+SOURCING_CIRCUMSTANCES = "sourcing_circumstances"
+END_CAUSE = "end_cause"
+MANAGER = "manager"
+COST = "cost"
+USES = "uses"
+UNVEILED_BY = "unveiled_by"
+ARCHITECT = "architect"
+DISSOLVED_ABOLISHED_OR_DEMOLISHED = "dissolved_abolished_or_demolished"
+CATALOG_CODE = "catalog_code"
+LOT_NUMBER = "lot_number"
+INSCRIPTION = "inscription"
+DESCRIBED_AT_URL = "described_at_url"
+TITLE = "title"
+INVENTORY_NUMBER = "inventory_number"
+DEPICTED_FORMAT = "depicted_format"
+AUTHOR_NAME_STRING = "author_name_string"
+SERIES_ORDINAL = "series_ordinal"
+COMMONS_CATEGORY = "commons_category"
+OFFICIAL_NAME = "official_name"
 
 # All properties extracted from the wikidata entities mapped to their openartbrowser key-label. They don't have a particular order.
 PROPERTY_NAME_TO_PROPERTY_ID = {
@@ -100,4 +141,48 @@ PROPERTY_NAME_TO_PROPERTY_ID = {
     COORDINATE: "P625",  # Is called "coordinate location" in wikidata
     SUBCLASS_OF: "P279",
     EXHIBITION_HISTORY: "P608",
+    SIGNIFICANT_EVENT: "P793",
+    POINT_IN_TIME: "P585",
+    OF: "P642",
+    OWNED_BY: "P127",
+    PRICE: "P2284",
+    PARTICIPANT: "P710",
+    ORGANIZER: "P664",
+    HAS_CAUSE: "P828",
+    DONATED_BY: "P1028",
+    CAUSE_OF_DESTRUCTION: "P770",
+    DESTINATION_POINT: "P1444",
+    CRITERION_USED: "P1013",
+    STATEMENT_IS_SUBJECT_OF: "P805",
+    APPLIES_TO_PART: "P518",
+    COMMISSIONED_BY: "P88",
+    OPERATOR: "P137",
+    SPEAKER: "P823",
+    DETERMINATION_METHOD: "P459",
+    DATE_OF_DISAPPEARANCE: "P746",
+    SPONSOR: "P859",
+    EARLIEST_DATE: "P1319",
+    LATEST_DATE: "P1326",
+    SOURCING_CIRCUMSTANCES: "P1480",
+    END_CAUSE: "P1534",
+    MANAGER: "P1037",
+    COST: "P2130",
+    USES: "P2283",
+    UNVEILED_BY: "P1656",
+    ARCHITECT: "P84",
+    DISSOLVED_ABOLISHED_OR_DEMOLISHED: "P576",
+    CATALOG_CODE: "P528",
+    LOT_NUMBER: "P4775",
+    INSCRIPTION: "P1684",
+    DESCRIBED_AT_URL: "P973",
+    TITLE: "P1476",
+    INVENTORY_NUMBER: "P217",
+    DEPICTED_FORMAT: "P7984",
+    AUTHOR_NAME_STRING: "P2093",
+    SERIES_ORDINAL: "P1545",
+    COMMONS_CATEGORY: "P373",
+    OFFICIAL_NAME: "P1448",
 }
+
+# Inverse dict
+PROPERTY_ID_TO_PROPERTY_NAME = {v: k for k, v in PROPERTY_NAME_TO_PROPERTY_ID.items()}

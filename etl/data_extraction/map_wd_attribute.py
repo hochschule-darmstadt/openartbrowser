@@ -3,7 +3,7 @@
 import inspect
 import re
 from pathlib import Path
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable, Dict, List, Optional
 
 from pywikibot import WbTime
 
@@ -263,3 +263,75 @@ def try_get_unit_symbol(entity_dict: Dict, property_id: str, oab_type: str) -> s
     for unit_symbol_entry in unit_symbol_entries:
         if unit_symbol_entry[MAINSNAK][DATAVALUE][VALUE]["language"] == EN:
             return unit_symbol_entry[MAINSNAK][DATAVALUE][VALUE]["text"]
+
+
+def try_get_significant_events(
+    result: Dict, oab_type: Optional[str] = SIGNIFICANT_EVENT
+) -> List[Dict]:
+    """Maps the wikidata response for significant events to a list of dicts which is appended to an object
+
+    Args:
+        result: wikidata response
+        oab_type: OpenArtBrowser type. Defaults to SIGNIFICANT_EVENT.
+
+    Returns:
+        List of JSON objects which represent significant events
+    """
+    try:
+        significant_events = []
+        qid = result[ID]
+        for event in result[CLAIMS][PROPERTY_NAME_TO_PROPERTY_ID[SIGNIFICANT_EVENT]]:
+            event_dict = {"label": event[MAINSNAK][DATAVALUE][VALUE][ID]}
+            for qualifiers in event["qualifiers"].values():
+                datatype = qualifiers[0]["datatype"]
+                property_id = qualifiers[0]["property"]
+                # Get property name from dict, if the name is not in the dict ignore it and take the id
+                property = PROPERTY_ID_TO_PROPERTY_NAME.get(property_id, property_id)
+                if datatype == TIME:
+                    event_dict.update(
+                        {
+                            property: WbTime.fromTimestr(
+                                qualifiers[0][DATAVALUE][VALUE][TIME]
+                            ).year
+                        }
+                    )
+                elif datatype == "wikibase-item":
+                    event_dict.update(
+                        {
+                            property: list(
+                                map(
+                                    lambda qualifier: qualifier[DATAVALUE][VALUE][ID],
+                                    qualifiers,
+                                )
+                            )
+                        }
+                    )
+                elif datatype == "quantity":
+                    event_dict.update(
+                        {property: float(qualifiers[0][DATAVALUE][VALUE][AMOUNT])}
+                    )
+                    event_dict.update(
+                        {
+                            f"{property}_unit": qualifiers[0][DATAVALUE][VALUE]
+                            .get(UNIT, "")
+                            .replace(WIKIDATA_ENTITY_URL, "")
+                        }
+                    )
+                elif datatype in ["string", "url"]:
+                    event_dict.update({property: qualifiers[0][DATAVALUE][VALUE]})
+                elif datatype == "monolingualtext":
+                    event_dict.update(
+                        {property: qualifiers[0][DATAVALUE][VALUE]["text"]}
+                    )
+                elif datatype == "commonsMedia":
+                    logger.error(
+                        f"commonsMedia type not supported in significant events on item {qid}"
+                    )
+                else:
+                    logger.error(f"Unknown datatype: {datatype} on item {qid}")
+            event_dict.update({TYPE: "significant_event"})
+            significant_events.append(event_dict)
+
+        return significant_events
+    except Exception:
+        return []

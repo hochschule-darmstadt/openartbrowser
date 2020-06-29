@@ -9,8 +9,8 @@ python ".\data_enhancement\ranking.py"
 
 CD crawler_output\intermediate_files\json\
 
-REM Merges all *_rank.json files into art_ontology.json
-node --max-old-space-size=4096 ..\..\..\data_enhancement\merge_art_data.js
+REM Cmd does not resolve wildcards so for each file to be merged add the full name to the list
+jq -s "[.[][]]" artworks_rank.json genres_rank.json artists_rank.json locations_rank.json materials_rank.json movements_rank.json motifs_rank.json > art_ontology.json
 
 IF EXIST ..\..\..\crawler_output\art_ontology.json (
     ECHO "art_ontology.json already exist in directory crawler_output. Removing ..."

@@ -10,7 +10,7 @@ RUN pip install pywikibot
 COPY ["./data_extraction/", "/app/data_extraction"]
 COPY ["./user-config.py", "/app"]
 COPY ["./shared/", "/app/shared"]
-# run ArtOntologyCrawler in development mode
+# run get_wikidata_items in development mode
 RUN pip install SPARQLWrapper
 RUN ["python", "/app/data_extraction/get_wikidata_items.py", "-d"]
 RUN ["python", "/app/data_extraction/get_wikipedia_extracts.py"]
@@ -40,18 +40,14 @@ RUN ["python", "./data_enhancement/ranking.py"]
 
 # ------------------------------------------------
 
-FROM node:latest as merge_files
+FROM stedolan/jq:latest as merge_files
 
 WORKDIR /app
 
 # get files from previous stage
 COPY --from=data_enhancement /app/crawler_output/intermediate_files/json/ /app/
 
-COPY ["./data_enhancement/", "/app/"]
-
-RUN npm install
-
-RUN node merge_art_data.js
+RUN jq -s '[.[][]]' *_rank.json > art_ontology.json
 
 # ------------------------------------------------
 

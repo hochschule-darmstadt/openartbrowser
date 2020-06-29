@@ -170,9 +170,11 @@ def try_get_qid_reference_list(
         List of qid strings for the given property id
     """
     return list(
-        map(
-            lambda clm: clm[MAINSNAK][DATAVALUE][VALUE][ID],
-            entity_dict[CLAIMS][property_id],
+        set(  # Use a set to avoid duplicates in the references
+            map(
+                lambda clm: clm[MAINSNAK][DATAVALUE][VALUE][ID],
+                entity_dict[CLAIMS][property_id],
+            )
         )
     )
 

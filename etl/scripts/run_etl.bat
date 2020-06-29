@@ -1,20 +1,13 @@
 @ECHO OFF
 REM Batch script for executing ETL. No error handling!
-python ".\data_extraction\get_wikidata_items.py"
+python ".\data_extraction\get_wikidata_items.py" -d
 python ".\data_extraction\get_wikipedia_extracts.py"
 
+python ".\data_enhancement\estimate_movement_period.py"
+
+python ".\data_enhancement\ranking.py"
+
 CD crawler_output\intermediate_files\json\
-
-python ../../../data_enhancement/estimate_movement_period.py
-
-node --max-old-space-size=4096 ..\..\..\data_enhancement\script_artworks_rank.js
-
-node --max-old-space-size=4096 ..\..\..\data_enhancement\script_genres_rank.js
-node --max-old-space-size=4096 ..\..\..\data_enhancement\script_artist_rank.js
-node --max-old-space-size=4096 ..\..\..\data_enhancement\script_locations_rank.js
-node --max-old-space-size=4096 ..\..\..\data_enhancement\script_materials_rank.js
-node --max-old-space-size=4096 ..\..\..\data_enhancement\script_movements_rank.js
-node --max-old-space-size=4096 ..\..\..\data_enhancement\script_motifs_rank.js
 
 REM Merges all *_rank.json files into art_ontology.json
 node --max-old-space-size=4096 ..\..\..\data_enhancement\merge_art_data.js

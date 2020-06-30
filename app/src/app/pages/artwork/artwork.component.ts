@@ -107,6 +107,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
 
       if (this.artwork) {
         this.mergeMotifs();
+        this.combineEventData();
         this.resolveIds('main_subjects');
 
         /* load tabs content */
@@ -240,5 +241,17 @@ export class ArtworkComponent implements OnInit, OnDestroy {
 
   videoFound(event) {
     this.videoExists = this.videoExists ? true : event;
+  }
+
+  /**
+   * combines the "new" attributes 
+   * (exhibition history and later significant event)
+   * for a unified display mode 
+   */
+  combineEventData () {
+    this.artwork.events = [
+      ...this.artwork['exhibition_history']
+      /* ...this.artwork['significant_events'] */
+    ];
   }
 }

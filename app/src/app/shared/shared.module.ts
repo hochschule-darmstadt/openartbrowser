@@ -20,6 +20,7 @@ import {MovementOverviewComponent} from './components/movement-overview/movement
 import {NgxFitTextModule} from 'ngx-fit-text';
 import {DimensionsComponent} from './components/dimensions/dimensions.component';
 import {InfiniteScrollComponent} from './components/infinite-scroll/infinite-scroll.component';
+import {EventTableComponent } from './components/event-table/event-table.component';
 
 /** Everything that should be used within multiple feature modules but isn't always required goes here */
 @NgModule({
@@ -38,7 +39,8 @@ import {InfiniteScrollComponent} from './components/infinite-scroll/infinite-scr
     DimensionsComponent,
     InfiniteScrollComponent,
     CollapseComponent,
-    MovementOverviewComponent
+    MovementOverviewComponent,
+    EventTableComponent
   ],
   imports: [
     CommonModule,
@@ -63,7 +65,8 @@ import {InfiniteScrollComponent} from './components/infinite-scroll/infinite-scr
     DimensionsComponent,
     CollapseComponent,
     MovementOverviewComponent,
-    InfiniteScrollComponent
+    InfiniteScrollComponent,
+    EventTableComponent
   ]
 })
 export class SharedModule {

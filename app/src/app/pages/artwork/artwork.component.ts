@@ -96,19 +96,28 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       this.artwork = this.hoveredArtwork = this.hoveredArtwork = null;
       this.imageHidden = this.modalIsVisible = this.commonTagsCollapsed = false;
       // clears items of all artwork tabs
-      this.artworkTabs.forEach((tab: ArtworkTab) => (tab.items = []));
+      this.artworkTabs = this.artworkTabs
+        .map((tab: ArtworkTab) => {
+          if (tab.type === ('main_motif' as EntityType)) {
+            return null;
+          }
+          return { ...tab, items: [] };
+        })
+        .filter(tab => tab !== null);
 
       /** Use data service to fetch entity from database */
       const artworkId = params.get('artworkId');
-      this.artwork = (await this.dataService.findById<Artwork>(artworkId, EntityType.ARTWORK)) as Artwork;
+      this.artwork = await this.dataService.findById<Artwork>(artworkId, EntityType.ARTWORK);
+
       if (this.artwork.videos && this.artwork.videos.length > 0) {
         this.uniqueVideos.unshift(this.artwork.videos[0]);
       }
-
+      
       if (this.artwork) {
         this.mergeMotifs();
         this.combineEventData();
-        this.resolveIds('main_subjects');
+        await this.resolveIds('main_subjects');
+        this.insertMainMotifTab();
 
         /* load tabs content */
         this.loadTabs();
@@ -128,7 +137,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    * merges main_subjects into motifs for display in the 'all' and 'motifs' tab of the artwork page
    */
   mergeMotifs() {
-    this.artwork.main_subjects.map(motifId => {
+    this.artwork.main_subjects.forEach(motifId => {
       if (!this.artwork.motifs.includes(motifId)) {
         this.artwork.motifs.push(motifId);
       }
@@ -198,7 +207,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     Promise.all(
       /** load related data for each tab  */
       this.artworkTabs.map(async (tab: ArtworkTab) => {
-        if (tab.type === EntityType.ALL) {
+        if (tab.type === EntityType.ALL || tab.type === ('main_motif' as EntityType)) {
           return;
         }
 
@@ -237,6 +246,25 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       type,
       items: []
     });
+  }
+
+  /**
+   * inserts a custom tab that displays related artworks by main motifs.
+   * since main motifs are of type motif and not a new entity type, this custom tab logic exists
+   */
+  async insertMainMotifTab() {
+    const main_motifs = this.artwork.main_subjects.map(entity => entity.id);
+
+    const items = await this.dataService.findArtworksByType(EntityType.MOTIF, main_motifs);
+
+    const tab = {
+      active: false,
+      icon: EntityIcon['MOTIF'],
+      type: 'main_motif' as EntityType,
+      items
+    };
+
+    this.artworkTabs.splice(1, 0, tab); // insert after first element (All, Main Motif, ...rest)
   }
 
   videoFound(event) {

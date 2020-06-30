@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { SignificantEvent } from '../../models/artwork.interface';
 
 @Component({
@@ -6,16 +6,18 @@ import { SignificantEvent } from '../../models/artwork.interface';
   templateUrl: './event-table.component.html',
   styleUrls: ['./event-table.component.scss']
 })
-export class EventTableComponent implements OnInit {
+export class EventTableComponent implements OnChanges {
   @Input()
   label: string;
 
   @Input()
   events: SignificantEvent[];
 
-  constructor() {}
-
-  ngOnInit() {}
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.events) {
+      this.events = changes.events.currentValue.filter(this.isDisplayable);
+    }
+  }
 
   isDisplayable(event) {
     return typeof event.start_time === 'number' && event.label.length;

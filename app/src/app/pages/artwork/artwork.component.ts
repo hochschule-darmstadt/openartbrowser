@@ -102,17 +102,24 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       this.imageHidden = this.modalIsVisible = this.commonTagsCollapsed = false;
       this.detailsCollapsed = true;
       // clears items of all artwork tabs
-      this.artworkTabs.forEach((tab: ArtworkTab) => (tab.items = []));
+      this.artworkTabs = this.artworkTabs
+        .map((tab: ArtworkTab) => {
+          if (tab.type === ('main_motif' as EntityType)) {
+            return null;
+          }
+          return { ...tab, items: [] };
+        })
+        .filter(tab => tab !== null);
 
       /** Use data service to fetch entity from database */
       const artworkId = params.get('artworkId');
-      this.artwork = (await this.dataService.findById<Artwork>(artworkId, EntityType.ARTWORK));
+      this.artwork = await this.dataService.findById<Artwork>(artworkId, EntityType.ARTWORK);
 
       if (this.artwork) {
         this.mergeMotifs();
         await this.resolveIds('main_subjects');
         this.insertMainMotifTab();
-        
+
         /* Count meta data to show more on load */
         this.calculateCollapseState();
         /* load tabs content */
@@ -133,7 +140,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    * merges main_subjects into motifs for display in the 'all' and 'motifs' tab of the artwork page
    */
   mergeMotifs() {
-    this.artwork.main_subjects.map(motifId => {
+    this.artwork.main_subjects.forEach(motifId => {
       if (!this.artwork.motifs.includes(motifId)) {
         this.artwork.motifs.push(motifId);
       }
@@ -196,7 +203,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     Promise.all(
       /** load related data for each tab  */
       this.artworkTabs.map(async (tab: ArtworkTab) => {
-        if (tab.type === EntityType.ALL) {
+        if (tab.type === EntityType.ALL || tab.type === ('main_motif' as EntityType)) {
           return;
         }
 
@@ -279,14 +286,14 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   async insertMainMotifTab() {
     const main_motifs = this.artwork.main_subjects.map(entity => entity.id);
-    
-    const items = await this.dataService.findArtworksByType(EntityType.MOTIF, main_motifs)
 
-    const tab = { 
+    const items = await this.dataService.findArtworksByType(EntityType.MOTIF, main_motifs);
+
+    const tab = {
       active: false,
-      icon: EntityIcon["MOTIF"],
-      type: "main_motif" as EntityType,
-      items 
+      icon: EntityIcon['MOTIF'],
+      type: 'main_motif' as EntityType,
+      items
     };
 
     this.artworkTabs.splice(1, 0, tab); // insert after first element (All, Main Motif, ...rest)

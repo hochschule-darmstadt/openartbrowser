@@ -32,14 +32,20 @@ import sys
 import time
 from pathlib import Path
 from urllib.error import HTTPError
-from typing import List, Dict, Set, Iterator, Optional
+from typing import List, Dict, Set, Iterator, Optional, Callable
 
 from data_extraction import map_wd_attribute
 from data_extraction import map_wd_response
 from data_extraction.constants import *
 from data_extraction.request_utils import send_http_request
-from shared.utils import chunks, create_new_path, language_config_to_list, setup_logger
-from shared.constants import JSON, CSV
+from shared.utils import (
+    chunks,
+    create_new_path,
+    language_config_to_list,
+    setup_logger,
+    generate_json,
+)
+from shared.constants import *
 from SPARQLWrapper import SPARQLWrapper
 
 DEV = False
@@ -144,6 +150,7 @@ def wikidata_entity_request(
         "languages": "|".join(language_keys),
         "sitefilter": "|".join(langkeyPlusWikiList),
         "props": "|".join(props),
+        "redirects": "no",
         # if the server needs more than maxlag seconds to process
         # the query an error response is returned
         "maxlag": maxlag,
@@ -267,6 +274,7 @@ def extract_artworks(
                 materials,
                 motifs,
                 main_subjects,
+                exhibition_history,
             ) = map_wd_attribute.get_attribute_values_with_try_get_func(
                 result,
                 [
@@ -278,6 +286,7 @@ def extract_artworks(
                     MATERIAL[SINGULAR],
                     MOTIF[SINGULAR],
                     MAIN_SUBJECT[SINGULAR],
+                    EXHIBITION_HISTORY,
                 ],
                 type_name,
                 map_wd_attribute.try_get_qid_reference_list,
@@ -342,6 +351,8 @@ def extract_artworks(
                 DIAMETER_UNIT: diameter_unit,
                 ICONCLASS[PLURAL]: iconclasses,
                 MAIN_SUBJECT[PLURAL]: main_subjects,
+                EXHIBITION_HISTORY: exhibition_history,
+                TYPE: ARTWORK[SINGULAR],
             }
 
             for langkey in language_keys:
@@ -397,7 +408,7 @@ def extract_art_ontology() -> None:
         generate_csv(extracted_artwork, get_fields(artwork), path_name)
 
         path_name = create_new_path(ARTWORK[PLURAL], artwork, JSON)
-        generate_json(artwork, extracted_artwork, path_name)
+        generate_json(extracted_artwork, path_name)
 
     merged_artworks = merge_artworks()
 
@@ -408,7 +419,7 @@ def extract_art_ontology() -> None:
 
     # Get motifs and main subjects
     motifs = extract_motifs_and_main_subjects(merged_artworks)
-
+    [motif.update({TYPE: MOTIF[SINGULAR]}) for motif in motifs]
     # Get extracted genres, materials, etc.
     genres, materials, movements, artists, locations = bundle_extract_subjects_calls(
         [
@@ -420,12 +431,23 @@ def extract_art_ontology() -> None:
         ],
         merged_artworks,
     )
+    print("Total movements after transitive closure loading: ", len(movements))
+
+    for subject, type_name in [
+        (genres, GENRE[SINGULAR]),
+        (materials, MATERIAL[SINGULAR]),
+        (movements, MOVEMENT[SINGULAR]),
+        (artists, ARTIST[SINGULAR]),
+        (locations, LOCATION[SINGULAR]),
+    ]:
+        [entity.update({TYPE: type_name}) for entity in subject]
 
     # Get distinct classes from artworks, motifs, etc.
     extracted_classes = get_distinct_extracted_classes(
         merged_artworks, motifs, genres, materials, movements, artists, locations,
     )
-
+    [c.update({TYPE: CLASS[SINGULAR]}) for c in extracted_classes]
+    print("Total classes after transitive closure loading: ", len(extracted_classes))
     # Get country labels for merged artworks and locations
     (
         locations,
@@ -444,6 +466,9 @@ def extract_art_ontology() -> None:
     distinct_unit_qids = get_distinct_unit_symbol_qids(merged_artworks)
     unit_symbols = get_unit_symbols(distinct_unit_qids)
     resolve_unit_id_to_unit_symbol(merged_artworks, unit_symbols)
+
+    # Get exhibition histories as subdict
+    merged_artworks = resolve_exhibition_ids_to_exhibition_entities(merged_artworks)
 
     # Write to JSON
     write_data_to_json_and_csv(
@@ -473,7 +498,7 @@ def extract_motifs_and_main_subjects(merged_artworks: List[Dict]) -> List[Dict]:
     )
 
     motifs_and_main_subjects = motifs | main_subjects
-    motifs = get_subject("motifs and main subjects", motifs_and_main_subjects)
+    motifs = get_subject(MOTIF[PLURAL], motifs_and_main_subjects)
     return motifs
 
 
@@ -499,52 +524,52 @@ def write_data_to_json_and_csv(
         merged_artworks: List of artworks
         artists: List of artists
     """
-    generate_json(MOTIF[SINGULAR], motifs, create_new_path(MOTIF[PLURAL]))
+    generate_json(motifs, create_new_path(MOTIF[PLURAL]))
     generate_csv(
         motifs,
-        get_fields(MOTIF[PLURAL]) + [TYPE],
+        get_fields(MOTIF[PLURAL]),
         create_new_path(MOTIF[PLURAL], file_type=CSV),
     )
-    generate_json(GENRE[SINGULAR], genres, create_new_path(GENRE[PLURAL]))
+    generate_json(genres, create_new_path(GENRE[PLURAL]))
     generate_csv(
         genres,
-        get_fields(GENRE[PLURAL]) + [TYPE],
+        get_fields(GENRE[PLURAL]),
         create_new_path(GENRE[PLURAL], file_type=CSV),
     )
-    generate_json(CLASS[SINGULAR], extracted_classes, create_new_path(CLASS[PLURAL]))
+    generate_json(extracted_classes, create_new_path(CLASS[PLURAL]))
     generate_csv(
         extracted_classes,
-        get_fields(CLASS[PLURAL]) + [TYPE],
+        get_fields(CLASS[PLURAL]),
         create_new_path(CLASS[PLURAL], file_type=CSV),
     )
-    generate_json(MATERIAL[SINGULAR], materials, create_new_path(MATERIAL[PLURAL]))
+    generate_json(materials, create_new_path(MATERIAL[PLURAL]))
     generate_csv(
         materials,
-        get_fields(MATERIAL[PLURAL]) + [TYPE],
+        get_fields(MATERIAL[PLURAL]),
         create_new_path(MATERIAL[PLURAL], file_type=CSV),
     )
-    generate_json(MOVEMENT[SINGULAR], movements, create_new_path(MOVEMENT[PLURAL]))
+    generate_json(movements, create_new_path(MOVEMENT[PLURAL]))
     generate_csv(
         movements,
-        get_fields(MOVEMENT[PLURAL]) + [TYPE],
+        get_fields(MOVEMENT[PLURAL]),
         create_new_path(MOVEMENT[PLURAL], file_type=CSV),
     )
-    generate_json(LOCATION[SINGULAR], locations, create_new_path(LOCATION[PLURAL]))
+    generate_json(locations, create_new_path(LOCATION[PLURAL]))
     generate_csv(
         locations,
-        get_fields(LOCATION[PLURAL]) + [TYPE],
+        get_fields(LOCATION[PLURAL]),
         create_new_path(LOCATION[PLURAL], file_type=CSV),
     )
-    generate_json(ARTWORK[SINGULAR], merged_artworks, create_new_path(ARTWORK[PLURAL]))
+    generate_json(merged_artworks, create_new_path(ARTWORK[PLURAL]))
     generate_csv(
         merged_artworks,
-        get_fields(ARTWORK[PLURAL]) + [TYPE],
+        get_fields(ARTWORK[PLURAL]),
         create_new_path(ARTWORK[SINGULAR], file_type=CSV),
     )
-    generate_json(ARTIST[SINGULAR], artists, create_new_path(ARTIST[PLURAL]))
+    generate_json(artists, create_new_path(ARTIST[PLURAL]))
     generate_csv(
         artists,
-        get_fields(ARTIST[PLURAL]) + [TYPE],
+        get_fields(ARTIST[PLURAL]),
         create_new_path(ARTIST[PLURAL], file_type=CSV),
     )
 
@@ -693,7 +718,7 @@ def get_fields(
     Returns:
         A list of column names for the given type name
     """
-    fields = [ID, CLASS[PLURAL], LABEL[SINGULAR], DESCRIPTION[SINGULAR], IMAGE]
+    fields = [ID, CLASS[PLURAL], LABEL[SINGULAR], DESCRIPTION[SINGULAR], IMAGE, TYPE]
     for langkey in language_keys:
         fields += [
             f"{LABEL[SINGULAR]}_{langkey}",
@@ -725,6 +750,7 @@ def get_fields(
             LENGTH_UNIT,
             ICONCLASS[PLURAL],
             MAIN_SUBJECT[PLURAL],
+            EXHIBITION_HISTORY,
         ]
         for langkey in language_keys:
             fields += [f"{COUNTRY}_{langkey}"]
@@ -758,7 +784,7 @@ def get_fields(
         for langkey in language_keys:
             fields += [f"{COUNTRY}_{langkey}"]
     elif type_name == CLASS[PLURAL]:
-        fields = [ID, LABEL[SINGULAR], DESCRIPTION[SINGULAR], SUBCLASS_OF]
+        fields = [ID, LABEL[SINGULAR], DESCRIPTION[SINGULAR], SUBCLASS_OF, TYPE]
         for langkey in language_keys:
             fields += [
                 f"{LABEL[SINGULAR]}_{langkey}",
@@ -783,27 +809,6 @@ def generate_csv(extract_dicts: List[Dict], fields: List[str], filename: str) ->
         writer.writeheader()
         for extract_dict in extract_dicts:
             writer.writerow(extract_dict)
-
-
-def generate_json(name: str, extract_dicts: List[Dict], filename: str) -> None:
-    """Generates a JSON file from a dictionary
-
-    Args:
-        name: openArtBrowser type name e. g. 'artwork'
-        extract_dicts: List of dicts that containing wikidata entities transformed to oab entities
-        filename: Name of the file to write the data to
-    """
-    if len(extract_dicts) == 0:
-        return
-    filename.parent.mkdir(parents=True, exist_ok=True)
-    with open(
-        filename.with_suffix(f".{JSON}"), "w", newline="", encoding="utf-8"
-    ) as file:
-        arrayToDump = []
-        for extract_dict in extract_dicts:
-            extract_dict[TYPE] = name
-            arrayToDump.append(extract_dict)
-        file.write(json.dumps(arrayToDump, ensure_ascii=False))
 
 
 def merge_artworks() -> List[Dict]:
@@ -869,7 +874,10 @@ def get_distinct_attribute_values_from_dict(
 
 
 def get_subject(
-    type_name: str, qids: List[str], language_keys: Optional[List[str]] = lang_keys,
+    type_name: str,
+    qids: List[str],
+    already_extracted_movement_ids: Set[str] = set(),
+    language_keys: Optional[List[str]] = lang_keys,
 ) -> List[Dict]:
     """Extract subjects (in our definition everything except artworks e. g. movements, motifs, etc.) from wikidata
 
@@ -909,6 +917,7 @@ def get_subject(
                 subject_dict.update(
                     map_wd_response.try_map_response_to_movement(result)
                 )
+                already_extracted_movement_ids.add(subject_dict[ID])
             if type_name == ARTIST[PLURAL]:
                 subject_dict.update(map_wd_response.try_map_response_to_artist(result))
             if type_name == LOCATION[PLURAL]:
@@ -919,6 +928,23 @@ def get_subject(
 
         item_count += len(chunk)
         print(f"Status of {type_name}: {item_count}/{len(qids)}", end="\r", flush=True)
+
+    if type_name == MOVEMENT[PLURAL]:
+        extract_dicts = load_entities_by_attribute_with_transitive_closure(
+            extract_dicts,
+            PART_OF,
+            MOVEMENT[PLURAL],
+            already_extracted_movement_ids,
+            get_subject,
+        )
+        extract_dicts = load_entities_by_attribute_with_transitive_closure(
+            extract_dicts,
+            HAS_PART,
+            MOVEMENT[PLURAL],
+            already_extracted_movement_ids,
+            get_subject,
+        )
+        return extract_dicts
 
     print(datetime.datetime.now(), f"Finished with {type_name}")
     return extract_dicts
@@ -985,11 +1011,11 @@ def get_entity_labels(
     return extract_dicts
 
 
-already_extracted_superclass_ids = set()
-
-
 def get_classes(
-    type_name: str, qids: List[str], language_keys: Optional[List[str]] = lang_keys,
+    type_name: str,
+    qids: List[str],
+    already_extracted_superclass_ids: Set[str] = set(),
+    language_keys: Optional[List[str]] = lang_keys,
 ) -> List[Dict]:
     """Function to extract the classes of the extracted wikidata entities (meaning the 'instance of' attribute wikidata entity qids).
     Their subclasses are also extracted recursively (also called transitive closure)
@@ -998,6 +1024,8 @@ def get_classes(
         type_name: oab type e. g. movement
         qids: List of qids to extract the labels from
         language_keys: All language keys which should be extracted. Defaults to languageconfig.csv
+        already_extracted_superclass_ids: A list of already extracted superclass ids for the recursive calls,
+        this is also the anchor to stop recursion
 
     Returns:
         Returns a list of dicts with the classes from the oab entities and their subclasses
@@ -1062,25 +1090,56 @@ def get_classes(
         item_count += len(chunk)
         print(f"Status of {type_name}: {item_count}/{len(qids)}", end="\r", flush=True)
 
-    superclasses_qids = get_distinct_attribute_values_from_dict(
-        SUBCLASS_OF, extract_dicts
+    return load_entities_by_attribute_with_transitive_closure(
+        extract_dicts,
+        SUBCLASS_OF,
+        CLASS[PLURAL],
+        already_extracted_superclass_ids,
+        get_classes,
     )
-    missing_superclass_qids = []
 
-    for superclass_id in superclasses_qids:
-        if superclass_id not in already_extracted_superclass_ids:
-            missing_superclass_qids.append(superclass_id)
 
-    if len(missing_superclass_qids) == 0:
+def load_entities_by_attribute_with_transitive_closure(
+    extract_dicts: List[Dict],
+    attribute_name: str,
+    oab_type: str,
+    already_extracted_ids: Set[str],
+    entity_extraction_func: Callable[
+        [str, List[str], Set[str], Optional[List[str]]], List[Dict]
+    ],
+) -> List[Dict]:
+    """Recursive function to load all entities which a attribute contains.
+
+    Remarks:
+        This would be also possible with a SPARQL query however when we tested it
+        with the wikidata query service it was extremly unperformant and the API
+        only allows 1 minute queries
+
+    Args:
+        extract_dicts: Already extracted entities, the new entities are added to this list
+        attribute_name: Attribute which should be loaded with a transitive closure
+        already_extracted_ids: list that tracks the already extracted ids
+
+    Returns:
+        Updated list of dicts with recursively loaded entities by an attribute
+    """
+    qids = get_distinct_attribute_values_from_dict(attribute_name, extract_dicts)
+    missing_qids = []
+
+    for id in qids:
+        if id not in already_extracted_ids:
+            missing_qids.append(id)
+
+    if len(missing_qids) == 0:
         return extract_dicts
     else:
-        [
-            already_extracted_superclass_ids.add(superclass_id)
-            for superclass_id in superclasses_qids
-        ]
-        superclasses = get_classes("subclasses", missing_superclass_qids)
-        for superclass in superclasses:
-            extract_dicts.append(superclass)
+        [already_extracted_ids.add(id) for id in qids]
+        entities = entity_extraction_func(oab_type, missing_qids, already_extracted_ids)
+        for entity in entities:
+            if not any(
+                e[ID] == entity[ID] for e in extract_dicts
+            ):  # Check if an entity with the same qid is in the dict, if not then add
+                extract_dicts.append(entity)
         return extract_dicts
 
 
@@ -1194,6 +1253,107 @@ def resolve_entity_id_to_label(
                 artwork_object[f"{attribute_name}_{langkey}"] = ""
 
     return extract_dicts
+
+
+def get_exhibition_entities(
+    qids: Set[str],
+    language_keys: Optional[List[str]] = lang_keys,
+    type_name: str = EXHIBITION,
+) -> Dict[str, Dict]:
+    """Function to get the exhibition entities from wikidata
+
+    Args:
+        qids: Distinct qid set to get the entities from
+        language_keys: Language keys to extract label and description from. Defaults to languageconfig.csv
+        type_name: OAB type name. Defaults to EXHIBITION.
+
+    Returns:
+        A dict with the qids as key and the JSON object as value
+    """
+    print(datetime.datetime.now(), f"Starting with exhibition entities")
+    print(f"Total exhibition entities to extract: {len(qids)}")
+    item_count = 0
+    extract_dicts = {}
+    chunk_size = 50  # The chunksize 50 is allowed by the wikidata api, bigger numbers need special permissions
+    id_chunks = chunks(list(qids), chunk_size)
+    for chunk in id_chunks:
+        query_result = wikidata_entity_request(chunk)
+        for result in query_result[ENTITIES].values():
+            try:
+                qid = result[ID]
+            except Exception as error:
+                logger.error("Error on qid, skipping item. Error: {0}".format(error))
+                continue
+            label = map_wd_attribute.try_get_label_or_description(
+                result, LABEL[PLURAL], EN, type_name
+            )
+            description = map_wd_attribute.try_get_label_or_description(
+                result, DESCRIPTION[PLURAL], EN, type_name
+            )
+            start_time = map_wd_attribute.try_get_year_from_property_timestamp(
+                result, PROPERTY_NAME_TO_PROPERTY_ID[START_TIME], type_name
+            )
+            end_time = map_wd_attribute.try_get_year_from_property_timestamp(
+                result, PROPERTY_NAME_TO_PROPERTY_ID[END_TIME], type_name
+            )
+
+            extract_dicts.update(
+                {
+                    qid: {
+                        LABEL[SINGULAR]: label,
+                        DESCRIPTION[SINGULAR]: description,
+                        START_TIME: start_time,
+                        END_TIME: end_time,
+                        TYPE: EXHIBITION,
+                    }
+                }
+            )
+
+            for langkey in language_keys:
+                label_lang = map_wd_attribute.try_get_label_or_description(
+                    result, LABEL[PLURAL], langkey, type_name
+                )
+                description_lang = map_wd_attribute.try_get_label_or_description(
+                    result, DESCRIPTION[PLURAL], langkey, type_name
+                )
+                extract_dicts[qid][f"{LABEL[SINGULAR]}_{langkey}"] = label_lang
+                extract_dicts[qid][
+                    f"{DESCRIPTION[SINGULAR]}_{langkey}"
+                ] = description_lang
+
+        item_count += len(chunk)
+        print(
+            f"Status of exhibition entities: {item_count}/{len(qids)}",
+            end="\r",
+            flush=True,
+        )
+
+    print(datetime.datetime.now(), f"Finished with exhibition entities")
+    return extract_dicts
+
+
+def resolve_exhibition_ids_to_exhibition_entities(artwork_dict: List[Dict]):
+    """Function to resolve the exhibition qids to exhibition entities which are part of artwork entities
+
+    Args:
+        artwork_dict: List of artworks
+
+    Returns:
+        Modified artwork list with exhibition ids resolved to JSON objects
+    """
+    distinct_exhibition_ids = get_distinct_attribute_values_from_dict(
+        EXHIBITION_HISTORY, artwork_dict
+    )
+    qid_exhibition_entity_dict = get_exhibition_entities(distinct_exhibition_ids)
+
+    for artwork in artwork_dict:
+        if artwork[
+            EXHIBITION_HISTORY
+        ]:  # When there are exhibitions in the exhibition history attribute replace them with a dict (JSON object)
+            for i, qid in enumerate(artwork[EXHIBITION_HISTORY]):
+                artwork[EXHIBITION_HISTORY][i] = qid_exhibition_entity_dict[qid]
+
+    return artwork_dict
 
 
 if __name__ == "__main__":

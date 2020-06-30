@@ -4,7 +4,6 @@ import {ActivatedRoute} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
 import {Movement, Artwork, EntityType} from 'src/app/shared/models/models';
 import {Subject} from 'rxjs';
-import * as _ from 'lodash';
 import {shuffle} from 'src/app/core/services/utils.service';
 
 enum Tab {
@@ -40,14 +39,13 @@ export class MovementComponent implements OnInit, OnDestroy {
   /** Related artworks */
   sliderItems: Artwork[] = [];
 
-  /** Change collapse icon; true if more infos are folded in */
-  collapse = true;
-
   /** Toggle bool for displaying either timeline or artworks carousel component */
   movementOverviewLoaded = false;
 
   /** a video was found */
   videoExists = false;
+  /* List of unique Videos */
+  uniqueEntityVideos: string[] = [];
 
   relatedMovements: Movement[] = [];
 
@@ -58,6 +56,7 @@ export class MovementComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.route.params.subscribe(() => {
       this.videoExists = false;
+      this.uniqueEntityVideos = [];
     });
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
@@ -65,16 +64,28 @@ export class MovementComponent implements OnInit, OnDestroy {
 
       /** Use data service to fetch entity from database */
       this.movement = await this.dataService.findById<Movement>(movementId, EntityType.MOVEMENT);
+      if (this.movement.videos && this.movement.videos.length > 0) {
+        this.uniqueEntityVideos.unshift(this.movement.videos[0]);
+      }
 
       /** load slider items */
       await this.dataService.findArtworksByType(EntityType.MOVEMENT, [this.movement.id])
-        .then(artworks => (this.sliderItems = shuffle(artworks)));
+        .then(artworks => {
+          const referenceStartTime = this.movement.start_time || this.movement.start_time_est || -1;
+          const referenceEndTime = this.movement.end_time || this.movement.end_time_est || -1;
+          if (referenceStartTime !== -1) {
+            artworks = artworks.filter(artwork => artwork.inception >= referenceStartTime);
+          }
+          if (referenceEndTime !== -1) {
+            artworks = artworks.filter(artwork => artwork.inception <= referenceEndTime);
+          }
+          this.sliderItems = shuffle(artworks);
+          this.addUniqueVideos();
+        });
 
       /** dereference influenced_bys  */
       this.dataService.findMultipleById(this.movement.influenced_by as any, EntityType.ARTIST)
         .then(influences => (this.movement.influenced_by = influences));
-
-      this.calculateCollapseState();
 
       /** get is part movements */
       let movements = await this.dataService.getHasPartMovements(movementId);
@@ -90,24 +101,6 @@ export class MovementComponent implements OnInit, OnDestroy {
     });
   }
 
-  /** Decides whether to show the 'more' section or not based on the amount of available data:
-   * calculates the size of meta data item section
-   * every attribute: +3
-   * if attribute is array and size > 3 -> + arraylength
-   */
-  private calculateCollapseState() {
-    let metaNumber = 0;
-    if (this.movement.abstract.length > 400) {
-      metaNumber += 10;
-    } else if (this.movement.abstract.length) {
-      metaNumber += 3;
-    }
-    if (!_.isEmpty(this.movement.influenced_by)) {
-      metaNumber += 3;
-    }
-    this.collapse = metaNumber >= 10;
-  }
-
   setActiveTab(tab: Tab) {
     this.activeTab = tab;
 
@@ -116,6 +109,13 @@ export class MovementComponent implements OnInit, OnDestroy {
     }
   }
 
+  addUniqueVideos() {
+    for ( const entity of this.sliderItems) {
+      if (entity.videos && entity.videos.length >  0 && !this.uniqueEntityVideos.includes(entity.videos[0])) {
+        this.uniqueEntityVideos.push(entity.videos[0]);
+      }
+    }
+  }
 
   ngOnDestroy() {
     this.ngUnsubscribe.next();

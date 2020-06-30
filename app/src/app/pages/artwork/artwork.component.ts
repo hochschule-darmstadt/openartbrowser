@@ -3,7 +3,6 @@ import { Artwork, EntityType, EntityIcon } from 'src/app/shared/models/models';
 import { takeUntil } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
-import * as _ from 'lodash';
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 import { shuffle } from 'src/app/core/services/utils.service';
 import { usePlural } from 'src/app/shared/models/entity.interface';
@@ -42,13 +41,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   imageHidden = false;
 
   /**
-   * @description to toggle details container.
-   * true if more infos are folded in.
-   * initial as true (closed).
-   */
-  detailsCollapsed = true;
-
-  /**
    * @description to toggle common tags container.
    * initial as false (open).
    */
@@ -76,6 +68,8 @@ export class ArtworkComponent implements OnInit, OnDestroy {
 
   /** a video was found */
   videoExists = false;
+  /* List of unique Videos */
+  uniqueVideos: string[] = [];
 
   constructor(private dataService: DataService, private route: ActivatedRoute) {}
 
@@ -97,24 +91,25 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
       /* reset properties */
+      this.uniqueVideos = [];
       this.videoExists = false;
       this.artwork = this.hoveredArtwork = this.hoveredArtwork = null;
       this.imageHidden = this.modalIsVisible = this.commonTagsCollapsed = false;
-      this.detailsCollapsed = true;
       // clears items of all artwork tabs
       this.artworkTabs.forEach((tab: ArtworkTab) => (tab.items = []));
 
       /** Use data service to fetch entity from database */
       const artworkId = params.get('artworkId');
       this.artwork = (await this.dataService.findById<Artwork>(artworkId, EntityType.ARTWORK)) as Artwork;
+      if (this.artwork.videos && this.artwork.videos.length > 0) {
+        this.uniqueVideos.unshift(this.artwork.videos[0]);
+      }
 
       if (this.artwork) {
         this.mergeMotifs();
         this.combineEventData();
         this.resolveIds('main_subjects');
 
-        /* Count meta data to show more on load */
-        this.calculateCollapseState();
         /* load tabs content */
         this.loadTabs();
       }
@@ -148,6 +143,13 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     return this.artwork.motifs.filter(motif => !mainIds.includes(motif.id));
   }
 
+  addUniqueVideos(inputArray) {
+    for ( const entity of inputArray) {
+      if (entity.videos && entity.videos.length >  0 && !this.uniqueVideos.includes(entity.videos[0])) {
+        this.uniqueVideos.push(entity.videos[0]);
+      }
+    }
+  }
   /**
    * hide artwork image
    */
@@ -205,6 +207,8 @@ export class ArtworkComponent implements OnInit, OnDestroy {
         // load entities
         this.dataService.findMultipleById(this.artwork[types] as any, tab.type).then(artists => {
           this.artwork[types] = artists;
+          this.addUniqueVideos(this.artwork.artists);
+          this.addUniqueVideos(this.artwork.movements);
         });
         // load related artworks by type
         return await this.dataService.findArtworksByType(tab.type, this.artwork[types] as any).then(artworks => {
@@ -219,44 +223,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
         // filter duplicates and shuffles it
         (allTab.items = shuffle(Array.from(new Set(allTab.items))))
     );
-  }
-
-  /** Decides whether to show the 'more' section or not based on the amount of available data:
-   * calculates the size of meta data item section
-   * every attribute: +3
-   * if attribute is array and size > 3 -> + arraylength
-   */
-  private calculateCollapseState() {
-    let metaNumber = 0;
-    // set defauled (closed)
-    this.detailsCollapsed = true;
-
-    if (this.artwork.abstract.length > 400) {
-      metaNumber += 10;
-    } else if (this.artwork.abstract.length) {
-      metaNumber += 3;
-    }
-    if (!_.isEmpty(this.artwork.genres.filter(Boolean))) {
-      metaNumber += this.artwork.genres.length > 3 ? this.artwork.genres.length : 3;
-    }
-    if (!_.isEmpty(this.artwork.materials.filter(Boolean))) {
-      metaNumber += this.artwork.materials.length > 3 ? this.artwork.materials.length : 3;
-    }
-    if (!_.isEmpty(this.artwork.movements.filter(Boolean))) {
-      metaNumber += this.artwork.movements.length > 3 ? this.artwork.movements.length : 3;
-    }
-    if (!_.isEmpty(this.artwork.motifs.filter(Boolean))) {
-      metaNumber += this.artwork.motifs.length > 3 ? this.artwork.motifs.length : 3;
-    }
-    if (this.artwork.height && this.artwork.width) {
-      metaNumber += 3;
-    }
-    if (!_.isEmpty(this.artwork.iconclasses.filter(Boolean))) {
-      metaNumber += this.artwork.iconclasses.length > 3 ? this.artwork.iconclasses.length : 3;
-    }
-    if (metaNumber < 10) {
-      this.detailsCollapsed = false;
-    }
   }
 
   /**

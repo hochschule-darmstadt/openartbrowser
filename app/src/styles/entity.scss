@@ -53,11 +53,6 @@
     float: right;
   }
 
-  /* Unset cursor: pointer; badge */
-  .cursor-heading-pill:hover {
-    cursor: default;
-  }
-
   @media (max-width: 575px) {
     &:not(.artwork) > .row:first-child {
       flex-direction: column-reverse;
@@ -103,16 +98,28 @@
       -webkit-line-clamp: 6;
       -webkit-box-orient: vertical;
       overflow: hidden;
-      padding: 0.25rem 0.5rem 0.25rem 0.5rem;
-    }
-
-    .arrow::before {
-      border-top-color: $color1;
-      border-bottom-color: $color1;
+      padding: 0;
+      margin: 0;
     }
   }
-}
 
+  .bs-tooltip-right > .arrow::before {
+    border-right-color: $color1;
+  }
+
+  .bs-tooltip-left > .arrow::before {
+    border-left-color: $color1;
+  }
+
+  .bs-tooltip-top > .arrow::before {
+    border-top-color: $color1;
+    border-bottom-color: $color1;
+  }
+
+  .bs-tooltip-bottom > .arrow::before {
+    border-bottom-color: $color1;
+  }
+}
 .artworks-amount {
   font-size: 0.9em;
   opacity: 0.8;

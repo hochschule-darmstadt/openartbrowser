@@ -9,7 +9,7 @@
   <app-infinite-scroll (scrolled)="onScroll()">
     <div class="d-flex flex-wrap bd-highlight mb-3 m-auto justify-content-around">
       <div *ngFor="let entity of entities" class="item">
-        <a *ngIf="entity"
+        <a *ngIf="entity && entity?.id"
            class="item-link"
            [routerLink]="['/'+type, entity?.id]">
           <div class="img-wrapper">
@@ -34,11 +34,18 @@
               <i class="mr-1 fa fa-ruler-horizontal"></i>
               <span>{{entity.start_time}} - {{entity.end_time}}</span>
             </div>
-            <div *ngIf="type=='artist' && entity.date_of_birth && entity.date_of_death" class="ml-1">
-              <i class="mr-1 fa fa-star-of-life"></i>
-              <span>{{entity.date_of_birth}}</span>
-              <i class="ml-1 mr-1 fa fa-cross"></i>
-              <span>{{entity.date_of_death}}</span>
+            <div *ngIf="type=='artist'" class="ml-1">
+              <div *ngIf="entity.date_of_birth && entity.date_of_death">
+                <span>{{entity.date_of_birth}} - {{entity.date_of_death}}</span>
+              </div>
+              <div *ngIf="entity.date_of_birth && !entity.date_of_death">
+                <i class="mr-1 fa fa-star-of-life"></i>
+                <span>{{entity.date_of_birth}}</span>
+              </div>
+              <div *ngIf="!entity.date_of_birth && entity.date_of_death">
+                <i class="ml-1 mr-1 fa fa-cross"></i>
+                <span>{{entity.date_of_death}}</span>
+              </div>
             </div>
           </div>
         </a>

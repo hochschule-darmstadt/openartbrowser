@@ -25,10 +25,12 @@
        [@newThumb]="showThumbnail ? 'show' : 'hide' "
        (@newThumb.start)="resetShowThumbnail()">
       <div class="overlay-container">
-        <img *ngIf="thumbnail"
+        <img *ngIf="thumbnail?.imageMedium"
              class="img_self"
              src="{{ thumbnail?.imageMedium }}"
              alt="{{ thumbnail?.label }}"
+             [ngStyle]="{'display': thumbnailLoaded ? 'block' : 'none'}"
+             (load)="onThumbnailLoaded()"
              (error)="onLoadingError(thumbnail)"/>
         <div class="overlay_view" [ngClass]="thumbnail?.type == 'artist' ? 'rounded-circle' : ''">
           <span class="img_description">{{ this.currentMovementLabel | titlecase }}</span>

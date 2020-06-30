@@ -10,33 +10,44 @@ RUN pip install pywikibot
 COPY ["./data_extraction/", "/app/data_extraction"]
 COPY ["./user-config.py", "/app"]
 COPY ["./shared/", "/app/shared"]
-# run ArtOntologyCrawler in development mode
+# run get_wikidata_items in development mode
 RUN pip install SPARQLWrapper
 RUN ["python", "/app/data_extraction/get_wikidata_items.py", "-d"]
 RUN ["python", "/app/data_extraction/get_wikipedia_extracts.py"]
 
+
 # ------------------------------------------------
 
-FROM node:latest as data_ranking
+FROM python:3 as data_enhancement
 ENV PYTHONPATH "${PYTHONPATH}:/app"
 
 WORKDIR /app
 
 # get files from previous stage
-COPY --from=Wikicrawler /app/crawler_output/intermediate_files/json/ /app/
+COPY --from=Wikicrawler /app/crawler_output/ /app/crawler_output/
 
-COPY ["./data_enhancement/", "/app/"]
+RUN mkdir data_enhancement
+COPY ["./data_enhancement/estimate_movement_period.py", "/app/data_enhancement"]
+COPY ["./shared/", "/app/shared"]
+COPY ["./data_enhancement/ranking.py", "/app/data_enhancement"]
 
-RUN npm install
+RUN ls -lah /app/crawler_output/intermediate_files/json
 
-RUN node script_artworks_rank.js && \
-    node script_genres_rank.js && \
-    node script_artist_rank.js && \
-    node script_locations_rank.js && \
-    node script_materials_rank.js && \
-    node script_movements_rank.js && \
-    node script_motifs_rank.js && \
-    node merge_art_data.js
+RUN pip install ijson
+RUN ["python", "./data_enhancement/estimate_movement_period.py"]
+
+RUN ["python", "./data_enhancement/ranking.py"]
+
+# ------------------------------------------------
+
+FROM stedolan/jq:latest as merge_files
+
+WORKDIR /app
+
+# get files from previous stage
+COPY --from=data_enhancement /app/crawler_output/intermediate_files/json/ /app/
+
+RUN jq -s '[.[][]]' *_rank.json > art_ontology.json
 
 # ------------------------------------------------
 
@@ -46,7 +57,7 @@ ENV PYTHONPATH "${PYTHONPATH}:/app"
 WORKDIR /app
 
 # copy necessary files
-COPY --from=data_ranking /app/art_ontology.json/ /app/crawler_output/
+COPY --from=merge_files /app/art_ontology.json/ /app/crawler_output/
 
 COPY ["./data_enhancement/", "/app/data_enhancement/"]
 COPY --from=Wikicrawler /app/shared/ /app/shared/

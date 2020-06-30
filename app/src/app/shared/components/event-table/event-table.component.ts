@@ -1,5 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {SignificantEvent} from '../../models/artwork.interface';
+import { Component, Input, OnInit } from '@angular/core';
+import { SignificantEvent } from '../../models/artwork.interface';
 
 @Component({
   selector: 'app-event-table',
@@ -8,15 +8,17 @@ import {SignificantEvent} from '../../models/artwork.interface';
 })
 export class EventTableComponent implements OnInit {
   @Input()
+  label: string;
+
+  @Input()
   events: SignificantEvent[];
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   isDisplayable(event) {
-    return typeof event.start_time === 'number' && event.label.length
+    return typeof event.start_time === 'number' && event.label.length;
   }
 
   getTimeLabel(event) {
@@ -38,5 +40,4 @@ export class EventTableComponent implements OnInit {
       return event.description;
     }
   }
-
 }

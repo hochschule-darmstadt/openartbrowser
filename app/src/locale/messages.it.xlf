@@ -706,6 +706,10 @@
         <source>Main Motif</source>
         <target state="final">Motivo Principale</target>
       </trans-unit>
+      <trans-unit id="events" datatype="html">
+        <source>Events</source>
+        <target state="final">Eventi</target>
+      </trans-unit>
       <trans-unit id="iconography" datatype="html">
         <source>Iconography</source>
         <target state="final">Iconografia</target>

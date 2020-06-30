@@ -1,20 +1,15 @@
 <div class="row" *ngIf="events?.length">
-  
   <div class="col-md-1">
-    <p class="mb-1 text-muted">Events:</p>
+    <p class="mb-1 text-muted">{{ label }}:</p>
   </div>
 
   <div class="col-md-11">
-      <div *ngFor="let event of events" >
-        
-        <div *ngIf="isDisplayable(event)" class="event-entry">
-
-          <div class="time-label">{{getTimeLabel(event)}}</div>
-          <div class="event-label">{{getEventLabel(event)}}</div>
-          <div *ngIf="event.description" class="event-description">{{getEventDescription(event)}}</div>
-
-        </div>
-        
+    <div *ngFor="let event of events">
+      <div *ngIf="isDisplayable(event)" class="event-entry">
+        <div class="time-label">{{ getTimeLabel(event) }}</div>
+        <div class="event-label">{{ getEventLabel(event) }}</div>
+        <div *ngIf="event.description" class="event-description">{{ getEventDescription(event) }}</div>
       </div>
+    </div>
   </div>
 </div>

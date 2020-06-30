@@ -72,7 +72,7 @@
         <note priority="1" from="description">Menu Home item label</note>
       </trans-unit>
       <trans-unit id="menuAbout" datatype="html">
-        <source>About</source><target state="final">Über</target>
+        <source>About</source><target state="final">Über Uns</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/core/components/header/header.component.html</context>
           <context context-type="linenumber">23</context>
@@ -707,6 +707,10 @@
       <trans-unit id="main_motif" datatype="html">
         <source>Main Motif</source>
         <target state="final">Hauptmotiv</target>
+      </trans-unit>
+      <trans-unit id="events" datatype="html">
+        <source>Events</source>
+        <target state="final">Ereignisse</target>
       </trans-unit>
       <trans-unit id="iconography" datatype="html">
         <source>Iconography</source>

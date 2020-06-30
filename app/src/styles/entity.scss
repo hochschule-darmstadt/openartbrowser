@@ -53,11 +53,6 @@
     float: right;
   }
 
-  /* Unset cursor: pointer; badge */
-  .cursor-heading-pill:hover {
-    cursor: default;
-  }
-
   @media (max-width: 575px) {
     &:not(.artwork) > .row:first-child {
       flex-direction: column-reverse;

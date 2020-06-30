@@ -55,8 +55,6 @@ export class EntitiesComponent implements OnInit {
 
     if (this.type) {
       this.entities.push(...Array(this.fetchSize).fill({}));
-      console.log(this.entities);
-      // this.getEntities(this.offset);
 
       /** Fetch dependant on type. Maybe there is potential for improvement here. */
       switch (this.type) {
@@ -116,10 +114,23 @@ export class EntitiesComponent implements OnInit {
     /** load missing movement images */
     this.getEntityArtworks(this.type, entity.id)
       .then(artworks => {
-        const randomArtworkId = Math.floor(Math.random() * artworks.length);
-        entity.image = artworks[randomArtworkId].image;
-        entity.imageMedium = artworks[randomArtworkId].imageMedium;
-        entity.imageSmall = artworks[randomArtworkId].imageSmall;
+        let randThumbIndex = -1;
+        // search for random artwork which is no .tif
+        do {
+          // remove artwork from list if last assignment failed (not first cycle).
+          if (randThumbIndex !== -1) {
+            artworks.splice(randThumbIndex, 1);
+          }
+          // remove entity if no artworks available
+          if (!artworks.length) {
+            this.removeEntity(entity);
+          }
+          randThumbIndex = Math.floor(Math.random() * artworks.length);
+        } while (artworks[randThumbIndex].image.endsWith('.tif') || artworks[randThumbIndex].image.endsWith('.tiff'));
+
+        entity.image = artworks[randThumbIndex].image;
+        entity.imageMedium = artworks[randThumbIndex].imageMedium;
+        entity.imageSmall = artworks[randThumbIndex].imageSmall;
       }).finally(() => {
       return entity;
     });
@@ -130,11 +141,21 @@ export class EntitiesComponent implements OnInit {
     return await this.dataService.findArtworksByType(type, [parentId], 20);
   }
 
-  /** Removes items from the component which cannot be displayed */
+  /** Handles items which cannot be displayed */
   onLoadingError(item: Entity) {
-    this.entities.splice(
+    if (item.id) {
+      this.setRandomArtwork(item);
+    } else {
+      this.removeEntity(item);
+    }
+  }
+
+  /** Removes items from the component. Index can be specified to remove without search (faster) */
+  removeEntity(item: Entity, index?) {
+    this.entities.splice(index ?
       this.entities.findIndex(i => {
         return i ? i.id === item.id : true;
-      }), 1);
+      }) : index, 1);
+    this.offset--;
   }
 }

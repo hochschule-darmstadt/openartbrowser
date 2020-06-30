@@ -1,10 +1,11 @@
 """Shared util functions across all python scripts
 """
 import csv
+import json
 import logging
 import pkgutil
 from pathlib import Path
-from typing import List
+from typing import Dict, List
 
 from shared.constants import CRAWLER_OUTPUT, INTERMEDIATE_FILES, JSON
 
@@ -71,3 +72,19 @@ def chunks(lst, n):
 
 def create_new_path(name, subpath="", file_type=JSON):
     return Path.cwd() / CRAWLER_OUTPUT / INTERMEDIATE_FILES / file_type / name / subpath
+
+
+def generate_json(extract_dicts: List[Dict], filename: str) -> None:
+    """Generates a JSON file from a dictionary
+
+    Args:
+        extract_dicts: List of dicts that containing wikidata entities transformed to oab entities
+        filename: Name of the file to write the data to
+    """
+    if len(extract_dicts) == 0:
+        return
+    filename.parent.mkdir(parents=True, exist_ok=True)
+    with open(
+        filename.with_suffix(f".{JSON}"), "w", newline="", encoding="utf-8"
+    ) as file:
+        file.write(json.dumps(extract_dicts, ensure_ascii=False))

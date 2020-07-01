@@ -21,10 +21,6 @@ export class MotifComponent implements OnInit, OnDestroy {
   /** Related artworks */
   sliderItems: Artwork[] = [];
 
-  /** Change collapse icon; true if more infos are folded in */
-  collapse = true;
-
-
   constructor(private dataService: DataService, private route: ActivatedRoute) {}
 
   /** hook that is executed at component initialization */
@@ -37,23 +33,7 @@ export class MotifComponent implements OnInit, OnDestroy {
 
       /** load slider items */
       await this.dataService.findArtworksByType(EntityType.MOTIF, [this.motif.id]).then(artworks => (this.sliderItems = shuffle(artworks)));
-      this.calculateCollapseState();
     });
-  }
-
-  /** Decides whether to show the 'more' section or not based on the amount of available data:
-   * calculates the size of meta data item section
-   * every attribute: +3
-   * if attribute is array and size > 3 -> + arraylength
-   */
-  private calculateCollapseState() {
-    let metaNumber = 0;
-    if (this.motif.abstract.length > 400) {
-      metaNumber += 10;
-    } else if (this.motif.abstract.length) {
-      metaNumber += 3;
-    }
-    this.collapse = metaNumber >= 10;
   }
 
   ngOnDestroy() {

@@ -20,20 +20,14 @@ python3 data_extraction/get_wikipedia_extracts.py
 
 # DATA ENRICHMENT
 
+python3 data_enhancement/estimate_movement_period.py
+
+python3 data_enhancement/ranking.py
+
 cd crawler_output/intermediate_files/json/
-python3 ../../../data_enhancement/estimate_movement_period.py
-
-node --max-old-space-size=4096 ../../../data_enhancement/script_artworks_rank.js
-
-node --max-old-space-size=4096 ../../../data_enhancement/script_genres_rank.js
-node --max-old-space-size=4096 ../../../data_enhancement/script_artist_rank.js
-node --max-old-space-size=4096 ../../../data_enhancement/script_locations_rank.js
-node --max-old-space-size=4096 ../../../data_enhancement/script_materials_rank.js
-node --max-old-space-size=4096 ../../../data_enhancement/script_movements_rank.js
-node --max-old-space-size=4096 ../../../data_enhancement/script_motifs_rank.js
 
 # Merges all *_rank.json files into art_ontology.json
-node --max-old-space-size=4096 ../../../data_enhancement/merge_art_data.js
+jq -s '[.[][]]' *_rank.json > art_ontology.json
 
 rm -f ../../../crawler_output/art_ontology.json
 

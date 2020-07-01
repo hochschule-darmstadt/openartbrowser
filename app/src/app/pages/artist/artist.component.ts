@@ -26,8 +26,6 @@ export class ArtistComponent implements OnInit, OnDestroy {
   artist: Artist = null;
   /** Related artworks */
   sliderItems: Artwork[] = [];
-  /** Change collapse icon; true if more infos are folded in */
-  collapse = true;
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();
 
@@ -36,28 +34,25 @@ export class ArtistComponent implements OnInit, OnDestroy {
 
   /** a video was found */
   videoExists = false;
-  /* List of unique Entities (Movements) with Videos */
-  uniqueEntityVideos: any;
-  /* List of unique Videolinks */
-  uniqueVideosLinks: string[];
+  /* List of unique Videos */
+  uniqueEntityVideos: string[] = [];
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {}
+  constructor(private dataService: DataService, private route: ActivatedRoute) {
+  }
 
   /** hook that is executed at component initialization */
   ngOnInit() {
     this.route.params.subscribe(() => {
       this.videoExists = false;
+      this.uniqueEntityVideos = [];
     });
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
-      this.uniqueEntityVideos = {};
-      this.uniqueVideosLinks = [];
       const artistId = params.get('artistId');
       /** Use data service to fetch entity from database */
       this.artist = await this.dataService.findById<Artist>(artistId, EntityType.ARTIST);
-      if (this.artist.videos) {
-        this.uniqueEntityVideos[this.artist.id] = this.artist;
-        this.uniqueVideosLinks.push(this.getVideoUrl(this.artist));
+      if (this.artist.videos && this.artist.videos.length > 0) {
+        this.uniqueEntityVideos.unshift(this.artist.videos[0]);
       }
 
       /** load slider items */
@@ -72,27 +67,22 @@ export class ArtistComponent implements OnInit, OnDestroy {
 
       /* Count meta data to show more on load */
       this.aggregatePictureMovementsToArtist();
-      this.calculateCollapseState();
     });
   }
 
-
-  getVideoUrl(entity) {
-    return Array.isArray(entity.videos) ? entity.videos[0] : entity.videos;
-  }
 
   /*
     Iterates over the movements and adds all videos to uniqueEntityVideos.
     Only Videos whose id and link are not in uniqueEntityVideos & uniqueVideosLinks will be added.
   */
   addMovementVideos() {
-    for ( const movement of this.artist.movements) {
-      if (!this.uniqueEntityVideos[movement.id] && movement.videos && !this.uniqueVideosLinks.includes(this.getVideoUrl(movement))) {
-        this.uniqueEntityVideos[movement.id] = movement;
-        this.uniqueVideosLinks.push(this.getVideoUrl(movement));
+    for (const movement of this.artist.movements) {
+      if (movement.videos && movement.videos.length >  0 && !this.uniqueEntityVideos.includes(movement.videos[0])) {
+        this.uniqueEntityVideos.push(movement.videos[0]);
       }
     }
   }
+
   /**
    * Get all movements from the artworks of an artist and add them to the artist movements.
    * Since the first query only gives back the movement id and not the complete movement object,
@@ -120,38 +110,9 @@ export class ArtistComponent implements OnInit, OnDestroy {
     });
   }
 
-  /** calculates the size of meta data item section
-   * every attribute: +3
-   * if attribute is array and size > 3 -> + arraylength
-   */
-  private calculateCollapseState() {
-    let metaNumber = 0;
-    if (this.artist.abstract.length > 400) {
-      metaNumber += 10;
-    } else if (this.artist.abstract.length) {
-      metaNumber += 3;
-    }
-    if (this.artist.gender) {
-      metaNumber += 3;
-    }
-    if (!_.isEmpty(this.artist.influenced_by)) {
-      metaNumber += this.artist.influenced_by.length > 3 ? this.artist.influenced_by.length : 3;
-    }
-    if (!_.isEmpty(this.artist.movements)) {
-      metaNumber += this.artist.movements.length > 3 ? this.artist.movements.length : 3;
-    }
-    if (!_.isEmpty(this.artist.citizenship)) {
-      metaNumber += 3;
-    }
-    if (metaNumber < 10) {
-      this.collapse = false;
-    }
-  }
-
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
-
   }
 
   toggleComponent() {

@@ -719,9 +719,17 @@
         <source>Main Motif</source>
         <target state="final">Motif Principal</target>
       </trans-unit>
+      <trans-unit id="events" datatype="html">
+        <source>Events</source>
+        <target state="final">Événements</target>
+      </trans-unit>
       <trans-unit id="iconography" datatype="html">
         <source>Iconography</source>
         <target state="final">Iconographie</target>
+      </trans-unit>
+      <trans-unit id="d92b19d3d60f5e8db9974b16602fe83c00d05b7c" datatype="html">
+        <source>{VAR_SELECT, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material} main_motif {Main Motif} }</source>
+        <target state="final">{VAR_SELECT, select, all {Tous} artwork {Œuvre d'art} motif {Motif} artist {Artiste} location {Emplacement} genre {Genre} movement {Mouvement} material {Matériel} main_motif {Motif Principal} }</target>
       </trans-unit>
     </body>
   </file>

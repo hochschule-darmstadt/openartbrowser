@@ -67,6 +67,7 @@ def try_map_response_to_subject(
         LABEL[SINGULAR]: label,
         DESCRIPTION[SINGULAR]: description,
         IMAGE: image,
+        TYPE: type_name,
     }
 
     for langkey in language_keys:

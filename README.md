@@ -41,4 +41,4 @@ Frontend configuration:
 To build and run the elasticsearch docker container for local development, run the docker_elastic.sh script in the scripts
 directory. The building might take some time because of the included wiki crawling. For the docker container
 the wiki crawling is limited to a specific amount of objects per category. This amount is represented by the **DEV_LIMIT**
-variable in the **art_ontology_crawler.py** script and thus can be adjusted there.
+variable in the **get_wikidata_items.py** script and thus can be adjusted there.

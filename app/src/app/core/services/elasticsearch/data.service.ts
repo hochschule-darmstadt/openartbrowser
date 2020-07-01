@@ -202,12 +202,12 @@ export class DataService {
   /**
    * Retrieves IconclassData from the iconclass.org web-service
    * @see http://www.iconclass.org/help/lod for the documentation
-   * @param iconclass an Array of Iconclasses to retrieve
+   * @param iconclasses an Array of Iconclasses to retrieve
    * @returns an Array containing the iconclassData to the respective Iconclass
    */
-  public async getIconclassData(iconclass: Array<Iconclass>): Promise<any> {
+  public async getIconclassData(iconclasses: Array<Iconclass>): Promise<any> {
     const iconclassData = await Promise.all(
-      iconclass.map(async (key: Iconclass) => {
+      iconclasses.map(async (key: Iconclass) => {
         try {
           return await this.http.get(`https://openartbrowser.org/api/iconclass/${key}.json`).toPromise();
         } catch (error) {

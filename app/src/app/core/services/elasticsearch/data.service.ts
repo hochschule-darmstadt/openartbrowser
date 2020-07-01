@@ -206,9 +206,17 @@ export class DataService {
    * @returns an Array containing the iconclassData to the respective Iconclass
    */
   public async getIconclassData(iconclasses: Array<Iconclass>): Promise<any> {
-    return await Promise.all(
-      iconclasses.map(async (key: Iconclass) => await this.http.get(`https://openartbrowser.org/api/iconclass/${key}.json`).toPromise())
+    const iconclassData = await Promise.all(
+      iconclasses.map(async (key: Iconclass) => {
+        try {
+          return await this.http.get(`https://openartbrowser.org/api/iconclass/${key}.json`).toPromise();
+        } catch (error) {
+          console.warn(error);
+          return null;
+        }
+      })
     );
+    return iconclassData.filter(entry => entry !== null);
   }
 
   /**

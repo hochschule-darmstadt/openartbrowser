@@ -23,5 +23,13 @@ export interface Artwork extends Entity {
   length_unit?: string;
   diameter?: number;
   diameter_unit?: string;
+  events?: SignificantEvent[];
   type: EntityType.ARTWORK;
+}
+
+export interface SignificantEvent {
+  start: number;
+  end?: number;
+  label: string;
+  description?: string;
 }

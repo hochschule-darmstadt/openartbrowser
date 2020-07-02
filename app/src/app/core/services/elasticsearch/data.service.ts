@@ -206,9 +206,17 @@ export class DataService {
    * @returns an Array containing the iconclassData to the respective Iconclass
    */
   public async getIconclassData(iconclasses: Array<Iconclass>): Promise<any> {
-    return await Promise.all(
-      iconclasses.map(async (key: Iconclass) => await this.http.get(`https://openartbrowser.org/api/iconclass/${key}.json`).toPromise())
+    const iconclassData = await Promise.all(
+      iconclasses.map(async (key: Iconclass) => {
+        try {
+          return await this.http.get(`https://openartbrowser.org/api/iconclass/${key}.json`).toPromise();
+        } catch (error) {
+          console.warn(error);
+          return null;
+        }
+      })
     );
+    return iconclassData.filter(entry => entry !== null);
   }
 
   /**
@@ -258,8 +266,11 @@ export class DataService {
       entity.imageSmall = entity.image.replace(prefix, prefix + 'thumb/') + '/256px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1);
       entity.imageMedium = entity.image.replace(prefix, prefix + 'thumb/') + '/512px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1);
     } else {
-      entity.imageSmall = entity.image;
-      entity.imageMedium = entity.image;
+      // There can only be loaded 4 images at once https://phabricator.wikimedia.org/T255854 so HTTP 429 error may occur.
+      entity.imageSmall =
+        entity.image.replace(prefix, prefix + 'thumb/') + '/lossy-page1-256px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1) + '.jpg';
+      entity.image = entity.imageMedium =
+        entity.image.replace(prefix, prefix + 'thumb/') + '/lossy-page1-512px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1) + '.jpg';
     }
     return entity;
   }

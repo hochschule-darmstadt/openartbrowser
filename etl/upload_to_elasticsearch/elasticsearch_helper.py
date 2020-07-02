@@ -3,7 +3,7 @@ import json
 import time
 import uuid
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Dict, Optional
 import requests
 from elasticsearch import Elasticsearch, helpers
 from shared.utils import language_config_to_list
@@ -13,15 +13,22 @@ from shared.utils import language_config_to_list
 # It's easier to set an estimated value here than calculate it. The value varies within seconds.
 SNAPSHOT_TIMEOUT = 40
 
+# Some attributes on the elasticsearch have to be explicitly typed
+# Otherwise the sort functionallity doesn't work (e. g. for long datatypes)
+# Each property not mentioned in this Dict will be automatically mapped by elasticsearch
+index_creation_body = {"mappings": {"properties": {"relativeRank": {"type": "float"}}}}
+
 lang_keys = [item[0] for item in language_config_to_list()]
 
 
-def create_empty_index(index_name: str) -> bool:
+def create_empty_index(
+    index_name: str, body: Optional[Dict] = index_creation_body
+) -> bool:
     """Creates an empty index (meaning no documents inside)
 
     Args:
         index_name: Name of the index to be created
-
+        body: Body to be passed as parameter when creating the indices
     Returns:
         True if index didn't exist and could be created else False
     """
@@ -30,7 +37,8 @@ def create_empty_index(index_name: str) -> bool:
     if es.indices.exists(index=index_name):
         print("Index with the name " + index_name + " already exists")
         return False
-    es.indices.create(index=index_name)
+
+    es.indices.create(index=index_name, body=index_creation_body)
     return True
 
 
@@ -83,12 +91,7 @@ def create_index(index_name: str, filename: str) -> None:
         print(f"{filename} has {len(items)} items")
         print("Bulk insert starting now")
         bulk_insert = [
-            {
-                "_index": index_name,
-                "_type": "data",
-                "_id": uuid.uuid4(),
-                "_source": json.dumps(item),
-            }
+            {"_index": index_name, "_id": uuid.uuid4(), "_source": json.dumps(item)}
             for item in items
         ]
         helpers.bulk(es, bulk_insert)

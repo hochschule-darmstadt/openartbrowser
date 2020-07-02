@@ -1,7 +1,7 @@
 <div class="container entity artwork">
   <div class="row pb-5 border-bottom" *ngIf="!imageHidden && artwork?.imageMedium">
     <div class="img-container mx-auto d-block" (click)="showModal()">
-      <img class="img-fluid d-block" id="image-main" (error)="hideImage()" src="{{ artwork?.imageMedium }}" alt=""/>
+      <img class="img-fluid d-block" id="image-main" (error)="hideImage()" src="{{ artwork?.imageMedium }}" alt="" />
       <div class="enlarge">
         <i class="fas fa-expand" (click)="showModal()"></i>
       </div>
@@ -14,11 +14,9 @@
 
       <app-information i18n-label="Artist label@@artist" label="Artist" [values]="artwork?.artists"></app-information>
 
-      <app-information i18n-label="Location label@@location" label="Location"
-                       [values]="artwork?.locations"></app-information>
+      <app-information i18n-label="Location label@@location" label="Location" [values]="artwork?.locations"></app-information>
 
-      <app-information i18n-label="Inception label@@inception" label="Inception"
-                       [value]="artwork?.inception"></app-information>
+      <app-information i18n-label="Inception label@@inception" label="Inception" [value]="artwork?.inception"></app-information>
 
       <!--
         Check the length of attributes "genres", "movements", "materials" or "motifs", if one of them not empty
@@ -35,35 +33,31 @@
           (artwork?.height && artwork?.width)
         "
       >
-        <app-collapse collapse="{{ detailsCollapsed }}" [showVideo]="videoExists">
+        <app-collapse [showVideo]="videoExists">
           <app-abstract [entity]="artwork"></app-abstract>
 
-          <div class="video">
-            <app-video [entity]="artwork" (videoFound)="videoFound($event)"></app-video>
-            <app-video *ngFor="let artist of artwork.artists.slice(0, 1)" [entity]="artist"
-                       (videoFound)="videoFound($event)"></app-video>
-            <app-video *ngFor="let movement of artwork.movements.slice(0, 1)" [entity]="movement"
-                       (videoFound)="videoFound($event)"></app-video>
+
+          <div class="videos">
+            <div class="video" *ngFor="let url of uniqueVideos;  let i=index">
+              <app-video *ngIf="(i < 3)" [videoUrl]="url" (videoFound)="videoFound($event)"></app-video>
+            </div>
           </div>
 
           <app-information i18n-label="Genre label@@genre" label="Genre" [values]="artwork?.genres"></app-information>
 
-          <app-information i18n-label="Movement label@@movement" label="Movement"
-                           [values]="artwork?.movements"></app-information>
+          <app-information i18n-label="Movement label@@movement" label="Movement" [values]="artwork?.movements"></app-information>
 
-          <app-information i18n-label="Material label@@material" label="Material"
-                           [values]="artwork?.materials"></app-information>
+          <app-information i18n-label="Material label@@material" label="Material" [values]="artwork?.materials"></app-information>
 
-          <app-information i18n-label="Main Motif label@@main_motif" label="Main Motif"
-                           [values]="artwork?.main_subjects"></app-information>
+          <app-information i18n-label="Main Motif label@@main_motif" label="Main Motif" [values]="artwork?.main_subjects"></app-information>
 
-          <app-information i18n-label="Motif label@@motif" label="Motifs"
-                           [values]="filterDuplicateMotifs()"></app-information>
+          <app-information i18n-label="Motif label@@motif" label="Motifs" [values]="filterDuplicateMotifs()"></app-information>
 
-          <app-iconclass i18n="Iconography label@@iconography" [iconclasses]="artwork.iconclasses"
-                         label="Iconography"></app-iconclass>
+          <app-iconclass i18n="Iconography label@@iconography" [iconclasses]="artwork.iconclasses" label="Iconography"></app-iconclass>
 
           <app-dimensions *ngIf="artwork" [artwork]="artwork"></app-dimensions>
+
+          <app-event-table i18n-label="Events label@@events" label="Events" [events]="artwork.events"></app-event-table>
         </app-collapse>
       </div>
     </div>
@@ -83,7 +77,7 @@
               <i class="mr-1 fa fa-{{ tab.icon }}"></i>
               <ng-container i18n="Entity Type Labels@@entity_labels" *ngIf="tab.type; let type">
                 {type, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material
-                  {Material} }
+                  {Material} main_motif {Main Motif} }
               </ng-container>
             </a>
           </li>
@@ -95,8 +89,7 @@
         set tab as active
       -->
       <div class="tab-content">
-        <div *ngFor="let tab of artworkTabs" class="tab-pane fade" [ngClass]="{ 'show active': tab.active }"
-             id="{{ tab.type }}_tab">
+        <div *ngFor="let tab of artworkTabs" class="tab-pane fade" [ngClass]="{ 'show active': tab.active }" id="{{ tab.type }}_tab">
           <!--
             Listen for an event and assign the attribute "hoveredArtwork" to the hovered artwork.
           -->
@@ -144,33 +137,27 @@
               the chip.
             -->
             <span *ngIf="artwork?.motifs?.length && (tab.type == 'motif' || tab.type == 'all')" class="mb-1">
-              <app-badge *ngFor="let motif of artwork?.motifs" [entity]="motif" [isHoverBadge]="true"
-                         [hoveredArtwork]="hoveredArtwork"> </app-badge>
+              <app-badge *ngFor="let motif of artwork?.motifs" [entity]="motif" [isHoverBadge]="true" [hoveredArtwork]="hoveredArtwork"> </app-badge>
             </span>
 
             <span *ngIf="artwork?.artists?.length && (tab.type == 'artist' || tab.type == 'all')" class="mb-1">
-              <app-badge *ngFor="let artist of artwork?.artists" [entity]="artist" [isHoverBadge]="true"
-                         [hoveredArtwork]="hoveredArtwork"> </app-badge>
+              <app-badge *ngFor="let artist of artwork?.artists" [entity]="artist" [isHoverBadge]="true" [hoveredArtwork]="hoveredArtwork"> </app-badge>
             </span>
 
             <span *ngIf="artwork?.genres?.length && (tab.type == 'genre' || tab.type == 'all')" class="mb-1">
-              <app-badge *ngFor="let genre of artwork?.genres" [entity]="genre" [isHoverBadge]="true"
-                         [hoveredArtwork]="hoveredArtwork"> </app-badge>
+              <app-badge *ngFor="let genre of artwork?.genres" [entity]="genre" [isHoverBadge]="true" [hoveredArtwork]="hoveredArtwork"> </app-badge>
             </span>
 
             <span *ngIf="artwork?.movements?.length && (tab.type == 'movement' || tab.type == 'all')" class="mb-1">
-              <app-badge *ngFor="let movement of artwork?.movements" [entity]="movement" [isHoverBadge]="true"
-                         [hoveredArtwork]="hoveredArtwork"> </app-badge>
+              <app-badge *ngFor="let movement of artwork?.movements" [entity]="movement" [isHoverBadge]="true" [hoveredArtwork]="hoveredArtwork"> </app-badge>
             </span>
 
             <span *ngIf="artwork?.materials?.length && (tab.type == 'material' || tab.type == 'all')" class="mb-1">
-              <app-badge *ngFor="let material of artwork?.materials" [entity]="material" [isHoverBadge]="true"
-                         [hoveredArtwork]="hoveredArtwork"> </app-badge>
+              <app-badge *ngFor="let material of artwork?.materials" [entity]="material" [isHoverBadge]="true" [hoveredArtwork]="hoveredArtwork"> </app-badge>
             </span>
 
             <span *ngIf="artwork?.locations?.length && (tab.type == 'location' || tab.type == 'all')" class="mb-1">
-              <app-badge *ngFor="let location of artwork?.locations" [entity]="location" [isHoverBadge]="true"
-                         [hoveredArtwork]="hoveredArtwork"> </app-badge>
+              <app-badge *ngFor="let location of artwork?.locations" [entity]="location" [isHoverBadge]="true" [hoveredArtwork]="hoveredArtwork"> </app-badge>
             </span>
           </div>
         </div>

@@ -30,3 +30,4 @@ LOCATION = {SINGULAR: "location", PLURAL: "locations"}
 ABSOLUTE_RANK = "absoluteRank"
 RELATIVE_RANK = "relativeRank"
 ID = "id"
+SIGNIFICANT_EVENT = "significant_event"

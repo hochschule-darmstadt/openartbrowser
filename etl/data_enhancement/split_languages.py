@@ -29,6 +29,7 @@ from shared.constants import (
     PLACE_OF_BIRTH,
     PLACE_OF_DEATH,
     EXHIBITION_HISTORY,
+    SIGNIFICANT_EVENT,
     JSON,
 )
 from shared.utils import generate_json, language_config_to_list
@@ -54,6 +55,7 @@ def get_language_attributes() -> List[str]:
         PLACE_OF_BIRTH,
         PLACE_OF_DEATH,
         EXHIBITION_HISTORY,
+        SIGNIFICANT_EVENT,
     ]
 
 
@@ -145,8 +147,23 @@ def modify_langdict(jsonobject: Dict, langkey: str) -> List[List[Any]]:
 
                 continue
 
+            elif element == SIGNIFICANT_EVENT and tempjson[SIGNIFICANT_EVENT]:
+                for event in tempjson[SIGNIFICANT_EVENT]:
+                    for key, value in event.items():
+                        if type(value) is dict:
+                            event[key] = event[key][LABEL[SINGULAR] + "_" + langkey]
+                        elif type(value) is list:
+                            list_of_labels = []
+                            for item in value:
+                                list_of_labels.append(
+                                    item[LABEL[SINGULAR] + "_" + langkey]
+                                )
+                            event[key] = list_of_labels
+
+                continue
+
             # Check if element has language data and if attribute needs to be ignored by gap filling
-            if (
+            elif (
                 not tempjson[element + "_" + langkey]
                 and element not in ignored_attributes
             ):

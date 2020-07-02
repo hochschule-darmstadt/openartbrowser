@@ -1,0 +1,21 @@
+<app-infinite-scroll (scrolled)="onScroll()">
+  <div class="d-flex flex-wrap bd-highlight mb-3 m-auto justify-content-around">
+    <div *ngFor="let entity of listEntities" class="item">
+      <a *ngIf="entity"
+         class="item-link"
+         [routerLink]="['/'+options.entityType, entity?.id]">
+        <div class="img-wrapper">
+          <img
+            *ngIf="entity?.imageSmall"
+            class="bd-highlight img-self"
+            src="{{ entity?.imageSmall }}"
+            alt="{{ entity?.label }}"
+            (error)="onLoadingError(entity)"
+          />
+        </div>
+        <ng-container [ngTemplateOutlet]="templateRef"
+                      [ngTemplateOutletContext]="{entity: entity, entityType: options.entityType}"></ng-container>
+      </a>
+    </div>
+  </div>
+</app-infinite-scroll>

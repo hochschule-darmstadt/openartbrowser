@@ -1,6 +1,12 @@
-<app-infinite-scroll (scrolled)="onScroll()">
+<!--TODO: Remove infinite-scroll again - sucks-->
+<div class="infinite-scroll-container" infinite-scroll
+     [infiniteScrollDistance]="scrollDistance"
+     [infiniteScrollUpDistance]="scrollUpDistance"
+     [infiniteScrollThrottle]="throttle"
+     (scrolled)="onScrollDown($event)"
+     (scrolledUp)="onScrollUp($event)">
   <div class="d-flex flex-wrap bd-highlight mb-3 m-auto justify-content-around">
-    <div *ngFor="let entity of listEntities" class="item">
+    <div *ngFor="let entity of listItems; let i = index" class="item">
       <a *ngIf="entity"
          class="item-link"
          [routerLink]="['/'+options.entityType, entity?.id]">
@@ -16,6 +22,12 @@
         <ng-container [ngTemplateOutlet]="templateRef"
                       [ngTemplateOutletContext]="{entity: entity, entityType: options.entityType}"></ng-container>
       </a>
+      <div class="anchor" *ngIf="placeAnchor(i)" inViewport
+           [inViewportOptions]="{ threshold: [0] }"
+           (inViewportAction)="onPageVisible($event)" id="{{getAnchorId(i)}}">
+        {{getAnchorId(i)}}
+      </div>
     </div>
   </div>
-</app-infinite-scroll>
+  <app-paginator class="paginator" (pageClick)="scrollToPage($event)"></app-paginator>
+</div>

@@ -22,7 +22,8 @@ import { FetchOptions } from '../../shared/components/fetching-list/fetching-lis
 export class EntitiesComponent implements OnInit {
   fetchOptions = {
     initOffset: 0,
-    fetchSize: 20,
+    // TODO: change back to something reasonable
+    fetchSize: 21,
     queryCount: undefined,
     entityType: undefined
   } as FetchOptions;

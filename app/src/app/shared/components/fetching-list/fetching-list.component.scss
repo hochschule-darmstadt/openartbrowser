@@ -1,3 +1,23 @@
+.infinite-scroll-container {
+  //height: 100%;
+}
+
+.anchor {
+  display: inline-block;
+  width: 20rem;
+  height: 1rem;
+  border: 1px solid red;
+}
+
+.paginator {
+  position: fixed;
+  width: 100px;
+  height: 100px;
+  background: red;
+  top: 100px;
+  left: 100px;
+}
+
 .item {
   width: 10rem;
   margin: .5rem;

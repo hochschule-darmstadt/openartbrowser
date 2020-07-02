@@ -22,6 +22,9 @@ import { DimensionsComponent } from './components/dimensions/dimensions.componen
 import { InfiniteScrollComponent } from './components/infinite-scroll/infinite-scroll.component';
 import { FetchingListComponent } from './components/fetching-list/fetching-list.component';
 import { EventTableComponent } from './components/event-table/event-table.component';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { InViewportModule } from 'ng-in-viewport';
+import { PaginatorComponent } from './components/fetching-list/paginator/paginator.component';
 
 /** Everything that should be used within multiple feature modules but isn't always required goes here */
 @NgModule({
@@ -42,7 +45,8 @@ import { EventTableComponent } from './components/event-table/event-table.compon
     CollapseComponent,
     MovementOverviewComponent,
     FetchingListComponent,
-    EventTableComponent
+    EventTableComponent,
+    PaginatorComponent
   ],
   imports: [
     CommonModule,
@@ -51,7 +55,10 @@ import { EventTableComponent } from './components/event-table/event-table.compon
     FormsModule,
     Ng5SliderModule,
     Angulartics2Module,
-    NgxFitTextModule],
+    NgxFitTextModule,
+    InfiniteScrollModule,
+    InViewportModule
+  ],
   exports: [
     CarouselComponent,
     SearchComponent,

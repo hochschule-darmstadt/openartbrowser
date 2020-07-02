@@ -11,7 +11,6 @@ export interface FetchOptions {
   fetchSize: number;
   /** the max number of elements */
   queryCount: number;
-
   /** type which is handled in the component */
   entityType: EntityType;
 }
@@ -25,7 +24,7 @@ export interface FetchOptions {
 export class FetchingListComponent implements OnInit {
 
   /** all items to display */
-  @Input() listEntities: any[] = [];
+  @Input() listItems: any[] = [];
   @Output() fetchData = new EventEmitter();
 
   /** the query which shall be fetched */
@@ -36,6 +35,12 @@ export class FetchingListComponent implements OnInit {
   @ContentChild(TemplateRef, { static: false }) templateRef;
   offset: number;
 
+  throttle = 300;
+  scrollDistance = 1;
+  scrollUpDistance = 5;
+
+  private pageAnchorElementId = '#pageAnchor-';
+
   constructor(private dataService: DataService, private route: ActivatedRoute) {
   }
 
@@ -44,16 +49,18 @@ export class FetchingListComponent implements OnInit {
       throw Error('Invalid fetching list options!');
     }
     this.offset = this.options.initOffset;
+    this.onScrollDown();
   }
 
   /** This gets called by the app-infinite-scroll component and fetches new data */
-  onScroll() {
+  onScrollDown(event?) {
+    console.log(event);
     /** if there is no more to get, don't fetch again */
     if (this.options.initOffset > this.options.queryCount) {
       return;
     }
-    this.listEntities.push(...Array(this.options.fetchSize).fill({}));
     const currentOffset = this.offset;
+    this.listItems.push(...Array(this.options.fetchSize).fill({}));
     const capitalize = (str, lower = false) =>
       (lower ? str.toLowerCase() : str).replace(/(?:^|\s|["'([{])+\S/g, match => match.toUpperCase());
     this.query(currentOffset).then(entities => {
@@ -68,11 +75,17 @@ export class FetchingListComponent implements OnInit {
       /** replace empty objects with fetched objects.
        *  This has the advantage of no further sorting of this.entities (which may be very large)
        */
-      this.listEntities.splice(currentOffset, this.options.fetchSize, ...entities);
+      // const items = entities as any[];
+      // items[items.length / 2].pageStart = this.pageAnchorElementId + currentOffset / this.options.fetchSize;
+      this.listItems.splice(currentOffset, this.options.fetchSize, ...entities);
     });
     this.offset += this.options.fetchSize;
   }
 
+  onScrollUp(event?) {
+    console.log(event);
+    console.log('up');
+  }
 
   /** sets random related image to entity */
   private setRandomArtwork(entity) {
@@ -117,10 +130,43 @@ export class FetchingListComponent implements OnInit {
 
   /** Removes items from the component. Index can be specified to remove without search (faster) */
   removeEntity(item: Entity, index?) {
-    this.listEntities.splice(index ?
-      this.listEntities.findIndex(i => {
+    this.listItems.splice(index ?
+      this.listItems.findIndex(i => {
         return i ? i.id === item.id : true;
       }) : index, 1);
     this.offset--;
   }
+
+  onPageVisible($event: any) {
+    if ($event.visible) {
+      console.log('current page:', $event.target.id.split('-').pop());
+      console.log($event);
+    }
+
+  }
+
+  scrollToPage(id) {
+    const currentPageCount = this.offset / this.options.fetchSize;
+    if (id > currentPageCount - 1) {
+      for (let i = 0; i <= id - currentPageCount - 1; i++) {
+        // TODO: How to wait for this?
+        this.onScrollDown();
+      }
+    }
+    const currentPageCountNew = this.offset / this.options.fetchSize;
+
+    console.log(id, currentPageCount, currentPageCountNew);
+    const el = document.getElementById(this.pageAnchorElementId + (id - 1));
+    console.log(el);
+    el.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  placeAnchor(index): boolean {
+    return index % this.options.fetchSize === Math.floor(this.options.fetchSize / 2);
+  }
+
+  getAnchorId(index): string {
+    return this.pageAnchorElementId + (index - Math.floor(this.options.fetchSize / 2)) / this.options.fetchSize;
+  }
+
 }

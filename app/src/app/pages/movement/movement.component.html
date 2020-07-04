@@ -2,7 +2,7 @@
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7" *ngIf="movement">
       <app-title [entity]="movement"></app-title>
-
+      <app-information i18n-label="Period label@@period" label="Period" [value]="movement.start_time + ' - ' + movement.end_time" *ngIf="movement.start_time && movement.end_time"></app-information>
       <div *ngIf="movement?.abstract?.length || movement?.influenced_by?.length">
         <app-collapse [showVideo]="videoExists">
           <app-abstract [entity]="movement"></app-abstract>

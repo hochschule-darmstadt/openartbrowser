@@ -122,13 +122,13 @@ def modify_langdict(jsonobject: Dict, langkey: str) -> List[List[Any]]:
     # Language keys that need language specific handling
     lang_attributes = get_language_attributes()
     ignored_attributes = get_ignored_by_gap_filling()
-    tempjson = copy.deepcopy(
-        jsonobject
-    )  # The deepcopy is needed since exhibition history is a sub dict
+    # The deepcopy is needed since exhibition history + significant events are nested json objects
+    tempjson = copy.deepcopy(jsonobject)
     delete_keys = []
     for element in lang_attributes:
         try:
-            # TODO maybe refactor with significant event usage
+            # Exhibition history and significant events need seperate handling
+            # because of their representation as nested JSON Objects
             if element == EXHIBITION_HISTORY and tempjson[EXHIBITION_HISTORY]:
                 for exhibition in tempjson[EXHIBITION_HISTORY]:
                     try:

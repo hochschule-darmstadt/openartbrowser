@@ -183,7 +183,7 @@ def get_image_url_by_name(image_name: str) -> str:
         URL of the image
     """
     image_name = image_name.replace(" ", "_")
-    hash = hashlib.md5(image_name.encode("utf-8")).hexdigest()
+    hash = hashlib.md5(image_name.encode("utf-8", errors="replace")).hexdigest()
     hash_index_1 = hash[0]
     hash_index_1_and_2 = hash[0] + hash[1]
     url = "https://upload.wikimedia.org/wikipedia/commons/{0}/{1}/{2}".format(
@@ -255,7 +255,9 @@ def extract_artworks(
                 )
             except Exception as error:
                 logger.error(
-                    "Error on qid or image, skipping item. Error: {0}".format(error)
+                    "Error on qid or image, skipping item. Qid: {0}, Image: {1}, Error: {2}".format(
+                        qid, image, error
+                    )
                 )
                 continue
 
@@ -1374,21 +1376,19 @@ def resolve_significant_event_id_entities_to_labels(artwork_dict: List[Dict]):
         Modified artwork list with significant event ids resolved to JSON objects
     """
     distinct_entity_ids = set()
-    distinct_properties = set()
     for artwork in artwork_dict:
         if SIGNIFICANT_EVENT in artwork:
             for event in artwork[SIGNIFICANT_EVENT]:
                 for key, value in event.items():
                     if key == TYPE:
                         continue
-                    if key in PROPERTY_ID_TO_PROPERTY_NAME:
-                        distinct_properties.add(PROPERTY_ID_TO_PROPERTY_NAME[key])
                     elif (
-                        key == LABEL[SINGULAR]
+                        key in PROPERTY_ID_TO_PROPERTY_NAME
+                        or key == LABEL[SINGULAR]
                         or key in PROPERTY_NAME_TO_PROPERTY_ID
-                        or key.endswith(UNIT)
+                        or key.endswith(f"_{UNIT}")
                     ):
-                        distinct_properties.add(key)
+                        pass  # go on if the key is recognized
                     else:
                         logger.error(
                             f"Unknown property was tried to extract. Please add the property {key} to the constants.py"
@@ -1407,7 +1407,7 @@ def resolve_significant_event_id_entities_to_labels(artwork_dict: List[Dict]):
     }
 
     for artwork in artwork_dict:
-        if SIGNIFICANT_EVENT in artwork:
+        if SIGNIFICANT_EVENT in artwork and artwork[SIGNIFICANT_EVENT]:
             for event in artwork[SIGNIFICANT_EVENT]:
                 for key, value in event.items():
                     if value and type(value) is list:

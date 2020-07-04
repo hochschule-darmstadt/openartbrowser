@@ -9,6 +9,7 @@ from pywikibot import WbTime
 
 from data_extraction.constants import *
 from shared.utils import setup_logger
+from shared.constants import *
 
 logger = setup_logger(
     "data_extraction.map_wd_attribute",
@@ -61,7 +62,10 @@ def return_on_failure(return_value) -> Any:
                 # iterate over argument names
                 # splice the array to skip the first argument and start at index 1
                 for index, param in enumerate(inspect.getfullargspec(func)[0][1:], 1):
-                    error_message += ", {0} {1}".format(param, args[index])
+                    if index >= 0 and index < len(args):
+                        error_message += ", {0} {1}".format(param, args[index])
+                    else:
+                        error_message += ", {0}".format(param)
                 error_message += ", error {0}".format(error)
                 logger.info(error_message)
 
@@ -265,6 +269,7 @@ def try_get_unit_symbol(entity_dict: Dict, property_id: str, oab_type: str) -> s
             return unit_symbol_entry[MAINSNAK][DATAVALUE][VALUE]["text"]
 
 
+@return_on_failure([])
 def try_get_significant_events(
     result: Dict, oab_type: Optional[str] = SIGNIFICANT_EVENT
 ) -> List[Dict]:
@@ -277,61 +282,56 @@ def try_get_significant_events(
     Returns:
         List of JSON objects which represent significant events
     """
-    try:
-        significant_events = []
-        qid = result[ID]
-        for event in result[CLAIMS][PROPERTY_NAME_TO_PROPERTY_ID[SIGNIFICANT_EVENT]]:
-            event_dict = {"label": event[MAINSNAK][DATAVALUE][VALUE][ID]}
-            for qualifiers in event["qualifiers"].values():
-                datatype = qualifiers[0]["datatype"]
-                property_id = qualifiers[0]["property"]
-                # Get property name from dict, if the name is not in the dict ignore it and take the id
-                property = PROPERTY_ID_TO_PROPERTY_NAME.get(property_id, property_id)
-                if datatype == TIME:
-                    event_dict.update(
-                        {
-                            property: WbTime.fromTimestr(
-                                qualifiers[0][DATAVALUE][VALUE][TIME]
-                            ).year
-                        }
-                    )
-                elif datatype == "wikibase-item":
-                    event_dict.update(
-                        {
-                            property: list(
-                                map(
-                                    lambda qualifier: qualifier[DATAVALUE][VALUE][ID],
-                                    qualifiers,
-                                )
+    significant_events = []
+    qid = result[ID]
+    for event in result[CLAIMS][PROPERTY_NAME_TO_PROPERTY_ID[SIGNIFICANT_EVENT]]:
+        event_dict = {LABEL[SINGULAR]: event[MAINSNAK][DATAVALUE][VALUE][ID]}
+        for qualifiers in event[QUALIFIERS].values():
+            datatype = qualifiers[0][DATATYPE]
+            property_id = qualifiers[0][PROPERTY]
+            # Get property name from dict, if the name is not in the dict ignore it and take the id
+            property = PROPERTY_ID_TO_PROPERTY_NAME.get(property_id, property_id)
+            if datatype == TIME:
+                event_dict.update(
+                    {
+                        property: WbTime.fromTimestr(
+                            qualifiers[0][DATAVALUE][VALUE][TIME]
+                        ).year
+                    }
+                )
+            elif datatype == WIKIBASE_ITEM:
+                event_dict.update(
+                    {
+                        property: list(
+                            map(
+                                lambda qualifier: qualifier[DATAVALUE][VALUE][ID],
+                                qualifiers,
                             )
-                        }
-                    )
-                elif datatype == "quantity":
-                    event_dict.update(
-                        {property: float(qualifiers[0][DATAVALUE][VALUE][AMOUNT])}
-                    )
-                    event_dict.update(
-                        {
-                            f"{property}_unit": qualifiers[0][DATAVALUE][VALUE]
-                            .get(UNIT, "")
-                            .replace(WIKIDATA_ENTITY_URL, "")
-                        }
-                    )
-                elif datatype in ["string", "url"]:
-                    event_dict.update({property: qualifiers[0][DATAVALUE][VALUE]})
-                elif datatype == "monolingualtext":
-                    event_dict.update(
-                        {property: qualifiers[0][DATAVALUE][VALUE]["text"]}
-                    )
-                elif datatype == "commonsMedia":
-                    logger.error(
-                        f"commonsMedia type not supported in significant events on item {qid}"
-                    )
-                else:
-                    logger.error(f"Unknown datatype: {datatype} on item {qid}")
-            event_dict.update({TYPE: "significant_event"})
-            significant_events.append(event_dict)
+                        )
+                    }
+                )
+            elif datatype == QUANTITY:
+                event_dict.update(
+                    {property: float(qualifiers[0][DATAVALUE][VALUE][AMOUNT])}
+                )
+                event_dict.update(
+                    {
+                        f"{property}_{UNIT}": qualifiers[0][DATAVALUE][VALUE]
+                        .get(UNIT, "")
+                        .replace(WIKIDATA_ENTITY_URL, "")
+                    }
+                )
+            elif datatype in [STRING, URL]:
+                event_dict.update({property: qualifiers[0][DATAVALUE][VALUE]})
+            elif datatype == MONOLINGUALTEXT:
+                event_dict.update({property: qualifiers[0][DATAVALUE][VALUE][TEXT]})
+            elif datatype == COMMONS_MEDIA:
+                logger.error(
+                    f"commonsMedia type not supported in significant events on item {qid}"
+                )
+            else:
+                logger.error(f"Unknown datatype: {datatype} on item {qid}")
+        event_dict.update({TYPE: SIGNIFICANT_EVENT})
+        significant_events.append(event_dict)
 
-        return significant_events
-    except Exception:
-        return []
+    return significant_events

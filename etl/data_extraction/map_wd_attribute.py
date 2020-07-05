@@ -2,13 +2,15 @@
 """
 import inspect
 import re
+import hashlib
 from pathlib import Path
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable, Dict, List, Optional
 
 from pywikibot import WbTime
 
 from data_extraction.constants import *
 from shared.utils import setup_logger
+from shared.constants import *
 
 logger = setup_logger(
     "data_extraction.map_wd_attribute",
@@ -39,6 +41,30 @@ def get_attribute_values_with_try_get_func(
         yield try_get_func(entity_dict, PROPERTY_NAME_TO_PROPERTY_ID[item], oab_type)
 
 
+def get_image_url_by_name(image_name: str) -> str:
+    """Calculate the image url from the image name
+
+    This is done via the MD5 hash of the image_names hex-code.
+
+    Source:
+        https://stackoverflow.com/questions/34393884/how-to-get-image-url-property-from-wikidata-item-by-api
+
+    Args:
+        image_name: image name returned from the wikidata API call
+
+    Returns:
+        URL of the image
+    """
+    image_name = image_name.replace(" ", "_")
+    hash = hashlib.md5(image_name.encode("utf-8", errors="replace")).hexdigest()
+    hash_index_1 = hash[0]
+    hash_index_1_and_2 = hash[0] + hash[1]
+    url = "https://upload.wikimedia.org/wikipedia/commons/{0}/{1}/{2}".format(
+        hash_index_1, hash_index_1_and_2, image_name
+    )
+    return url
+
+
 def return_on_failure(return_value) -> Any:
     """A decorator that wraps a function and logs exceptions
 
@@ -61,7 +87,10 @@ def return_on_failure(return_value) -> Any:
                 # iterate over argument names
                 # splice the array to skip the first argument and start at index 1
                 for index, param in enumerate(inspect.getfullargspec(func)[0][1:], 1):
-                    error_message += ", {0} {1}".format(param, args[index])
+                    if index >= 0 and index < len(args):
+                        error_message += ", {0} {1}".format(param, args[index])
+                    else:
+                        error_message += ", {0}".format(param)
                 error_message += ", error {0}".format(error)
                 logger.info(error_message)
 
@@ -110,7 +139,7 @@ def try_get_wikipedia_link(entity_dict: Dict, langkey: str, oab_type: str) -> st
 @return_on_failure("")
 def try_get_dimension_value(
     entity_dict: Dict, property_id: str, oab_type: str
-) -> float:  # Possible error
+) -> float:
     """Function for extracting the unit value from a wikidata response
 
     Args:
@@ -263,3 +292,71 @@ def try_get_unit_symbol(entity_dict: Dict, property_id: str, oab_type: str) -> s
     for unit_symbol_entry in unit_symbol_entries:
         if unit_symbol_entry[MAINSNAK][DATAVALUE][VALUE]["language"] == EN:
             return unit_symbol_entry[MAINSNAK][DATAVALUE][VALUE]["text"]
+
+
+@return_on_failure([])
+def try_get_significant_events(
+    result: Dict, oab_type: Optional[str] = SIGNIFICANT_EVENT
+) -> List[Dict]:
+    """Maps the wikidata response for significant events to a list of dicts which is appended to an object
+
+    Args:
+        result: wikidata response
+        oab_type: OpenArtBrowser type. Defaults to SIGNIFICANT_EVENT.
+
+    Returns:
+        List of JSON objects which represent significant events
+    """
+    significant_events = []
+    qid = result[ID]
+    for event in result[CLAIMS][PROPERTY_NAME_TO_PROPERTY_ID[SIGNIFICANT_EVENT]]:
+        event_dict = {LABEL[SINGULAR]: event[MAINSNAK][DATAVALUE][VALUE][ID]}
+        for qualifiers in event[QUALIFIERS].values():
+            datatype = qualifiers[0][DATATYPE]
+            property_id = qualifiers[0][PROPERTY]
+            # Get property name from dict, if the name is not in the dict ignore it and take the id
+            property = PROPERTY_ID_TO_PROPERTY_NAME.get(property_id, property_id)
+            if datatype == TIME:
+                event_dict.update(
+                    {
+                        property: WbTime.fromTimestr(
+                            qualifiers[0][DATAVALUE][VALUE][TIME]
+                        ).year
+                    }
+                )
+            elif datatype == WIKIBASE_ITEM:
+                event_dict.update(
+                    {
+                        property: list(
+                            map(
+                                lambda qualifier: qualifier[DATAVALUE][VALUE][ID],
+                                qualifiers,
+                            )
+                        )
+                    }
+                )
+            elif datatype == QUANTITY:
+                event_dict.update(
+                    {property: float(qualifiers[0][DATAVALUE][VALUE][AMOUNT])}
+                )
+                event_dict.update(
+                    {
+                        f"{property}_{UNIT}": qualifiers[0][DATAVALUE][VALUE]
+                        .get(UNIT, "")
+                        .replace(WIKIDATA_ENTITY_URL, "")
+                    }
+                )
+            elif datatype in [STRING, URL]:
+                event_dict.update({property: qualifiers[0][DATAVALUE][VALUE]})
+            elif datatype == MONOLINGUALTEXT:
+                event_dict.update({property: qualifiers[0][DATAVALUE][VALUE][TEXT]})
+            elif datatype == COMMONS_MEDIA:
+                logger.error(
+                    f"commonsMedia type not supported in significant events on item {qid}"
+                )
+            else:
+                logger.error(f"Unknown datatype: {datatype} on item {qid}")
+        event_dict.update({TYPE: SIGNIFICANT_EVENT})
+        significant_events.append(event_dict)
+
+    return significant_events

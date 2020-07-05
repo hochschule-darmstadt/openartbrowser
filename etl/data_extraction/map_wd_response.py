@@ -2,13 +2,11 @@
 """
 
 from pathlib import Path
-from typing import List, Dict, Optional
+from typing import Dict, List, Optional
 
 import data_extraction.map_wd_attribute as map_wd_attribute
 from data_extraction.constants import *
-from data_extraction.get_wikidata_items import get_image_url_by_name
 from shared.utils import language_config_to_list, setup_logger
-
 
 logger = setup_logger(
     "data_extraction.map_wd_response",
@@ -43,7 +41,7 @@ def try_map_response_to_subject(
     # How to get image url
     # https://stackoverflow.com/questions/34393884/how-to-get-image-url-property-from-wikidata-item-by-api
     try:
-        image = get_image_url_by_name(
+        image = map_wd_attribute.get_image_url_by_name(
             response[CLAIMS][PROPERTY_NAME_TO_PROPERTY_ID[IMAGE]][0][MAINSNAK][
                 DATAVALUE
             ][VALUE]

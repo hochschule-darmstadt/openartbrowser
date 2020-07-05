@@ -2,6 +2,7 @@
 """
 import inspect
 import re
+import hashlib
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
@@ -38,6 +39,30 @@ def get_attribute_values_with_try_get_func(
     """
     for item in attribute_list:
         yield try_get_func(entity_dict, PROPERTY_NAME_TO_PROPERTY_ID[item], oab_type)
+
+
+def get_image_url_by_name(image_name: str) -> str:
+    """Calculate the image url from the image name
+
+    This is done via the MD5 hash of the image_names hex-code.
+
+    Source:
+        https://stackoverflow.com/questions/34393884/how-to-get-image-url-property-from-wikidata-item-by-api
+
+    Args:
+        image_name: image name returned from the wikidata API call
+
+    Returns:
+        URL of the image
+    """
+    image_name = image_name.replace(" ", "_")
+    hash = hashlib.md5(image_name.encode("utf-8", errors="replace")).hexdigest()
+    hash_index_1 = hash[0]
+    hash_index_1_and_2 = hash[0] + hash[1]
+    url = "https://upload.wikimedia.org/wikipedia/commons/{0}/{1}/{2}".format(
+        hash_index_1, hash_index_1_and_2, image_name
+    )
+    return url
 
 
 def return_on_failure(return_value) -> Any:
@@ -114,7 +139,7 @@ def try_get_wikipedia_link(entity_dict: Dict, langkey: str, oab_type: str) -> st
 @return_on_failure("")
 def try_get_dimension_value(
     entity_dict: Dict, property_id: str, oab_type: str
-) -> float:  # Possible error
+) -> float:
     """Function for extracting the unit value from a wikidata response
 
     Args:

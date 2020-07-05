@@ -12,13 +12,12 @@ Returns:
 import datetime
 import json
 from pathlib import Path
-from typing import Optional, List, Dict
+from typing import Dict, List, Optional
 
 from data_extraction.constants import *
 from data_extraction.request_utils import send_http_request
-from shared.utils import chunks, create_new_path, language_config_to_list, setup_logger
 from shared.constants import JSON
-
+from shared.utils import chunks, create_new_path, language_config_to_list, setup_logger
 
 logger = setup_logger(
     "data_extraction.get_wikipedia_extracts",

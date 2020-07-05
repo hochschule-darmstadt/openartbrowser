@@ -376,6 +376,7 @@ def load_entities_by_attribute_with_transitive_closure(
     entity_extraction_func: Callable[
         [str, List[str], Set[str], Optional[List[str]]], List[Dict]
     ],
+    allowed_instances_of: List[str],
 ) -> List[Dict]:
     """Recursive function to load all entities which a attribute contains.
 
@@ -388,6 +389,7 @@ def load_entities_by_attribute_with_transitive_closure(
         extract_dicts: Already extracted entities, the new entities are added to this list
         attribute_name: Attribute which should be loaded with a transitive closure
         already_extracted_ids: list that tracks the already extracted ids
+        allowed_instances_of: The extracted entity has to be instance of one provided qid in the list
 
     Returns:
         Updated list of dicts with recursively loaded entities by an attribute
@@ -405,10 +407,16 @@ def load_entities_by_attribute_with_transitive_closure(
         [already_extracted_ids.add(id) for id in qids]
         entities = entity_extraction_func(oab_type, missing_qids, already_extracted_ids)
         for entity in entities:
-            if not any(
-                e[ID] == entity[ID] for e in extract_dicts
-            ):  # Check if an entity with the same qid is in the dict, if not then add
-                extract_dicts.append(entity)
+            # Check if an entity with the same qid is in the dict, if not then add
+            if not any(e[ID] == entity[ID] for e in extract_dicts):
+                # Check if allowed instances of has values
+                if allowed_instances_of:
+                    # If it has values only allow entities which have instance of ids
+                    # in the allowed instances of list
+                    if not set(entity[CLASS[PLURAL]]).isdisjoint(allowed_instances_of):
+                        extract_dicts.append(entity)
+                else:
+                    extract_dicts.append(entity)
         return extract_dicts
 
 
@@ -476,6 +484,7 @@ def get_subject(
             MOVEMENT[PLURAL],
             already_extracted_movement_ids,
             get_subject,
+            [ART_MOVEMENT[ID], ART_STYLE[ID]],
         )
         extract_dicts = load_entities_by_attribute_with_transitive_closure(
             extract_dicts,
@@ -483,6 +492,7 @@ def get_subject(
             MOVEMENT[PLURAL],
             already_extracted_movement_ids,
             get_subject,
+            [ART_MOVEMENT[ID], ART_STYLE[ID]],
         )
         return extract_dicts
 
@@ -713,6 +723,7 @@ def get_classes(
         CLASS[PLURAL],
         already_extracted_superclass_ids,
         get_classes,
+        [],
     )
 
 

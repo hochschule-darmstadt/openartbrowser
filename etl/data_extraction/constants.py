@@ -45,11 +45,14 @@ COMMONS_MEDIA = "commonsMedia"
 EN = "en"
 ENTITIES = "entities"
 ABBREVIATION = "abbreviation"
+# The wd: prefix is used here because these ids are used in a SPARQL query
 DRAWING = {PLURAL: "drawings", ID: "wd:Q93184"}
 SCULPTURE = {PLURAL: "sculptures", ID: "wd:Q860861"}
 PAINTING = {PLURAL: "paintings", ID: "wd:Q3305213"}
 LATITUDE = {SINGULAR: "latitude", ABBREVIATION: "lat"}
 LONGITUDE = {SINGULAR: "longitude", ABBREVIATION: "lon"}
+ART_MOVEMENT = {SINGULAR: "art_movement", ID: "Q968159"}
+ART_STYLE = {SINGULAR: "art_style", ID: "Q1792644"}
 
 IMAGE = "image"
 START_TIME = f"start_{TIME}"

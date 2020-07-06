@@ -1,6 +1,5 @@
 elasticsearch>=7.0.0
 ijson>=2.3
-simplejson>=3.16.0
 pywikibot>=3.0.dev0
 requests>=2.22.0
 flake8>=3.7.9

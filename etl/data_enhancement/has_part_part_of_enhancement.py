@@ -2,10 +2,12 @@
 by adding the corresponding movement ids to these attributes
 since they are inverse to each other
 """
-from typing import List, Dict
-from pathlib import Path
-from shared.constants import ID, HAS_PART, PART_OF
+import datetime
 import json
+from pathlib import Path
+from typing import Dict, List
+
+from shared.constants import HAS_PART, ID, PART_OF
 
 
 def inverse_attribute_enhancement(
@@ -46,6 +48,10 @@ def inverse_attribute_enhancement(
 
 
 if __name__ == "__main__":
+
+    print(
+        "Starting part of, has part enhancement on movements", datetime.datetime.now()
+    )
     movements_file = (
         Path(__file__).resolve().parent.parent
         / "crawler_output"
@@ -61,3 +67,7 @@ if __name__ == "__main__":
 
     with open(movements_file, "w", newline="", encoding="utf-8") as file:
         file.write(json.dumps(movements, ensure_ascii=False))
+
+    print(
+        "Finished part of, has part enhancement on movements", datetime.datetime.now()
+    )

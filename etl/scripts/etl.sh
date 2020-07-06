@@ -22,6 +22,8 @@ python3 data_extraction/get_wikipedia_extracts.py
 
 python3 data_enhancement/estimate_movement_period.py
 
+python3 data_enhancement/has_part_part_of_enhancement.py
+
 python3 data_enhancement/ranking.py
 
 cd crawler_output/intermediate_files/json/

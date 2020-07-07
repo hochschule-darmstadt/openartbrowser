@@ -39,6 +39,9 @@ export class FetchingListComponent implements OnInit {
   scrollDistance = 1;
   scrollUpDistance = 5;
 
+  scrolling = false;
+  paginatorSelectedPage: number;
+
   private pageAnchorElementId = '#pageAnchor-';
 
   constructor(private dataService: DataService, private route: ActivatedRoute) {
@@ -138,35 +141,47 @@ export class FetchingListComponent implements OnInit {
   }
 
   onPageVisible($event: any) {
-    if ($event.visible) {
-      console.log('current page:', $event.target.id.split('-').pop());
-      console.log($event);
-    }
 
   }
 
-  scrollToPage(id) {
+  async loadSelectedPages(id) {
+    this.paginatorSelectedPage = id;
     const currentPageCount = this.offset / this.options.fetchSize;
+    console.log('Current Page Count: ', currentPageCount, 'id: ', id);
     if (id > currentPageCount - 1) {
-      for (let i = 0; i <= id - currentPageCount - 1; i++) {
+      for (let i = 0; i <= id - currentPageCount ; i++) {
         // TODO: How to wait for this?
-        this.onScrollDown();
+        await this.onScrollDown();
       }
     }
-    const currentPageCountNew = this.offset / this.options.fetchSize;
+  }
 
-    console.log(id, currentPageCount, currentPageCountNew);
-    const el = document.getElementById(this.pageAnchorElementId + (id - 1));
-    console.log(el);
-    el.scrollIntoView({ behavior: 'smooth' });
+  async scrollToPage() {
+    this.scrolling = true;
+    const el = document.getElementById(this.pageAnchorElementId + (this.paginatorSelectedPage - 1));
+    console.log("Current scrolled anchor:", el);
+    window.scrollTo({top: el.offsetTop, behavior: 'smooth'});
+    // el.scrollIntoView({behavior: 'smooth'});
+
+    this.paginatorSelectedPage = -1;
+    this.scrolling = false;
   }
 
   placeAnchor(index): boolean {
-    return index % this.options.fetchSize === Math.floor(this.options.fetchSize / 2);
+    return index % this.options.fetchSize === 0;
   }
 
   getAnchorId(index): string {
-    return this.pageAnchorElementId + (index - Math.floor(this.options.fetchSize / 2)) / this.options.fetchSize;
+    return this.pageAnchorElementId + (index / this.options.fetchSize);
+  }
+
+  anchorLoaded(index) {
+    const loadedPage = Math.floor(index / this.options.fetchSize);
+    // console.log("Loaded page. " + loadedPage, "selectedPage: ", this.paginatorSelectedPage);
+    if (loadedPage === this.paginatorSelectedPage && !this.scrolling) {
+      console.log("Scrolling to page " + loadedPage);
+      this.scrollToPage();
+    }
   }
 
 }

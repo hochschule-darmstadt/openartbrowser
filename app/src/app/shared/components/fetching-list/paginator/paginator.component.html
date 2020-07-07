@@ -1,1 +1,3 @@
-<button (click)="pageClick.emit(pagenumber)">Page 10</button>
+<div *ngFor="let page of pages">
+<button (click)="pageClick.emit(page+1)">Page {{page+1}}</button>
+</div>

@@ -7,6 +7,11 @@
      (scrolledUp)="onScrollUp($event)">
   <div class="d-flex flex-wrap bd-highlight mb-3 m-auto justify-content-around">
     <div *ngFor="let entity of listItems; let i = index" class="item">
+      <div class="anchor" *ngIf="placeAnchor(i)" inViewport
+           [inViewportOptions]="{ threshold: [0] }"
+           (inViewportAction)="onPageVisible($event)" id="{{getAnchorId(i)}}">
+         {{anchorLoaded(i)}} <!-- This function is called to detect the loading of an anchor and handle the pagination scrolling -->
+      </div>
       <a *ngIf="entity"
          class="item-link"
          [routerLink]="['/'+options.entityType, entity?.id]">
@@ -22,12 +27,8 @@
         <ng-container [ngTemplateOutlet]="templateRef"
                       [ngTemplateOutletContext]="{entity: entity, entityType: options.entityType}"></ng-container>
       </a>
-      <div class="anchor" *ngIf="placeAnchor(i)" inViewport
-           [inViewportOptions]="{ threshold: [0] }"
-           (inViewportAction)="onPageVisible($event)" id="{{getAnchorId(i)}}">
-        {{getAnchorId(i)}}
-      </div>
+
     </div>
   </div>
-  <app-paginator class="paginator" (pageClick)="scrollToPage($event)"></app-paginator>
+  <app-paginator class="paginator" (pageClick)="loadSelectedPages($event)"></app-paginator>
 </div>

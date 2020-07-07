@@ -8,11 +8,16 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 export class PaginatorComponent implements OnInit {
   @Output() pageClick = new EventEmitter();
 
+  pages = [];
+
   pagenumber = 10;
 
   constructor() {
   }
 
   ngOnInit() {
+    for (let i = 0; i < 10; i++) {
+      this.pages.push(i);
+    }
   }
 }

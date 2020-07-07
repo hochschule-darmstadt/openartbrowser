@@ -22,7 +22,6 @@ import { DimensionsComponent } from './components/dimensions/dimensions.componen
 import { InfiniteScrollComponent } from './components/infinite-scroll/infinite-scroll.component';
 import { FetchingListComponent } from './components/fetching-list/fetching-list.component';
 import { EventTableComponent } from './components/event-table/event-table.component';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { InViewportModule } from 'ng-in-viewport';
 import { PaginatorComponent } from './components/fetching-list/paginator/paginator.component';
 
@@ -56,7 +55,6 @@ import { PaginatorComponent } from './components/fetching-list/paginator/paginat
     Ng5SliderModule,
     Angulartics2Module,
     NgxFitTextModule,
-    InfiniteScrollModule,
     InViewportModule
   ],
   exports: [

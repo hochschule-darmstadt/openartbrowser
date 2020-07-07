@@ -1,11 +1,6 @@
-<!--TODO: Remove infinite-scroll again - sucks-->
-<div class="infinite-scroll-container" infinite-scroll
-     [infiniteScrollDistance]="scrollDistance"
-     [infiniteScrollUpDistance]="scrollUpDistance"
-     [infiniteScrollThrottle]="throttle"
-     (scrolled)="onScrollDown($event)"
-     (scrolledUp)="onScrollUp($event)">
+<app-infinite-scroll (scrolled)="onScrollDown()">
   <div class="d-flex flex-wrap bd-highlight mb-3 m-auto justify-content-around">
+<!--TODO: fix css-->
     <div *ngFor="let page of pages | keyvalue: keyAscOrder" class="d-flex flex-wrap bd-highlight mb-3 m-auto justify-content-around">
       <div class="anchor" inViewport
            [inViewportOptions]="{ threshold: [0] }"
@@ -33,4 +28,4 @@
     </div>
   </div>
   <app-paginator class="paginator" (pageClick)="scrollToPage($event)"></app-paginator>
-</div>
+</app-infinite-scroll>

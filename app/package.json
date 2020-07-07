@@ -43,7 +43,6 @@
     "ng5-slider": "^1.2.4",
     "ngx-fit-text": "0.0.10",
     "ngx-image-viewer": "github:hochschule-darmstadt/ngx-image-viewer#build",
-    "ngx-infinite-scroll": "^9.0.0",
     "rxjs": "^6.5.3",
     "tslib": "^1.10.0",
     "zone.js": "^0.9.1"

@@ -40,20 +40,16 @@ export class FetchingListComponent implements OnInit {
 
   @ContentChild(TemplateRef, { static: false }) templateRef;
 
+  // TODO: Input these to paginator to handle display stuff
   maxPage: number;
   currentPage: number;
 
-  throttle = 300;
-  scrollDistance = 1;
-  scrollUpDistance = 5;
-
   pageAnchorElementId = '#pageAnchor-';
-
 
   // Order by ascending property key (as number)
   keyAscOrder = (a: KeyValue<number, Page>, b: KeyValue<number, Page>): number => {
     return +a.key < +b.key ? -1 : (+b.key < +a.key ? 1 : 0);
-  }
+  };
 
   constructor(private dataService: DataService, private route: ActivatedRoute) {
   }
@@ -75,8 +71,12 @@ export class FetchingListComponent implements OnInit {
 
   }
 
+  // TODO: Fix scroll up and down recognition for gaps in pages
   /** This gets called by the app-infinite-scroll component and fetches new data */
   onScrollDown(event?) {
+    if (!this.maxPage) {
+      return;
+    }
     console.log(event);
     /** if there is no more to get, don't fetch again */
     if (this.currentPage >= this.maxPage) {
@@ -195,7 +195,7 @@ export class FetchingListComponent implements OnInit {
 
   onPageVisible($event: any) {
     if ($event.visible) {
-      this.currentPage =  $event.target.id.split('-').pop();
+      this.currentPage = $event.target.id.split('-').pop();
       console.log('current page:', $event.target.id.split('-').pop(), this.currentPage);
       // console.log($event);
     }

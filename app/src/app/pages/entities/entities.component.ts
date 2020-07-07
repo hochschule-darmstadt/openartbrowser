@@ -39,9 +39,7 @@ export class EntitiesComponent implements OnInit {
         const lastPathSegment = val[0].path.substr(0, val[0].path.length - 1);
         this.fetchOptions.entityType = EntityType[lastPathSegment.toUpperCase() as keyof typeof EntityType];
         /** get max number of elements */
-        this.dataService.countEntityItems(this.fetchOptions.entityType).then(value => {
-          this.fetchOptions.queryCount = value;
-        });
+        this.fetchOptions.queryCount = this.dataService.countEntityItems(this.fetchOptions.entityType);
       });
     }
 

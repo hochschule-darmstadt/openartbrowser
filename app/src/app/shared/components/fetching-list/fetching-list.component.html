@@ -6,29 +6,31 @@
      (scrolled)="onScrollDown($event)"
      (scrolledUp)="onScrollUp($event)">
   <div class="d-flex flex-wrap bd-highlight mb-3 m-auto justify-content-around">
-    <div *ngFor="let entity of listItems; let i = index" class="item">
-      <div class="anchor" *ngIf="placeAnchor(i)" inViewport
+    <div *ngFor="let page of pages | keyvalue: keyAscOrder" class="d-flex flex-wrap bd-highlight mb-3 m-auto justify-content-around">
+      <div class="anchor" inViewport
            [inViewportOptions]="{ threshold: [0] }"
-           (inViewportAction)="onPageVisible($event)" id="{{getAnchorId(i)}}">
-         {{anchorLoaded(i)}} <!-- This function is called to detect the loading of an anchor and handle the pagination scrolling -->
+           (inViewportAction)="onPageVisible($event)" id="{{pageAnchorElementId+page.key}}">
+        {{page.key}}
       </div>
-      <a *ngIf="entity"
-         class="item-link"
-         [routerLink]="['/'+options.entityType, entity?.id]">
-        <div class="img-wrapper">
-          <img
-            *ngIf="entity?.imageSmall"
-            class="bd-highlight img-self"
-            src="{{ entity?.imageSmall }}"
-            alt="{{ entity?.label }}"
-            (error)="onLoadingError(entity)"
-          />
-        </div>
-        <ng-container [ngTemplateOutlet]="templateRef"
-                      [ngTemplateOutletContext]="{entity: entity, entityType: options.entityType}"></ng-container>
-      </a>
+      <div *ngFor="let entity of page.value.items; let i = index" class="item">
+        <a *ngIf="entity"
+           class="item-link"
+           [routerLink]="['/'+options.entityType, entity?.id]">
+          <div class="img-wrapper">
+            <img
+              *ngIf="entity?.imageSmall"
+              class="bd-highlight img-self"
+              src="{{ entity?.imageSmall }}"
+              alt="{{ entity?.label }}"
+              (error)="onLoadingError(entity, page.key)"
+            />
+          </div>
+          <ng-container [ngTemplateOutlet]="templateRef"
+                        [ngTemplateOutletContext]="{entity: entity, entityType: options.entityType}"></ng-container>
+        </a>
 
+      </div>
     </div>
   </div>
-  <app-paginator class="paginator" (pageClick)="loadSelectedPages($event)"></app-paginator>
+  <app-paginator class="paginator" (pageClick)="scrollToPage($event)"></app-paginator>
 </div>

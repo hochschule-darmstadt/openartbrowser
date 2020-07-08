@@ -9,6 +9,7 @@ import { usePlural } from 'src/app/shared/models/entity.interface';
 
 /** interface for the tabs */
 interface ArtworkTab {
+  title?: string;
   type: EntityType;
   items: Artwork[];
   icon: EntityIcon;
@@ -74,53 +75,56 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   constructor(private dataService: DataService, private route: ActivatedRoute) {}
 
   /**
+   * resets the artwork component into its initial state for a re-route
+   */
+  onReset() {
+    console.log('reset component');
+    this.artworkTabs = [];
+    this.uniqueVideos = [];
+    this.videoExists = false;
+    this.artwork = this.hoveredArtwork = this.hoveredArtwork = null;
+    this.imageHidden = this.modalIsVisible = this.commonTagsCollapsed = false;
+  }
+
+  /**
+   * resolves entityIds to actual entities by invoking the data-service
+   */
+  loadEntities(attributes: string[]) {
+    return Promise.all(attributes.map(async (attribute: string) => await this.resolveIds(attribute)));
+  }
+
+  /**
    * @description hook that is executed at component initialization
    */
   ngOnInit() {
-    // define tabs if not set
-    if (!this.artworkTabs || !this.artworkTabs.length) {
-      this.addTab(EntityType.ALL, true);
-      this.addTab(EntityType.MOTIF);
-      this.addTab(EntityType.ARTIST);
-      this.addTab(EntityType.LOCATION);
-      this.addTab(EntityType.GENRE);
-      this.addTab(EntityType.MOVEMENT);
-      this.addTab(EntityType.MATERIAL);
-    }
-
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
-      /* reset properties */
-      this.uniqueVideos = [];
-      this.videoExists = false;
-      this.artwork = this.hoveredArtwork = this.hoveredArtwork = null;
-      this.imageHidden = this.modalIsVisible = this.commonTagsCollapsed = false;
-      // clears items of all artwork tabs
-      this.artworkTabs = this.artworkTabs
-        .map((tab: ArtworkTab) => {
-          if (tab.type === ('main_motif' as EntityType)) {
-            return null;
-          }
-          return { ...tab, items: [] };
-        })
-        .filter(tab => tab !== null);
+      this.onReset();
 
-      /** Use data service to fetch entity from database */
+      /** Use data service to fetch entity from elasticsearch */
       const artworkId = params.get('artworkId');
       this.artwork = await this.dataService.findById<Artwork>(artworkId, EntityType.ARTWORK);
 
-      if (this.artwork.videos && this.artwork.videos.length > 0) {
-        this.uniqueVideos.unshift(this.artwork.videos[0]);
+      if (!this.artwork) {
+        console.log('Could not load Artwork data');
+        return null;
       }
 
-      if (this.artwork) {
-        this.mergeMotifs();
-        this.combineEventData();
-        await this.resolveIds('main_subjects');
-        this.insertMainMotifTab();
+      // define attributes (array of entity IDs) that shall be resolved to entities
+      const attributes = ['main_subjects', 'motifs', 'artists', 'locations', 'genres', 'movements', 'materials'];
+      await this.loadEntities(attributes);
 
-        /* load tabs content */
-        this.loadTabs();
+      this.mergeMotifs();
+      this.combineEventData();
+      this.addUniqueVideos([...this.artwork.artists, ...this.artwork.movements]);
+
+      this.tabSetup();
+
+      // this.insertMainMotifTab();
+      // this.loadTabs();
+
+      if (this.artwork.videos && this.artwork.videos.length > 0) {
+        this.uniqueVideos.unshift(this.artwork.videos[0]);
       }
     });
   }
@@ -153,12 +157,13 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   }
 
   addUniqueVideos(inputArray) {
-    for ( const entity of inputArray) {
-      if (entity.videos && entity.videos.length >  0 && !this.uniqueVideos.includes(entity.videos[0])) {
+    for (const entity of inputArray) {
+      if (entity.videos && entity.videos.length > 0 && !this.uniqueVideos.includes(entity.videos[0])) {
         this.uniqueVideos.push(entity.videos[0]);
       }
     }
   }
+
   /**
    * hide artwork image
    */
@@ -207,18 +212,8 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     Promise.all(
       /** load related data for each tab  */
       this.artworkTabs.map(async (tab: ArtworkTab) => {
-        if (tab.type === EntityType.ALL || tab.type === ('main_motif' as EntityType)) {
-          return;
-        }
-
         const types = usePlural(tab.type);
 
-        // load entities
-        this.dataService.findMultipleById(this.artwork[types] as any, tab.type).then(artists => {
-          this.artwork[types] = artists;
-          this.addUniqueVideos(this.artwork.artists);
-          this.addUniqueVideos(this.artwork.movements);
-        });
         // load related artworks by type
         return await this.dataService.findArtworksByType(tab.type, this.artwork[types] as any).then(artworks => {
           // filters and shuffles main artwork out of tab items,
@@ -234,16 +229,35 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     );
   }
 
+  tabSetup() {
+    this.addTab(EntityType.ALL);
+    this.artworkTabs[0].active = true;
+
+    this.addTab(EntityType.MOTIF, 'main_motif');
+
+    this.addTab(EntityType.MOTIF);
+    this.addTab(EntityType.ARTIST);
+    this.addTab(EntityType.LOCATION);
+    this.addTab(EntityType.GENRE);
+    this.addTab(EntityType.MOVEMENT);
+    this.addTab(EntityType.MATERIAL);
+
+    this.fillSummaryTab();
+  }
+
+  fillSummaryTab() {}
+
   /**
    * Add tab to artwork tab array
    * @param type Tab title
    * @param active Is active tab
    */
-  private addTab(type: EntityType, active: boolean = false) {
+  private addTab(type: EntityType, title = null) {
     this.artworkTabs.push({
-      active,
-      icon: EntityIcon[type.toUpperCase()],
+      title: title || type,
       type,
+      active: false,
+      icon: EntityIcon[type.toUpperCase()],
       items: []
     });
   }
@@ -256,15 +270,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     const main_motifs = this.artwork.main_subjects.map(entity => entity.id);
 
     const items = await this.dataService.findArtworksByType(EntityType.MOTIF, main_motifs);
-
-    const tab = {
-      active: false,
-      icon: EntityIcon['MOTIF'],
-      type: 'main_motif' as EntityType,
-      items
-    };
-
-    this.artworkTabs.splice(1, 0, tab); // insert after first element (All, Main Motif, ...rest)
   }
 
   videoFound(event) {
@@ -277,15 +282,14 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    * for a unified display mode
    */
   combineEventData() {
-    this.artwork.events = [
-      ...this.artwork['exhibition_history'],
-      ...this.artwork['significant_event']
-    ].map(event => {
-      if (event.type === 'significant_event') {
-        event.start_time = event['point_in_time'];
-        delete event['point_in_time'];
-      }
-      return event;
-    }).sort((left, right) => left.start_time - right.start_time);
+    this.artwork.events = [...this.artwork['exhibition_history'], ...this.artwork['significant_event']]
+      .map(event => {
+        if (event.type === 'significant_event') {
+          event.start_time = event['point_in_time'];
+          delete event['point_in_time'];
+        }
+        return event;
+      })
+      .sort((left, right) => left.start_time - right.start_time);
   }
 }

@@ -32,4 +32,5 @@ export interface SignificantEvent {
   end?: number;
   label: string;
   description?: string;
+  type: string;
 }

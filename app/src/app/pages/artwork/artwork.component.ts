@@ -112,7 +112,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       if (this.artwork.videos && this.artwork.videos.length > 0) {
         this.uniqueVideos.unshift(this.artwork.videos[0]);
       }
-      
+
       if (this.artwork) {
         this.mergeMotifs();
         this.combineEventData();
@@ -272,14 +272,36 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * combines the "new" attributes 
-   * (exhibition history and later significant event)
-   * for a unified display mode 
+   * combines the "new" attributes and sorts them by start year
+   * (exhibition history and significant event)
+   * for a unified display mode
    */
-  combineEventData () {
-    this.artwork.events = [
-      ...this.artwork['exhibition_history']
-      /* ...this.artwork['significant_events'] */
-    ];
+  combineEventData() {
+    this.artwork.events = [];
+    for (let i = 0; i < this.artwork['exhibition_history'].length; i++) {
+      const exhibitionHistory = this.artwork['exhibition_history'][i];
+      this.artwork.events.push({start: exhibitionHistory.start_time,
+        end: exhibitionHistory.end_time,
+        label: exhibitionHistory.label,
+        description: exhibitionHistory.description,
+        type: exhibitionHistory.type});
+    }
+
+    for (let i = 0; i < this.artwork['significant_event'].length; i++) {
+      const significantEvents = this.artwork['significant_event'][i]
+      this.artwork.events.push({start: significantEvents.point_in_time,
+        end: significantEvents.end_time,
+        label: significantEvents.label,
+        type: significantEvents.type});
+    }
+
+    this.artwork.events.sort(((a, b) => {
+      if (a.start < b.start) {
+        return -1;
+      } else if (a.start > b.start) {
+        return 1;
+      }
+      return 0;
+    }));
   }
 }

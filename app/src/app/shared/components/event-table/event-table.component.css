@@ -1,8 +1,5 @@
 .event-entry {
   margin-bottom: 5px;
-  list-style-type: disc;
-  list-style-position: inside;
-  display: list-item;
 }
 
 .time-label {
@@ -17,7 +14,6 @@
 
 .event-description {
   margin-left: 10%;
-  padding-left: 20px;
   font-style: italic;
 }
 

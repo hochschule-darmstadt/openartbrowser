@@ -112,7 +112,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       if (this.artwork.videos && this.artwork.videos.length > 0) {
         this.uniqueVideos.unshift(this.artwork.videos[0]);
       }
-      
+
       if (this.artwork) {
         this.mergeMotifs();
         this.combineEventData();
@@ -272,14 +272,20 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * combines the "new" attributes 
-   * (exhibition history and later significant event)
-   * for a unified display mode 
+   * combines the "new" attributes and sorts them by start year
+   * (exhibition history and significant event)
+   * for a unified display mode
    */
-  combineEventData () {
+  combineEventData() {
     this.artwork.events = [
-      ...this.artwork['exhibition_history']
-      /* ...this.artwork['significant_events'] */
-    ];
+      ...this.artwork['exhibition_history'],
+      ...this.artwork['significant_event']
+    ].map(event => {
+      if (event.type === 'significant_event') {
+        event.start_time = event['point_in_time'];
+        delete event['point_in_time'];
+      }
+      return event;
+    }).sort((left, right) => left.start_time - right.start_time);
   }
 }

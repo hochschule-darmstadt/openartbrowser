@@ -28,8 +28,8 @@ export interface Artwork extends Entity {
 }
 
 export interface SignificantEvent {
-  start: number;
-  end?: number;
+  start_time: number;
+  end_time?: number;
   label: string;
   description?: string;
   type: string;

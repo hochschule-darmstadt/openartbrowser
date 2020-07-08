@@ -20,14 +20,14 @@ export class EventTableComponent implements OnChanges {
   }
 
   isDisplayable(event) {
-    return typeof event.start === 'number' && event.label.length;
+    return typeof event.start_time === 'number' && event.label.length;
   }
 
   getTimeLabel(event) {
-    if (event.end && event.end !== event.start) {
-      return event.start + ' - ' + event.end;
+    if (event.end_time && event.end_time !== event.start_time) {
+      return event.start_time + ' - ' + event.end_time;
     }
-    return event.start;
+    return event.start_time;
   }
 
   getEventLabel(event) {

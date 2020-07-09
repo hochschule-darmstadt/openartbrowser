@@ -1,4 +1,13 @@
-import { Component, ContentChild, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  ContentChild,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  TemplateRef
+} from '@angular/core';
 import { Entity, EntityType } from '../../models/entity.interface';
 import { Artwork } from '../../models/artwork.interface';
 import { DataService } from '../../../core/services/elasticsearch/data.service';
@@ -45,13 +54,14 @@ export class FetchingListComponent implements OnInit {
   currentPage: number;
 
   pageAnchorElementId = '#pageAnchor-';
+  private isScrolling = false;
 
   // Order by ascending property key (as number)
   keyAscOrder = (a: KeyValue<number, Page>, b: KeyValue<number, Page>): number => {
     return +a.key < +b.key ? -1 : (+b.key < +a.key ? 1 : 0);
   };
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {
+  constructor(private dataService: DataService, private route: ActivatedRoute, private changeDetectionRef: ChangeDetectorRef) {
   }
 
   ngOnInit() {
@@ -172,7 +182,7 @@ export class FetchingListComponent implements OnInit {
   }
 
   async scrollToPage(pageNumber) {
-    if (pageNumber < 0 || pageNumber === this.currentPage) {
+    if (pageNumber < 0 || +pageNumber === +this.currentPage) {
       return;
     }
     console.log(pageNumber, this.maxPage, this.currentPage);
@@ -185,24 +195,56 @@ export class FetchingListComponent implements OnInit {
     const result = await Promise.all(waitQueue);
 
     const el = document.getElementById(this.pageAnchorElementId + pageNumber);
-    window.scrollTo({ top: el.offsetTop, behavior: 'smooth' });
+    console.log(el);
+    this.isScrolling = true;
 
+    await window.scrollTo({ top: el.offsetTop, behavior: 'smooth' });
+    this.isScrolling = false;
     console.log(this.pages);
   }
 
   onPageVisible($event: any) {
     if ($event.visible) {
       this.currentPage = $event.target.id.split('-').pop();
-      if ((this.currentPage - 1 >= 0) && !(this.currentPage - 1 in this.pages)) {
+      if ((this.currentPage - 1 >= 0) && !(this.currentPage - 1 in this.pages) && !this.isScrolling) {
+        const preScrollHeight = this.getContainerScrollHeight();
+        const preScrollOffset = this.getContainerScrollTop();
         this.initializePage(+this.currentPage - 1);
+        this.changeDetectionRef.detectChanges();
+        const postScrollOffset = this.getContainerScrollTop();
+        if (preScrollOffset && postScrollOffset && (preScrollOffset === postScrollOffset)) {
+          const postScrollHeight = this.getContainerScrollHeight();
+          const deltaHeight = (postScrollHeight - preScrollHeight);
+
+          this.setScrollTop(postScrollOffset, deltaHeight);
+
+          console.warn('Scrolling by', deltaHeight, 'px');
+        }
       }
-      // if ((this.currentPage + 1 <= this.maxPage) && !(this.currentPage + 1 in this.pages)) {
-      //   this.initializePage(+this.currentPage + 1);
-      // }
 
       console.log('current page:', $event.target.id.split('-').pop(), this.currentPage);
-      // console.log($event);
     }
   }
 
+  private getContainerScrollHeight(): number {
+    return (
+      Math.max(
+        document.body.scrollHeight,
+        document.body.offsetHeight,
+        document.body.clientHeight,
+        document.documentElement.scrollHeight,
+        document.documentElement.offsetHeight,
+        document.documentElement.clientHeight
+      )
+    );
+
+  }
+
+  private getContainerScrollTop(): number {
+    return (window.pageYOffset);
+  }
+
+  private setScrollTop(currentScrollTop: number, delta: number): void {
+    window.scrollBy(0, delta);
+  }
 }

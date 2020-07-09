@@ -21,6 +21,26 @@ The versions are recommandations older versions may work.
 
 In order to install the dependencies of python and node.js run the install_etl.sh script.
 
+## Set environment variables for importing python modules
+The python scripts reference own modules to avoid code duplication.
+It is necessary to set environment variables that this procedure works.
+On Unix based systems the PYTHONPATH variable has to be set to the openartbrowser/etl directory on your opened shell session.
+> export PYTHONPATH="${PYTHONPATH}:openartbrowser/etl"
+
+The Unix environment variables are dependend on the shell you use so you have to look that up if the above doesn't work for you.
+In the openartbrowser/etl/scripts/install_etl.sh are examples on how to set the environment variable up for the bash shell.
+
+You may also set the PYWIKIBOT_DIR variable to the openartbrowser/etl directory to be able to execute the script
+from another directory than openartbrowser/etl, but this is optional and not used on the server anyways.
+
+On Windows the system environment variable (not user variable) can be set via the GUI or via the terminal like this
+> setx PYTHONPATH "%PYTHONPATH%;%CD%" /M
+
+Also the PYWIKIBOT_DIR variable can be set but this is optional.
+> setx PYWIKIBOT_DIR "%CD%" /M
+
+If above doesn't work for you please use the GUI for it.
+
 ## Execution
 
 Be sure to use the [run_etl.sh](https://github.com/hochschule-darmstadt/openartbrowser/wiki/System-architecture#run_etlsh) script if you want to execute the whole etl process. Otherwise please check out the wiki sections (link below) and the readme's in this repository.

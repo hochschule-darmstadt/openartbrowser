@@ -4,6 +4,7 @@ python ".\data_extraction\get_wikidata_items.py" -d
 python ".\data_extraction\get_wikipedia_extracts.py"
 
 python ".\data_enhancement\estimate_movement_period.py"
+python ".\data_enhancement\has_part_part_of_enhancement.py"
 
 python ".\data_enhancement\ranking.py"
 

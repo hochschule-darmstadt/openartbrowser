@@ -3,7 +3,7 @@
   class="badge badge-pill badge-secondary first-letter chip"
   [ngClass]="{ 'badge-transparent': isHoverBadge, 'badge-light': highlight }"
   tooltipClass="tooltip"
-  [ngbTooltip]="htmlContent"
+  [ngbTooltip]="tooltip !== null ? htmlContent : ''"
   [routerLink]="[redirectUrl]"
   angulartics2On="click"
   angularticsAction="Badge"

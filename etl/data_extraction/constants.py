@@ -32,14 +32,27 @@ VALUE = "value"
 AMOUNT = "amount"
 UNIT = "unit"
 TIME = "time"
+QUALIFIERS = "qualifiers"
+DATATYPE = "datatype"
+PROPERTY = "property"
+WIKIBASE_ITEM = "wikibase-item"
+QUANTITY = "quantity"
+STRING = "string"
+URL = "url"
+MONOLINGUALTEXT = "monolingualtext"
+TEXT = "text"
+COMMONS_MEDIA = "commonsMedia"
 EN = "en"
 ENTITIES = "entities"
 ABBREVIATION = "abbreviation"
+# The wd: prefix is used here because these ids are used in a SPARQL query
 DRAWING = {PLURAL: "drawings", ID: "wd:Q93184"}
 SCULPTURE = {PLURAL: "sculptures", ID: "wd:Q860861"}
 PAINTING = {PLURAL: "paintings", ID: "wd:Q3305213"}
 LATITUDE = {SINGULAR: "latitude", ABBREVIATION: "lat"}
 LONGITUDE = {SINGULAR: "longitude", ABBREVIATION: "lon"}
+ART_MOVEMENT = {SINGULAR: "art_movement", ID: "Q968159"}
+ART_STYLE = {SINGULAR: "art_style", ID: "Q1792644"}
 
 IMAGE = "image"
 START_TIME = f"start_{TIME}"
@@ -60,8 +73,6 @@ INFLUENCED_BY = "influenced_by"
 DATE_OF_BIRTH = "date_of_birth"
 DATE_OF_DEATH = "date_of_death"
 WEBSITE = "website"
-PART_OF = "part_of"
-HAS_PART = "has_part"
 COORDINATE = "coordinate"
 SUBCLASS_OF = "subclass_of"
 EXHIBITION = "exhibition"
@@ -100,4 +111,48 @@ PROPERTY_NAME_TO_PROPERTY_ID = {
     COORDINATE: "P625",  # Is called "coordinate location" in wikidata
     SUBCLASS_OF: "P279",
     EXHIBITION_HISTORY: "P608",
+    SIGNIFICANT_EVENT: "P793",
+    "point_in_time": "P585",
+    "of": "P642",
+    "owned_by": "P127",
+    "price": "P2284",
+    "participant": "P710",
+    "organizer": "P664",
+    "has_cause": "P828",
+    "donated_by": "P1028",
+    "cause_of_destruction": "P770",
+    "destination_point": "P1444",
+    "criterion_used": "P1013",
+    "statement_is_subject_of": "P805",
+    "applies_to_part": "P518",
+    "commissioned_by": "P88",
+    "operator": "P137",
+    "speaker": "P823",
+    "determination_method": "P459",
+    "date_of_disappearance": "P746",
+    "sponsor": "P859",
+    "earliest_date": "P1319",
+    "latest_date": "P1326",
+    "sourcing_circumstances": "P1480",
+    "end_cause": "P1534",
+    "manager": "P1037",
+    "cost": "P2130",
+    "uses": "P2283",
+    "unveiled_by": "P1656",
+    "architect": "P84",
+    "dissolved_abolished_or_demolished": "P576",
+    "catalog_code": "P528",
+    "lot_number": "P4775",
+    "inscription": "P1684",
+    "described_at_url": "P973",
+    "title": "P1476",
+    "inventory_number": "P217",
+    "depicted_format": "P7984",
+    "author_name_string": "P2093",
+    "series_ordinal": "P1545",
+    "commons_category": "P373",
+    "official_name": "P1448",
 }
+
+# Inverse dict
+PROPERTY_ID_TO_PROPERTY_NAME = {v: k for k, v in PROPERTY_NAME_TO_PROPERTY_ID.items()}

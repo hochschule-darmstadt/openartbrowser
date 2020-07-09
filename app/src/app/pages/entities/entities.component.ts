@@ -23,7 +23,7 @@ export class EntitiesComponent implements OnInit {
   fetchOptions = {
     initOffset: 0,
     // TODO: change back to something reasonable
-    fetchSize: 21,
+    fetchSize: 30,
     queryCount: undefined,
     entityType: undefined
   } as FetchOptions;

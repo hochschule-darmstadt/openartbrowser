@@ -1,7 +1,6 @@
 <app-infinite-scroll (scrolled)="onScrollDown()">
-  <div class="d-flex flex-wrap bd-highlight mb-3 m-auto justify-content-around">
-<!--TODO: fix css-->
-    <div *ngFor="let page of pages | keyvalue: keyAscOrder" class="d-flex flex-wrap bd-highlight mb-3 m-auto justify-content-around">
+  <div>
+    <div *ngFor="let page of pages | keyvalue: keyAscOrder" class="d-flex flex-wrap bd-highlight mb-3 m-auto">
       <div class="anchor" inViewport
            [inViewportOptions]="{ threshold: [0] }"
            (inViewportAction)="onPageVisible($event)" id="{{pageAnchorElementId+page.key}}">
@@ -27,5 +26,7 @@
       </div>
     </div>
   </div>
-  <app-paginator class="paginator" (pageClick)="scrollToPage($event)"></app-paginator>
+  <app-paginator class="paginator"
+                 (pageClick)="scrollToPage($event)"
+                 [pageNumber]="currentPage"></app-paginator>
 </app-infinite-scroll>

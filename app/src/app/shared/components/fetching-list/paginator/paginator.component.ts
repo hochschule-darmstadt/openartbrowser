@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-paginator',
@@ -7,10 +7,9 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 })
 export class PaginatorComponent implements OnInit {
   @Output() pageClick = new EventEmitter();
+  @Input() pageNumber: number;
 
-  pages = [];
-
-  pagenumber = 10;
+  pages: number[] = [];
 
   constructor() {
   }

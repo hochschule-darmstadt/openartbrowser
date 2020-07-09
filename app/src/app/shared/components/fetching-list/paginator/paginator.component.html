@@ -1,3 +1,9 @@
-<div *ngFor="let page of pages">
-<button (click)="pageClick.emit(page+1)">Page {{page+1}}</button>
+<div class="paginator">
+  <div class="paginator-item paginator-up" (click)="pageClick.emit(+pageNumber-1)"><i class="fa fa-chevron-up"></i></div>
+  <div *ngFor="let page of pages">
+    <div class="paginator-item paginator-page" (click)="pageClick.emit(page)"
+         [ngClass]="{'paginator-selected': +pageNumber === +page}">{{page + 1}}</div>
+  </div>
+  <div class="paginator-item paginator-down" (click)="pageClick.emit(+pageNumber+1)"><i class="fa fa-chevron-down"></i>
+  </div>
 </div>

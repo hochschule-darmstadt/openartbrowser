@@ -3,10 +3,12 @@
 }
 
 .anchor {
+  position: absolute;
   display: inline-block;
-  width: 10rem;
-  height: 1rem;
-  border: 1px solid red;
+  transform: translateX(-1rem);
+  //width: 10rem;
+  //height: 1rem;
+  //border: 1px solid red;
 }
 
 .paginator {
@@ -21,7 +23,6 @@
 .item {
   width: 10rem;
   margin: .5rem;
-
   &:hover {
     .item-link {
       color: #ffffff;

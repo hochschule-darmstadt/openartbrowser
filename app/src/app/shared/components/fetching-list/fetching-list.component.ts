@@ -102,21 +102,15 @@ export class FetchingListComponent implements OnInit {
     this.getEntityArtworks(this.options.entityType, entity.id).then(artworks => {
       let randThumbIndex = -1;
       // search for random artwork which is no .tif
-      do {
-        // remove artwork from list if last assignment failed (not first cycle).
-        if (randThumbIndex !== -1) {
-          artworks.splice(randThumbIndex, 1);
-        }
-        // remove entity if no artworks available
-        if (!artworks.length) {
-          this.removeEntity(entity, pageNumber);
-        }
+      artworks = artworks.filter(artwork => !artwork.image.endsWith('.tif') && !artwork.image.endsWith('.tiff'));
+      if (artworks.length) {
         randThumbIndex = Math.floor(Math.random() * artworks.length);
-      } while (artworks[randThumbIndex].image.endsWith('.tif') || artworks[randThumbIndex].image.endsWith('.tiff'));
-
-      entity.image = artworks[randThumbIndex].image;
-      entity.imageMedium = artworks[randThumbIndex].imageMedium;
-      entity.imageSmall = artworks[randThumbIndex].imageSmall;
+        entity.image = artworks[randThumbIndex].image;
+        entity.imageMedium = artworks[randThumbIndex].imageMedium;
+        entity.imageSmall = artworks[randThumbIndex].imageSmall;
+      } else {
+        this.removeEntity(entity, pageNumber);
+      }
     });
   }
 
@@ -178,6 +172,9 @@ export class FetchingListComponent implements OnInit {
   }
 
   async scrollToPage(pageNumber) {
+    if (pageNumber < 0 || pageNumber === this.currentPage) {
+      return;
+    }
     console.log(pageNumber, this.maxPage, this.currentPage);
 
     const waitQueue: Promise<any>[] = [];
@@ -196,6 +193,13 @@ export class FetchingListComponent implements OnInit {
   onPageVisible($event: any) {
     if ($event.visible) {
       this.currentPage = $event.target.id.split('-').pop();
+      if ((this.currentPage - 1 >= 0) && !(this.currentPage - 1 in this.pages)) {
+        this.initializePage(+this.currentPage - 1);
+      }
+      // if ((this.currentPage + 1 <= this.maxPage) && !(this.currentPage + 1 in this.pages)) {
+      //   this.initializePage(+this.currentPage + 1);
+      // }
+
       console.log('current page:', $event.target.id.split('-').pop(), this.currentPage);
       // console.log($event);
     }

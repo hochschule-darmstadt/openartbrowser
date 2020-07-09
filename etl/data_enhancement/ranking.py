@@ -109,9 +109,7 @@ if __name__ == "__main__":
             ) as file:
                 file.write(json.dumps(out_file, ensure_ascii=False))
             print(
-                datetime.datetime.now(),
-                "Finished extracting wikipedia extracts with",
-                filename,
+                datetime.datetime.now(), "Finished ranking with", filename,
             )
         except Exception as error:
             print(

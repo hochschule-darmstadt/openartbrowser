@@ -5,6 +5,7 @@ python ".\data_extraction\get_wikipedia_extracts.py"
 
 python ".\data_enhancement\estimate_movement_period.py"
 python ".\data_enhancement\has_part_part_of_enhancement.py"
+python ".\data_enhancement\add_youtube_videos.py"
 
 python ".\data_enhancement\ranking.py"
 
@@ -19,8 +20,6 @@ IF EXIST ..\..\..\crawler_output\art_ontology.json (
 )
 
 MOVE art_ontology.json ..\..\..\crawler_output\art_ontology.json
-
-python ..\..\..\data_enhancement\add_youtube_videos.py
 
 python ..\..\..\data_enhancement\split_languages.py
 

@@ -30,11 +30,13 @@ RUN mkdir data_enhancement
 COPY ["./data_enhancement/estimate_movement_period.py", "/app/data_enhancement"]
 COPY ["./data_enhancement/has_part_part_of_enhancement.py", "/app/data_enhancement"]
 COPY ["./data_enhancement/ranking.py", "/app/data_enhancement"]
+COPY ["./data_enhancement/add_youtube_videos.py", "/app/data_enhancement"]
 COPY ["./shared/", "/app/shared"]
 
 RUN pip install ijson
 RUN ["python", "./data_enhancement/estimate_movement_period.py"]
 RUN ["python", "./data_enhancement/has_part_part_of_enhancement.py"]
+RUN ["python", "./data_enhancement/add_youtube_videos.py"]
 
 RUN ["python", "./data_enhancement/ranking.py"]
 
@@ -66,7 +68,6 @@ COPY ["./upload_to_elasticsearch/", "/app/upload_to_elasticsearch/"]
 
 RUN pip install elasticsearch requests ijson
 
-RUN ["python", "data_enhancement/add_youtube_videos.py"]
 RUN ["python", "data_enhancement/split_languages.py"]
 
 # art_ontology.json is moved to /root because elasticsearch_helper.py

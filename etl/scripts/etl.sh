@@ -24,6 +24,8 @@ python3 data_enhancement/estimate_movement_period.py
 
 python3 data_enhancement/has_part_part_of_enhancement.py
 
+python3 data_enhancement/add_youtube_videos.py
+
 python3 data_enhancement/ranking.py
 
 cd crawler_output/intermediate_files/json/
@@ -35,8 +37,6 @@ rm -f ../../../crawler_output/art_ontology.json
 
 # Move the generated art_ontology.json to the directory crawler_output
 mv art_ontology.json ../../../crawler_output/art_ontology.json
-
-python3 ../../../data_enhancement/add_youtube_videos.py
 
 python3 ../../../data_enhancement/split_languages.py
 

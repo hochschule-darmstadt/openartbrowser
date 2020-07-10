@@ -21,7 +21,16 @@ from typing import Dict, List, Optional
 
 import requests
 
-from shared.constants import JSON
+from shared.constants import (
+    JSON,
+    ARTWORK,
+    ARTIST,
+    MOVEMENT,
+    PLURAL,
+    ID,
+    VIDEOS,
+    YOUTUBE_VIDEOS_FILE,
+)
 from shared.utils import create_new_path
 
 try:
@@ -114,7 +123,7 @@ def write_broken_links_to_file(
 def add_youtube_videos(
     entities: Dict,
     videofile_location: Optional[str] = Path(__file__).resolve().parent
-    / "youtube_videos.csv",
+    / YOUTUBE_VIDEOS_FILE,
     check_ids: bool = True,
 ) -> Dict:
     """Load the video csv file and add the links to the ontology file
@@ -132,9 +141,9 @@ def add_youtube_videos(
     # Set video attribute
     entries_added_count = 0
     for entity in entities:
-        if entity["id"] in videos:
+        if entity[ID] in videos:
             entries_added_count += 1
-            entity["videos"] = videos[entity["id"]]
+            entity[VIDEOS] = videos[entity[ID]]
 
     print("Added videos for {} entries. Saving the file..".format(entries_added_count))
 
@@ -143,7 +152,11 @@ def add_youtube_videos(
 
 if __name__ == "__main__":
     check = "-c" in sys.argv
-    for entity_type in ["artworks", "artists", "movements"]:
+    for entity_type in [ARTWORK[PLURAL], ARTIST[PLURAL], MOVEMENT[PLURAL]]:
+        print(
+            datetime.datetime.now(),
+            f"Starting with adding youtube videos for file: {entity_type}",
+        )
         try:
             # Open file
             with open(
@@ -165,6 +178,7 @@ if __name__ == "__main__":
             print(
                 f"Error when opening following file: {entity_type}. Error: {error}. Skipping file now."
             )
+            continue
         print(
             datetime.datetime.now(),
             f"Finished adding youtube videos for file: {entity_type}",

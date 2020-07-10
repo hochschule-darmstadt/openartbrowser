@@ -27,13 +27,10 @@ WORKDIR /app
 COPY --from=Wikicrawler /app/crawler_output/ /app/crawler_output/
 
 RUN mkdir data_enhancement
-COPY ["./data_enhancement/estimate_movement_period.py", "/app/data_enhancement"]
-COPY ["./data_enhancement/has_part_part_of_enhancement.py", "/app/data_enhancement"]
-COPY ["./data_enhancement/ranking.py", "/app/data_enhancement"]
-COPY ["./data_enhancement/add_youtube_videos.py", "/app/data_enhancement"]
+COPY ["./data_enhancement/", "/app/data_enhancement"]
 COPY ["./shared/", "/app/shared"]
 
-RUN pip install ijson
+RUN pip install ijson requests
 RUN ["python", "./data_enhancement/estimate_movement_period.py"]
 RUN ["python", "./data_enhancement/has_part_part_of_enhancement.py"]
 RUN ["python", "./data_enhancement/add_youtube_videos.py"]
@@ -61,12 +58,8 @@ WORKDIR /app
 # copy necessary files
 COPY --from=merge_files /app/art_ontology.json/ /app/crawler_output/
 
-COPY ["./data_enhancement/", "/app/data_enhancement/"]
+COPY ["./data_enhancement/split_languages.py", "/app/data_enhancement/split_languages.py"]
 COPY --from=Wikicrawler /app/shared/ /app/shared/
-
-COPY ["./upload_to_elasticsearch/", "/app/upload_to_elasticsearch/"]
-
-RUN pip install elasticsearch requests ijson
 
 RUN ["python", "data_enhancement/split_languages.py"]
 

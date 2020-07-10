@@ -102,7 +102,7 @@ if __name__ == "__main__":
             # Overwrite file
             # TODO if merging is done with sth else as js script than overwrite current file
             with open(
-                (create_new_path(f"{filename}_rank")).with_suffix(f".{JSON}"),
+                (create_new_path(filename)).with_suffix(f".{JSON}"),
                 "w",
                 newline="",
                 encoding="utf-8",

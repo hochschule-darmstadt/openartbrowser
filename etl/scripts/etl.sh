@@ -30,8 +30,8 @@ python3 data_enhancement/ranking.py
 
 cd crawler_output/intermediate_files/json/
 
-# Merges all *_rank.json files into art_ontology.json
-jq -s '[.[][]]' *_rank.json > art_ontology.json
+# Merges all *.json files in the json dir into art_ontology.json
+jq -s '[.[][]]' *.json > art_ontology.json
 
 rm -f ../../../crawler_output/art_ontology.json
 

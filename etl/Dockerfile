@@ -46,7 +46,7 @@ WORKDIR /app
 # get files from previous stage
 COPY --from=data_enhancement /app/crawler_output/intermediate_files/json/ /app/
 
-RUN jq -s '[.[][]]' *.json > art_ontology.json
+RUN jq -s "[.[][]]" artworks.json genres.json artists.json locations.json materials.json movements.json motifs.json > art_ontology.json
 
 # ------------------------------------------------
 

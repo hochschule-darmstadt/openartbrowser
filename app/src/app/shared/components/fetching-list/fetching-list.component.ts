@@ -54,7 +54,7 @@ export class FetchingListComponent implements OnInit {
   currentPage: number;
 
   pageAnchorElementId = '#pageAnchor-';
-  private isScrolling = false;
+  private scrollingPageNum = -1;
 
   // Order by ascending property key (as number)
   keyAscOrder = (a: KeyValue<number, Page>, b: KeyValue<number, Page>): number => {
@@ -196,17 +196,24 @@ export class FetchingListComponent implements OnInit {
 
     const el = document.getElementById(this.pageAnchorElementId + pageNumber);
     console.log(el);
-    this.isScrolling = true;
+    this.scrollingPageNum = pageNumber;
 
     await window.scrollTo({ top: el.offsetTop, behavior: 'smooth' });
-    this.isScrolling = false;
     console.log(this.pages);
   }
 
   onPageVisible($event: any) {
     if ($event.visible) {
       this.currentPage = $event.target.id.split('-').pop();
-      if ((this.currentPage - 1 >= 0) && !(this.currentPage - 1 in this.pages) && !this.isScrolling) {
+      if (this.scrollingPageNum !== -1) {
+        console.log('current page:', this.currentPage, 'scrollingPageNum', this.scrollingPageNum);
+        if (+this.currentPage === +this.scrollingPageNum) {
+          this.scrollingPageNum = -1;
+        } else {
+          return;
+        }
+      }
+      if ((this.currentPage - 1 >= 0) && !(this.currentPage - 1 in this.pages && this.scrollingPageNum === -1)) {
         const preScrollHeight = this.getContainerScrollHeight();
         const preScrollOffset = this.getContainerScrollTop();
         this.initializePage(+this.currentPage - 1);

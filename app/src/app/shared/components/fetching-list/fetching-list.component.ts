@@ -12,7 +12,6 @@ import { Entity, EntityType } from '../../models/entity.interface';
 import { Artwork } from '../../models/artwork.interface';
 import { DataService } from '../../../core/services/elasticsearch/data.service';
 import { ActivatedRoute } from '@angular/router';
-import { init } from 'protractor/built/launcher';
 import { KeyValue } from '@angular/common';
 
 export interface FetchOptions {
@@ -213,24 +212,35 @@ export class FetchingListComponent implements OnInit {
           return;
         }
       }
-      if ((this.currentPage - 1 >= 0) && !(this.currentPage - 1 in this.pages && this.scrollingPageNum === -1)) {
+      if (this.scrollingPageNum === -1) {
+        const pagesToCheck = this.range(Math.max(+this.currentPage - 2, 0), Math.min(+this.currentPage + 2, this.maxPage));
         const preScrollHeight = this.getContainerScrollHeight();
         const preScrollOffset = this.getContainerScrollTop();
-        this.initializePage(+this.currentPage - 1);
-        this.changeDetectionRef.detectChanges();
-        const postScrollOffset = this.getContainerScrollTop();
-        if (preScrollOffset && postScrollOffset && (preScrollOffset === postScrollOffset)) {
-          const postScrollHeight = this.getContainerScrollHeight();
-          const deltaHeight = (postScrollHeight - preScrollHeight);
+        for (const i of pagesToCheck) {
+          const pageToLoad = i;
+          if (pageToLoad in this.pages || pageToLoad < 0) {
+            continue;
+          }
+          this.initializePage(pageToLoad);
+          if (pageToLoad < this.currentPage) {
+            this.changeDetectionRef.detectChanges();
+            const postScrollOffset = this.getContainerScrollTop();
+            if (preScrollOffset && postScrollOffset && (preScrollOffset === postScrollOffset)) {
+              const postScrollHeight = this.getContainerScrollHeight();
+              const deltaHeight = (postScrollHeight - preScrollHeight);
+              this.setScrollTop(postScrollOffset, deltaHeight);
 
-          this.setScrollTop(postScrollOffset, deltaHeight);
-
-          console.warn('Scrolling by', deltaHeight, 'px');
+              console.warn('Scrolling by', deltaHeight, 'px');
+            }
+          }
         }
       }
-
       console.log('current page:', $event.target.id.split('-').pop(), this.currentPage);
     }
+  }
+
+  range(start, end): Array<number> {
+    return Array.from({ length: end - start + 1 }, (v, k) => k + start);
   }
 
   private getContainerScrollHeight(): number {

@@ -2,6 +2,9 @@
   //height: 100%;
 }
 
+.fetching-list {
+}
+
 .anchor {
   position: absolute;
   display: inline-block;
@@ -13,16 +16,14 @@
 
 .paginator {
   position: fixed;
-  width: 100px;
-  height: 100px;
-  //background: red;
-  top: 300px;
-  left: 100px;
+  top: 100px;
+  right: 0;
 }
 
 .item {
   width: 10rem;
   margin: .5rem;
+
   &:hover {
     .item-link {
       color: #ffffff;

@@ -5,13 +5,14 @@ python ".\data_extraction\get_wikipedia_extracts.py"
 
 python ".\data_enhancement\estimate_movement_period.py"
 python ".\data_enhancement\has_part_part_of_enhancement.py"
+python ".\data_enhancement\add_youtube_videos.py"
 
 python ".\data_enhancement\ranking.py"
 
 CD crawler_output\intermediate_files\json\
 
 REM Cmd does not resolve wildcards so for each file to be merged add the full name to the list
-jq -s "[.[][]]" artworks_rank.json genres_rank.json artists_rank.json locations_rank.json materials_rank.json movements_rank.json motifs_rank.json > art_ontology.json
+jq -s "[.[][]]" artworks.json genres.json artists.json locations.json materials.json movements.json motifs.json > art_ontology.json
 
 IF EXIST ..\..\..\crawler_output\art_ontology.json (
     ECHO "art_ontology.json already exist in directory crawler_output. Removing ..."
@@ -19,8 +20,6 @@ IF EXIST ..\..\..\crawler_output\art_ontology.json (
 )
 
 MOVE art_ontology.json ..\..\..\crawler_output\art_ontology.json
-
-python ..\..\..\data_enhancement\add_youtube_videos.py
 
 python ..\..\..\data_enhancement\split_languages.py
 

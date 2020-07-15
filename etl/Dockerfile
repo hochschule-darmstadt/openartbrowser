@@ -27,14 +27,13 @@ WORKDIR /app
 COPY --from=Wikicrawler /app/crawler_output/ /app/crawler_output/
 
 RUN mkdir data_enhancement
-COPY ["./data_enhancement/estimate_movement_period.py", "/app/data_enhancement"]
-COPY ["./data_enhancement/has_part_part_of_enhancement.py", "/app/data_enhancement"]
-COPY ["./data_enhancement/ranking.py", "/app/data_enhancement"]
+COPY ["./data_enhancement/", "/app/data_enhancement"]
 COPY ["./shared/", "/app/shared"]
 
-RUN pip install ijson
+RUN pip install ijson requests
 RUN ["python", "./data_enhancement/estimate_movement_period.py"]
 RUN ["python", "./data_enhancement/has_part_part_of_enhancement.py"]
+RUN ["python", "./data_enhancement/add_youtube_videos.py"]
 
 RUN ["python", "./data_enhancement/ranking.py"]
 
@@ -47,7 +46,7 @@ WORKDIR /app
 # get files from previous stage
 COPY --from=data_enhancement /app/crawler_output/intermediate_files/json/ /app/
 
-RUN jq -s '[.[][]]' *_rank.json > art_ontology.json
+RUN jq -s "[.[][]]" artworks.json genres.json artists.json locations.json materials.json movements.json motifs.json > art_ontology.json
 
 # ------------------------------------------------
 
@@ -59,14 +58,9 @@ WORKDIR /app
 # copy necessary files
 COPY --from=merge_files /app/art_ontology.json/ /app/crawler_output/
 
-COPY ["./data_enhancement/", "/app/data_enhancement/"]
+COPY ["./data_enhancement/split_languages.py", "/app/data_enhancement/split_languages.py"]
 COPY --from=Wikicrawler /app/shared/ /app/shared/
 
-COPY ["./upload_to_elasticsearch/", "/app/upload_to_elasticsearch/"]
-
-RUN pip install elasticsearch requests ijson
-
-RUN ["python", "data_enhancement/add_youtube_videos.py"]
 RUN ["python", "data_enhancement/split_languages.py"]
 
 # art_ontology.json is moved to /root because elasticsearch_helper.py

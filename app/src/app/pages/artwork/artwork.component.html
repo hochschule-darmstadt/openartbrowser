@@ -36,10 +36,9 @@
         <app-collapse [showVideo]="videoExists">
           <app-abstract [entity]="artwork"></app-abstract>
 
-
           <div class="videos">
-            <div class="video" *ngFor="let url of uniqueVideos;  let i=index">
-              <app-video *ngIf="(i < 3)" [videoUrl]="url" (videoFound)="videoFound($event)"></app-video>
+            <div class="video" *ngFor="let url of uniqueVideos; let i = index">
+              <app-video *ngIf="i < 3" [videoUrl]="url" (videoFound)="videoFound($event)"></app-video>
             </div>
           </div>
 
@@ -53,7 +52,7 @@
 
           <app-information i18n-label="Motif label@@motif" label="Motifs" [values]="filterDuplicateMotifs()"></app-information>
 
-          <app-iconclass i18n="Iconography label@@iconography" [iconclasses]="artwork.iconclasses" label="Iconography"></app-iconclass>
+          <app-iconclass i18n-label="Iconography label@@iconography" [iconclasses]="artwork.iconclasses" label="Iconography"></app-iconclass>
 
           <app-dimensions *ngIf="artwork" [artwork]="artwork"></app-dimensions>
 
@@ -77,7 +76,7 @@
               <i class="mr-1 fa fa-{{ tab.icon }}"></i>
               <ng-container i18n="Entity Type Labels@@entity_labels" *ngIf="tab.type; let type">
                 {type, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material
-                  {Material} main_motif {Main Motif} }
+                {Material} main_motif {Main Motif} }
               </ng-container>
             </a>
           </li>

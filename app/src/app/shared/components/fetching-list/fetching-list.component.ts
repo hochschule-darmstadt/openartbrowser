@@ -9,10 +9,11 @@ import {
   TemplateRef
 } from '@angular/core';
 import { Entity, EntityType } from '../../models/entity.interface';
-import { Artwork } from '../../models/artwork.interface';
 import { DataService } from '../../../core/services/elasticsearch/data.service';
 import { ActivatedRoute } from '@angular/router';
 import { KeyValue } from '@angular/common';
+import { elasticEnvironment } from '../../../../environments/environment';
+import { Artwork } from '../../models/models';
 
 export interface FetchOptions {
   /** initial offset of the query, this is where it will continue to load */
@@ -48,14 +49,13 @@ export class FetchingListComponent implements OnInit {
 
   @ContentChild(TemplateRef, { static: false }) templateRef;
 
-  // TODO: Input these to paginator to handle display stuff
   maxPage: number;
   currentPage: number;
 
   pageAnchorElementId = '#pageAnchor-';
   private scrollingPageNum = -1;
 
-  // Order by ascending property key (as number)
+  // order by ascending property key (as number)
   keyAscOrder = (a: KeyValue<number, Page>, b: KeyValue<number, Page>): number => {
     return +a.key < +b.key ? -1 : (+b.key < +a.key ? 1 : 0);
   };
@@ -71,17 +71,19 @@ export class FetchingListComponent implements OnInit {
       Math.ceil(this.options.queryCount / this.options.fetchSize), this.options);
     this.options.queryCount.then(value => {
       this.options.queryCount = value;
-
       console.log(this.options.queryCount);
-      this.maxPage = Math.ceil(this.options.queryCount / this.options.fetchSize);
+      // TODO: If the queryCount exceeds the elasticSearch safeguard (default 10000), maxPage is limited.
+      //  Find a way to prevent exceeding this limit (eg. use scroll api or search after)
+      this.maxPage = this.options.queryCount <= elasticEnvironment.nonScrollingMaxQuerySize ?
+        Math.ceil(this.options.queryCount / this.options.fetchSize) :
+        Math.floor(elasticEnvironment.nonScrollingMaxQuerySize / this.options.fetchSize) - 1;
       this.currentPage = Math.floor(this.options.initOffset / this.options.fetchSize);
       this.initializePage(this.currentPage);
     });
 
   }
 
-  // TODO: Fix scroll up and down recognition for gaps in pages
-  /** This gets called by the app-infinite-scroll component and fetches new data */
+  /** this gets called by the app-infinite-scroll component and fetches new data */
   onScrollDown(event?) {
     if (!this.maxPage) {
       return;
@@ -95,18 +97,11 @@ export class FetchingListComponent implements OnInit {
     this.initializePage(this.currentPage);
   }
 
-  onScrollUp(event?) {
-    console.log(event);
-    console.log('up');
-    if (this.currentPage <= 0) {
-      return;
-    }
-    this.currentPage--;
-    this.initializePage(this.currentPage);
-  }
-
   /** sets random related image to entity */
   private setRandomArtwork(entity, pageNumber) {
+    if (entity.type === EntityType.ARTWORK) {
+      this.setError(entity, pageNumber);
+    }
     /** load missing movement images */
     this.getEntityArtworks(this.options.entityType, entity.id).then(artworks => {
       let randThumbIndex = -1;
@@ -118,7 +113,7 @@ export class FetchingListComponent implements OnInit {
         entity.imageMedium = artworks[randThumbIndex].imageMedium;
         entity.imageSmall = artworks[randThumbIndex].imageSmall;
       } else {
-        this.removeEntity(entity, pageNumber);
+        this.setError(entity, pageNumber);
       }
     });
   }
@@ -128,21 +123,38 @@ export class FetchingListComponent implements OnInit {
     return await this.dataService.findArtworksByType(type, [parentId], 20);
   }
 
-  /** Handles items which cannot be displayed */
+  /** handles items which cannot be displayed */
   onLoadingError(item: Entity, pageNumber) {
     if (item.id) {
       this.setRandomArtwork(item, pageNumber);
     } else {
-      this.removeEntity(item, pageNumber);
+      this.setError(item, pageNumber);
     }
   }
 
-  /** Removes items from the component. Index can be specified to remove without search (faster) */
+  /** removes items from the component. Index can be specified to remove without search (faster) */
   removeEntity(item: Entity, pageNumber, index?) {
-    delete this.pages[pageNumber].items[!index ?
+    // splice removes the element in contrast to delete, which sets it to undefined
+    this.pages[pageNumber].items.splice(!index ?
       this.pages[pageNumber].items.findIndex(i => {
         return i ? i.id === item.id : true;
-      }) : index];
+      }) : index, 1);
+  }
+
+  /** removes (broken) image link from item and sets error property to true */
+  setError(item: Entity, pageNumber, index?) {
+    // instead of removing items, we replace them with error items
+    if (!index) {
+      index = this.pages[pageNumber].items.findIndex(i => {
+        return i ? i.id === item.id : true;
+      });
+    }
+    this.pages[pageNumber].items[index] = Object.assign(this.pages[pageNumber].items[index], {
+      image: undefined,
+      imageMedium: undefined,
+      imageSmall: undefined,
+      error: true
+    });
   }
 
   initializePage(pageNumber) {
@@ -166,7 +178,7 @@ export class FetchingListComponent implements OnInit {
     return this.query(offset).then(entities => {
       entities.forEach(entity => {
         entity.label = capitalize(entity.label);
-        /** If image link is missing, query for random image */
+        /** if image link is missing, query for random image */
         if (!entity.image) {
           this.setRandomArtwork(entity, pageNumber);
         }

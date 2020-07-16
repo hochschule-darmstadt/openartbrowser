@@ -17,6 +17,10 @@
             alt="{{ entity?.label }}"
             (error)="onLoadingError(entity, page.key)"
           />
+          <div *ngIf="entity?.error" class="error flex-column">
+            <i class="fa fa-paint-brush"></i>
+            <span i18n-label="error text@@fetching_list_error" class="mt-3" >Painting in progress</span>
+          </div>
         </div>
         <ng-container [ngTemplateOutlet]="templateRef"
                       [ngTemplateOutletContext]="{entity: entity, entityType: options.entityType}"></ng-container>
@@ -28,5 +32,6 @@
 <div class="flex-column">
   <app-paginator class="paginator"
                  (pageClick)="scrollToPage($event)"
-                 [pageNumber]="currentPage"></app-paginator>
+                 [pageNumber]="currentPage"
+                 [maxPage]="maxPage"></app-paginator>
 </div>

@@ -24,6 +24,7 @@ import { FetchingListComponent } from './components/fetching-list/fetching-list.
 import { EventTableComponent } from './components/event-table/event-table.component';
 import { InViewportModule } from 'ng-in-viewport';
 import { PaginatorComponent } from './components/fetching-list/paginator/paginator.component';
+import { AddedToDOMDirective } from './components/fetching-list/added-to-dom.directive';
 
 /** Everything that should be used within multiple feature modules but isn't always required goes here */
 @NgModule({
@@ -45,7 +46,8 @@ import { PaginatorComponent } from './components/fetching-list/paginator/paginat
     MovementOverviewComponent,
     FetchingListComponent,
     EventTableComponent,
-    PaginatorComponent
+    PaginatorComponent,
+    AddedToDOMDirective
   ],
   imports: [
     CommonModule,

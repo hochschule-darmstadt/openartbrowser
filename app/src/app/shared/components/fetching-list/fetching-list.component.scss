@@ -17,7 +17,7 @@
 .paginator {
   position: fixed;
   top: 100px;
-  right: 0;
+  right: .1rem;
 }
 
 .item {
@@ -73,6 +73,26 @@
     object-fit: cover;
     margin-left: 50%;
     transform: translate(-50%);
+  }
+}
+
+.error {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #888888;
+
+  i {
+    font-size: 4rem;
+    //margin: 50% 0 0 50%;
+    //transform: translate(-50%);
+  }
+
+  span {
+    //margin-left: 50%;
+    //transform: translate(-50%);
   }
 }
 

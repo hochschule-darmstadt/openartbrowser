@@ -7,7 +7,8 @@ export const environment = {
 };
 
 export const elasticEnvironment = {
-  serverURI: '/api'
+  serverURI: '/api',
+  nonScrollingMaxQuerySize: 10000
 };
 
 export const analyticsEnvironment = {

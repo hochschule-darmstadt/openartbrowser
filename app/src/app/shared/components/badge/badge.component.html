@@ -15,12 +15,23 @@
 
 
 <ng-template #htmlContent>
-  <div class="tooltip-container">
+  <div *ngIf="isImageSourceValid else handleInvalidSource" class="tooltip-container">
     <div class="tooltip-text-container">
       <span  class="tooltip-text">
         {{ tooltip }}
       </span>
     </div>
-    <div *ngIf="entity.imageSmall" class="tooltip-image-container"><img id="tooltip-image" [src]="entity.imageSmall" /></div>
+    <div *ngIf="entity.imageSmall" class="tooltip-image-container">
+      <img id="tooltip-image" [src]="entity.imageSmall" (error)="handleInvalidImageSource($event)" />
+    </div>
   </div>
+  <ng-template #handleInvalidSource>
+    <div class="tooltip-container">
+      <div class="tooltip-text-container">
+        <span  class="tooltip-text">
+          {{ tooltip }}
+        </span>
+      </div>
+    </div>
+  </ng-template>
 </ng-template>

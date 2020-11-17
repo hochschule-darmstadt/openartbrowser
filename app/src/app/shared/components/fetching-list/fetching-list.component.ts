@@ -14,7 +14,6 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { KeyValue } from '@angular/common';
 import { elasticEnvironment } from '../../../../environments/environment';
 import { Artwork } from '../../models/models';
-import { isBoolean } from 'util';
 
 export interface FetchOptions {
   /** initial offset of the query, this is where it will continue to load */

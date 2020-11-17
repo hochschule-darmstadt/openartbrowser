@@ -1,9 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { EntitiesComponent } from './entities.component';
-import {DataService} from '../../core/services/elasticsearch/data.service';
-import {HttpClientModule} from '@angular/common/http';
-import {RouterModule} from '@angular/router';
+import { DataService } from '../../core/services/elasticsearch/data.service';
+import { HttpClientModule } from '@angular/common/http';
+import { RouterModule } from '@angular/router';
+import { FetchingListComponent } from '../../shared/components/fetching-list/fetching-list.component';
 
 describe('EntitiesComponent', () => {
   let component: EntitiesComponent;
@@ -13,13 +14,14 @@ describe('EntitiesComponent', () => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule, RouterModule.forRoot([])],
       declarations: [
-        EntitiesComponent
+        EntitiesComponent,
+        FetchingListComponent
       ],
       providers: [
         DataService
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

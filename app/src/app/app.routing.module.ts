@@ -33,6 +33,7 @@ const routes: Routes = [
   { path: 'material/:materialId', loadChildren: './pages/material/material.routing.module#MaterialRoutingModule' },
   { path: 'movement/:movementId', loadChildren: './pages/movement/movement.routing.module#MovementRoutingModule' },
   { path: 'motif/:motifId', loadChildren: './pages/motif/motif.routing.module#MotifRoutingModule' },
+  { path: 'iconography/:notation', loadChildren: './pages/iconography/iconography.routing.module#IconographyRoutingModule' },
   { path: 'search', loadChildren: './pages/search-result/search-result.routing.module#SearchResultRoutingModule' },
   { path: '**', redirectTo: '' }
 ];
@@ -50,5 +51,4 @@ const routes: Routes = [
   ],
   bootstrap: [AppComponent]
 })
-export class AppRoutingModule {
-}
+export class AppRoutingModule {}

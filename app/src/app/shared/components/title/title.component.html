@@ -2,7 +2,8 @@
   <a class="badge badge-secondary chip" [routerLink]="['/' + entity.type + 's']">
     <i class="fas {{ entity?.icon }}"></i>
     <ng-container i18n="Entity Type Labels@@entity_labels" *ngIf="entity.type; let type">
-      {type, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material}}
+      {type, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material}
+      iconography {Iconography}}
     </ng-container>
   </a>
 </div>

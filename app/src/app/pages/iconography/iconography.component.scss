@@ -1,0 +1,21 @@
+$color1: #00bc8c;
+
+:host ::ng-deep .app-information-content {
+  flex-flow: column;
+}
+
+:host ::ng-deep .current-element {
+  .badge {
+    background: $color1;
+  }
+}
+
+:host ::ng-deep .children {
+  h4 {
+    font-size: small;
+  }
+}
+
+:host ::ng-deep .more {
+  margin-left: 4rem;
+}

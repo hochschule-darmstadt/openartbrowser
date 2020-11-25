@@ -2,6 +2,12 @@
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7" *ngIf="iconclassData">
       <app-title [entity]="iconclassData"></app-title>
+
+      <app-information #appInfo i18n-label="hierarchy label@@iconclass_hierarchy" label="Iconclass Hierarchy" [values]="hierarchy"></app-information>
+      <app-collapse *ngIf="children" class="children" i18n-label="hierarchy children collapse@@iconclass_children" heading="Children">
+        <app-information [values]="children"></app-information>
+      </app-collapse>
+      <app-information i18n-label="Inception label@@inception" label="Inception" [value]="iconclassData.keywords['de'].join(', ')"></app-information>
     </div>
   </div>
 </div>

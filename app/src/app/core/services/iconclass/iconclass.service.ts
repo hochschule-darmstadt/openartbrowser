@@ -13,31 +13,43 @@ export class IconclassService {
   constructor(private http: HttpClient) {}
 
   public getIconclassByNotation(notation: string): Observable<Iconography> {
-    notation = encodeURI(notation);
-    console.log(notation);
-    const uri = iconclassEnvironment.apiURI + '/?notation=' + notation;
+    return this.getIconclassListByNotation([notation]).map(value => {
+      if (value.length > 0) {
+        return value[0];
+      } else {
+        return;
+      }
+    });
+  }
+
+  public getIconclassListByNotation(notations: string[]): Observable<Iconography[]> {
+    notations = notations.map(notation => encodeURI(notation));
+    console.log(notations);
+    const uri = iconclassEnvironment.apiURI + '/?notation=' + notations.join('&notation=');
     console.log(uri);
     return this.http.get(uri).map((response: Array<any>) => {
       if (!response.length) {
-        throw throwError(response);
+        throw throwError('Response was empty!');
       }
-      const ico = {
-        id: response[0].n,
-        icon: EntityIcon.ICONOGRAPHY,
-        type: EntityType.ICONOGRAPHY,
-        children: response[0].c,
-        parents: response[0].p,
-        keywords: response[0].kw,
-        text: response[0].txt
-      } as Iconography;
-      this.setIconographyLabel(ico);
-      return ico;
+      return response.map(item => {
+        const ico = {
+          id: item.n,
+          icon: EntityIcon.ICONOGRAPHY,
+          type: EntityType.ICONOGRAPHY,
+          children: item.c,
+          parents: item.p,
+          keywords: item.kw,
+          text: item.txt
+        } as Iconography;
+        this.setIconographyLabel(ico);
+        return ico;
+      });
     });
   }
 
   public setIconographyLabel(iconography: Iconography) {
-    const regex = /[():;]/g; // TODO: find better regex?
-    const match = regex.exec(iconography.text.de);
+    const regex = /[();]/g; // TODO: find better regex?
+    const match = regex.exec(iconography.text.de); // TODO: substitute with active language
     if (match) {
       iconography.label = iconography.id + ': ' + iconography.text.de.substr(0, match.index);
     } else {

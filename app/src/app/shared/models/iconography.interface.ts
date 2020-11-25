@@ -1,21 +1,13 @@
-// TODO: this is not final
-import { EntityIcon, EntityType } from './entity.interface';
+import { Entity } from './entity.interface';
 
-export interface EntityCore {
-  id: string;
-  type: EntityType;
-  label: string;
-  icon: EntityIcon;
-}
-
-export interface Iconography extends EntityCore {
+export interface Iconography extends Entity {
   parents: Array<object>;
   children: Array<object>;
   keywords: object;
   text: IconographyText;
 }
 
-export interface IconographyText extends EntityCore {
+export interface IconographyText {
   fi: string;
   fr: string;
   de: string;

@@ -56,7 +56,11 @@ export class IconclassService {
       iconography.label = iconography.id + ': ' + iconography.text.de;
     }
     iconography.label = iconography.label.length > 50 ? iconography.label.substr(0, 50) + '...' : iconography.label;
-    
+    iconography.text.de = this.capitalizeFirstLetter(iconography.text.de);
     return iconography;
+  }
+
+  private capitalizeFirstLetter(iconText: string) {
+    return iconText.charAt(0).toUpperCase() + iconText.slice(1);
   }
 }

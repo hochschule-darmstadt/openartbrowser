@@ -31,7 +31,6 @@ export class IconographyComponent implements OnInit {
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
       this.notation = params.get('notation');
       this.iconclassService.getIconclassByNotation(this.notation).subscribe(async result => {
-        console.log(result);
         if (!result) {
           this.handleError();
           return;
@@ -39,14 +38,12 @@ export class IconographyComponent implements OnInit {
         this.iconclassData = result;
         this.hierarchy = [this.iconclassData];
 
-        console.log('#badge-' + this.iconclassData.id);
         this.iconclassService.getIconclassListByNotation(this.iconclassData.parents.map(value => value + '')).subscribe(async res => {
           this.parents = res;
           this.hierarchy = this.parents.concat(this.iconclassData);
         });
         this.iconclassService.getIconclassListByNotation(this.iconclassData.children.map(value => value + '')).subscribe(async res => {
           this.children = res;
-          // this.hierarchy = this.parents.concat(this.iconclassData).concat(this.children);
         });
       });
     });
@@ -61,14 +58,11 @@ export class IconographyComponent implements OnInit {
   }
 
   @ViewChild('appInfo', { static: false, read: ElementRef })
-  @ViewChild('appInfo', { static: false, read: ElementRef })
   set content(content: ElementRef) {
     if (content) {
       // initially setter gets called with undefined
       this.appInfoRef = content;
       const hierarchyRoot = this.appInfoRef.nativeElement.querySelector('#badge-' + this.iconclassData.id);
-      console.log(hierarchyRoot);
-      // const hierarchyRoot = document.getElementById('badge-' + this.iconclassData.id);
       if (hierarchyRoot) {
         hierarchyRoot.className = 'current-element';
       } else {

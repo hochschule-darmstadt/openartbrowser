@@ -299,8 +299,8 @@
         <target state="final">Ikonografie</target>
       </trans-unit>
       <trans-unit id="iconclass_hierarchy" datatype="html">
-        <source>Iconclass Hierarchy:</source>
-        <target state="final">Iconclass Hierarchie:</target>
+        <source>Iconclass Hierarchy</source>
+        <target state="final">Iconclass Hierarchie</target>
       </trans-unit>
       <trans-unit id="iconclass_children" datatype="html">
         <source>Children</source>

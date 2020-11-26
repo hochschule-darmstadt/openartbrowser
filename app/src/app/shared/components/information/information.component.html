@@ -1,15 +1,15 @@
 <div class="row" *ngIf="value || values?.length || isHref">
-  <div class="col-md-1">
+  <div class="col-md-1 app-information-description">
     <p class="mb-1 text-muted">{{ label }}{{ label ? ':' : '' }}</p>
   </div>
 
-  <div class="col-md-11">
+  <div class="col-md-11 app-information-content">
     <p *ngIf="value" class="mb-1 add-padding notchip">
       <span *ngIf="!isHref">{{ value }}</span>
       <a *ngIf="isHref" href="{{ value }}" target="_blank">{{ value }}</a>
     </p>
 
-    <p *ngIf="values?.length" class="mb-1 add-padding app-information-content row">
+    <p *ngIf="values?.length" class="mb-1 add-padding app-information-content-badges">
       <app-badge id="badge-{{ entity.id }}" *ngFor="let entity of values; index as i" [entity]="entity"></app-badge>
     </p>
   </div>

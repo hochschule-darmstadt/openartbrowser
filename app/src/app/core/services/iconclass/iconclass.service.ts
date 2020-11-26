@@ -55,6 +55,8 @@ export class IconclassService {
     } else {
       iconography.label = iconography.id + ': ' + iconography.text.de;
     }
+    iconography.label = iconography.label.length > 50 ? iconography.label.substr(0, 50) + '...' : iconography.label;
+    
     return iconography;
   }
 }

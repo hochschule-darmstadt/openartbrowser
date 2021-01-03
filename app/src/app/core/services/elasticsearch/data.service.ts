@@ -1,10 +1,11 @@
 import * as _ from 'lodash';
-import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable, LOCALE_ID } from '@angular/core';
-import { ArtSearch, Artwork, Entity, EntityIcon, EntityType, Iconclass, Movement } from 'src/app/shared/models/models';
-import { elasticEnvironment } from 'src/environments/environment';
-import QueryBuilder from './query.builder';
-import { usePlural } from 'src/app/shared/models/entity.interface';
+import {HttpClient} from '@angular/common/http';
+import {Inject, Injectable, LOCALE_ID} from '@angular/core';
+import {ArtSearch, Artwork, Entity, EntityIcon, EntityType, Iconclass, Movement} from 'src/app/shared/models/models';
+import {elasticEnvironment} from 'src/environments/environment';
+import {usePlural} from 'src/app/shared/models/entity.interface';
+import * as bodyBuilder from 'bodybuilder';
+import {Bodybuilder} from 'bodybuilder';
 
 const defaultSortField = 'relativeRank';
 
@@ -33,10 +34,9 @@ export class DataService {
    * @param type if specified, it is assured that the returned entity has this entityType
    */
   public async findById<T>(id: string, type?: EntityType): Promise<T> {
-    const response = await this.http.get<T>(this.baseUrl + '?q=id:' + id).toPromise();
-    const entities = this.filterData<T>(response, type);
-    // set type specific attributes
-    entities.forEach(entity => this.setTypes(entity));
+    const body = bodyBuilder()
+      .query('match', 'id', id)
+    const entities = await this.performQuery<T>(body, this.baseUrl, type)
     return !entities.length ? null : entities[0];
   }
 
@@ -50,24 +50,25 @@ export class DataService {
     if (!copyids || copyids.length === 0) {
       return [];
     }
-    const query = new QueryBuilder().size(400);
-    copyids.forEach(id => query.shouldMatch('id', `${id}`));
-    return this.performQuery<T>(query, this.baseUrl, type);
+    const body = bodyBuilder()
+    _.each(ids, id => body.orQuery('match', 'id', id));
+    return this.performQuery<T>(body, this.baseUrl, type);
   }
 
   /**
    * Find Artworks by the given ids for the given type
    * @param type the type to search in
    * @param ids the ids to search for
+   * @param count the number of items returned
    */
   public findArtworksByType(type: EntityType, ids: string[], count = 200): Promise<Artwork[]> {
-    const query = new QueryBuilder()
+    const body = bodyBuilder()
       .size(count)
-      .sort(defaultSortField)
-      .minimumShouldMatch(1)
-      .ofType(EntityType.ARTWORK);
-    ids.forEach(id => query.shouldMatch(usePlural(type), `${id}`));
-    return this.performQuery<Artwork>(query);
+      .sort(defaultSortField, 'desc')
+      .queryMinimumShouldMatch(1, true)
+      .query('match', 'type', EntityType.ARTWORK)
+    _.each(ids, id => body.orQuery('match', usePlural(type), id));
+    return this.performQuery<Artwork>(body);
   }
 
   /**
@@ -99,12 +100,12 @@ export class DataService {
    * @param label artwork label
    */
   public findArtworksByLabel(label: string): Promise<Artwork[]> {
-    const query = new QueryBuilder()
+    const body = bodyBuilder()
       .size(20)
-      .sort(defaultSortField)
-      .mustMatch('type', 'artwork')
-      .shouldMatch('label', `${label}`);
-    return this.performQuery<Artwork>(query);
+      .sort(defaultSortField, 'desc')
+      .query('match', 'type', EntityType.ARTWORK)
+      .orQuery('match', 'label', label);
+    return this.performQuery<Artwork>(body);
   }
 
   /**
@@ -112,12 +113,12 @@ export class DataService {
    * @param movement label of movement
    */
   public findArtworksByMovement(movement: string): Promise<Artwork[]> {
-    const query = new QueryBuilder()
+    const body = bodyBuilder()
       .size(5)
-      .sort(defaultSortField)
-      .mustMatch('type', 'artwork')
-      .mustMatch('movements', `${movement}`);
-    return this.performQuery<Artwork>(query);
+      .sort(defaultSortField, 'desc')
+      .query('match', 'type', EntityType.ARTWORK)
+      .query('match', usePlural(EntityType.MOVEMENT), movement)
+    return this.performQuery<Artwork>(body);
   }
 
   /**
@@ -126,34 +127,31 @@ export class DataService {
    * @param keywords the list of words to search for.
    *
    */
-  public searchArtworks(searchObj: ArtSearch, keywords: string[] = []): Promise<Artwork[]> {
-    const query = new QueryBuilder()
+  public async searchArtworks(searchObj: ArtSearch, keywords: string[] = []): Promise<Artwork[]> {
+    const body = bodyBuilder()
       .size(400)
-      .sort(defaultSortField)
-      .mustMatch('type', 'artwork');
-
+      .sort(defaultSortField, 'desc')
     _.each(searchObj, (arr, key) => {
       if (Array.isArray(arr)) {
-        arr.forEach(val => query.mustMatch(key, val));
+        _.each(arr, val => body.query('match', key, val));
       }
     });
-
-    keywords.forEach(keyword =>
-      query.mustShouldMatch([
-        { key: 'label', value: keyword },
-        { key: 'description', value: keyword }
-      ])
+    _.each(keywords, keyword =>
+      body.query('bool', (q) => {
+        return q.orQuery('match', 'label', keyword)
+          .orQuery('match', 'description', keyword)
+      })
     );
-    return this.performQuery(query);
+    return this.performQuery(body);
   }
 
   public async getEntityItems<T>(type: EntityType, count = 20, from = 0): Promise<T[]> {
-    const query = new QueryBuilder()
-      .mustMatch('type', type)
-      .sort(defaultSortField)
+    const body = bodyBuilder()
+      .query('match', 'type', type)
+      .sort(defaultSortField, 'desc')
       .size(count)
-      .from(from);
-    return this.performQuery<T>(query);
+      .from(from)
+    return this.performQuery<T>(body);
   }
 
   public async countEntityItems<T>(type: EntityType) {
@@ -164,25 +162,25 @@ export class DataService {
   }
 
   public async getRandomMovementArtwork<T>(movementId: string, count = 20): Promise<T[]> {
-    const query = new QueryBuilder()
-      .mustMatch('type', 'artwork')
-      .mustPrefix('image', 'http')
-      .sort(defaultSortField)
-      .size(count);
-    return this.performQuery<T>(query);
+    const body = bodyBuilder()
+      .query('match', 'type', EntityType.ARTWORK)
+      .query('prefix', 'image', 'http')
+      .sort(defaultSortField, 'desc')
+      .size(count)
+    return this.performQuery<T>(body);
   }
 
   /**
-   * Find any obejct in the index by the field label with the given label
+   * Find any object in the index by the field label with the given label
    * @param label object label
    */
   public findByLabel(label: string): Promise<any[]> {
-    const query = new QueryBuilder()
-      .shouldMatch('label', `${label}`)
-      .shouldWildcard('label', `${label}`)
-      .sort(defaultSortField)
-      .size(200);
-    return this.performQuery(query);
+    const body = bodyBuilder()
+      .orQuery('match', 'label', label)
+      .orQuery('wildcard', 'label', '*' + label + '*')
+      .sort(defaultSortField, 'desc')
+      .size(200)
+    return this.performQuery(body);
   }
 
   /**
@@ -191,12 +189,12 @@ export class DataService {
    * @param count size of return set
    */
   public async getCategoryItems<T>(type: EntityType, count = 20): Promise<T[]> {
-    const query = new QueryBuilder()
-      .mustMatch('type', type)
-      .mustPrefix('image', 'http')
-      .sort(defaultSortField)
-      .size(count);
-    return this.performQuery<T>(query);
+    const body = bodyBuilder()
+      .query('match', 'type', type)
+      .query('prefix', 'image', 'http')
+      .sort(defaultSortField, 'desc')
+      .size(count)
+    return this.performQuery(body);
   }
 
   /**
@@ -225,7 +223,7 @@ export class DataService {
    * @param url endpoint
    * @param type type to filter for
    */
-  private async performQuery<T>(query: QueryBuilder, url: string = this.baseUrl, type?: EntityType) {
+  private async performQuery<T>(query: Bodybuilder, url: string = this.baseUrl, type?: EntityType) {
     const response = await this.http.post<T>(url, query.build()).toPromise();
     const entities = this.filterData<T>(response, type);
     // set type specific attributes
@@ -247,7 +245,7 @@ export class DataService {
     const entities: T[] = [];
     _.each(
       data.hits.hits,
-      function(val) {
+      function (val) {
         if (!filterBy || (filterBy && val._source.type === filterBy)) {
           entities.push(this.addThumbnails(val._source));
         }

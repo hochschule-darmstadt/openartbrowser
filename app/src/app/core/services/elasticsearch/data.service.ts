@@ -35,8 +35,8 @@ export class DataService {
    */
   public async findById<T>(id: string, type?: EntityType): Promise<T> {
     const body = bodyBuilder()
-      .query('match', 'id', id)
-    const entities = await this.performQuery<T>(body, this.baseUrl, type)
+      .query('match', 'id', id);
+    const entities = await this.performQuery<T>(body, this.baseUrl, type);
     return !entities.length ? null : entities[0];
   }
 
@@ -50,7 +50,7 @@ export class DataService {
     if (!copyids || copyids.length === 0) {
       return [];
     }
-    const body = bodyBuilder()
+    const body = bodyBuilder().size(400);
     _.each(ids, id => body.orQuery('match', 'id', id));
     return this.performQuery<T>(body, this.baseUrl, type);
   }
@@ -66,7 +66,7 @@ export class DataService {
       .size(count)
       .sort(defaultSortField, 'desc')
       .queryMinimumShouldMatch(1, true)
-      .query('match', 'type', EntityType.ARTWORK)
+      .query('match', 'type', EntityType.ARTWORK);
     _.each(ids, id => body.orQuery('match', usePlural(type), id));
     return this.performQuery<Artwork>(body);
   }
@@ -117,7 +117,7 @@ export class DataService {
       .size(5)
       .sort(defaultSortField, 'desc')
       .query('match', 'type', EntityType.ARTWORK)
-      .query('match', usePlural(EntityType.MOVEMENT), movement)
+      .query('match', usePlural(EntityType.MOVEMENT), movement);
     return this.performQuery<Artwork>(body);
   }
 
@@ -127,10 +127,10 @@ export class DataService {
    * @param keywords the list of words to search for.
    *
    */
-  public async searchArtworks(searchObj: ArtSearch, keywords: string[] = []): Promise<Artwork[]> {
+  public searchArtworks(searchObj: ArtSearch, keywords: string[] = []): Promise<Artwork[]> {
     const body = bodyBuilder()
       .size(400)
-      .sort(defaultSortField, 'desc')
+      .sort(defaultSortField, 'desc');
     _.each(searchObj, (arr, key) => {
       if (Array.isArray(arr)) {
         _.each(arr, val => body.query('match', key, val));
@@ -150,7 +150,7 @@ export class DataService {
       .query('match', 'type', type)
       .sort(defaultSortField, 'desc')
       .size(count)
-      .from(from)
+      .from(from);
     return this.performQuery<T>(body);
   }
 
@@ -166,7 +166,7 @@ export class DataService {
       .query('match', 'type', EntityType.ARTWORK)
       .query('prefix', 'image', 'http')
       .sort(defaultSortField, 'desc')
-      .size(count)
+      .size(count);
     return this.performQuery<T>(body);
   }
 
@@ -179,7 +179,7 @@ export class DataService {
       .orQuery('match', 'label', label)
       .orQuery('wildcard', 'label', '*' + label + '*')
       .sort(defaultSortField, 'desc')
-      .size(200)
+      .size(200);
     return this.performQuery(body);
   }
 
@@ -193,7 +193,7 @@ export class DataService {
       .query('match', 'type', type)
       .query('prefix', 'image', 'http')
       .sort(defaultSortField, 'desc')
-      .size(count)
+      .size(count);
     return this.performQuery(body);
   }
 

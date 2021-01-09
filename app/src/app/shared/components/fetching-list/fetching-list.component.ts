@@ -74,8 +74,6 @@ export class FetchingListComponent implements OnInit {
     if (this.options.initOffset < 0 && this.options.fetchSize <= 0 && !this.options.entityType) {
       throw Error('Invalid fetching list options!');
     }
-    console.log(this.options.queryCount, this.options.fetchSize,
-      Math.ceil(this.options.queryCount / this.options.fetchSize), this.options);
     this.options.queryCount.then(value => {
       this.options.queryCount = value;
       // TODO: If the queryCount exceeds the elasticSearch safeguard (default 10000), maxPage is limited.
@@ -96,14 +94,10 @@ export class FetchingListComponent implements OnInit {
           this.location.replaceState(url)
           pageParam = this.maxPage;
         }
-        console.warn('setCurrentPage', pageParam);
         this.setCurrentPage(pageParam);
       } else {
-        console.warn('setCurrentPage', Math.floor(this.options.initOffset / this.options.fetchSize));
         this.setCurrentPage(Math.floor(this.options.initOffset / this.options.fetchSize));
       }
-      console.log('currentPage', this.currentPage, 'max page:', this.maxPage,
-        this.options.queryCount, this.options.fetchSize, this.options.queryCount / this.options.fetchSize);
       this.initializePage(this.currentPage).then();
     });
 
@@ -114,12 +108,10 @@ export class FetchingListComponent implements OnInit {
     if (!this.maxPage) {
       return;
     }
-    console.log(event);
     /** if there is no more to get, don't fetch again */
     if (this.currentPage >= this.maxPage) {
       return;
     }
-    console.warn('setCurrentPage', +this.currentPage + 1);
     this.setCurrentPage(+this.currentPage + 1);
     this.initializePage(+this.currentPage);
   }
@@ -215,7 +207,6 @@ export class FetchingListComponent implements OnInit {
        *  This has the advantage of no further sorting of this.entities (which may be very large)
        */
       this.pages[pageNumber].items = entities;
-      console.log('page ' + pageNumber + ' loaded');
     });
   }
 
@@ -223,7 +214,6 @@ export class FetchingListComponent implements OnInit {
     if (pageNumber < 0 || +pageNumber === +this.currentPage) {
       return;
     }
-    console.log(pageNumber, this.maxPage, this.currentPage);
 
     const waitQueue: Promise<any>[] = [];
     for (let i = Math.max(pageNumber - 1, 0); i <= Math.min(pageNumber + 1, this.maxPage); i++) {
@@ -233,21 +223,16 @@ export class FetchingListComponent implements OnInit {
     await Promise.all(waitQueue);
 
     const el = document.getElementById(this.pageAnchorElementId + +pageNumber);
-    console.log(el);
     this.scrollingPageNum = pageNumber;
 
     await window.scrollTo({top: el.offsetTop, behavior: 'smooth'});
-    console.log(this.pages);
   }
 
   onPageVisible($event: any) {
     if ($event.visible) {
       const anchorId = +($event.target.id.split('-').pop());
-      console.warn('anchorId', anchorId);
-      console.warn('setCurrentPage', anchorId);
       this.setCurrentPage(anchorId);
       if (this.scrollingPageNum !== -1) {
-        console.log('current page:', this.currentPage, 'scrollingPageNum', this.scrollingPageNum);
         if (+this.currentPage === +this.scrollingPageNum) {
           this.scrollingPageNum = -1;
         } else {
@@ -267,29 +252,22 @@ export class FetchingListComponent implements OnInit {
           if (pageToLoad < +this.currentPage) {
             this.changeDetectionRef.detectChanges();
             const postScrollOffset = FetchingListComponent.getContainerScrollTop();
-            console.log('checkpage', pageToLoad, +this.currentPage, !!preScrollOffset, !!postScrollOffset,
-              (preScrollOffset === postScrollOffset), !!(preScrollOffset && postScrollOffset && (preScrollOffset === postScrollOffset)));
-
             if ((preScrollOffset || preScrollOffset === 0) &&
               (postScrollOffset || postScrollOffset === 0) &&
               (preScrollOffset === postScrollOffset)) {
               const postScrollHeight = FetchingListComponent.getContainerScrollHeight();
               const deltaHeight = (postScrollHeight - preScrollHeight);
               FetchingListComponent.setScrollTop(postScrollOffset, deltaHeight);
-
-              console.warn('Scrolling by', deltaHeight, 'px');
             }
           }
         }
       }
-      console.log('current page:', $event.target.id.split('-').pop(), this.currentPage);
     }
   }
 
   private setCurrentPage(newPageNumber: number) {
     this.currentPage = newPageNumber;
     const queryParams: Params = {page: newPageNumber};
-    console.log('newPageNumber:', newPageNumber, this.currentPage, queryParams);
 
     const url = this.router.createUrlTree(
       [], {

@@ -39,7 +39,6 @@ export class InfiniteScrollComponent implements OnInit, OnDestroy, AfterViewInit
     }, options);
 
     this.observer.observe(this.anchor.nativeElement);
-    console.log(this.anchor.nativeElement, this.observer);
   }
 
   ngOnDestroy() {

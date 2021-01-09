@@ -22,19 +22,21 @@ python3 data_extraction/get_wikipedia_extracts.py
 
 python3 data_enhancement/estimate_movement_period.py
 
+python3 data_enhancement/has_part_part_of_enhancement.py
+
+python3 data_enhancement/add_youtube_videos.py
+
 python3 data_enhancement/ranking.py
 
 cd crawler_output/intermediate_files/json/
 
-# Merges all *_rank.json files into art_ontology.json
-jq -s '[.[][]]' *_rank.json > art_ontology.json
+# Merges all *.json files in the json dir into art_ontology.json
+jq -s "[.[][]]" artworks.json genres.json artists.json locations.json materials.json movements.json motifs.json > art_ontology.json
 
 rm -f ../../../crawler_output/art_ontology.json
 
 # Move the generated art_ontology.json to the directory crawler_output
 mv art_ontology.json ../../../crawler_output/art_ontology.json
-
-python3 ../../../data_enhancement/add_youtube_videos.py
 
 python3 ../../../data_enhancement/split_languages.py
 

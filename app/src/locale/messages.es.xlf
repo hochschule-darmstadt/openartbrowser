@@ -389,6 +389,14 @@
         </context-group>
         <note priority="1" from="description">Movement label</note>
       </trans-unit>
+      <trans-unit id="period" datatype="html">
+        <source>Period</source><target state="final">período</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/movement/movement.component.html</context>
+          <context context-type="linenumber">196</context>
+        </context-group>
+        <note priority="1" from="description">Period label</note>
+       </trans-unit>
       <trans-unit id="genre" datatype="html">
         <source>Genre</source><target state="final">Género</target>
         <context-group purpose="location">

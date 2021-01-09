@@ -8,12 +8,13 @@ import {
   Output,
   TemplateRef
 } from '@angular/core';
-import { Entity, EntityType } from '../../models/entity.interface';
-import { DataService } from '../../../core/services/elasticsearch/data.service';
-import { ActivatedRoute, Params, Router } from '@angular/router';
-import { KeyValue } from '@angular/common';
-import { elasticEnvironment } from '../../../../environments/environment';
-import { Artwork } from '../../models/models';
+import {Entity, EntityType} from '../../models/entity.interface';
+import {DataService} from '../../../core/services/elasticsearch/data.service';
+import {ActivatedRoute, Params, Router} from '@angular/router';
+import {KeyValue} from '@angular/common';
+import {elasticEnvironment} from '../../../../environments/environment';
+import {Artwork} from '../../models/models';
+import {Location} from '@angular/common';
 
 export interface FetchOptions {
   /** initial offset of the query, this is where it will continue to load */
@@ -47,7 +48,7 @@ export class FetchingListComponent implements OnInit {
 
   @Input() options: FetchOptions;
 
-  @ContentChild(TemplateRef, { static: false }) templateRef;
+  @ContentChild(TemplateRef, {static: false}) templateRef;
 
   maxPage: number;
   currentPage: number;
@@ -63,11 +64,12 @@ export class FetchingListComponent implements OnInit {
   constructor(private dataService: DataService,
               private router: Router,
               private route: ActivatedRoute,
-              private changeDetectionRef: ChangeDetectorRef) {
+              private changeDetectionRef: ChangeDetectorRef,
+              private location: Location) {
   }
 
   ngOnInit() {
-    const pageParam = this.route.snapshot.queryParamMap.get('page');
+    let pageParam = +this.route.snapshot.queryParamMap.get('page');
 
     if (this.options.initOffset < 0 && this.options.fetchSize <= 0 && !this.options.entityType) {
       throw Error('Invalid fetching list options!');
@@ -79,16 +81,29 @@ export class FetchingListComponent implements OnInit {
       // TODO: If the queryCount exceeds the elasticSearch safeguard (default 10000), maxPage is limited.
       //  Find a way to prevent exceeding this limit (eg. use scroll api or search after)
       this.maxPage = this.options.queryCount <= elasticEnvironment.nonScrollingMaxQuerySize ?
-        Math.ceil(this.options.queryCount / this.options.fetchSize) :
+        Math.ceil(this.options.queryCount / this.options.fetchSize) - 1 :
         Math.floor(elasticEnvironment.nonScrollingMaxQuerySize / this.options.fetchSize) - 1;
       if (pageParam) {
-        console.warn('setCurrentPage', +pageParam);
-        this.setCurrentPage(+pageParam);
+        if (pageParam > this.maxPage) {
+          const queryParams: Params = {page: this.maxPage};
+          const url = this.router.createUrlTree(
+            [], {
+              queryParams: queryParams,
+              queryParamsHandling: 'merge',
+              preserveFragment: true,
+              replaceUrl: true
+            }).toString();
+          this.location.replaceState(url)
+          pageParam = this.maxPage;
+        }
+        console.warn('setCurrentPage', pageParam);
+        this.setCurrentPage(pageParam);
       } else {
         console.warn('setCurrentPage', Math.floor(this.options.initOffset / this.options.fetchSize));
         this.setCurrentPage(Math.floor(this.options.initOffset / this.options.fetchSize));
       }
-      console.log('currentPage' , this.currentPage);
+      console.log('currentPage', this.currentPage, 'max page:', this.maxPage,
+        this.options.queryCount, this.options.fetchSize, this.options.queryCount / this.options.fetchSize);
       this.initializePage(this.currentPage).then();
     });
 
@@ -106,7 +121,7 @@ export class FetchingListComponent implements OnInit {
     }
     console.warn('setCurrentPage', +this.currentPage + 1);
     this.setCurrentPage(+this.currentPage + 1);
-    this.initializePage(+this.currentPage).then();
+    this.initializePage(+this.currentPage);
   }
 
   /** sets random related image to entity */
@@ -215,13 +230,13 @@ export class FetchingListComponent implements OnInit {
       const initResult = this.initializePage(i);
       waitQueue.push(initResult);
     }
-    const result = await Promise.all(waitQueue);
+    await Promise.all(waitQueue);
 
     const el = document.getElementById(this.pageAnchorElementId + +pageNumber);
     console.log(el);
     this.scrollingPageNum = pageNumber;
 
-    await window.scrollTo({ top: el.offsetTop, behavior: 'smooth' });
+    await window.scrollTo({top: el.offsetTop, behavior: 'smooth'});
     console.log(this.pages);
   }
 
@@ -242,8 +257,8 @@ export class FetchingListComponent implements OnInit {
       if (this.scrollingPageNum === -1) {
         const pagesToCheck = this.range(Math.max(+this.currentPage - 2, 0), Math.min(+this.currentPage + 2, this.maxPage));
         for (const i of pagesToCheck) {
-          const preScrollHeight = this.getContainerScrollHeight();
-          const preScrollOffset = this.getContainerScrollTop();
+          const preScrollHeight = FetchingListComponent.getContainerScrollHeight();
+          const preScrollOffset = FetchingListComponent.getContainerScrollTop();
           const pageToLoad = i;
           if (pageToLoad in this.pages || pageToLoad < 0) {
             continue;
@@ -251,16 +266,16 @@ export class FetchingListComponent implements OnInit {
           this.initializePage(pageToLoad);
           if (pageToLoad < +this.currentPage) {
             this.changeDetectionRef.detectChanges();
-            const postScrollOffset = this.getContainerScrollTop();
+            const postScrollOffset = FetchingListComponent.getContainerScrollTop();
             console.log('checkpage', pageToLoad, +this.currentPage, !!preScrollOffset, !!postScrollOffset,
-              !!(preScrollOffset === postScrollOffset), !!(preScrollOffset && postScrollOffset && (preScrollOffset === postScrollOffset)));
+              (preScrollOffset === postScrollOffset), !!(preScrollOffset && postScrollOffset && (preScrollOffset === postScrollOffset)));
 
             if ((preScrollOffset || preScrollOffset === 0) &&
               (postScrollOffset || postScrollOffset === 0) &&
               (preScrollOffset === postScrollOffset)) {
-              const postScrollHeight = this.getContainerScrollHeight();
+              const postScrollHeight = FetchingListComponent.getContainerScrollHeight();
               const deltaHeight = (postScrollHeight - preScrollHeight);
-              this.setScrollTop(postScrollOffset, deltaHeight);
+              FetchingListComponent.setScrollTop(postScrollOffset, deltaHeight);
 
               console.warn('Scrolling by', deltaHeight, 'px');
             }
@@ -273,25 +288,25 @@ export class FetchingListComponent implements OnInit {
 
   private setCurrentPage(newPageNumber: number) {
     this.currentPage = newPageNumber;
-    const queryParams: Params = { page: newPageNumber };
+    const queryParams: Params = {page: newPageNumber};
     console.log('newPageNumber:', newPageNumber, this.currentPage, queryParams);
 
-    // this.router.navigate(
-    //   [],
-    //   {
-    //     relativeTo: this.route,
-    //     queryParams: queryParams,
-    //     queryParamsHandling: 'merge',
-    //     replaceUrl: true
-    //   }).then();
+    const url = this.router.createUrlTree(
+      [], {
+        queryParams: queryParams,
+        queryParamsHandling: 'merge',
+        preserveFragment: true,
+        replaceUrl: true
+      }).toString();
+    this.location.replaceState(url)
     return newPageNumber;
   }
 
   range(start, end): Array<number> {
-    return Array.from({ length: end - start + 1 }, (v, k) => k + start);
+    return Array.from({length: end - start + 1}, (v, k) => k + start);
   }
 
-  private getContainerScrollHeight(): number {
+  private static getContainerScrollHeight(): number {
     return (
       Math.max(
         document.body.scrollHeight,
@@ -305,11 +320,11 @@ export class FetchingListComponent implements OnInit {
 
   }
 
-  private getContainerScrollTop(): number {
+  private static getContainerScrollTop(): number {
     return (window.pageYOffset);
   }
 
-  private setScrollTop(currentScrollTop: number, delta: number): void {
+  private static setScrollTop(currentScrollTop: number, delta: number): void {
     window.scrollBy(0, delta);
   }
 }

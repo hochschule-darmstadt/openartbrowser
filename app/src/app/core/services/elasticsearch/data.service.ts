@@ -60,15 +60,28 @@ export class DataService {
    * @param type the type to search in
    * @param ids the ids to search for
    * @param count the number of items returned
+   * @param from the offset from where the result set should start
    */
-  public findArtworksByType(type: EntityType, ids: string[], count = 200): Promise<Artwork[]> {
+  public findArtworksByType(type: EntityType, ids: string[], count = 200, from = 0): Promise<Artwork[]> {
     const body = bodyBuilder()
-      .size(count)
-      .sort(defaultSortField, 'desc')
       .queryMinimumShouldMatch(1, true)
-      .query('match', 'type', EntityType.ARTWORK);
+      .query('match', 'type', EntityType.ARTWORK)
+      .sort(defaultSortField, 'desc')
+      .size(count)
+      .from(from);
     _.each(ids, id => body.orQuery('match', usePlural(type), id));
     return this.performQuery<Artwork>(body);
+  }
+
+  public async countArtworksByType(type: EntityType, ids: string[]) {
+    let body = bodyBuilder()
+      .queryMinimumShouldMatch(1, true)
+      .query('match', 'type', EntityType.ARTWORK)
+    _.each(ids, id => body.orQuery('match', usePlural(type), id));
+    const response: any = await this.http.post(
+      'https://openartbrowser.org/' + elasticEnvironment.serverURI + '/' + (this.ISO_639_1_LOCALE || 'en') + '/_count',
+      body.build()).toPromise()
+    return response && response.count ? response.count : undefined
   }
 
   /**
@@ -232,7 +245,6 @@ export class DataService {
     if (!entities.length) {
       console.warn(NoResultsWarning(query));
     }
-
     return entities;
   }
 

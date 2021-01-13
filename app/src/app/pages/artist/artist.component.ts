@@ -1,11 +1,12 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Artist, Artwork, EntityType, Movement } from 'src/app/shared/models/models';
-import { DataService } from 'src/app/core/services/elasticsearch/data.service';
-import { ActivatedRoute } from '@angular/router';
-import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Artist, Artwork, Entity, EntityType, Movement} from 'src/app/shared/models/models';
+import {DataService} from 'src/app/core/services/elasticsearch/data.service';
+import {ActivatedRoute} from '@angular/router';
+import {takeUntil} from 'rxjs/operators';
+import {Subject} from 'rxjs';
 import * as _ from 'lodash';
-import { shuffle } from 'src/app/core/services/utils.service';
+import {shuffle} from 'src/app/core/services/utils.service';
+import {FetchOptions} from "../../shared/components/fetching-list/fetching-list.component";
 
 @Component({
   selector: 'app-artist',
@@ -26,6 +27,16 @@ export class ArtistComponent implements OnInit, OnDestroy {
   artist: Artist = null;
   /** Related artworks */
   sliderItems: Artwork[] = [];
+  fetchOptions = {
+    initOffset: 0,
+    // TODO: change back to something reasonable
+    fetchSize: 30,
+    queryCount: undefined,
+    entityType: EntityType.ARTIST
+  } as FetchOptions;
+  query: (offset: number) => Promise<Entity[]>;
+
+
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();
 
@@ -46,6 +57,8 @@ export class ArtistComponent implements OnInit, OnDestroy {
       this.videoExists = false;
       this.uniqueEntityVideos = [];
     });
+    this.showTimelineNotArtworks = !this.route.snapshot.queryParamMap.get('page')
+
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
       const artistId = params.get('artistId');
@@ -55,7 +68,14 @@ export class ArtistComponent implements OnInit, OnDestroy {
         this.uniqueEntityVideos.unshift(this.artist.videos[0]);
       }
 
+      this.fetchOptions.queryCount = this.dataService.countArtworksByType(EntityType.ARTIST, [this.artist.id]);
+
       /** load slider items */
+      this.query = async (offset) => {
+        return await this.dataService.findArtworksByType(
+          EntityType.ARTIST, [this.artist.id], this.fetchOptions.fetchSize, offset)
+      }
+
       this.dataService.findArtworksByType(EntityType.ARTIST, [this.artist.id])
         .then(artworks => (this.sliderItems = shuffle(artworks)));
       /** dereference movements  */
@@ -77,7 +97,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
   */
   addMovementVideos() {
     for (const movement of this.artist.movements) {
-      if (movement.videos && movement.videos.length >  0 && !this.uniqueEntityVideos.includes(movement.videos[0])) {
+      if (movement.videos && movement.videos.length > 0 && !this.uniqueEntityVideos.includes(movement.videos[0])) {
         this.uniqueEntityVideos.push(movement.videos[0]);
       }
     }

@@ -32,7 +32,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
     // TODO: change back to something reasonable
     fetchSize: 30,
     queryCount: undefined,
-    entityType: EntityType.ARTIST
+    entityType: EntityType.ARTWORK
   } as FetchOptions;
   query: (offset: number) => Promise<Entity[]>;
 

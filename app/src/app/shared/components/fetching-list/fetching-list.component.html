@@ -7,21 +7,32 @@
       <a *ngIf="entity"
          class="item-link"
          [routerLink]="['/'+options.entityType, entity?.id]">
-        <div class="img-wrapper">
-          <img
-            *ngIf="entity?.imageSmall"
-            class="bd-highlight img-self"
-            src="{{ entity?.imageSmall }}"
-            alt="{{ entity?.label }}"
-            (error)="onLoadingError(entity, page.key)"
-          />
-          <div *ngIf="entity?.error" class="error flex-column">
-            <i class="fa fa-paint-brush"></i>
-            <span i18n="error text@@fetching_list_error" class="mt-3">Painting in progress</span>
+        <div class="overlay-container">
+          <div class="img-wrapper">
+            <img
+              *ngIf="entity?.imageSmall"
+              class="bd-highlight img-self"
+              [ngClass]="templateContainer.children.length == 0 ? 'img-self-rounded':''"
+              src="{{ entity?.imageSmall }}"
+              alt="{{ entity?.label }}"
+              (error)="onLoadingError(entity, page.key)"
+            />
+            <div *ngIf="entity?.error" class="error flex-column">
+              <i class="fa fa-paint-brush"></i>
+              <span i18n="error text@@fetching_list_error" class="mt-3">Painting in progress</span>
+            </div>
+          </div>
+          <div class="item-template_container" #templateContainer>
+            <ng-container
+                          [ngTemplateOutlet]="templateRef"
+                          [ngTemplateOutletContext]="{entity: entity, entityType: options.entityType}">
+            </ng-container>
+          </div>
+
+          <div class="overlay" *ngIf="templateContainer.children.length == 0">
+            <span class="img_description">{{ entity.label }}</span>
           </div>
         </div>
-        <ng-container [ngTemplateOutlet]="templateRef"
-                      [ngTemplateOutletContext]="{entity: entity, entityType: options.entityType}"></ng-container>
       </a>
 
     </div>

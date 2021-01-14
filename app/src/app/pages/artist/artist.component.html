@@ -5,19 +5,23 @@
 
       <table class="table-fit">
         <tbody>
-          <tr *ngIf="artist?.date_of_birth">
-            <td class="text-muted"><ng-container i18n="Born infos @@born">Born</ng-container>:</td>
-            <td>{{ artist?.date_of_birth + (artist?.place_of_birth ? ' in ' + artist?.place_of_birth : '') }}</td>
-          </tr>
+        <tr *ngIf="artist?.date_of_birth">
+          <td class="text-muted">
+            <ng-container i18n="Born infos @@born">Born</ng-container>
+            :
+          </td>
+          <td>{{ artist?.date_of_birth + (artist?.place_of_birth ? ' in ' + artist?.place_of_birth : '') }}</td>
+        </tr>
 
-          <tr *ngIf="artist?.date_of_death">
-            <td class="text-muted"><span i18n="Died infos label@@died">Died</span>:</td>
-            <td>{{ artist?.date_of_death + (artist?.place_of_death ? ' in ' + artist.place_of_death : '') }}</td>
-          </tr>
+        <tr *ngIf="artist?.date_of_death">
+          <td class="text-muted"><span i18n="Died infos label@@died">Died</span>:</td>
+          <td>{{ artist?.date_of_death + (artist?.place_of_death ? ' in ' + artist.place_of_death : '') }}</td>
+        </tr>
         </tbody>
       </table>
 
-      <div *ngIf="artist?.gender || artist?.citizenship || artist?.movements?.length || artist?.influenced_by?.length || artist?.abstract">
+      <div
+        *ngIf="artist?.gender || artist?.citizenship || artist?.movements?.length || artist?.influenced_by?.length || artist?.abstract">
         <app-collapse [showVideo]="videoExists">
           <app-abstract [entity]="artist"></app-abstract>
 
@@ -29,36 +33,48 @@
 
           <table class="table-fit">
             <tbody>
-              <tr *ngIf="artist?.gender">
-                <td class="text-muted"><ng-container i18n="Artist gender label@@gender">Gender</ng-container>:</td>
-                <td>{{ artist?.gender }}</td>
-              </tr>
+            <tr *ngIf="artist?.gender">
+              <td class="text-muted">
+                <ng-container i18n="Artist gender label@@gender">Gender</ng-container>
+                :
+              </td>
+              <td>{{ artist?.gender }}</td>
+            </tr>
 
-              <tr *ngIf="artist?.citizenship">
-                <td class="text-muted"><ng-container i18n="Artist citizenship label@@citizenship">Citizenship</ng-container>:</td>
-                <td>{{ artist?.citizenship }}</td>
-              </tr>
+            <tr *ngIf="artist?.citizenship">
+              <td class="text-muted">
+                <ng-container i18n="Artist citizenship label@@citizenship">Citizenship</ng-container>
+                :
+              </td>
+              <td>{{ artist?.citizenship }}</td>
+            </tr>
 
-              <tr *ngIf="artist?.movements?.length">
-                <td class="text-muted"><ng-container i18n="Movement label@@movement">Movement</ng-container>:</td>
-                <td>
-                  <app-badge *ngFor="let movement of artist?.movements" [entity]="movement"> </app-badge>
-                </td>
-              </tr>
+            <tr *ngIf="artist?.movements?.length">
+              <td class="text-muted">
+                <ng-container i18n="Movement label@@movement">Movement</ng-container>
+                :
+              </td>
+              <td>
+                <app-badge *ngFor="let movement of artist?.movements" [entity]="movement"></app-badge>
+              </td>
+            </tr>
 
-              <tr *ngIf="artist?.influenced_by?.length">
-                <td class="text-muted"><ng-container i18n="Influenced by label@@influenced_by">Influenced by</ng-container>:</td>
-                <td>
-                  <app-badge *ngFor="let influencer of artist?.influenced_by" [entity]="influencer"> </app-badge>
-                </td>
-              </tr>
+            <tr *ngIf="artist?.influenced_by?.length">
+              <td class="text-muted">
+                <ng-container i18n="Influenced by label@@influenced_by">Influenced by</ng-container>
+                :
+              </td>
+              <td>
+                <app-badge *ngFor="let influencer of artist?.influenced_by" [entity]="influencer"></app-badge>
+              </td>
+            </tr>
             </tbody>
           </table>
         </app-collapse>
       </div>
     </div>
     <div class="col-sm-5 img" *ngIf="artist?.image">
-      <img class="img-fluid rounded-circle" src="{{ artist?.imageSmall }}" alt="" />
+      <img class="img-fluid rounded-circle" src="{{ artist?.imageSmall }}" alt=""/>
     </div>
   </div>
 
@@ -82,30 +98,9 @@
       <div class="tab-pane fade" [ngClass]="{ 'show active': showTimelineNotArtworks }" id="timeline_tab">
         <app-timeline [artworks]="sliderItems"></app-timeline>
       </div>
-      <div class="tab-pane fade" [ngClass]="{ 'show active': !showTimelineNotArtworks }" id="artworks_tab">
+      <div class="tab-pane fade pt-2" [ngClass]="{ 'show active': !showTimelineNotArtworks }" id="artworks_tab">
         <app-fetching-list id="artworks_tab-list" [query]="query" [options]="fetchOptions">
-          <ng-template let-entity="entity" let-type="entityType">
-            <div class="item-caption">
-              <div class="ml-1">
-                <i class="mr-1 fas" [ngClass]="entity.icon"></i>
-                <span>{{entity.label}}</span>
-              </div>
-              <div *ngIf="type!='artwork'" class="ml-1">
-                <i class="mr-1 fas fa-images"></i>
-                <span>{{entity.absoluteRank}}</span>
-              </div>
-              <div *ngIf="type=='movement' && entity.start_time && entity.end_time" class="ml-1">
-                <i class="mr-1 fa fa-ruler-horizontal"></i>
-                <span>{{entity.start_time}} - {{entity.end_time}}</span>
-              </div>
-              <div *ngIf="type=='artist' && entity.date_of_birth && entity.date_of_death" class="ml-1">
-                <i class="mr-1 fa fa-star-of-life"></i>
-                <span>{{entity.date_of_birth}}</span>
-                <i class="ml-1 mr-1 fa fa-cross"></i>
-                <span>{{entity.date_of_death}}</span>
-              </div>
-            </div>
-          </ng-template>
+
         </app-fetching-list>
       </div>
     </div>

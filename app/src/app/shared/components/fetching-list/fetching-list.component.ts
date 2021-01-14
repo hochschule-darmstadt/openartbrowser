@@ -1,7 +1,7 @@
 import {
   ChangeDetectorRef,
   Component,
-  ContentChild,
+  ContentChild, ElementRef,
   EventEmitter,
   Input,
   OnInit,
@@ -49,6 +49,7 @@ export class FetchingListComponent implements OnInit {
   @Input() options: FetchOptions;
 
   @ContentChild(TemplateRef, {static: false}) templateRef;
+  @ContentChild('templateContainer', {static: false}) templateContainer: ElementRef;
 
   maxPage: number;
   currentPage: number;
@@ -83,6 +84,7 @@ export class FetchingListComponent implements OnInit {
         Math.floor(elasticEnvironment.nonScrollingMaxQuerySize / this.options.fetchSize) - 1;
       if (pageParam) {
         if (pageParam > this.maxPage) {
+          console.log('möp')
           const queryParams: Params = {page: this.maxPage};
           const url = this.router.createUrlTree(
             [], {
@@ -96,7 +98,7 @@ export class FetchingListComponent implements OnInit {
         }
         this.setCurrentPage(pageParam);
       } else {
-        this.setCurrentPage(Math.floor(this.options.initOffset / this.options.fetchSize));
+        this.currentPage = Math.floor(this.options.initOffset / this.options.fetchSize);
       }
       this.initializePage(this.currentPage).then();
     });
@@ -113,7 +115,7 @@ export class FetchingListComponent implements OnInit {
       return;
     }
     this.setCurrentPage(+this.currentPage + 1);
-    this.initializePage(+this.currentPage);
+    this.initializePage(+this.currentPage).then();
   }
 
   /** sets random related image to entity */

@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Artist, Artwork, Entity, EntityType, Movement} from 'src/app/shared/models/models';
 import {DataService} from 'src/app/core/services/elasticsearch/data.service';
 import {ActivatedRoute} from '@angular/router';
@@ -13,7 +13,7 @@ import {FetchOptions} from "../../shared/components/fetching-list/fetching-list.
   templateUrl: './artist.component.html',
   styleUrls: ['./artist.component.scss']
 })
-export class ArtistComponent implements OnInit, OnDestroy {
+export class ArtistComponent implements OnInit, OnDestroy, AfterViewInit {
   /* TODO:REVIEW
     Similiarities in every page-Component:
     - variables: ngUnsubscribe, collapse, sliderItems, dataService, route
@@ -47,6 +47,8 @@ export class ArtistComponent implements OnInit, OnDestroy {
   videoExists = false;
   /* List of unique Videos */
   uniqueEntityVideos: string[] = [];
+
+  @ViewChild('navbar', {static: false}) navbarElem: ElementRef<HTMLElement>;
 
   constructor(private dataService: DataService, private route: ActivatedRoute) {
   }
@@ -90,6 +92,20 @@ export class ArtistComponent implements OnInit, OnDestroy {
     });
   }
 
+  ngAfterViewInit() {
+    window.onscroll = function () {
+      ArtistComponent.scrollFunction()
+    };
+    console.log(document.getElementById('navbar').offsetHeight);
+  }
+
+  static scrollFunction() {
+    if (document.body.scrollTop > 85 || document.documentElement.scrollTop > 85) {
+      document.getElementById("sticky-title").classList.add('sticky-title-fixed');
+    } else {
+      document.getElementById("sticky-title").classList.remove('sticky-title-fixed');
+    }
+  }
 
   /*
     Iterates over the movements and adds all videos to uniqueEntityVideos.

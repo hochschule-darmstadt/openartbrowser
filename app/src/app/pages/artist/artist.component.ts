@@ -7,6 +7,7 @@ import {Subject} from 'rxjs';
 import * as _ from 'lodash';
 import {shuffle} from 'src/app/core/services/utils.service';
 import {FetchOptions} from "../../shared/components/fetching-list/fetching-list.component";
+import * as elementResizeDetectorMaker from "element-resize-detector";
 
 @Component({
   selector: 'app-artist',
@@ -48,6 +49,8 @@ export class ArtistComponent implements OnInit, OnDestroy, AfterViewInit {
   /* List of unique Videos */
   uniqueEntityVideos: string[] = [];
 
+  erd = elementResizeDetectorMaker({strategy: 'scroll', debug: true, callOnAdd: true});
+  headerHeight = 0;
   @ViewChild('navbar', {static: false}) navbarElem: ElementRef<HTMLElement>;
 
   constructor(private dataService: DataService, private route: ActivatedRoute) {
@@ -96,14 +99,16 @@ export class ArtistComponent implements OnInit, OnDestroy, AfterViewInit {
     window.onscroll = function () {
       ArtistComponent.scrollFunction()
     };
-    console.log(document.getElementById('navbar').offsetHeight);
+    const navBar = document.getElementById('navbar')
+    this.headerHeight = navBar.offsetHeight
   }
 
   static scrollFunction() {
-    if (document.body.scrollTop > 85 || document.documentElement.scrollTop > 85) {
-      document.getElementById("sticky-title").classList.add('sticky-title-fixed');
+    const stickyTitle = document.getElementById("stickyTitle")
+    if (stickyTitle && (document.body.scrollTop > 85 || document.documentElement.scrollTop > 85)) {
+      stickyTitle.classList.add('sticky-title-fixed');
     } else {
-      document.getElementById("sticky-title").classList.remove('sticky-title-fixed');
+      stickyTitle.classList.remove('sticky-title-fixed');
     }
   }
 
@@ -149,6 +154,7 @@ export class ArtistComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
+    window.onscroll = undefined;
   }
 
   toggleComponent() {

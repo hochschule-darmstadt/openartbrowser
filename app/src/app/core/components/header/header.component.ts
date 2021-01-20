@@ -9,8 +9,9 @@ import {
   AfterViewInit,
   Output, EventEmitter
 } from '@angular/core';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import * as elementResizeDetectorMaker from 'element-resize-detector';
+import {interval} from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -23,24 +24,24 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /* the ElementResizeDetectorMaker creates an ElementResizeDetector, which will later on listen to the header nav bar
    to detect changes in height, so other content can be pushed down by the spacer */
-  erd = elementResizeDetectorMaker({strategy: 'scroll', callOnAdd: true});
+  erd = elementResizeDetectorMaker({strategy: 'scroll', callOnAdd: true, debug: false});
   spacerHeight = 0;
 
   @ViewChild('navbar', {static: false}) navbarElem: ElementRef<HTMLElement>;
   @ViewChild('spacer', {static: false}) spacerElem: ElementRef<HTMLElement>;
   @Output() headerResize = new EventEmitter<object>();
 
-  constructor(private router: Router, @Inject(LOCALE_ID) protected localeId: string, private el: ElementRef) {
+  constructor(private router: Router, @Inject(LOCALE_ID) protected localeId: string) {
     /**
      * Set the variable path to router url
      * every time the url changed.
      */
-    router.events.subscribe(val => (this.path = this.router.url));
+    router.events.subscribe(() => (this.path = this.router.url));
     this.locale = localeId;
   }
 
   ngOnInit() {
-    this.spacerHeight = +document.getElementById('navbar').offsetHeight;
+    // this.spacerHeight = +document.getElementById('navbar').offsetHeight;
   }
 
   ngAfterViewInit() {
@@ -50,12 +51,24 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
         this.spacerHeight = height;
         this.spacerElem.nativeElement.style.height = this.spacerHeight + '';
         this.headerResize.emit({height: height})
+
+        const subscription = interval(1000).subscribe(val => {
+          let stickyTitle = document.getElementById("stickyTitle")
+          if (stickyTitle) {
+            // stickyTitle found, push down
+            stickyTitle.style.top = height + 'px'
+            subscription.unsubscribe();
+          } else if (val > 5) {
+            // Unsubscribe after 6 seconds, loading takes too long -> no stickyTitle
+            subscription.unsubscribe();
+          }
+        });
       }
     });
   }
 
   ngOnDestroy() {
-    this.erd.removeListener(this.navbarElem.nativeElement!, (testElement) => {
+    this.erd.removeListener(this.navbarElem.nativeElement!, () => {
     }); // tailing ! -> non-null assertion operator
     this.erd.removeAllListeners(this.navbarElem.nativeElement!);
     this.erd.uninstall(this.navbarElem.nativeElement!);

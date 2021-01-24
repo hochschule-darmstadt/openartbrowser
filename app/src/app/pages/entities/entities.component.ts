@@ -1,18 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { DataService } from '../../core/services/elasticsearch/data.service';
-import { ActivatedRoute } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {DataService} from '../../core/services/elasticsearch/data.service';
+import {ActivatedRoute} from '@angular/router';
 import {
-  Entity,
-  Movement,
-  Artwork,
-  Artist,
-  Genre,
-  Motif,
-  Location,
-  Material,
-  EntityType
+  Entity, Movement, Artwork, Artist, Genre,
+  Motif, Location, Material, EntityType
 } from 'src/app/shared/models/models';
-import { FetchOptions } from '../../shared/components/fetching-list/fetching-list.component';
+import {FetchOptions} from '../../shared/components/fetching-list/fetching-list.component';
 
 @Component({
   selector: 'app-entities',
@@ -22,7 +15,6 @@ import { FetchOptions } from '../../shared/components/fetching-list/fetching-lis
 export class EntitiesComponent implements OnInit {
   fetchOptions = {
     initOffset: 0,
-    // TODO: change back to something reasonable
     fetchSize: 30,
     queryCount: undefined,
     entityType: undefined

@@ -24,6 +24,7 @@ import { FetchingListComponent } from './components/fetching-list/fetching-list.
 import { EventTableComponent } from './components/event-table/event-table.component';
 import { InViewportModule } from 'ng-in-viewport';
 import { PaginatorComponent } from './components/fetching-list/paginator/paginator.component';
+import { StickyTitleComponent } from './components/sticky-title/sticky-title.component';
 
 /** Everything that should be used within multiple feature modules but isn't always required goes here */
 @NgModule({
@@ -45,7 +46,8 @@ import { PaginatorComponent } from './components/fetching-list/paginator/paginat
     MovementOverviewComponent,
     FetchingListComponent,
     EventTableComponent,
-    PaginatorComponent
+    PaginatorComponent,
+    StickyTitleComponent
   ],
   imports: [
     CommonModule,
@@ -74,7 +76,8 @@ import { PaginatorComponent } from './components/fetching-list/paginator/paginat
     MovementOverviewComponent,
     InfiniteScrollComponent,
     FetchingListComponent,
-    EventTableComponent
+    EventTableComponent,
+    StickyTitleComponent
   ]
 })
 export class SharedModule {

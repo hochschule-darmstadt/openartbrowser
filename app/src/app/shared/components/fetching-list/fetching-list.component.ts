@@ -3,7 +3,7 @@ import {
   Component,
   ContentChild, ElementRef,
   EventEmitter,
-  Input,
+  Input, OnDestroy,
   OnInit,
   Output,
   TemplateRef
@@ -37,7 +37,7 @@ export interface Page {
   templateUrl: './fetching-list.component.html',
   styleUrls: ['./fetching-list.component.scss']
 })
-export class FetchingListComponent implements OnInit {
+export class FetchingListComponent implements OnInit, OnDestroy {
 
   /** all pages to display, pageNumber starts at 0 */
   pages: { [pageNumber: number]: Page; } = {};
@@ -105,8 +105,16 @@ export class FetchingListComponent implements OnInit {
 
   }
 
+  ngOnDestroy() {
+    // Remove query params
+    this.router.navigate([], {
+      queryParams: {'page': null},
+      queryParamsHandling: 'merge'
+    });
+  }
+
   /** this gets called by the app-infinite-scroll component and fetches new data */
-  onScrollDown(event?) {
+  onScrollDown() {
     if (!this.maxPage) {
       return;
     }

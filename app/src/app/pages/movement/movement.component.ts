@@ -1,15 +1,16 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {DataService} from 'src/app/core/services/elasticsearch/data.service';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Params, Router} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
-import {Movement, Artwork, EntityType} from 'src/app/shared/models/models';
+import {Movement, Artwork, EntityType, Entity} from 'src/app/shared/models/models';
 import {Subject} from 'rxjs';
 import {shuffle} from 'src/app/core/services/utils.service';
+import {FetchOptions} from "../../shared/components/fetching-list/fetching-list.component";
 
 enum Tab {
-  Artworks,
-  Timeline,
-  MovementOverview
+  Artworks = 'artworks',
+  Timeline = 'timeline',
+  MovementOverview = 'movements'
 }
 
 @Component({
@@ -37,6 +38,15 @@ export class MovementComponent implements OnInit, OnDestroy {
   movement: Movement = null;
 
   /** Related artworks */
+  fetchOptions = {
+    initOffset: 0,
+    fetchSize: 30,
+    queryCount: undefined,
+    entityType: EntityType.ARTWORK
+  } as FetchOptions;
+  query: (offset: number) => Promise<Entity[]>;
+
+  /** Timeline artworks */
   sliderItems: Artwork[] = [];
 
   /** Toggle bool for displaying either timeline or artworks carousel component */
@@ -49,7 +59,7 @@ export class MovementComponent implements OnInit, OnDestroy {
 
   relatedMovements: Movement[] = [];
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {
+  constructor(private dataService: DataService, private route: ActivatedRoute, private router: Router) {
   }
 
   /** hook that is executed at component initialization */
@@ -58,9 +68,26 @@ export class MovementComponent implements OnInit, OnDestroy {
       this.videoExists = false;
       this.uniqueEntityVideos = [];
     });
+    const queryParamMap = this.route.snapshot.queryParamMap;
+    if (!queryParamMap.get('page') || queryParamMap.get('tab') === Tab.Artworks) {
+      this.activeTab = Tab.Artworks;
+    } else if (Object.values(Tab).includes(queryParamMap.get('tab'))) {
+      this.activeTab = Tab[queryParamMap.get('tab')];
+    } else {
+      this.activeTab = Tab.Timeline;
+    }
+
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
       const movementId = params.get('movementId');
+
+      this.fetchOptions.queryCount = this.dataService.countArtworksByType(EntityType.MOVEMENT, [movementId]);
+
+      /** load fetching list items */
+      this.query = async (offset) => {
+        return await this.dataService.findArtworksByType(
+          EntityType.MOVEMENT, [movementId], this.fetchOptions.fetchSize, offset)
+      }
 
       /** Use data service to fetch entity from database */
       this.movement = await this.dataService.findById<Movement>(movementId, EntityType.MOVEMENT);
@@ -103,15 +130,24 @@ export class MovementComponent implements OnInit, OnDestroy {
 
   setActiveTab(tab: Tab) {
     this.activeTab = tab;
+    const queryParams: Params = {'tab': tab};
 
+    if (tab != Tab.Artworks) {
+      queryParams.page = null;
+    }
+    // Remove query params
+    this.router.navigate([], {
+      queryParams: queryParams,
+      queryParamsHandling: 'merge'
+    });
     if (this.activeTab === Tab.MovementOverview) {
       this.movementOverviewLoaded = true;
     }
   }
 
   addUniqueVideos() {
-    for ( const entity of this.sliderItems) {
-      if (entity.videos && entity.videos.length >  0 && !this.uniqueEntityVideos.includes(entity.videos[0])) {
+    for (const entity of this.sliderItems) {
+      if (entity.videos && entity.videos.length > 0 && !this.uniqueEntityVideos.includes(entity.videos[0])) {
         this.uniqueEntityVideos.push(entity.videos[0]);
       }
     }

@@ -10,31 +10,3 @@
 .video:last-child {
   margin: 0;
 }
-
-#artworks_tab {
-  .item-caption {
-    color: #ffffff;
-    font-size: 0.9em;
-  }
-}
-
-.sticky-title {
-  transition: transform 0.3s, background-color 0.3s, opacity 0.3s;
-  z-index: 150;
-  position: fixed;
-  top: 5rem;
-  left: 0;
-  width: 100%;
-  background-color: #222222;
-  opacity: 0;
-
-  &-content {
-    span {
-      font-size: large;
-    }
-  }
-
-  &-fixed {
-    opacity: 1;
-  }
-}

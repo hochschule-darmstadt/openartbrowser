@@ -1,15 +1,8 @@
 import {
-  Component,
-  OnInit,
-  LOCALE_ID,
-  Inject,
-  ElementRef,
-  ViewChild,
-  OnDestroy,
-  AfterViewInit,
-  Output, EventEmitter
+  Component, OnInit, LOCALE_ID, Inject, ElementRef,
+  ViewChild, OnDestroy, AfterViewInit, Output, EventEmitter
 } from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Router} from '@angular/router';
 import * as elementResizeDetectorMaker from 'element-resize-detector';
 import {interval} from 'rxjs';
 
@@ -51,18 +44,22 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
         this.spacerHeight = height;
         this.spacerElem.nativeElement.style.height = this.spacerHeight + '';
         this.headerResize.emit({height: height})
-
-        const subscription = interval(1000).subscribe(val => {
-          let stickyTitle = document.getElementById("stickyTitle")
-          if (stickyTitle) {
-            // stickyTitle found, push down
-            stickyTitle.style.top = height + 'px'
-            subscription.unsubscribe();
-          } else if (val > 5) {
-            // Unsubscribe after 6 seconds, loading takes too long -> no stickyTitle
-            subscription.unsubscribe();
-          }
-        });
+        let stickyTitle = document.getElementById("stickyTitle")
+        if (!stickyTitle) {
+          const subscription = interval(1000).subscribe(val => {
+            stickyTitle = document.getElementById("stickyTitle")
+            if (stickyTitle) {
+              // stickyTitle found, push down
+              stickyTitle.style.top = height + 'px'
+              subscription.unsubscribe();
+            } else if (val > 5) {
+              // Unsubscribe after 6 seconds, loading takes too long -> no stickyTitle
+              subscription.unsubscribe();
+            }
+          });
+        } else {
+          stickyTitle.style.top = height + 'px'
+        }
       }
     });
   }

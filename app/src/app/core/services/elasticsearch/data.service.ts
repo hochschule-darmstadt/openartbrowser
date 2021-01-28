@@ -96,25 +96,13 @@ export class DataService {
   }
 
   /**
-   * Find an artwork by label
-   * @param label artwork label
-   */
-  public findArtworksByLabel(label: string): Promise<Artwork[]> {
-    const body = bodyBuilder()
-      .size(20)
-      .sort(defaultSortField, 'desc')
-      .query('match', 'type', EntityType.ARTWORK)
-      .orQuery('match', 'label', label);
-    return this.performQuery<Artwork>(body);
-  }
-
-  /**
    * Find an artwork by movement
    * @param movement label of movement
+   * @param count number of returned items
    */
-  public findArtworksByMovement(movement: string): Promise<Artwork[]> {
+  public findArtworksByMovement(movement: string, count = 5): Promise<Artwork[]> {
     const body = bodyBuilder()
-      .size(5)
+      .size(count)
       .sort(defaultSortField, 'desc')
       .query('match', 'type', EntityType.ARTWORK)
       .query('match', usePlural(EntityType.MOVEMENT), movement);
@@ -159,15 +147,6 @@ export class DataService {
       .get('https://openartbrowser.org/' + elasticEnvironment.serverURI + '/' + (this.ISO_639_1_LOCALE || 'en') + '/_count?q=type:' + type)
       .toPromise();
     return response && response.count ? response.count : undefined;
-  }
-
-  public async getRandomMovementArtwork<T>(movementId: string, count = 20): Promise<T[]> {
-    const body = bodyBuilder()
-      .query('match', 'type', EntityType.ARTWORK)
-      .query('prefix', 'image', 'http')
-      .sort(defaultSortField, 'desc')
-      .size(count);
-    return this.performQuery<T>(body);
   }
 
   /**
@@ -286,9 +265,8 @@ export class DataService {
 }
 
 const NoResultsWarning = query => `
-The performed es-query did not yield any results. This might result in strange behavior in the application.
+  The performed es-query did not yield any results. This might result in strange behavior in the application.
 
-If you encounter any such issues please consider opening a bug report: https://github.com/hochschule-darmstadt/openartbrowser/issues/new?assignees=&labels=&template=bug_report.md&title=
+  If you encounter any such issues please consider opening a bug report: https://github.com/hochschule-darmstadt/openartbrowser/issues/new?assignees=&labels=&template=bug_report.md&title=
 
-Query: ${query.toString()}
-`;
+  Query: ${query.toString()}`;

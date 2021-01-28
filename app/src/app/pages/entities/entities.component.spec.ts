@@ -9,6 +9,7 @@ import {InViewportDirective} from "ng-in-viewport";
 import {InfiniteScrollComponent} from "../../shared/components/infinite-scroll/infinite-scroll.component";
 import {PaginatorComponent} from "../../shared/components/fetching-list/paginator/paginator.component";
 import {StickyTitleComponent} from "../../shared/components/sticky-title/sticky-title.component";
+import {NgbTooltip} from "@ng-bootstrap/ng-bootstrap";
 
 describe('EntitiesComponent', () => {
   let component: EntitiesComponent;
@@ -19,7 +20,8 @@ describe('EntitiesComponent', () => {
       imports: [HttpClientModule, RouterModule.forRoot([])],
       declarations: [
         EntitiesComponent, FetchingListComponent, PaginatorComponent,
-        InViewportDirective, InfiniteScrollComponent, StickyTitleComponent
+        InViewportDirective, InfiniteScrollComponent, StickyTitleComponent,
+        NgbTooltip
       ],
       providers: [
         DataService

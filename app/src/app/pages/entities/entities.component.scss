@@ -2,3 +2,16 @@
   color: #ffffff;
   font-size: 0.9em;
 }
+
+.tooltip-container {
+  height: 100%;
+  width: 100%;
+}
+
+.tooltip-text-container {
+  padding: 3px;
+}
+
+.tooltip-text {
+  overflow: hidden;
+}

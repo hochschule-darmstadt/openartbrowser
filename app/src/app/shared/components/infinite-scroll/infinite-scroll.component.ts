@@ -39,7 +39,7 @@ export class InfiniteScrollComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   ngOnDestroy() {
-    this.observer.disconnect();
+    if (this.observer) this.observer.disconnect();
   }
 
   get element() {

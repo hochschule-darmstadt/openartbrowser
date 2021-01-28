@@ -1,6 +1,7 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { StickyTitleComponent } from './sticky-title.component';
+import {StickyTitleComponent} from './sticky-title.component';
+import {RouterModule} from "@angular/router";
 
 describe('StickyTitleComponent', () => {
   let component: StickyTitleComponent;
@@ -8,9 +9,10 @@ describe('StickyTitleComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ StickyTitleComponent ]
+      imports: [RouterModule.forRoot([])],
+      declarations: [StickyTitleComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

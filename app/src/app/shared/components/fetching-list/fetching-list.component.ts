@@ -3,7 +3,7 @@ import {
   Component,
   ContentChild, ElementRef,
   EventEmitter,
-  Input, OnDestroy,
+  Input, OnChanges, OnDestroy,
   OnInit,
   Output,
   TemplateRef
@@ -37,7 +37,7 @@ export interface Page {
   templateUrl: './fetching-list.component.html',
   styleUrls: ['./fetching-list.component.scss']
 })
-export class FetchingListComponent implements OnInit, OnDestroy {
+export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
 
   /** all pages to display, pageNumber starts at 0 */
   pages: { [pageNumber: number]: Page; } = {};
@@ -70,11 +70,26 @@ export class FetchingListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    let pageParam = +this.route.snapshot.queryParamMap.get('page');
-
+    if (!this.options) {
+      return;
+    }
     if (this.options.initOffset < 0 && this.options.fetchSize <= 0 && !this.options.entityType) {
       throw Error('Invalid fetching list options!');
     }
+    if (this.options.queryCount) {
+      this.init()
+    }
+  }
+
+  ngOnChanges() {
+    if (this.options.queryCount) {
+      this.init()
+    }
+  }
+
+  init() {
+    let pageParam = +this.route.snapshot.queryParamMap.get('page');
+
     this.options.queryCount.then(value => {
       this.options.queryCount = value;
       // TODO: If the queryCount exceeds the elasticSearch safeguard (default 10000), maxPage is limited.
@@ -192,6 +207,8 @@ export class FetchingListComponent implements OnInit, OnDestroy {
         items: Array(this.options.fetchSize).fill({})
       } as Page;
       return this.loadPage(pageNumber);
+    } else {
+      return Promise.resolve();
     }
   }
 
@@ -199,7 +216,7 @@ export class FetchingListComponent implements OnInit, OnDestroy {
     const offset = pageNumber * this.options.fetchSize;
     /** if there is no more to get, don't fetch again */
     if (offset > this.options.queryCount) {
-      return;
+      return Promise.resolve();
     }
     const capitalize = (str, lower = false) =>
       (lower ? str.toLowerCase() : str).replace(/(?:^|\s|["'([{])+\S/g, match => match.toUpperCase());

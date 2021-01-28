@@ -65,9 +65,11 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.erd.removeListener(this.navbarElem.nativeElement!, () => {
-    }); // tailing ! -> non-null assertion operator
-    this.erd.removeAllListeners(this.navbarElem.nativeElement!);
-    this.erd.uninstall(this.navbarElem.nativeElement!);
+    if (this.navbarElem) {
+      this.erd.removeListener(this.navbarElem.nativeElement!, () => {
+      }); // tailing ! -> non-null assertion operator
+      this.erd.removeAllListeners(this.navbarElem.nativeElement!);
+      this.erd.uninstall(this.navbarElem.nativeElement!);
+    }
   }
 }

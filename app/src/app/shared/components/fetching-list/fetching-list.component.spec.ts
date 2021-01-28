@@ -1,11 +1,12 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { FetchingListComponent } from './fetching-list.component';
-import { DataService } from '../../../core/services/elasticsearch/data.service';
-import { HttpClientModule } from '@angular/common/http';
-import { RouterModule } from '@angular/router';
-import { InViewportDirective } from 'ng-in-viewport';
-import { PaginatorComponent } from './paginator/paginator.component';
+import {FetchingListComponent} from './fetching-list.component';
+import {DataService} from '../../../core/services/elasticsearch/data.service';
+import {HttpClientModule} from '@angular/common/http';
+import {RouterModule} from '@angular/router';
+import {InViewportDirective} from 'ng-in-viewport';
+import {PaginatorComponent} from './paginator/paginator.component';
+import {InfiniteScrollComponent} from "../infinite-scroll/infinite-scroll.component";
 
 describe('FetchingListComponent', () => {
   let component: FetchingListComponent;
@@ -13,8 +14,10 @@ describe('FetchingListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientModule, RouterModule.forRoot([]), ],
-      declarations: [FetchingListComponent, PaginatorComponent, InViewportDirective],
+      imports: [HttpClientModule, RouterModule.forRoot([])],
+      declarations: [
+        FetchingListComponent, PaginatorComponent, InViewportDirective, InfiniteScrollComponent
+      ],
       providers: [DataService]
     })
       .compileComponents();

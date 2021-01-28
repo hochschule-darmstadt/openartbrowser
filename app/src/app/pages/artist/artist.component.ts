@@ -65,7 +65,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
       this.uniqueEntityVideos = [];
     });
     const queryParamMap = this.route.snapshot.queryParamMap;
-    if (!queryParamMap.get('page') || queryParamMap.get('tab') === Tab.Artworks) {
+    if (queryParamMap.get('page') || queryParamMap.get('tab') === Tab.Artworks) {
       this.activeTab = Tab.Artworks;
     } else if (Object.values(Tab).includes(queryParamMap.get('tab'))) {
       this.activeTab = Tab[queryParamMap.get('tab')];

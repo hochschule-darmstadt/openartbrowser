@@ -71,22 +71,29 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit() {
     if (!this.options) {
+      // can't start without options
       return;
     }
     if (this.options.initOffset < 0 && this.options.fetchSize <= 0 && !this.options.entityType) {
+      // check of options failed
       throw Error('Invalid fetching list options!');
     }
     if (this.options.queryCount) {
+      // queryCount is a promise for a number or a number => ready for init
       this.init()
     }
   }
 
   ngOnChanges() {
     if (this.options.queryCount) {
+      // queryCount is a promise for a number or a number => ready for init
       this.init()
     }
   }
 
+  /**
+   * Initializes the page to the given page parameter or initOffset if no page given
+   */
   init() {
     let pageParam = +this.route.snapshot.queryParamMap.get('page');
 
@@ -98,18 +105,9 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
         Math.ceil(this.options.queryCount / this.options.fetchSize) - 1 :
         Math.floor(elasticEnvironment.nonScrollingMaxQuerySize / this.options.fetchSize) - 1;
       if (pageParam) {
-        if (pageParam > this.maxPage) {
-          console.log('möp')
-          const queryParams: Params = {page: this.maxPage};
-          const url = this.router.createUrlTree(
-            [], {
-              queryParams: queryParams,
-              queryParamsHandling: 'merge',
-              preserveFragment: true,
-              replaceUrl: true
-            }).toString();
-          this.location.replaceState(url)
-          pageParam = this.maxPage;
+        if (pageParam > this.maxPage || pageParam < 0) {
+          // make sure pageParam is between 0 and maxPage
+          pageParam = Math.max(0, Math.min(this.maxPage, pageParam));
         }
         this.setCurrentPage(pageParam);
       } else {
@@ -201,10 +199,15 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
     });
   }
 
-  initializePage(pageNumber) {
+  /**
+   * Determines whether a page is already loaded. If not, triggers loading
+   * @param pageNumber
+   */
+  initializePage(pageNumber): Promise<any> {
     if (!(pageNumber in this.pages)) {
+      // Fill page with empty items
       this.pages[pageNumber] = {
-        items: Array(this.options.fetchSize).fill({})
+        items: Array(this.options.fetchSize).fill({error:false})
       } as Page;
       return this.loadPage(pageNumber);
     } else {
@@ -212,6 +215,11 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
+  /**
+   * Loads a given page by its number and this.query
+   * returns Promise
+   * @param pageNumber
+   */
   async loadPage(pageNumber) {
     const offset = pageNumber * this.options.fetchSize;
     /** if there is no more to get, don't fetch again */
@@ -237,24 +245,35 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
     });
   }
 
+  /**
+   * Listener to scroll to a page (paginator clicked)
+   * @param pageNumber the number of target page
+   */
   async scrollToPage(pageNumber) {
     if (pageNumber < 0 || +pageNumber === +this.currentPage) {
       return;
     }
 
+    // find all pages +-1 of the given pageNumber to load them
     const waitQueue: Promise<any>[] = [];
     for (let i = Math.max(pageNumber - 1, 0); i <= Math.min(pageNumber + 1, this.maxPage); i++) {
       const initResult = this.initializePage(i);
       waitQueue.push(initResult);
     }
+    // load the queue
     await Promise.all(waitQueue);
 
+    // find the requested page in the document to scroll it into the viewport
     const el = document.getElementById(this.pageAnchorElementId + +pageNumber);
     this.scrollingPageNum = pageNumber;
 
     await window.scrollTo({top: el.offsetTop, behavior: 'smooth'});
   }
 
+  /**
+   * Listener for the page anchor. Determines what pages should be loaded
+   * @param $event contains the emitter ID and whether it is in viewport (visible)
+   */
   onPageVisible($event: any) {
     if ($event.visible) {
       const anchorId = +($event.target.id.split('-').pop());
@@ -267,16 +286,20 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
         }
       }
       if (this.scrollingPageNum === -1) {
+        // pages +-2 of currentPage should be checked
         const pagesToCheck = this.range(Math.max(+this.currentPage - 2, 0), Math.min(+this.currentPage + 2, this.maxPage));
         for (const i of pagesToCheck) {
           const preScrollHeight = FetchingListComponent.getContainerScrollHeight();
           const preScrollOffset = FetchingListComponent.getContainerScrollTop();
           const pageToLoad = i;
           if (pageToLoad in this.pages || pageToLoad < 0) {
+            // skip if page is already loaded
             continue;
           }
-          this.initializePage(pageToLoad);
+          // load the page
+          this.initializePage(pageToLoad).then();
           if (pageToLoad < +this.currentPage) {
+            // loaded page was inserted above the currentPage => scroll to the currentPage
             this.changeDetectionRef.detectChanges();
             const postScrollOffset = FetchingListComponent.getContainerScrollTop();
             if ((preScrollOffset || preScrollOffset === 0) &&
@@ -292,10 +315,24 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
+  /**
+   * Changes url parameters and currentPage
+   * @param newPageNumber
+   * @private
+   */
   private setCurrentPage(newPageNumber: number) {
     this.currentPage = newPageNumber;
-    const queryParams: Params = {page: newPageNumber};
+    this.setURLPageParam(newPageNumber)
+    return newPageNumber;
+  }
 
+  /**
+   * Sets the url param 'page' without a history entry and triggering a reload
+   * @param page the new page number
+   * @private
+   */
+  private setURLPageParam(page: number) {
+    const queryParams: Params = {page: page};
     const url = this.router.createUrlTree(
       [], {
         queryParams: queryParams,
@@ -304,13 +341,16 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
         replaceUrl: true
       }).toString();
     this.location.replaceState(url)
-    return newPageNumber;
   }
 
   range(start, end): Array<number> {
     return Array.from({length: end - start + 1}, (v, k) => k + start);
   }
 
+  /**
+   * returns the current vertical position at the page
+   * @private
+   */
   private static getContainerScrollHeight(): number {
     return (
       Math.max(

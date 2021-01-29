@@ -5,7 +5,7 @@ import {DataService} from '../../core/services/elasticsearch/data.service';
 import {HttpClientModule} from '@angular/common/http';
 import {RouterModule} from '@angular/router';
 import {FetchingListComponent} from '../../shared/components/fetching-list/fetching-list.component';
-import {InViewportDirective} from "ng-in-viewport";
+import {InViewportModule} from "ng-in-viewport";
 import {InfiniteScrollComponent} from "../../shared/components/infinite-scroll/infinite-scroll.component";
 import {PaginatorComponent} from "../../shared/components/fetching-list/paginator/paginator.component";
 import {StickyTitleComponent} from "../../shared/components/sticky-title/sticky-title.component";
@@ -17,10 +17,10 @@ describe('EntitiesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientModule, RouterModule.forRoot([])],
+      imports: [HttpClientModule, RouterModule.forRoot([]), InViewportModule],
       declarations: [
         EntitiesComponent, FetchingListComponent, PaginatorComponent,
-        InViewportDirective, InfiniteScrollComponent, StickyTitleComponent,
+        InfiniteScrollComponent, StickyTitleComponent,
         NgbTooltip
       ],
       providers: [
@@ -33,7 +33,6 @@ describe('EntitiesComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(EntitiesComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

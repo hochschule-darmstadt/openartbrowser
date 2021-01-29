@@ -1,11 +1,11 @@
-import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
-import { Artwork, EntityType, EntityIcon } from 'src/app/shared/models/models';
-import { takeUntil } from 'rxjs/operators';
-import { ActivatedRoute } from '@angular/router';
-import { Subject } from 'rxjs';
-import { DataService } from 'src/app/core/services/elasticsearch/data.service';
-import { shuffle } from 'src/app/core/services/utils.service';
-import { usePlural } from 'src/app/shared/models/entity.interface';
+import {Component, OnInit, OnDestroy, HostListener} from '@angular/core';
+import {Artwork, EntityType, EntityIcon} from 'src/app/shared/models/models';
+import {takeUntil} from 'rxjs/operators';
+import {ActivatedRoute} from '@angular/router';
+import {Subject} from 'rxjs';
+import {DataService} from 'src/app/core/services/elasticsearch/data.service';
+import {shuffle} from 'src/app/core/services/utils.service';
+import {usePlural} from 'src/app/shared/models/entity.interface';
 
 /** interface for the tabs */
 interface ArtworkTab {
@@ -71,22 +71,22 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   /* List of unique Videos */
   uniqueVideos: string[] = [];
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {}
+  constructor(private dataService: DataService, private route: ActivatedRoute) {
+  }
 
   /**
    * @description hook that is executed at component initialization
    */
   ngOnInit() {
     // define tabs if not set
-    if (!this.artworkTabs || !this.artworkTabs.length) {
-      this.addTab(EntityType.ALL, true);
-      this.addTab(EntityType.MOTIF);
-      this.addTab(EntityType.ARTIST);
-      this.addTab(EntityType.LOCATION);
-      this.addTab(EntityType.GENRE);
-      this.addTab(EntityType.MOVEMENT);
-      this.addTab(EntityType.MATERIAL);
-    }
+    this.artworkTabs = [];
+    this.addTab(EntityType.ALL, true);
+    this.addTab(EntityType.MOTIF);
+    this.addTab(EntityType.ARTIST);
+    this.addTab(EntityType.LOCATION);
+    this.addTab(EntityType.GENRE);
+    this.addTab(EntityType.MOVEMENT);
+    this.addTab(EntityType.MATERIAL);
 
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
@@ -96,14 +96,12 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       this.artwork = this.hoveredArtwork = this.hoveredArtwork = null;
       this.imageHidden = this.modalIsVisible = this.commonTagsCollapsed = false;
       // clears items of all artwork tabs
-      this.artworkTabs = this.artworkTabs
-        .map((tab: ArtworkTab) => {
-          if (tab.type === ('main_motif' as EntityType)) {
-            return null;
-          }
-          return { ...tab, items: [] };
-        })
-        .filter(tab => tab !== null);
+      this.artworkTabs = this.artworkTabs.map((tab: ArtworkTab) => {
+        if (tab.type === ('main_motif' as EntityType)) {
+          return null;
+        }
+        return {...tab, items: []};
+      }).filter(tab => tab !== null);
 
       /** Use data service to fetch entity from database */
       const artworkId = params.get('artworkId');
@@ -117,7 +115,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
         this.mergeMotifs();
         this.combineEventData();
         await this.resolveIds('main_subjects');
-        this.insertMainMotifTab();
+        await this.insertMainMotifTab();
 
         /* load tabs content */
         this.loadTabs();
@@ -153,12 +151,13 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   }
 
   addUniqueVideos(inputArray) {
-    for ( const entity of inputArray) {
-      if (entity.videos && entity.videos.length >  0 && !this.uniqueVideos.includes(entity.videos[0])) {
+    for (const entity of inputArray) {
+      if (entity.videos && entity.videos.length > 0 && !this.uniqueVideos.includes(entity.videos[0])) {
         this.uniqueVideos.push(entity.videos[0]);
       }
     }
   }
+
   /**
    * hide artwork image
    */
@@ -210,14 +209,17 @@ export class ArtworkComponent implements OnInit, OnDestroy {
         if (tab.type === EntityType.ALL || tab.type === ('main_motif' as EntityType)) {
           return;
         }
-
         const types = usePlural(tab.type);
 
         // load entities
-        this.dataService.findMultipleById(this.artwork[types] as any, tab.type).then(artists => {
-          this.artwork[types] = artists;
+        this.dataService.findMultipleById(this.artwork[types] as any, tab.type).then(items => {
+          this.artwork[types] = items;
           this.addUniqueVideos(this.artwork.artists);
           this.addUniqueVideos(this.artwork.movements);
+          // filter empty tabs
+          if (items.length <= 0) {
+            this.artworkTabs = this.artworkTabs.filter(t => t.type !== tab.type);
+          }
         });
         // load related artworks by type
         return await this.dataService.findArtworksByType(tab.type, this.artwork[types] as any).then(artworks => {
@@ -227,10 +229,9 @@ export class ArtworkComponent implements OnInit, OnDestroy {
           allTab.items.push(...tab.items.slice(0, 10));
         });
       })
-    ).then(
-      () =>
-        // filter duplicates and shuffles it
-        (allTab.items = shuffle(Array.from(new Set(allTab.items))))
+    ).then(() =>
+      // filter duplicates and shuffles it
+      (allTab.items = shuffle(Array.from(new Set(allTab.items))))
     );
   }
 
@@ -254,8 +255,10 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   async insertMainMotifTab() {
     const main_motifs = this.artwork.main_subjects.map(entity => entity.id);
-
     const items = await this.dataService.findArtworksByType(EntityType.MOTIF, main_motifs);
+    if (!items.length || !main_motifs.length) {
+      return;
+    }
 
     const tab = {
       active: false,

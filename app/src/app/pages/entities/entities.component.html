@@ -20,19 +20,19 @@
 
   <app-fetching-list [query]="query" [options]="fetchOptions">
     <ng-template let-entity="entity" let-type="entityType">
-      <div class="item-caption" [ngbTooltip]="entity.label.length > 60 ? htmlContent : ''">
+      <div class="item-caption" [ngbTooltip]="entity?.label?.length > 60 ? htmlContent : ''">
         <ng-template #htmlContent>
           <div class="tooltip-container">
             <div class="tooltip-text-container">
               <span class="tooltip-text">
-                {{ entity.label }}
+                {{ entity?.label }}
               </span>
             </div>
           </div>
         </ng-template>
         <div class="ml-1">
           <i class="mr-1 fas" [ngClass]="entity.icon"></i>
-          <span>{{entity.label.length > 60 ? (entity.label | slice : 0 : 60) + '...' : entity.label }}</span>
+          <span>{{entity?.label?.length > 60 ? (entity.label | slice : 0 : 60) + '...' : entity.label }}</span>
         </div>
         <div *ngIf="type!='artwork'" class="ml-1">
           <i class="mr-1 fas fa-images"></i>

@@ -68,7 +68,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
     if (queryParamMap.get('page') || queryParamMap.get('tab') === Tab.Artworks) {
       this.activeTab = Tab.Artworks;
     } else if (Object.values(Tab).includes(queryParamMap.get('tab'))) {
-      this.activeTab = Tab[queryParamMap.get('tab')];
+      this.activeTab = Tab[Object.keys(Tab).filter((x) => Tab[x] == queryParamMap.get('tab'))[0]]
     } else {
       this.activeTab = Tab.Timeline;
     }

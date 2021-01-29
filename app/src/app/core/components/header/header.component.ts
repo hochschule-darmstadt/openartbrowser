@@ -1,6 +1,6 @@
 import {
   Component, OnInit, LOCALE_ID, Inject, ElementRef,
-  ViewChild, OnDestroy, AfterViewInit, Output, EventEmitter
+  ViewChild, OnDestroy, AfterViewInit
 } from '@angular/core';
 import {Router} from '@angular/router';
 import * as elementResizeDetectorMaker from 'element-resize-detector';
@@ -22,7 +22,6 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('navbar', {static: false}) navbarElem: ElementRef<HTMLElement>;
   @ViewChild('spacer', {static: false}) spacerElem: ElementRef<HTMLElement>;
-  @Output() headerResize = new EventEmitter<object>();
 
   constructor(private router: Router, @Inject(LOCALE_ID) protected localeId: string) {
     /**
@@ -38,14 +37,16 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
+    // Listen to resize of navbarElem
     this.erd.listenTo(this.navbarElem.nativeElement!, (element) => {
       const height = element.offsetHeight;
       if (height !== this.spacerHeight) {
         this.spacerHeight = height;
         this.spacerElem.nativeElement.style.height = this.spacerHeight + '';
-        this.headerResize.emit({height: height})
+        // find potential stickyTitle element
         let stickyTitle = document.getElementById("stickyTitle")
         if (!stickyTitle) {
+          // stickyTitle element not found, but maybe not initialized yet? check 6 seconds
           const subscription = interval(1000).subscribe(val => {
             stickyTitle = document.getElementById("stickyTitle")
             if (stickyTitle) {

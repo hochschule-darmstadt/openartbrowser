@@ -39,7 +39,6 @@ import { StickyTitleComponent } from './components/sticky-title/sticky-title.com
     InformationComponent,
     AbstractComponent,
     IconclassComponent,
-    CollapseComponent,
     DimensionsComponent,
     InfiniteScrollComponent,
     CollapseComponent,
@@ -77,7 +76,8 @@ import { StickyTitleComponent } from './components/sticky-title/sticky-title.com
     InfiniteScrollComponent,
     FetchingListComponent,
     EventTableComponent,
-    StickyTitleComponent
+    StickyTitleComponent,
+    PaginatorComponent,
   ]
 })
 export class SharedModule {

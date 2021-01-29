@@ -19,7 +19,7 @@
 
 .item {
   width: 10rem;
-  margin: .5rem;
+  margin: .3rem;
 
   &:hover {
     .item-link {
@@ -140,13 +140,53 @@
   }
 }
 
+@media (max-width: 1000px) {
+  .item {
+    margin: .5rem;
+  }
+}
+@media (max-width: 765px) {
+  .item {
+    margin: .2rem;
+  }
+}
+
+
 @media (max-width: 575px) {
   .item-caption {
     font-size: 0.7em;
   }
 
   .item {
-    width: 5rem;
+    width: 7rem;
+    margin: .2rem;
+  }
+  .img {
+    &-wrapper {
+      height: 10rem;
+    }
+  }
+}
+
+@media (max-width: 502px) {
+  .item {
+    width: 7rem;
+    margin: .3rem;
+  }
+  .img {
+    &-wrapper {
+      height: 10rem;
+    }
+  }
+}
+
+@media (max-width: 400px) {
+  .item-caption {
+    font-size: 0.7em;
+  }
+
+  .item {
+    width: 40%;
     margin: .2rem;
   }
   .img {

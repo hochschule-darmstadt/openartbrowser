@@ -44,13 +44,14 @@ export class DataService {
    * Fetches multiple entities from the server
    * @param ids ids of entities that should be retrieved
    * @param type if specified, it is assured that the returned entities have this entityType
+   * @param count the number of items returned
    */
-  public async findMultipleById<T>(ids: string[], type?: EntityType): Promise<T[]> {
+  public async findMultipleById<T>(ids: string[], type?: EntityType, count = 400): Promise<T[]> {
     const copyids = ids && ids.filter(id => !!id);
     if (!copyids || copyids.length === 0) {
       return [];
     }
-    const body = bodyBuilder().size(400);
+    const body = bodyBuilder().size(count);
     _.each(ids, id => body.orQuery('match', 'id', id));
     return this.performQuery<T>(body, this.baseUrl, type);
   }
@@ -113,11 +114,11 @@ export class DataService {
    * Returns the artworks that contain all the given arguments.
    * @param searchObj the arguments to search for.
    * @param keywords the list of words to search for.
-   *
+   * @param count the number of items returned
    */
-  public searchArtworks(searchObj: ArtSearch, keywords: string[] = []): Promise<Artwork[]> {
+  public searchArtworks(searchObj: ArtSearch, keywords: string[] = [], count = 400): Promise<Artwork[]> {
     const body = bodyBuilder()
-      .size(400)
+      .size(count)
       .sort(defaultSortField, 'desc');
     _.each(searchObj, (arr, key) => {
       if (Array.isArray(arr)) {
@@ -133,6 +134,12 @@ export class DataService {
     return this.performQuery(body);
   }
 
+  /**
+   * Get items match by type
+   * @param type the related type
+   * @param count the number of items returned
+   * @param from the offset of the query
+   */
   public async getEntityItems<T>(type: EntityType, count = 20, from = 0): Promise<T[]> {
     const body = bodyBuilder()
       .query('match', 'type', type)
@@ -152,13 +159,14 @@ export class DataService {
   /**
    * Find any object in the index by the field label with the given label
    * @param label object label
+   * @param count the number of items returned
    */
-  public findByLabel(label: string): Promise<any[]> {
+  public findByLabel(label: string, count = 200): Promise<any[]> {
     const body = bodyBuilder()
       .orQuery('match', 'label', label)
       .orQuery('wildcard', 'label', '*' + label + '*')
       .sort(defaultSortField, 'desc')
-      .size(200);
+      .size(count);
     return this.performQuery(body);
   }
 

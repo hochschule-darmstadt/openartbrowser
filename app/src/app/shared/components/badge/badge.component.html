@@ -13,7 +13,6 @@
   {{ entity?.label }}
 </a>
 
-
 <ng-template #htmlContent>
   <div class="tooltip-container">
     <div class="tooltip-text-container">
@@ -21,6 +20,8 @@
         {{ tooltip }}
       </span>
     </div>
-    <div *ngIf="entity.imageSmall" class="tooltip-image-container"><img id="tooltip-image" [src]="entity.imageSmall" /></div>
+    <div *ngIf="entity.imageSmall && isImageSourceValid" class="tooltip-image-container">
+      <img id="tooltip-image" [src]="entity.imageSmall" (error)="handleInvalidImageSource($event)" />
+    </div>
   </div>
 </ng-template>

@@ -87,7 +87,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       this.imageHidden = this.modalIsVisible = this.commonTagsCollapsed = false;
       // define tabs
       this.artworkTabs = [];
-      Object.values(EntityType).forEach(type=>this.addTab(type, type === EntityType.ALL))
+      Object.values(EntityType).forEach(type => this.addTab(type, type === EntityType.ALL))
       // clears items of all artwork tabs
       this.artworkTabs = this.artworkTabs.map((tab: ArtworkTab) => {
         if (tab.type === ('main_motif' as EntityType)) {
@@ -194,7 +194,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   private loadTabs() {
     /** get all tab */
     const allTab = this.artworkTabs.filter((tab: ArtworkTab) => tab.type === EntityType.ALL).pop();
-    console.log(this.artworkTabs);
     /** load artist related data */
     Promise.all(
       /** load related data for each tab  */

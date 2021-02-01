@@ -18,6 +18,7 @@ export class BadgeComponent implements OnInit, OnChanges {
   redirectUrl: string;
   tooltip: string;
   highlight: boolean;
+  isImageSourceValid: boolean = true;
 
   tooltipBreakLimit: number = 150;
 
@@ -63,6 +64,10 @@ export class BadgeComponent implements OnInit, OnChanges {
         this.highlight = this.hoveredArtwork[usePlural(this.entity.type)].includes(this.entity.id);
       }
     }
+  }
+
+  handleInvalidImageSource() {
+    this.isImageSourceValid = false;
   }
 }
 

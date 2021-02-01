@@ -78,16 +78,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    * @description hook that is executed at component initialization
    */
   ngOnInit() {
-    // define tabs if not set
-    this.artworkTabs = [];
-    this.addTab(EntityType.ALL, true);
-    this.addTab(EntityType.MOTIF);
-    this.addTab(EntityType.ARTIST);
-    this.addTab(EntityType.LOCATION);
-    this.addTab(EntityType.GENRE);
-    this.addTab(EntityType.MOVEMENT);
-    this.addTab(EntityType.MATERIAL);
-
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
       /* reset properties */
@@ -95,6 +85,9 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       this.videoExists = false;
       this.artwork = this.hoveredArtwork = this.hoveredArtwork = null;
       this.imageHidden = this.modalIsVisible = this.commonTagsCollapsed = false;
+      // define tabs
+      this.artworkTabs = [];
+      Object.values(EntityType).forEach(type=>this.addTab(type, type === EntityType.ALL))
       // clears items of all artwork tabs
       this.artworkTabs = this.artworkTabs.map((tab: ArtworkTab) => {
         if (tab.type === ('main_motif' as EntityType)) {
@@ -201,7 +194,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   private loadTabs() {
     /** get all tab */
     const allTab = this.artworkTabs.filter((tab: ArtworkTab) => tab.type === EntityType.ALL).pop();
-
+    console.log(this.artworkTabs);
     /** load artist related data */
     Promise.all(
       /** load related data for each tab  */

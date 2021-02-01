@@ -101,9 +101,13 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
       this.options.queryCount = value;
       // TODO: If the queryCount exceeds the elasticSearch safeguard (default 10000), maxPage is limited.
       //  Find a way to prevent exceeding this limit (eg. use scroll api or search after)
-      this.maxPage = this.options.queryCount <= elasticEnvironment.nonScrollingMaxQuerySize ?
-        Math.ceil(this.options.queryCount / this.options.fetchSize) - 1 :
-        Math.floor(elasticEnvironment.nonScrollingMaxQuerySize / this.options.fetchSize) - 1;
+      if (!this.options.queryCount) {
+        this.maxPage = Object.keys(this.pages).length - 1;
+      } else if (this.options.queryCount <= elasticEnvironment.nonScrollingMaxQuerySize) {
+        this.maxPage = Math.ceil(this.options.queryCount / this.options.fetchSize) - 1;
+      } else {
+        this.maxPage = Math.floor(elasticEnvironment.nonScrollingMaxQuerySize / this.options.fetchSize) - 1;
+      }
       if (pageParam) {
         if (pageParam > this.maxPage || pageParam < 0) {
           // make sure pageParam is between 0 and maxPage
@@ -123,7 +127,7 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
     this.router.navigate([], {
       queryParams: {'page': null},
       queryParamsHandling: 'merge'
-    });
+    }).then();
   }
 
   /** this gets called by the app-infinite-scroll component and fetches new data */
@@ -174,15 +178,6 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  /** removes items from the component. Index can be specified to remove without search (faster) */
-  removeEntity(item: Entity, pageNumber, index?) {
-    // splice removes the element in contrast to delete, which sets it to undefined
-    this.pages[pageNumber].items.splice(!index ?
-      this.pages[pageNumber].items.findIndex(i => {
-        return i ? i.id === item.id : true;
-      }) : index, 1);
-  }
-
   /** removes (broken) image link from item and sets error property to true */
   setError(item: Entity, pageNumber, index?) {
     // instead of removing items, we replace them with error items
@@ -207,7 +202,7 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
     if (!(pageNumber in this.pages)) {
       // Fill page with empty items
       this.pages[pageNumber] = {
-        items: Array(this.options.fetchSize).fill({error:false})
+        items: Array(this.options.fetchSize).fill({error: false})
       } as Page;
       return this.loadPage(pageNumber);
     } else {
@@ -284,8 +279,7 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
         } else {
           return;
         }
-      }
-      if (this.scrollingPageNum === -1) {
+      } else {
         // pages +-2 of currentPage should be checked
         const pagesToCheck = this.range(Math.max(+this.currentPage - 2, 0), Math.min(+this.currentPage + 2, this.maxPage));
         for (const i of pagesToCheck) {
@@ -322,7 +316,7 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
    */
   private setCurrentPage(newPageNumber: number) {
     this.currentPage = newPageNumber;
-    this.setURLPageParam(newPageNumber)
+    this.setURLPageParam(newPageNumber);
     return newPageNumber;
   }
 

@@ -2,6 +2,7 @@
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7" *ngIf="motif">
       <app-title [entity]="motif"></app-title>
+      <app-sticky-title [entity]="motif"></app-sticky-title>
 
       <div class="mb-3 mt-5 pl-2">
         <p *ngIf="motif?.description" class="mb-1 first-letter">
@@ -24,5 +25,5 @@
   </div>
   <span class="artworks-amount">{{ motif?.absoluteRank }}</span>
   <span class="ml-1 slider-heading" i18n="Artworks label@@artworks">Artworks</span>
-  <app-slider [items]="sliderItems"></app-slider>
+  <app-fetching-list id="artworks-list" [query]="query" [options]="fetchOptions"></app-fetching-list>
 </div>

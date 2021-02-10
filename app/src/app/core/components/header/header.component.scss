@@ -2,24 +2,35 @@
   width: 100%;
 }
 
-.navbar-nav {
+.navbar {
+  position: fixed;
+  z-index: 97;
+  min-width: 100%;
   display: flex;
-  align-items: center;
-  width: 100%;
-  flex-wrap: wrap;
+  background: #222222;
+
+  &-nav {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
+  }
 }
 
 .dropdown {
   .dropdown-toggle {
     padding: 0 0.6em !important;
   }
+
   .dropdown-toggle::after {
     display: none;
   }
+
   .dropdown-menu {
     width: auto;
   }
 }
+
 @media (max-width: 575px) {
   .dropdown.show .dropdown-toggle {
     text-align: center;
@@ -27,9 +38,12 @@
 }
 
 #title {
+  color: #00bc8c;
+
   h3 {
     font-size: 1.2em;
   }
+
   span {
     font-size: 0.7em;
 
@@ -57,7 +71,6 @@
   width: 100%;
   min-width: 400px;
   padding-left: 0;
-  padding-bottom: 0.3em;
 
   @media (max-width: 576px) {
     min-width: 300px;
@@ -77,9 +90,9 @@
   ::ng-deep .search__header-chips {
     overflow: hidden;
     opacity: 0;
-    max-height: 0px;
+    max-height: 0;
     background-color: #ddd;
-    height: 0px;
+    height: 0;
     transition: all 0.35s ease-in;
     padding: 0;
   }

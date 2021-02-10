@@ -2,6 +2,8 @@
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7" *ngIf="movement">
       <app-title [entity]="movement"></app-title>
+      <app-sticky-title [entity]="movement"></app-sticky-title>
+
       <app-information i18n-label="Period label@@period" label="Period" [value]="movement.start_time + ' - ' + movement.end_time" *ngIf="movement.start_time && movement.end_time"></app-information>
       <div *ngIf="movement?.abstract?.length || movement?.influenced_by?.length">
         <app-collapse [showVideo]="videoExists">
@@ -14,8 +16,6 @@
           </div>
 
           <app-information i18n-label="Influenced by label@@influenced_by" label="Influenced by" [values]="movement?.influenced_by"> </app-information>
-
-          <app-information i18n-label="Inception label@@inception" label="Inception" [value]="artwork?.inception"> </app-information>
         </app-collapse>
       </div>
     </div>
@@ -27,9 +27,9 @@
 
 
 
-  <div *ngIf="sliderItems?.length">
+  <div>
     <ul class="nav nav-tabs">
-      <li class="nav-item">
+      <li *ngIf="timelineItems?.length>0" class="nav-item">
         <a class="nav-link" (click)="setActiveTab(Tab.Timeline)"
            [ngClass]="{ active: activeTab === Tab.Timeline }"
            data-toggle="tab" href="#timeline_tab">
@@ -37,7 +37,7 @@
           <ng-container i18n="Timeline toggle label@@toggletimeline">Timeline</ng-container>
         </a>
       </li>
-      <li class="nav-item">
+      <li *ngIf="fetchOptions?.queryCount" class="nav-item">
         <a class="nav-link" (click)="setActiveTab(Tab.Artworks)"
            [ngClass]="{ active: activeTab === Tab.Artworks }"
            data-toggle="tab" href="#artworks_tab">
@@ -57,10 +57,10 @@
     </ul>
     <div class="tab-content">
       <div class="tab-pane fade" [ngClass]="{ 'show active': activeTab === Tab.Timeline }" id="timeline_tab">
-        <app-timeline [artworks]="sliderItems" displayArtists="true"></app-timeline>
+        <app-timeline [artworks]="timelineItems" displayArtists="true"></app-timeline>
       </div>
       <div class="tab-pane fade" [ngClass]="{ 'show active': activeTab === Tab.Artworks }" id="artworks_tab">
-        <app-slider [items]="sliderItems"></app-slider>
+        <app-fetching-list id="artworks_tab-list" [query]="query" [options]="fetchOptions"></app-fetching-list>
       </div>
       <div class="tab-pane fade" [ngClass]="{ 'show active': activeTab === Tab.MovementOverview }" id="movement_overview_tab">
         <app-movement-overview

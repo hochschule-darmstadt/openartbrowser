@@ -1,11 +1,18 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Artist, Artwork, EntityType, Movement } from 'src/app/shared/models/models';
-import { DataService } from 'src/app/core/services/elasticsearch/data.service';
-import { ActivatedRoute } from '@angular/router';
-import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Artist, Artwork, Entity, EntityType, Movement} from 'src/app/shared/models/models';
+import {DataService} from 'src/app/core/services/elasticsearch/data.service';
+import {ActivatedRoute, Params} from '@angular/router';
+import {takeUntil} from 'rxjs/operators';
+import {Subject} from 'rxjs';
 import * as _ from 'lodash';
-import { shuffle } from 'src/app/core/services/utils.service';
+import {shuffle} from 'src/app/core/services/utils.service';
+import {FetchOptions} from "../../shared/components/fetching-list/fetching-list.component";
+import {UrlParamService} from "../../core/services/urlparam.service";
+
+enum Tab {
+  Artworks = 'artworks',
+  Timeline = 'timeline',
+}
 
 @Component({
   selector: 'app-artist',
@@ -24,20 +31,32 @@ export class ArtistComponent implements OnInit, OnDestroy {
 
   /** The entity this page is about */
   artist: Artist = null;
-  /** Related artworks */
+  /** Timeline artworks */
   sliderItems: Artwork[] = [];
+
+  /** Related artworks */
+  fetchOptions = {
+    initOffset: 0,
+    fetchSize: 30,
+    queryCount: undefined,
+    entityType: EntityType.ARTWORK
+  } as FetchOptions;
+  query: (offset: number) => Promise<Entity[]>;
+
+
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();
 
   /** Toggle bool for displaying either timeline or artworks carousel component */
-  showTimelineNotArtworks = true;
+  Tab = Tab;
+  activeTab: string = Tab.Timeline;
 
   /** a video was found */
   videoExists = false;
   /* List of unique Videos */
   uniqueEntityVideos: string[] = [];
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {
+  constructor(private dataService: DataService, private route: ActivatedRoute, private urlParamService: UrlParamService) {
   }
 
   /** hook that is executed at component initialization */
@@ -46,16 +65,32 @@ export class ArtistComponent implements OnInit, OnDestroy {
       this.videoExists = false;
       this.uniqueEntityVideos = [];
     });
+    const queryParamMap = this.route.snapshot.queryParamMap;
+    if (queryParamMap.get('page')) {
+      this.setActiveTab(Tab.Artworks);
+    } else {
+      this.setActiveTab(queryParamMap.get('tab'));
+    }
+
+
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
       const artistId = params.get('artistId');
+
+      this.fetchOptions.queryCount = this.dataService.countArtworksByType(EntityType.ARTIST, [artistId]);
+
+      /** load fetching list items */
+      this.query = async (offset) => {
+        return await this.dataService.findArtworksByType(
+          EntityType.ARTIST, [artistId], this.fetchOptions.fetchSize, offset)
+      }
+
       /** Use data service to fetch entity from database */
       this.artist = await this.dataService.findById<Artist>(artistId, EntityType.ARTIST);
       if (this.artist.videos && this.artist.videos.length > 0) {
         this.uniqueEntityVideos.unshift(this.artist.videos[0]);
       }
 
-      /** load slider items */
       this.dataService.findArtworksByType(EntityType.ARTIST, [this.artist.id])
         .then(artworks => (this.sliderItems = shuffle(artworks)));
       /** dereference movements  */
@@ -70,14 +105,13 @@ export class ArtistComponent implements OnInit, OnDestroy {
     });
   }
 
-
   /*
     Iterates over the movements and adds all videos to uniqueEntityVideos.
     Only Videos whose id and link are not in uniqueEntityVideos & uniqueVideosLinks will be added.
   */
   addMovementVideos() {
     for (const movement of this.artist.movements) {
-      if (movement.videos && movement.videos.length >  0 && !this.uniqueEntityVideos.includes(movement.videos[0])) {
+      if (movement.videos && movement.videos.length > 0 && !this.uniqueEntityVideos.includes(movement.videos[0])) {
         this.uniqueEntityVideos.push(movement.videos[0]);
       }
     }
@@ -113,10 +147,20 @@ export class ArtistComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
+    this.urlParamService.changeQueryParams({tab: null}).resolve();
   }
 
-  toggleComponent() {
-    this.showTimelineNotArtworks = !this.showTimelineNotArtworks;
+  setActiveTab(tab: string) {
+    if (!Object.values(Tab).includes(tab)) {
+      tab = Tab.Timeline;
+    }
+    const queryParams: Params = {'tab': tab};
+
+    if (tab != Tab.Artworks) {
+      queryParams.page = null;
+    }
+    this.urlParamService.changeQueryParams(queryParams).resolve();
+    this.activeTab = tab;
   }
 
   videoFound(event) {

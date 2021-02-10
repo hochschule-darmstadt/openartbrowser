@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { takeUntil } from 'rxjs/operators';
-import { Location, Artwork, EntityType } from 'src/app/shared/models/models';
-import { Subject } from 'rxjs';
-import { DataService } from 'src/app/core/services/elasticsearch/data.service';
-import { shuffle } from 'src/app/core/services/utils.service';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {takeUntil} from 'rxjs/operators';
+import {Location, EntityType, Entity} from 'src/app/shared/models/models';
+import {Subject} from 'rxjs';
+import {DataService} from 'src/app/core/services/elasticsearch/data.service';
+import {FetchOptions} from "../../shared/components/fetching-list/fetching-list.component";
 
 @Component({
   selector: 'app-location',
@@ -28,9 +28,16 @@ export class LocationComponent implements OnInit, OnDestroy {
   location: Location = null;
 
   /** Related artworks */
-  sliderItems: Artwork[] = [];
+  fetchOptions = {
+    initOffset: 0,
+    fetchSize: 30,
+    queryCount: undefined,
+    entityType: EntityType.ARTWORK
+  } as FetchOptions;
+  query: (offset: number) => Promise<Entity[]>;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {}
+  constructor(private dataService: DataService, private route: ActivatedRoute) {
+  }
 
   /** hook that is executed at component initialization */
   ngOnInit() {
@@ -38,11 +45,16 @@ export class LocationComponent implements OnInit, OnDestroy {
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
       const locationId = params.get('locationId');
 
+      this.fetchOptions.queryCount = this.dataService.countArtworksByType(EntityType.LOCATION, [locationId]);
+
+      /** load fetching list items */
+      this.query = async (offset) => {
+        return await this.dataService.findArtworksByType(
+          EntityType.LOCATION, [locationId], this.fetchOptions.fetchSize, offset)
+      };
+
       /** Use data service to fetch entity from database */
       this.location = await this.dataService.findById<Location>(locationId, EntityType.LOCATION);
-
-      /** load slider items */
-      this.dataService.findArtworksByType(EntityType.LOCATION, [this.location.id]).then(artworks => (this.sliderItems = shuffle(artworks)));
     });
   }
 

@@ -690,6 +690,14 @@
         </context-group>
         <note priority="1" from="description">Iconography</note>
       </trans-unit>
+      <trans-unit id="fetching_list_error" datatype="html">
+        <source>Painting in progress</source>
+        <context-group purpose="fetching_list_error">
+          <context context-type="sourcefile">app/shared/components/fetching-list/fetching-list.component.html</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+        <note priority="1" from="description">error text for missing images</note>
+      </trans-unit>
     </body>
   </file>
 </xliff>

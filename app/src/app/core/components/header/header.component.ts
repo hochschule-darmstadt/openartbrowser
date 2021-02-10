@@ -32,9 +32,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
     this.locale = localeId;
   }
 
-  ngOnInit() {
-    // this.spacerHeight = +document.getElementById('navbar').offsetHeight;
-  }
+  ngOnInit() {}
 
   ngAfterViewInit() {
     // Listen to resize of navbarElem

@@ -40,7 +40,7 @@ export class MaterialComponent implements OnInit, OnDestroy {
       this.query = async (offset) => {
         return await this.dataService.findArtworksByType(
           EntityType.MATERIAL, [materialId], this.fetchOptions.fetchSize, offset)
-      }
+      };
 
       /** Use data service to fetch entity from database */
       this.material = await this.dataService.findById<Material>(materialId, EntityType.MATERIAL);

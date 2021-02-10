@@ -41,7 +41,7 @@ export class MotifComponent implements OnInit, OnDestroy {
       this.query = async (offset) => {
         return await this.dataService.findArtworksByType(
           EntityType.MOTIF, [motifId], this.fetchOptions.fetchSize, offset)
-      }
+      };
 
       /** Use data service to fetch entity from database */
       this.motif = await this.dataService.findById<Motif>(motifId, EntityType.MOTIF);

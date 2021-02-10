@@ -12,7 +12,7 @@ import {Entity, EntityType} from '../../models/entity.interface';
 import {DataService} from '../../../core/services/elasticsearch/data.service';
 import {ActivatedRoute, Params} from '@angular/router';
 import {KeyValue} from '@angular/common';
-import {elasticEnvironment} from '../../../../environments/environment';
+import {environment} from '../../../../environments/environment';
 import {Artwork} from '../../models/models';
 import {takeUntil} from "rxjs/operators";
 import {Subject} from "rxjs";
@@ -21,7 +21,7 @@ import {UrlParamService} from "../../../core/services/urlparam.service";
 export interface FetchOptions {
   /** initial offset of the query, this is where it will continue to load */
   initOffset: number;
-  /** the grater this is, the bigger the fetch */
+  /** the greater this is, the bigger the fetch */
   fetchSize: number;
   /** the max number of elements or its Promise */
   queryCount: any;
@@ -55,6 +55,8 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
 
   maxPage: number;
   currentPage: number;
+  // pages loaded +- of current page
+  private loadingDistance = 2;
 
   pageAnchorElementId = '#pageAnchor-';
   private scrollingPageNum = -1;
@@ -110,10 +112,10 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
       //  Find a way to prevent exceeding this limit (eg. use scroll api or search after)
       if (!this.options.queryCount) {
         this.maxPage = Object.keys(this.pages).length - 1;
-      } else if (this.options.queryCount <= elasticEnvironment.nonScrollingMaxQuerySize) {
+      } else if (this.options.queryCount <= environment.elastic.nonScrollingMaxQuerySize) {
         this.maxPage = Math.ceil(this.options.queryCount / this.options.fetchSize) - 1;
       } else {
-        this.maxPage = Math.floor(elasticEnvironment.nonScrollingMaxQuerySize / this.options.fetchSize) - 1;
+        this.maxPage = Math.floor(environment.elastic.nonScrollingMaxQuerySize / this.options.fetchSize) - 1;
       }
       if (this.queryParams.hasOwnProperty('page')) {
         if (this.queryParams.page > this.maxPage || this.queryParams.page < 0) {
@@ -287,7 +289,8 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
         }
       } else {
         // pages +-2 of currentPage should be checked
-        const pagesToCheck = this.range(Math.max(+this.currentPage - 2, 0), Math.min(+this.currentPage + 2, this.maxPage));
+        const pagesToCheck = this.range(Math.max(+this.currentPage - this.loadingDistance, 0),
+          Math.min(+this.currentPage + this.loadingDistance, this.maxPage));
         for (const i of pagesToCheck) {
           const preScrollHeight = FetchingListComponent.getContainerScrollHeight();
           const preScrollOffset = FetchingListComponent.getContainerScrollTop();

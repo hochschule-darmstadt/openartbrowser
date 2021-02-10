@@ -1,6 +1,6 @@
 import { Component, Directive, OnInit } from '@angular/core';
 import { Angulartics2Piwik } from 'angulartics2/piwik';
-import { analyticsEnvironment } from '../../../../environments/environment';
+import { environment } from '../../../../environments/environment';
 
 declare global {
   interface Window {
@@ -14,11 +14,11 @@ declare global {
 })
 export class AnalyticsComponent implements OnInit {
   constructor(public analytics: Angulartics2Piwik) {
-    if (analyticsEnvironment.enabled) {
+    if (environment.analytics.enabled) {
       const _paq = window._paq || [];
       _paq.push(['disableCookies']);
-      _paq.push(['setTrackerUrl', analyticsEnvironment.url + 'matomo.php']);
-      _paq.push(['setSiteId', analyticsEnvironment.propertyId]);
+      _paq.push(['setTrackerUrl', environment.analytics.url + 'matomo.php']);
+      _paq.push(['setSiteId', environment.analytics.propertyId]);
       analytics.startTracking();
     }
   }

@@ -92,7 +92,7 @@ export class MovementComponent implements OnInit, OnDestroy {
       this.query = async (offset) => {
         return await this.dataService.findArtworksByType(
           EntityType.MOVEMENT, [movementId], this.fetchOptions.fetchSize, offset)
-      }
+      };
 
       /** Use data service to fetch entity from database */
       this.movement = await this.dataService.findById<Movement>(movementId, EntityType.MOVEMENT);

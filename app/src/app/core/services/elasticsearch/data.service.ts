@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import {HttpClient} from '@angular/common/http';
 import {Inject, Injectable, LOCALE_ID} from '@angular/core';
 import {ArtSearch, Artwork, Entity, EntityIcon, EntityType, Iconclass, Movement} from 'src/app/shared/models/models';
-import {elasticEnvironment} from 'src/environments/environment';
+import {environment} from 'src/environments/environment';
 import {usePlural} from 'src/app/shared/models/entity.interface';
 import * as bodyBuilder from 'bodybuilder';
 import {Bodybuilder} from 'bodybuilder';
@@ -15,7 +15,8 @@ const defaultSortField = 'relativeRank';
 @Injectable()
 export class DataService {
   /** base url of elasticSearch server */
-  private readonly baseUrl: string;
+  private readonly searchEndPoint: string;
+  private readonly countEndPoint: string;
   private readonly ISO_639_1_LOCALE: string;
 
   /**
@@ -24,7 +25,8 @@ export class DataService {
   constructor(private http: HttpClient, @Inject(LOCALE_ID) localeId: string) {
     // build backend api url with specific index by localeId
     this.ISO_639_1_LOCALE = localeId.substr(0, 2);
-    this.baseUrl = elasticEnvironment.serverURI + '/' + (this.ISO_639_1_LOCALE || 'en') + '/_search';
+    this.searchEndPoint = environment.elastic.base + '/' + (this.ISO_639_1_LOCALE || 'en') + '/_search';
+    this.countEndPoint = environment.elastic.base + '/' + (this.ISO_639_1_LOCALE || 'en') + '/_count';
   }
 
   /**
@@ -36,7 +38,7 @@ export class DataService {
   public async findById<T>(id: string, type?: EntityType): Promise<T> {
     const body = bodyBuilder()
       .query('match', 'id', id);
-    const entities = await this.performQuery<T>(body, this.baseUrl, type);
+    const entities = await this.performQuery<T>(body, this.searchEndPoint, type);
     return !entities.length ? null : entities[0];
   }
 
@@ -53,7 +55,7 @@ export class DataService {
     }
     const body = bodyBuilder().size(count);
     _.each(ids, id => body.orQuery('match', 'id', id));
-    return this.performQuery<T>(body, this.baseUrl, type);
+    return this.performQuery<T>(body, this.searchEndPoint, type);
   }
 
   /**
@@ -79,9 +81,7 @@ export class DataService {
       .queryMinimumShouldMatch(1, true)
       .query('match', 'type', EntityType.ARTWORK)
     _.each(ids, id => body.orQuery('match', usePlural(type), id));
-    const response: any = await this.http.post(
-      'https://openartbrowser.org/' + elasticEnvironment.serverURI + '/' + (this.ISO_639_1_LOCALE || 'en') + '/_count',
-      body.build()).toPromise()
+    const response: any = await this.http.post(this.countEndPoint, body.build()).toPromise()
     return response && response.count ? response.count : undefined
   }
 
@@ -163,9 +163,7 @@ export class DataService {
   }
 
   public async countEntityItems<T>(type: EntityType) {
-    const response: any = await this.http
-      .get('https://openartbrowser.org/' + elasticEnvironment.serverURI + '/' + (this.ISO_639_1_LOCALE || 'en') + '/_count?q=type:' + type)
-      .toPromise();
+    const response: any = await this.http.get(this.countEndPoint + '?q=type:' + type).toPromise();
     return response && response.count ? response.count : undefined;
   }
 
@@ -223,7 +221,7 @@ export class DataService {
    * @param url endpoint
    * @param type type to filter for
    */
-  private async performQuery<T>(query: Bodybuilder, url: string = this.baseUrl, type?: EntityType) {
+  private async performQuery<T>(query: Bodybuilder, url: string = this.searchEndPoint, type?: EntityType) {
     const response = await this.http.post<T>(url, query.build()).toPromise();
     const entities = this.filterData<T>(response, type);
     // set type specific attributes

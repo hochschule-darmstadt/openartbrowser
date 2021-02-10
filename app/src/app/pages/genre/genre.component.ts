@@ -49,11 +49,10 @@ export class GenreComponent implements OnInit, OnDestroy {
       this.query = async (offset) => {
         return await this.dataService.findArtworksByType(
           EntityType.GENRE, [genreId], this.fetchOptions.fetchSize, offset)
-      }
+      };
 
       /** Use data service to fetch entity from database */
       this.genre = await this.dataService.findById<Genre>(genreId, EntityType.GENRE);
-
     });
   }
 

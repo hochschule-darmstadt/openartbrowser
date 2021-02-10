@@ -51,7 +51,7 @@ export class LocationComponent implements OnInit, OnDestroy {
       this.query = async (offset) => {
         return await this.dataService.findArtworksByType(
           EntityType.LOCATION, [locationId], this.fetchOptions.fetchSize, offset)
-      }
+      };
 
       /** Use data service to fetch entity from database */
       this.location = await this.dataService.findById<Location>(locationId, EntityType.LOCATION);

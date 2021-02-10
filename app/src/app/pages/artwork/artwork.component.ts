@@ -88,13 +88,6 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       // define tabs
       this.artworkTabs = [];
       Object.values(EntityType).forEach(type => this.addTab(type, type === EntityType.ALL))
-      // clears items of all artwork tabs
-      this.artworkTabs = this.artworkTabs.map((tab: ArtworkTab) => {
-        if (tab.type === ('main_motif' as EntityType)) {
-          return null;
-        }
-        return {...tab, items: []};
-      }).filter(tab => tab !== null);
 
       /** Use data service to fetch entity from database */
       const artworkId = params.get('artworkId');

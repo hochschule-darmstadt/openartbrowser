@@ -1,12 +1,13 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Artist, Artwork, Entity, EntityType, Movement} from 'src/app/shared/models/models';
 import {DataService} from 'src/app/core/services/elasticsearch/data.service';
-import {ActivatedRoute, Params, Router} from '@angular/router';
+import {ActivatedRoute, Params} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';
 import * as _ from 'lodash';
 import {shuffle} from 'src/app/core/services/utils.service';
 import {FetchOptions} from "../../shared/components/fetching-list/fetching-list.component";
+import {UrlParamService} from "../../core/services/urlparam.service";
 
 enum Tab {
   Artworks = 'artworks',
@@ -48,14 +49,14 @@ export class ArtistComponent implements OnInit, OnDestroy {
 
   /** Toggle bool for displaying either timeline or artworks carousel component */
   Tab = Tab;
-  activeTab: Tab = Tab.Timeline;
+  activeTab: string = Tab.Timeline;
 
   /** a video was found */
   videoExists = false;
   /* List of unique Videos */
   uniqueEntityVideos: string[] = [];
 
-  constructor(private dataService: DataService, private route: ActivatedRoute, private router: Router) {
+  constructor(private dataService: DataService, private route: ActivatedRoute, private urlParamService: UrlParamService) {
   }
 
   /** hook that is executed at component initialization */
@@ -65,12 +66,10 @@ export class ArtistComponent implements OnInit, OnDestroy {
       this.uniqueEntityVideos = [];
     });
     const queryParamMap = this.route.snapshot.queryParamMap;
-    if (queryParamMap.get('page') || queryParamMap.get('tab') === Tab.Artworks) {
-      this.activeTab = Tab.Artworks;
-    } else if (Object.values(Tab).includes(queryParamMap.get('tab'))) {
-      this.activeTab = Tab[Object.keys(Tab).filter((x) => Tab[x] == queryParamMap.get('tab'))[0]]
+    if (queryParamMap.get('page')) {
+      this.setActiveTab(Tab.Artworks);
     } else {
-      this.activeTab = Tab.Timeline;
+      this.setActiveTab(queryParamMap.get('tab'));
     }
 
 
@@ -148,20 +147,20 @@ export class ArtistComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
+    this.urlParamService.changeQueryParams({tab: null}).resolve();
   }
 
-  setActiveTab(tab: Tab) {
-    this.activeTab = tab;
+  setActiveTab(tab: string) {
+    if (!Object.values(Tab).includes(tab)) {
+      tab = Tab.Timeline;
+    }
     const queryParams: Params = {'tab': tab};
 
     if (tab != Tab.Artworks) {
       queryParams.page = null;
     }
-    // Remove query params
-    this.router.navigate([], {
-      queryParams: queryParams,
-      queryParamsHandling: 'merge'
-    });
+    this.urlParamService.changeQueryParams(queryParams).resolve();
+    this.activeTab = tab;
   }
 
   videoFound(event) {

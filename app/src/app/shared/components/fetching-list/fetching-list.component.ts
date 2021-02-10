@@ -10,11 +10,13 @@ import {
 } from '@angular/core';
 import {Entity, EntityType} from '../../models/entity.interface';
 import {DataService} from '../../../core/services/elasticsearch/data.service';
-import {ActivatedRoute, Params, Router} from '@angular/router';
+import {ActivatedRoute, Params} from '@angular/router';
 import {KeyValue} from '@angular/common';
 import {elasticEnvironment} from '../../../../environments/environment';
 import {Artwork} from '../../models/models';
-import {Location} from '@angular/common';
+import {takeUntil} from "rxjs/operators";
+import {Subject} from "rxjs";
+import {UrlParamService} from "../../../core/services/urlparam.service";
 
 export interface FetchOptions {
   /** initial offset of the query, this is where it will continue to load */
@@ -57,16 +59,19 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
   pageAnchorElementId = '#pageAnchor-';
   private scrollingPageNum = -1;
 
+  /** use this to end subscription to url parameter in ngOnDestroy */
+  private ngUnsubscribe = new Subject();
+  queryParams: Params;
+
   // order by ascending property key (as number)
   keyAscOrder = (a: KeyValue<number, Page>, b: KeyValue<number, Page>): number => {
     return +a.key < +b.key ? -1 : (+b.key < +a.key ? 1 : 0);
   };
 
   constructor(private dataService: DataService,
-              private router: Router,
               private route: ActivatedRoute,
               private changeDetectionRef: ChangeDetectorRef,
-              private location: Location) {
+              private urlParamService: UrlParamService) {
   }
 
   ngOnInit() {
@@ -95,7 +100,9 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
    * Initializes the page to the given page parameter or initOffset if no page given
    */
   init() {
-    let pageParam = +this.route.snapshot.queryParamMap.get('page');
+    this.route.queryParams.pipe(takeUntil(this.ngUnsubscribe)).subscribe(params => {
+      this.queryParams = params;
+    });
 
     this.options.queryCount.then(value => {
       this.options.queryCount = value;
@@ -108,12 +115,12 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
       } else {
         this.maxPage = Math.floor(elasticEnvironment.nonScrollingMaxQuerySize / this.options.fetchSize) - 1;
       }
-      if (pageParam) {
-        if (pageParam > this.maxPage || pageParam < 0) {
+      if (this.queryParams.hasOwnProperty('page')) {
+        if (this.queryParams.page > this.maxPage || this.queryParams.page < 0) {
           // make sure pageParam is between 0 and maxPage
-          pageParam = Math.max(0, Math.min(this.maxPage, pageParam));
+          this.queryParams.page = Math.max(0, Math.min(this.maxPage, this.queryParams.page));
         }
-        this.setCurrentPage(pageParam);
+        this.setCurrentPage(this.queryParams.page);
       } else {
         this.currentPage = Math.floor(this.options.initOffset / this.options.fetchSize);
       }
@@ -123,11 +130,10 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
     // Remove query params
-    this.router.navigate([], {
-      queryParams: {'page': null},
-      queryParamsHandling: 'merge'
-    }).then();
+    this.urlParamService.changeQueryParams({page: null}).resolve();
   }
 
   /** this gets called by the app-infinite-scroll component and fetches new data */
@@ -326,15 +332,7 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
    * @private
    */
   private setURLPageParam(page: number) {
-    const queryParams: Params = {page: page};
-    const url = this.router.createUrlTree(
-      [], {
-        queryParams: queryParams,
-        queryParamsHandling: 'merge',
-        preserveFragment: true,
-        replaceUrl: true
-      }).toString();
-    this.location.replaceState(url)
+    this.urlParamService.changeQueryParams({page: page}).resolve();
   }
 
   range(start, end): Array<number> {

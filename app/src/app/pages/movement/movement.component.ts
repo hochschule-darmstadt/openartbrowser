@@ -6,6 +6,8 @@ import {Movement, Artwork, EntityType, Entity} from 'src/app/shared/models/model
 import {Subject} from 'rxjs';
 import {shuffle} from 'src/app/core/services/utils.service';
 import {FetchOptions} from "../../shared/components/fetching-list/fetching-list.component";
+import {Location} from "@angular/common";
+import {UrlParamService} from "../../core/services/urlparam.service";
 
 enum Tab {
   Artworks = 'artworks',
@@ -29,7 +31,7 @@ export class MovementComponent implements OnInit, OnDestroy {
      2. Inject entity instead of movement
    */
   Tab = Tab;
-  activeTab: Tab = Tab.Timeline;
+  activeTab: string = Tab.Timeline;
 
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();
@@ -47,7 +49,7 @@ export class MovementComponent implements OnInit, OnDestroy {
   query: (offset: number) => Promise<Entity[]>;
 
   /** Timeline artworks */
-  sliderItems: Artwork[] = [];
+  timelineItems: Artwork[] = [];
 
   /** Toggle bool for displaying either timeline or artworks carousel component */
   movementOverviewLoaded = false;
@@ -59,7 +61,9 @@ export class MovementComponent implements OnInit, OnDestroy {
 
   relatedMovements: Movement[] = [];
 
-  constructor(private dataService: DataService, private route: ActivatedRoute, private router: Router) {
+  constructor(private dataService: DataService, private route: ActivatedRoute, private router: Router,
+              private location: Location, private urlParamService: UrlParamService) {
+
   }
 
   /** hook that is executed at component initialization */
@@ -68,18 +72,19 @@ export class MovementComponent implements OnInit, OnDestroy {
       this.videoExists = false;
       this.uniqueEntityVideos = [];
     });
+
     const queryParamMap = this.route.snapshot.queryParamMap;
-    if (queryParamMap.get('page') || queryParamMap.get('tab') === Tab.Artworks) {
-      this.activeTab = Tab.Artworks;
-    } else if (Object.values(Tab).includes(queryParamMap.get('tab'))) {
-      this.activeTab = Tab[Object.keys(Tab).filter((x) => Tab[x] == queryParamMap.get('tab'))[0]]
+    if (queryParamMap.get('page')) {
+      this.setActiveTab(Tab.Artworks);
     } else {
-      this.activeTab = Tab.Timeline;
+      this.setActiveTab(queryParamMap.get('tab'));
     }
 
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
       const movementId = params.get('movementId');
+      // Reset attributes
+      this.relatedMovements = [];
 
       this.fetchOptions.queryCount = this.dataService.countArtworksByType(EntityType.MOVEMENT, [movementId]);
 
@@ -95,7 +100,7 @@ export class MovementComponent implements OnInit, OnDestroy {
         this.uniqueEntityVideos.unshift(this.movement.videos[0]);
       }
 
-      /** load slider items */
+      /** load timeline items */
       await this.dataService.findArtworksByType(EntityType.MOVEMENT, [this.movement.id])
         .then(artworks => {
           const referenceStartTime = this.movement.start_time || this.movement.start_time_est || -1;
@@ -106,7 +111,7 @@ export class MovementComponent implements OnInit, OnDestroy {
           if (referenceEndTime !== -1) {
             artworks = artworks.filter(artwork => artwork.inception <= referenceEndTime);
           }
-          this.sliderItems = shuffle(artworks);
+          this.timelineItems = shuffle(artworks);
           this.addUniqueVideos();
         });
 
@@ -128,25 +133,25 @@ export class MovementComponent implements OnInit, OnDestroy {
     });
   }
 
-  setActiveTab(tab: Tab) {
-    this.activeTab = tab;
-    const queryParams: Params = {'tab': tab};
+  setActiveTab(tab: string) {
+    if (!Object.values(Tab).includes(tab)) {
+      tab = Tab.Timeline;
+    }
+    let queryParams: Params = {tab: tab};
 
     if (tab != Tab.Artworks) {
       queryParams.page = null;
     }
-    // Remove query params
-    this.router.navigate([], {
-      queryParams: queryParams,
-      queryParamsHandling: 'merge'
-    });
-    if (this.activeTab === Tab.MovementOverview) {
+    this.urlParamService.changeQueryParams(queryParams).resolve();
+
+    if (tab === Tab.MovementOverview) {
       this.movementOverviewLoaded = true;
     }
+    this.activeTab = tab;
   }
 
   addUniqueVideos() {
-    for (const entity of this.sliderItems) {
+    for (const entity of this.timelineItems) {
       if (entity.videos && entity.videos.length > 0 && !this.uniqueEntityVideos.includes(entity.videos[0])) {
         this.uniqueEntityVideos.push(entity.videos[0]);
       }
@@ -156,6 +161,7 @@ export class MovementComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
+    this.urlParamService.changeQueryParams({tab: null}).resolve();
   }
 
 

@@ -1,25 +1,24 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import { MovementOverviewComponent } from './movement-overview.component';
+import {MovementOverviewComponent} from './movement-overview.component';
 import {Ng5SliderModule} from 'ng5-slider';
 import {NgxFitTextModule} from 'ngx-fit-text';
 import {RouterModule} from '@angular/router';
 import {DataService} from '../../../core/services/elasticsearch/data.service';
-import { HttpClient, HttpClientModule, HttpHandler } from '@angular/common/http';
+import {HttpClientModule} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('MovementOverviewComponent', () => {
   let component: MovementOverviewComponent;
   let fixture: ComponentFixture<MovementOverviewComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [Ng5SliderModule, NgxFitTextModule, RouterModule.forRoot([]), BrowserAnimationsModule, HttpClientModule],
-      declarations: [ MovementOverviewComponent ],
+      imports: [Ng5SliderModule, NgxFitTextModule, RouterModule.forRoot([], {relativeLinkResolution: 'legacy'}), BrowserAnimationsModule, HttpClientModule],
+      declarations: [MovementOverviewComponent],
       providers: [DataService]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

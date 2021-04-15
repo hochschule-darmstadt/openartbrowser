@@ -4,6 +4,30 @@
   "newProjectRoot": "projects",
   "projects": {
     "art-browser": {
+      "i18n": {
+        "locales": {
+          "en": {
+            "translation": "src/locale/messages.en.xlf",
+            "baseHref": ""
+          },
+          "fr": {
+            "translation": "src/locale/messages.fr.xlf",
+            "baseHref": ""
+          },
+          "de": {
+            "translation": "src/locale/messages.de.xlf",
+            "baseHref": ""
+          },
+          "es": {
+            "translation": "src/locale/messages.es.xlf",
+            "baseHref": ""
+          },
+          "it": {
+            "translation": "src/locale/messages.it.xlf",
+            "baseHref": ""
+          }
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -17,15 +41,20 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "aot": true,
             "outputPath": "dist/art-browser",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.app.json",
-            "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/styles/main.scss"],
-            "scripts": [],
-            "es5BrowserSupport": true
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "src/styles/main.scss"
+            ],
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -38,7 +67,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -49,47 +77,81 @@
                   "type": "initial",
                   "maximumWarning": "2mb",
                   "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ]
             },
             "en": {
               "aot": true,
-              "outputPath": "dist/browser/en/",
-              "i18nFile": "src/locale/messages.en.xlf",
-              "i18nFormat": "xlf",
-              "i18nLocale": "en",
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
+            "localize": [
+              "en"
+            ],
+              "outputPath": "dist/browser",
               "i18nMissingTranslation": "error"
             },
             "fr": {
               "aot": true,
-              "outputPath": "dist/browser/fr/",
-              "i18nFile": "src/locale/messages.fr.xlf",
-              "i18nFormat": "xlf",
-              "i18nLocale": "fr",
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
+            "localize": [
+              "fr"
+            ],
+              "outputPath": "dist/browser",
               "i18nMissingTranslation": "error"
             },
             "de": {
               "aot": true,
-              "outputPath": "dist/browser/de/",
-              "i18nFile": "src/locale/messages.de.xlf",
-              "i18nFormat": "xlf",
-              "i18nLocale": "de",
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
+            "localize": [
+              "de"
+            ],
+              "outputPath": "dist/browser",
               "i18nMissingTranslation": "error"
             },
             "es": {
               "aot": true,
-              "outputPath": "dist/browser/es/",
-              "i18nFile": "src/locale/messages.es.xlf",
-              "i18nFormat": "xlf",
-              "i18nLocale": "es",
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
+            "localize": [
+              "es"
+            ],
+              "outputPath": "dist/browser",
               "i18nMissingTranslation": "error"
             },
             "it": {
               "aot": true,
-              "outputPath": "dist/browser/it/",
-              "i18nFile": "src/locale/messages.it.xlf",
-              "i18nFormat": "xlf",
-              "i18nLocale": "it",
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
+            "localize": [
+              "it"
+            ],
+              "outputPath": "dist/browser",
               "i18nMissingTranslation": "error"
             },
             "en-production": {
@@ -99,10 +161,12 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
+              "localize": [
+                "en"
+              ],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -112,13 +176,14 @@
                   "type": "initial",
                   "maximumWarning": "2mb",
                   "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ],
               "aot": true,
-              "outputPath": "dist/browser/en/",
-              "i18nFile": "src/locale/messages.en.xlf",
-              "i18nFormat": "xlf",
-              "i18nLocale": "en",
+              "outputPath": "dist/browser",
               "i18nMissingTranslation": "error"
             },
             "fr-production": {
@@ -128,10 +193,12 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
+              "localize": [
+                "fr"
+              ],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -141,13 +208,14 @@
                   "type": "initial",
                   "maximumWarning": "2mb",
                   "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ],
               "aot": true,
-              "outputPath": "dist/browser/fr/",
-              "i18nFile": "src/locale/messages.fr.xlf",
-              "i18nFormat": "xlf",
-              "i18nLocale": "fr",
+              "outputPath": "dist/browser",
               "i18nMissingTranslation": "error"
             },
             "de-production": {
@@ -157,10 +225,12 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
+              "localize": [
+                "de"
+              ],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -170,13 +240,14 @@
                   "type": "initial",
                   "maximumWarning": "2mb",
                   "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ],
               "aot": true,
-              "outputPath": "dist/browser/de/",
-              "i18nFile": "src/locale/messages.de.xlf",
-              "i18nFormat": "xlf",
-              "i18nLocale": "de",
+              "outputPath": "dist/browser",
               "i18nMissingTranslation": "error"
             },
             "es-production": {
@@ -186,10 +257,12 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
+              "localize": [
+                "es"
+              ],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -199,13 +272,14 @@
                   "type": "initial",
                   "maximumWarning": "2mb",
                   "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ],
               "aot": true,
-              "outputPath": "dist/browser/es/",
-              "i18nFile": "src/locale/messages.es.xlf",
-              "i18nFormat": "xlf",
-              "i18nLocale": "es",
+              "outputPath": "dist/browser",
               "i18nMissingTranslation": "error"
             },
             "it-production": {
@@ -215,10 +289,12 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
+              "localize": [
+                "it"
+              ],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -228,13 +304,14 @@
                   "type": "initial",
                   "maximumWarning": "2mb",
                   "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ],
               "aot": true,
-              "outputPath": "dist/browser/it/",
-              "i18nFile": "src/locale/messages.it.xlf",
-              "i18nFormat": "xlf",
-              "i18nLocale": "it",
+              "outputPath": "dist/browser",
               "i18nMissingTranslation": "error"
             },
             "docker": {
@@ -246,7 +323,6 @@
               ],
               "optimization": true,
               "outputHashing": "all",
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -257,6 +333,10 @@
                   "type": "initial",
                   "maximumWarning": "2mb",
                   "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ]
             }

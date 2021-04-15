@@ -18,7 +18,7 @@ import {
 export class InfiniteScrollComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() options = {};
   @Output() scrolled = new EventEmitter();
-  @ViewChild('anchor', {static: false}) anchor: ElementRef<HTMLElement>;
+  @ViewChild('anchor') anchor: ElementRef<HTMLElement>;
 
   private observer: IntersectionObserver;
 

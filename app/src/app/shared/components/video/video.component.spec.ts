@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { VideoComponent } from './video.component';
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
@@ -11,9 +11,9 @@ describe('VideoComponent', () => {
   let component: VideoComponent;
   let fixture: ComponentFixture<VideoComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NgbModule, FormsModule, HttpClientModule, RouterModule.forRoot([])],
+      imports: [NgbModule, FormsModule, HttpClientModule, RouterModule.forRoot([], { relativeLinkResolution: 'legacy' })],
       declarations: [VideoComponent],
       providers: [DataService]
     }).compileComponents();

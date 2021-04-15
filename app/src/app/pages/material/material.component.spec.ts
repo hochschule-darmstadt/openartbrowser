@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import {MaterialComponent} from './material.component';
 import {SlideComponent} from 'src/app/shared/components/carousel/slide/slide.component';
@@ -21,9 +21,9 @@ describe('MaterialComponent', () => {
   let component: MaterialComponent;
   let fixture: ComponentFixture<MaterialComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([])],
+      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([], { relativeLinkResolution: 'legacy' })],
       declarations: [
         MaterialComponent, SlideComponent, CarouselComponent, AbstractComponent,
         BadgeComponent, TitleComponent, InformationComponent, StickyTitleComponent,

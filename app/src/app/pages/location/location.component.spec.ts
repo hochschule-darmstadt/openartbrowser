@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import {LocationComponent} from './location.component';
 import {SlideComponent} from 'src/app/shared/components/carousel/slide/slide.component';
@@ -22,9 +22,9 @@ describe('LocationComponent', () => {
   let component: LocationComponent;
   let fixture: ComponentFixture<LocationComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([])],
+      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([], { relativeLinkResolution: 'legacy' })],
       declarations: [
         LocationComponent, SlideComponent, CarouselComponent, CollapseComponent, BadgeComponent,
         AbstractComponent, TitleComponent, InformationComponent, StickyTitleComponent,

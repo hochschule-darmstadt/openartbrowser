@@ -2,10 +2,10 @@
   .custom-slider {
     pointer-events: none !important;
 
-    .ng5-slider-tick {
+    .ngx-slider-tick {
       cursor: default !important;
 
-      .ng5-slider-tick-value {
+      .ngx-slider-tick-value {
         top: -1.5rem !important;
         visibility: visible !important;
         cursor: default !important;
@@ -13,23 +13,23 @@
       }
     }
 
-    .ng5-slider-inner-tooltip {
+    .ngx-slider-inner-tooltip {
       cursor: default !important;
       pointer-events: none !important;
 
     }
 
-    .ng5-slider-ceil,
-    .ng5-slider-floor {
+    .ngx-slider-ceil,
+    .ngx-slider-floor {
       display: none !important;
     }
 
-    .ng5-slider-pointer-min {
+    .ngx-slider-pointer-min {
       pointer-events: none !important;
       visibility: hidden !important;
     }
 
-    .ng5-slider-pointer-max {
+    .ngx-slider-pointer-max {
       pointer-events: none !important;
       visibility: hidden !important;
     }

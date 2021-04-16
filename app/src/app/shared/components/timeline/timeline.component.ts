@@ -1,6 +1,6 @@
 import {Component, Input, HostListener} from '@angular/core';
 import {Artist, Artwork, Entity, EntityType} from 'src/app/shared/models/models';
-import {CustomStepDefinition, Options} from 'ng5-slider';
+import {CustomStepDefinition, Options} from '@angular-slider/ngx-slider';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {DataService} from 'src/app/core/services/elasticsearch/data.service';
 
@@ -74,6 +74,7 @@ export class TimelineComponent {
     showTicks: true,
     showSelectionBar: false,
     stepsArray: [],
+    animateOnMove:true,
     getPointerColor() {
       return '#00bc8c';
     },

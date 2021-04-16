@@ -24,6 +24,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular-slider/ngx-slider": "^2.0.3",
     "@angular/animations": "^11.2.10",
     "@angular/common": "^11.2.10",
     "@angular/compiler": "^11.2.10",
@@ -43,7 +44,6 @@
     "element-resize-detector": "^1.2.1",
     "lodash": "^4.17.21",
     "ng-in-viewport": "^6.1.0",
-    "ng5-slider": "^1.2.4",
     "ngx-fit-text": "0.0.10",
     "ngx-image-viewer": "github:hochschule-darmstadt/ngx-image-viewer#build",
     "rxjs": "^6.6.7",

@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, HostListener, Input, OnDestroy, OnInit} from '@angular/core';
 import {animate, state, style, transition, trigger} from '@angular/animations';
-import {Options} from 'ng5-slider';
+import {Options} from '@angular-slider/ngx-slider';
 import {Subject, timer} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import {DataService} from '../../../core/services/elasticsearch/data.service';

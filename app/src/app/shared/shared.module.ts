@@ -13,7 +13,6 @@ import { TitleComponent } from './components/title/title.component';
 import { IconclassComponent } from './components/iconclass/iconclass.component';
 import { BadgeComponent } from './components/badge/badge.component';
 import { TimelineComponent } from './components/timeline/timeline.component';
-import { Ng5SliderModule } from 'ng5-slider';
 import { CollapseComponent } from './components/collapse/collapse.component';
 import { Angulartics2Module } from 'angulartics2';
 import { MovementOverviewComponent } from './components/movement-overview/movement-overview.component';
@@ -25,6 +24,7 @@ import { EventTableComponent } from './components/event-table/event-table.compon
 import { InViewportModule } from 'ng-in-viewport';
 import { PaginatorComponent } from './components/fetching-list/paginator/paginator.component';
 import { StickyTitleComponent } from './components/sticky-title/sticky-title.component';
+import {NgxSliderModule} from "@angular-slider/ngx-slider";
 
 /** Everything that should be used within multiple feature modules but isn't always required goes here */
 @NgModule({
@@ -48,16 +48,16 @@ import { StickyTitleComponent } from './components/sticky-title/sticky-title.com
     PaginatorComponent,
     StickyTitleComponent
   ],
-  imports: [
-    CommonModule,
-    NgbModule,
-    RouterModule,
-    FormsModule,
-    Ng5SliderModule,
-    Angulartics2Module,
-    NgxFitTextModule,
-    InViewportModule
-  ],
+    imports: [
+        CommonModule,
+        NgbModule,
+        RouterModule,
+        FormsModule,
+        Angulartics2Module,
+        NgxFitTextModule,
+        InViewportModule,
+        NgxSliderModule
+    ],
   exports: [
     CarouselComponent,
     SearchComponent,

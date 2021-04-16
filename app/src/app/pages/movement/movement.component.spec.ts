@@ -8,7 +8,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {TimelineComponent} from 'src/app/shared/components/timeline/timeline.component';
 import {VideoComponent} from 'src/app/shared/components/video/video.component';
-import {Ng5SliderModule} from 'ng5-slider';
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import {BadgeComponent} from 'src/app/shared/components/badge/badge.component';
 import {CollapseComponent} from 'src/app/shared/components/collapse/collapse.component';
 import {InformationComponent} from 'src/app/shared/components/information/information.component';
@@ -32,7 +32,7 @@ describe('MovementComponent', () => {
       imports: [
         NgbModule,
         HttpClientModule,
-        Ng5SliderModule,
+        NgxSliderModule,
         RouterModule.forRoot([], { relativeLinkResolution: 'legacy' }),
         Angulartics2RouterlessModule.forRoot(),
         NgxFitTextModule

@@ -41,6 +41,9 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "lodash", "bodybuilder", "element-resize-detector", "rxjs/operators", "rxjs"
+            ],
             "aot": true,
             "outputPath": "dist/art-browser",
             "index": "src/index.html",

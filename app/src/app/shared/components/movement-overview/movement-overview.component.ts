@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, HostListener, Input, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, HostListener, Input, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {Options} from '@angular-slider/ngx-slider';
 import {Subject, timer} from 'rxjs';
@@ -78,10 +78,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   ngOnInit() {
-    if (this.inputMovements !== undefined) {
-      this.movements = this.inputMovements as MovementItem[];
-      this.initializeMovements();
-    } else {
+    if ((this.inputMovements === undefined)) {
       this.dataService.findMultipleById<Movement>(this.defaultMovementIds, EntityType.MOVEMENT)
         .then(movements => {
           this.movements = movements.filter(m => {
@@ -91,6 +88,14 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
           }) as MovementItem[];
           this.initializeMovements();
         });
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if(changes.inputMovements.currentValue) {
+      this.boxes = [[]];
+      this.movements = changes.inputMovements.currentValue as MovementItem[];
+      this.initializeMovements();
     }
   }
 

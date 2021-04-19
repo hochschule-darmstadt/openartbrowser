@@ -130,6 +130,9 @@ export class MovementComponent implements OnInit, OnDestroy {
       if (this.relatedMovements.length >= 1 && this.movement.start_time && this.movement.end_time) {
         this.relatedMovements.push(this.movement);
       }
+
+      // trigger onOhange lifecycle method of movement-overview
+      this.relatedMovements = this.relatedMovements.slice();
     });
   }
 

@@ -131,7 +131,7 @@ export class MovementComponent implements OnInit, OnDestroy {
         this.relatedMovements.push(this.movement);
       }
 
-      // trigger onOhange lifecycle method of movement-overview
+      // trigger onChanges lifecycle method of movement-overview
       this.relatedMovements = this.relatedMovements.slice();
     });
   }

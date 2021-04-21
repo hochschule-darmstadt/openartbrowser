@@ -78,6 +78,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   ngOnInit() {
+    // handle case if this component is not part of a movement.component page - show default
     if ((this.inputMovements === undefined)) {
       this.dataService.findMultipleById<Movement>(this.defaultMovementIds, EntityType.MOVEMENT)
         .then(movements => {
@@ -92,6 +93,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    // trigger for rerender of movement-overview if there are prop inputs
     if(changes.inputMovements.currentValue) {
       this.boxes = [[]];
       this.movements = changes.inputMovements.currentValue as MovementItem[];

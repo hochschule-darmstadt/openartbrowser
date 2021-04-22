@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import {MotifComponent} from './motif.component';
 import {SlideComponent} from 'src/app/shared/components/carousel/slide/slide.component';
@@ -22,9 +22,9 @@ describe('MotifComponent', () => {
   let component: MotifComponent;
   let fixture: ComponentFixture<MotifComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([])],
+      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([], { relativeLinkResolution: 'legacy' })],
       declarations: [
         MotifComponent, SlideComponent, CarouselComponent, AbstractComponent, BadgeComponent,
         CollapseComponent, TitleComponent, InformationComponent, StickyTitleComponent,

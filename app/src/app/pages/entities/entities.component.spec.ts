@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import {EntitiesComponent} from './entities.component';
 import {DataService} from '../../core/services/elasticsearch/data.service';
@@ -15,9 +15,9 @@ describe('EntitiesComponent', () => {
   let component: EntitiesComponent;
   let fixture: ComponentFixture<EntitiesComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientModule, RouterModule.forRoot([]), InViewportModule],
+      imports: [HttpClientModule, RouterModule.forRoot([], { relativeLinkResolution: 'legacy' }), InViewportModule],
       declarations: [
         EntitiesComponent, FetchingListComponent, PaginatorComponent,
         InfiniteScrollComponent, StickyTitleComponent,

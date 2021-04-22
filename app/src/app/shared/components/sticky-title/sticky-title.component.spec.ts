@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import {StickyTitleComponent} from './sticky-title.component';
 import {RouterModule} from "@angular/router";
@@ -7,9 +7,9 @@ describe('StickyTitleComponent', () => {
   let component: StickyTitleComponent;
   let fixture: ComponentFixture<StickyTitleComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [RouterModule.forRoot([])],
+      imports: [RouterModule.forRoot([], { relativeLinkResolution: 'legacy' })],
       declarations: [StickyTitleComponent]
     })
       .compileComponents();

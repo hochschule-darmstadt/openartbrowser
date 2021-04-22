@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { InfiniteScrollComponent } from './infinite-scroll.component';
 
@@ -6,7 +6,7 @@ describe('InfiniteScrollComponent', () => {
   let component: InfiniteScrollComponent;
   let fixture: ComponentFixture<InfiniteScrollComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ InfiniteScrollComponent ]
     })

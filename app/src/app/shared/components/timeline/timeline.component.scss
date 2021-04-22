@@ -6,34 +6,34 @@ $container-height: 20em;
 
 :host ::ng-deep {
   .custom-slider {
-    .ng5-slider-tick {
+    .ngx-slider-tick {
       visibility: hidden;
 
-      .ng5-slider-tick-legend {
+      .ngx-slider-tick-legend {
         visibility: visible !important;
       }
     }
 
-    .ng5-slider-model-value {
+    .ngx-slider-model-value {
       visibility: visible !important;
     }
 
-    .ng5-slider-ceil,
-    .ng5-slider-floor {
+    .ngx-slider-ceil,
+    .ngx-slider-floor {
       display: none !important;
     }
 
-    .ng5-slider-pointer-max {
+    .ngx-slider-pointer-max {
       pointer-events: none;
       display: none;
       visibility: hidden !important;
     }
 
-    .ng5-slider-pointer:after {
+    .ngx-slider-pointer:after {
       background: #ffffff !important;
     }
 
-    .ng5-slider-bubble {
+    .ngx-slider-bubble {
       color: #ffffff !important;
     }
   }

@@ -1,6 +1,6 @@
 <div *ngIf="items?.length > 0" class="timeline-container">
   <div class="custom-slider">
-    <ng5-slider id="ng5slider" [(value)]="value" [options]="options" (valueChange)="onSliderMoved()"></ng5-slider>
+    <ngx-slider id="ngxSlider" [(value)]="value" [options]="options" (valueChange)="onSliderMoved()"></ngx-slider>
   </div>
   <div class="carou">
     <div class="carou-control" (click)="prevClicked()">

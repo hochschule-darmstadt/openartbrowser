@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SearchResultComponent } from './search-result.component';
 import { SlideComponent } from 'src/app/shared/components/carousel/slide/slide.component';
@@ -13,9 +13,9 @@ describe('SearchResultComponent', () => {
   let component: SearchResultComponent;
   let fixture: ComponentFixture<SearchResultComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([]), Angulartics2RouterlessModule.forRoot()],
+      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([], { relativeLinkResolution: 'legacy' }), Angulartics2RouterlessModule.forRoot()],
       declarations: [SearchResultComponent, SlideComponent, CarouselComponent],
       providers: [DataService]
     }).compileComponents();

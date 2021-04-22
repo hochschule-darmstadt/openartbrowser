@@ -14,7 +14,7 @@ import { Angulartics2 } from 'angulartics2';
   providers: [SearchService]
 })
 export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
-  @ViewChild('input', { static: false })
+  @ViewChild('input')
   inputRef: ElementRef;
 
   /** input for search component */

@@ -69,7 +69,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
     if (queryParamMap.get('page')) {
       this.setActiveTab(Tab.Artworks);
     } else {
-      this.setActiveTab(queryParamMap.get('tab'));
+      this.setActiveTab(Tab[queryParamMap.get('tab')]);
     }
 
 
@@ -150,7 +150,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
     this.urlParamService.changeQueryParams({tab: null}).resolve();
   }
 
-  setActiveTab(tab: string) {
+  setActiveTab(tab: Tab) {
     if (!Object.values(Tab).includes(tab)) {
       tab = Tab.Timeline;
     }

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { InformationComponent } from '../information/information.component';
 import { DimensionsComponent } from './dimensions.component';
 import { BadgeComponent } from '../badge/badge.component';
@@ -9,9 +9,9 @@ describe('DimensionsComponent', () => {
   let component: DimensionsComponent;
   let fixture: ComponentFixture<DimensionsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NgbModule, RouterModule.forRoot([])],
+      imports: [NgbModule, RouterModule.forRoot([], { relativeLinkResolution: 'legacy' })],
       declarations: [
         DimensionsComponent,
         InformationComponent,

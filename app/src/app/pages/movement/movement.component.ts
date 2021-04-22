@@ -77,7 +77,7 @@ export class MovementComponent implements OnInit, OnDestroy {
     if (queryParamMap.get('page')) {
       this.setActiveTab(Tab.Artworks);
     } else {
-      this.setActiveTab(queryParamMap.get('tab'));
+      this.setActiveTab(Tab[queryParamMap.get('tab')]);
     }
 
     /** Extract the id of entity from URL params. */
@@ -133,7 +133,7 @@ export class MovementComponent implements OnInit, OnDestroy {
     });
   }
 
-  setActiveTab(tab: string) {
+  setActiveTab(tab: Tab) {
     if (!Object.values(Tab).includes(tab)) {
       tab = Tab.Timeline;
     }

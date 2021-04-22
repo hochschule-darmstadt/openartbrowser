@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import {ArtistComponent} from './artist.component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {RouterModule} from '@angular/router';
@@ -7,7 +7,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {VideoComponent} from 'src/app/shared/components/video/video.component';
 import {BadgeComponent} from 'src/app/shared/components/badge/badge.component';
 import {TimelineComponent} from 'src/app/shared/components/timeline/timeline.component';
-import {Ng5SliderModule} from 'ng5-slider';
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import {CollapseComponent} from 'src/app/shared/components/collapse/collapse.component';
 import {TitleComponent} from 'src/app/shared/components/title/title.component';
 import {InformationComponent} from 'src/app/shared/components/information/information.component';
@@ -23,9 +23,9 @@ describe('ArtistComponent', () => {
   let component: ArtistComponent;
   let fixture: ComponentFixture<ArtistComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([]), Ng5SliderModule],
+      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([], { relativeLinkResolution: 'legacy' }), NgxSliderModule],
       declarations: [
         ArtistComponent, TimelineComponent, AbstractComponent, TitleComponent,
         InformationComponent, BadgeComponent, VideoComponent, CollapseComponent, StickyTitleComponent,

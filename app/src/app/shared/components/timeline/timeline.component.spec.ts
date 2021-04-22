@@ -1,11 +1,11 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TimelineComponent } from './timeline.component';
-import { Ng5SliderModule } from 'ng5-slider';
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EntityType, EntityIcon } from '../../models/models';
 
@@ -13,9 +13,9 @@ describe('SliderComponent', () => {
   let component: TimelineComponent;
   let fixture: ComponentFixture<TimelineComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NgbModule, Ng5SliderModule, HttpClientModule, RouterModule.forRoot([]), BrowserAnimationsModule],
+      imports: [NgbModule, NgxSliderModule, HttpClientModule, RouterModule.forRoot([], { relativeLinkResolution: 'legacy' }), BrowserAnimationsModule],
       declarations: [TimelineComponent],
       providers: [DataService]
     }).compileComponents();

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ArtworkComponent } from './artwork.component';
 import { SlideComponent } from 'src/app/shared/components/carousel/slide/slide.component';
@@ -22,9 +22,9 @@ describe('ArtworkComponent', () => {
   let component: ArtworkComponent;
   let fixture: ComponentFixture<ArtworkComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NgbModule, HttpClientModule, ImageViewerModule.forRoot(), RouterModule.forRoot([])],
+      imports: [NgbModule, HttpClientModule, ImageViewerModule.forRoot(), RouterModule.forRoot([], { relativeLinkResolution: 'legacy' })],
       declarations: [
         ArtworkComponent,
         SlideComponent,

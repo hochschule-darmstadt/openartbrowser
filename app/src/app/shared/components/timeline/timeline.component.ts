@@ -176,12 +176,18 @@ export class TimelineComponent {
       }
     } else {
       /** if timeDifference bigger than maxSliderSteps, use the date values of the items */
-      sliderSteps = this.items.map((item, index) => {
+      const distinctItems = this.items.filter(
+        (thing, i, arr) => arr.findIndex(t => t.date === thing.date) === i
+      );
+      sliderSteps = distinctItems.map((item, index) => {
         const step = {
           value: item.date,
           legend: ''
         };
-        if (index % Math.floor(this.items.length / this.averagePeriodCount) === 0) {
+        if (index % Math.floor(distinctItems.length / this.averagePeriodCount) === 0) {
+          step.legend = item.date.toString();
+        }
+        if (index === distinctItems.length - 1){
           step.legend = item.date.toString();
         }
         return step;
@@ -205,7 +211,6 @@ export class TimelineComponent {
     const itemCountSmallerReference = 2;
     /** Amount of items where date is the exact slider value */
     const countReference = this.items.filter(item => +item.date === this.value).length;
-
     /** ReferenceIndex is the index of the first item with date equal to slider value or bigger */
     let referenceIndex: number;
     if (countReference > itemCountSmallerReference) {
@@ -214,7 +219,6 @@ export class TimelineComponent {
       const firstBiggerRef = this.items.findIndex(item => +item.date > this.value);
       referenceIndex = firstBiggerRef > 0 ? firstBiggerRef - 1 : this.items.length - (this.itemCountPerPeriod - 1);
     }
-
     /** Determine start index */
     if (0 >= referenceIndex - 1 && referenceIndex <= this.items.length - 3) {
       // first slide

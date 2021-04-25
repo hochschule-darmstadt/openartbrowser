@@ -5,7 +5,7 @@ import {
   EventEmitter,
   Input, OnChanges, OnDestroy,
   OnInit,
-  Output,
+  Output, SimpleChanges,
   TemplateRef
 } from '@angular/core';
 import {Entity, EntityType} from '../../models/entity.interface';
@@ -91,7 +91,10 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  ngOnChanges() {
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.hasOwnProperty('query')) {
+      this.pages = {}
+    }
     if (this.options.queryCount) {
       // queryCount is a promise for a number or a number => ready for init
       this.init()

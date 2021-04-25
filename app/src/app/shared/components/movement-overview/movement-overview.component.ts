@@ -170,7 +170,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
     /** The period span must be either a multiple of reasonablePeriodDistance or minimumPeriodDistance */
     let reasonablePeriodDistance = 50;
     if (dateSpan < this.averagePeriodCount * reasonablePeriodDistance) {
-      reasonablePeriodDistance = 10 * (Math.floor(dateSpan / this.averagePeriodCount / 10) + 1);
+      reasonablePeriodDistance = 5 * (Math.floor(dateSpan / this.averagePeriodCount / 5) + 1);
     }
     const minimumPeriodDistance = 1;
     /** Example:  30/7 = 4,28 ; 4,28 / 5 = 0,85 ; Math.max( Math.round(0.85)*5, 1) = 5 */
@@ -180,7 +180,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
     this.timelineStart = firstStart - (firstStart % this.periodSpan);
     this.timelineEnd = lastEnd - (lastEnd % this.periodSpan) + this.periodSpan;
 
-
+    
     /** Set slider options */
     const newOptions: Options = Object.assign({}, this.options);
     newOptions.ceil = this.timelineEnd;

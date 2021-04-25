@@ -303,8 +303,6 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   private async updateShownMovement(newMovementId) {
-    this.showThumbnail = false;
-    this.thumbnailLoaded = false;
     this.currentMovementId = newMovementId;
     this.setRandomThumbnail(this.currentMovementId).then(() => {
       this.drawThumbnail(this.currentMovementId);
@@ -326,19 +324,31 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
 
   /** choose random image out of artworks of current movement */
   private async setRandomThumbnail(movementId) {
+    this.showThumbnail = false;
+    this.thumbnailLoaded = false;
+
     const currMovementIndex = this.movements.findIndex(move => move.id === movementId);
-    if (!this.movements[currMovementIndex].artworks || !this.movements[currMovementIndex].artworks.length) {
+    const currMovement = this.movements[currMovementIndex];
+    if (!currMovement.artworks || !currMovement.artworks.length) {
       return;
     }
     // choose random new thumb out of first n-1
-    const thumbIndex = Math.floor(Math.random() * this.movements[currMovementIndex].artworks.length - 1);
-    this.thumbnail = this.movements[currMovementIndex].artworks.splice(thumbIndex, 1)[0];
+    const thumbIndex = (currMovement.artworks.length > 1) ? Math.floor(Math.random() * currMovement.artworks.length-1) : 0;
+
+    const oldThumbnail = this.thumbnail;
+    const newThumbnail = currMovement.artworks.splice(thumbIndex, 1)[0];
+    if(oldThumbnail === newThumbnail) {
+      this.showThumbnail = true;
+      this.thumbnailLoaded = true;
+    }
+    this.thumbnail = newThumbnail;
+
     // move thumbnail to end of list
-    this.movements[currMovementIndex].artworks.push(this.thumbnail);
+    currMovement.artworks.push(this.thumbnail);
 
     // TODO: move this?
-    this.currentMovementLabel = this.movements[currMovementIndex].label;
-    this.currentDate = MovementOverviewComponent.getStartTime(this.movements[currMovementIndex]) + ' - ' + MovementOverviewComponent.getEndTime(this.movements[currMovementIndex]);
+    this.currentMovementLabel = currMovement.label;
+    this.currentDate = MovementOverviewComponent.getStartTime(currMovement) + ' - ' + MovementOverviewComponent.getEndTime(currMovement);
   }
 
   selectRandomMovement() {

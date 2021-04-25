@@ -1,0 +1,15 @@
+$color1: #00bc8c;
+
+.error-content {
+  display: flex !important;
+  justify-content: center !important;
+}
+
+.error-content h1 {
+  color: $color1;
+  font-size: 10rem;
+}
+
+.error-content .error-text {
+  font-size: 1.5rem;
+}

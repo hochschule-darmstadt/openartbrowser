@@ -131,6 +131,12 @@ export class MovementComponent implements OnInit, OnDestroy {
         this.relatedMovements.push(this.movement);
       }
     });
+
+    this.route.params.subscribe(() => {
+      if(this.relatedMovements.length === 0) {
+        this.activeTab = "timeline";
+      }
+    });
   }
 
   setActiveTab(tab: Tab) {

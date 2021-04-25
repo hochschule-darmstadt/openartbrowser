@@ -887,6 +887,14 @@
           Principal} }
         </target>
       </trans-unit>
+      <trans-unit id="error_message" datatype="html">
+        <source>Sorry, the page you requested could not be found.</source>
+        <target state="final">Lo sentimos, no se ha podido encontrar la página solicitada.</target>
+      </trans-unit>
+      <trans-unit id="go_home_link" datatype="html">
+        <source>Click here to go back to the start page &rArr;</source>
+        <target state="final">Pulse aquí para volver a la página de inicio &rArr;</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

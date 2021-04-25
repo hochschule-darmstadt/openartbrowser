@@ -33,8 +33,12 @@ export class TimelineComponent {
   /** Decide whether artists should be displayed */
   @Input() displayArtists = false;
 
+  /** title of this slider */
+  @Input() heading: string;
+
   /** TimelineItems that should be displayed in this slider */
   items: TimelineItem[] = [];
+  
   private periodSpan = 1;
 
   private maxSliderSteps = 1000;

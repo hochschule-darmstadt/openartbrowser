@@ -18,6 +18,9 @@ export class MotifComponent implements OnInit, OnDestroy {
   /** The entity this page is about */
   motif: Motif = null;
 
+  idDoesNotExist = false;
+  motifId: string;
+
   /** Related artworks */
   fetchOptions = {
     initOffset: 0,
@@ -33,18 +36,20 @@ export class MotifComponent implements OnInit, OnDestroy {
   ngOnInit() {
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
-      const motifId = params.get('motifId');
+      this.motifId = params.get('motifId');
 
-      this.fetchOptions.queryCount = this.dataService.countArtworksByType(EntityType.MOTIF, [motifId]);
+      this.fetchOptions.queryCount = this.dataService.countArtworksByType(EntityType.MOTIF, [this.motifId]);
 
       /** load fetching list items */
       this.query = async (offset) => {
         return await this.dataService.findArtworksByType(
-          EntityType.MOTIF, [motifId], this.fetchOptions.fetchSize, offset)
+          EntityType.MOTIF, [this.motifId], this.fetchOptions.fetchSize, offset)
       };
 
       /** Use data service to fetch entity from database */
-      this.motif = await this.dataService.findById<Motif>(motifId, EntityType.MOTIF);
+      this.motif = await this.dataService.findById<Motif>(this.motifId, EntityType.MOTIF);
+
+      if (!this.motif) { this.idDoesNotExist = true }
     });
   }
 

@@ -1,4 +1,10 @@
-<div class="container entity movement">
+<div *ngIf="idDoesNotExist" class="container entity movement">
+  <div class="row mb-5 border-bottom pb-5">
+    <app-error-message  [id]="movementId"></app-error-message>
+  </div>
+</div>
+
+<div *ngIf="!idDoesNotExist" class="container entity movement">
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7" *ngIf="movement">
       <app-title [entity]="movement"></app-title>

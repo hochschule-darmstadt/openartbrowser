@@ -12,28 +12,28 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
  * advantage of routing to modules instead of components: lazy loading.
  */
 const routes: Routes = [
-  { path: '', loadChildren: './pages/home/home.routing.module#HomeRoutingModule' },
-  { path: 'imprint', loadChildren: './pages/imprint/imprint.routing.module#ImprintRoutingModule' },
+  { path: '', loadChildren: () => import('./pages/home/home.routing.module').then(m => m.HomeRoutingModule) },
+  { path: 'imprint', loadChildren: () => import('./pages/imprint/imprint.routing.module').then(m => m.ImprintRoutingModule) },
   {
     path: 'data-protection',
-    loadChildren: './pages/data-protection/data-protection.routing.module#DataProtectionRoutingModule'
+    loadChildren: () => import('./pages/data-protection/data-protection.routing.module').then(m => m.DataProtectionRoutingModule)
   },
-  { path: 'about', loadChildren: './pages/about/about.routing.module#AboutRoutingModule' },
-  { path: 'movements', loadChildren: './pages/entities/entities.routing.module#EntitiesRoutingModule' },
-  { path: 'artists', loadChildren: './pages/entities/entities.routing.module#EntitiesRoutingModule' },
-  { path: 'artworks', loadChildren: './pages/entities/entities.routing.module#EntitiesRoutingModule' },
-  { path: 'genres', loadChildren: './pages/entities/entities.routing.module#EntitiesRoutingModule' },
-  { path: 'motifs', loadChildren: './pages/entities/entities.routing.module#EntitiesRoutingModule' },
-  { path: 'locations', loadChildren: './pages/entities/entities.routing.module#EntitiesRoutingModule' },
-  { path: 'materials', loadChildren: './pages/entities/entities.routing.module#EntitiesRoutingModule' },
-  { path: 'artist/:artistId', loadChildren: './pages/artist/artist.routing.module#ArtistRoutingModule' },
-  { path: 'artwork/:artworkId', loadChildren: './pages/artwork/artwork.routing.module#ArtworkRoutingModule' },
-  { path: 'genre/:genreId', loadChildren: './pages/genre/genre.routing.module#GenreRoutingModule' },
-  { path: 'location/:locationId', loadChildren: './pages/location/location.routing.module#LocationRoutingModule' },
-  { path: 'material/:materialId', loadChildren: './pages/material/material.routing.module#MaterialRoutingModule' },
-  { path: 'movement/:movementId', loadChildren: './pages/movement/movement.routing.module#MovementRoutingModule' },
-  { path: 'motif/:motifId', loadChildren: './pages/motif/motif.routing.module#MotifRoutingModule' },
-  { path: 'search', loadChildren: './pages/search-result/search-result.routing.module#SearchResultRoutingModule' },
+  { path: 'about', loadChildren: () => import('./pages/about/about.routing.module').then(m => m.AboutRoutingModule) },
+  { path: 'movements', loadChildren: () => import('./pages/entities/entities.routing.module').then(m => m.EntitiesRoutingModule) },
+  { path: 'artists', loadChildren: () => import('./pages/entities/entities.routing.module').then(m => m.EntitiesRoutingModule) },
+  { path: 'artworks', loadChildren: () => import('./pages/entities/entities.routing.module').then(m => m.EntitiesRoutingModule) },
+  { path: 'genres', loadChildren: () => import('./pages/entities/entities.routing.module').then(m => m.EntitiesRoutingModule) },
+  { path: 'motifs', loadChildren: () => import('./pages/entities/entities.routing.module').then(m => m.EntitiesRoutingModule) },
+  { path: 'locations', loadChildren: () => import('./pages/entities/entities.routing.module').then(m => m.EntitiesRoutingModule) },
+  { path: 'materials', loadChildren: () => import('./pages/entities/entities.routing.module').then(m => m.EntitiesRoutingModule) },
+  { path: 'artist/:artistId', loadChildren: () => import('./pages/artist/artist.routing.module').then(m => m.ArtistRoutingModule) },
+  { path: 'artwork/:artworkId', loadChildren: () => import('./pages/artwork/artwork.routing.module').then(m => m.ArtworkRoutingModule) },
+  { path: 'genre/:genreId', loadChildren: () => import('./pages/genre/genre.routing.module').then(m => m.GenreRoutingModule) },
+  { path: 'location/:locationId', loadChildren: () => import('./pages/location/location.routing.module').then(m => m.LocationRoutingModule) },
+  { path: 'material/:materialId', loadChildren: () => import('./pages/material/material.routing.module').then(m => m.MaterialRoutingModule) },
+  { path: 'movement/:movementId', loadChildren: () => import('./pages/movement/movement.routing.module').then(m => m.MovementRoutingModule) },
+  { path: 'motif/:motifId', loadChildren: () => import('./pages/motif/motif.routing.module').then(m => m.MotifRoutingModule) },
+  { path: 'search', loadChildren: () => import('./pages/search-result/search-result.routing.module').then(m => m.SearchResultRoutingModule) },
   { path: '**', redirectTo: '' }
 ];
 
@@ -46,7 +46,7 @@ const routes: Routes = [
     SharedModule,
     NgbModule,
     BrowserAnimationsModule,
-    RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' })
+    RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled', relativeLinkResolution: 'legacy' })
   ],
   bootstrap: [AppComponent]
 })

@@ -2,6 +2,7 @@
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7" *ngIf="genre">
       <app-title [entity]="genre"></app-title>
+      <app-sticky-title [entity]="genre"></app-sticky-title>
 
       <div class="mb-3 mt-5"></div>
 
@@ -18,5 +19,5 @@
   </div>
   <span class="artworks-amount">{{ genre?.absoluteRank }}</span>
   <span class="ml-1 slider-heading" i18n="Artworks label@@artworks">Artworks</span>
-  <app-slider [items]="sliderItems"></app-slider>
+  <app-fetching-list id="artworks-list" [query]="query" [options]="fetchOptions"></app-fetching-list>
 </div>

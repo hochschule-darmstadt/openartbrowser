@@ -1,15 +1,18 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {DataService} from 'src/app/core/services/elasticsearch/data.service';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Params, Router} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
-import {Movement, Artwork, EntityType} from 'src/app/shared/models/models';
+import {Movement, Artwork, EntityType, Entity} from 'src/app/shared/models/models';
 import {Subject} from 'rxjs';
 import {shuffle} from 'src/app/core/services/utils.service';
+import {FetchOptions} from "../../shared/components/fetching-list/fetching-list.component";
+import {Location} from "@angular/common";
+import {UrlParamService} from "../../core/services/urlparam.service";
 
 enum Tab {
-  Artworks,
-  Timeline,
-  MovementOverview
+  Artworks = 'artworks',
+  Timeline = 'timeline',
+  MovementOverview = 'movements'
 }
 
 @Component({
@@ -28,7 +31,7 @@ export class MovementComponent implements OnInit, OnDestroy {
      2. Inject entity instead of movement
    */
   Tab = Tab;
-  activeTab: Tab = Tab.Timeline;
+  activeTab: string = Tab.Timeline;
 
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject();
@@ -37,7 +40,16 @@ export class MovementComponent implements OnInit, OnDestroy {
   movement: Movement = null;
 
   /** Related artworks */
-  sliderItems: Artwork[] = [];
+  fetchOptions = {
+    initOffset: 0,
+    fetchSize: 30,
+    queryCount: undefined,
+    entityType: EntityType.ARTWORK
+  } as FetchOptions;
+  query: (offset: number) => Promise<Entity[]>;
+
+  /** Timeline artworks */
+  timelineItems: Artwork[] = [];
 
   /** Toggle bool for displaying either timeline or artworks carousel component */
   movementOverviewLoaded = false;
@@ -49,7 +61,9 @@ export class MovementComponent implements OnInit, OnDestroy {
 
   relatedMovements: Movement[] = [];
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {
+  constructor(private dataService: DataService, private route: ActivatedRoute, private router: Router,
+              private location: Location, private urlParamService: UrlParamService) {
+
   }
 
   /** hook that is executed at component initialization */
@@ -58,9 +72,27 @@ export class MovementComponent implements OnInit, OnDestroy {
       this.videoExists = false;
       this.uniqueEntityVideos = [];
     });
+
+    const queryParamMap = this.route.snapshot.queryParamMap;
+    if (queryParamMap.get('page')) {
+      this.setActiveTab(Tab.Artworks);
+    } else {
+      this.setActiveTab(Tab[queryParamMap.get('tab')]);
+    }
+
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
       const movementId = params.get('movementId');
+      // Reset attributes
+      this.relatedMovements = [];
+
+      this.fetchOptions.queryCount = this.dataService.countArtworksByType(EntityType.MOVEMENT, [movementId]);
+
+      /** load fetching list items */
+      this.query = async (offset) => {
+        return await this.dataService.findArtworksByType(
+          EntityType.MOVEMENT, [movementId], this.fetchOptions.fetchSize, offset)
+      };
 
       /** Use data service to fetch entity from database */
       this.movement = await this.dataService.findById<Movement>(movementId, EntityType.MOVEMENT);
@@ -68,7 +100,7 @@ export class MovementComponent implements OnInit, OnDestroy {
         this.uniqueEntityVideos.unshift(this.movement.videos[0]);
       }
 
-      /** load slider items */
+      /** load timeline items */
       await this.dataService.findArtworksByType(EntityType.MOVEMENT, [this.movement.id])
         .then(artworks => {
           const referenceStartTime = this.movement.start_time || this.movement.start_time_est || -1;
@@ -79,7 +111,7 @@ export class MovementComponent implements OnInit, OnDestroy {
           if (referenceEndTime !== -1) {
             artworks = artworks.filter(artwork => artwork.inception <= referenceEndTime);
           }
-          this.sliderItems = shuffle(artworks);
+          this.timelineItems = shuffle(artworks);
           this.addUniqueVideos();
         });
 
@@ -102,16 +134,25 @@ export class MovementComponent implements OnInit, OnDestroy {
   }
 
   setActiveTab(tab: Tab) {
-    this.activeTab = tab;
+    if (!Object.values(Tab).includes(tab)) {
+      tab = Tab.Timeline;
+    }
+    let queryParams: Params = {tab: tab};
 
-    if (this.activeTab === Tab.MovementOverview) {
+    if (tab != Tab.Artworks) {
+      queryParams.page = null;
+    }
+    this.urlParamService.changeQueryParams(queryParams).resolve();
+
+    if (tab === Tab.MovementOverview) {
       this.movementOverviewLoaded = true;
     }
+    this.activeTab = tab;
   }
 
   addUniqueVideos() {
-    for ( const entity of this.sliderItems) {
-      if (entity.videos && entity.videos.length >  0 && !this.uniqueEntityVideos.includes(entity.videos[0])) {
+    for (const entity of this.timelineItems) {
+      if (entity.videos && entity.videos.length > 0 && !this.uniqueEntityVideos.includes(entity.videos[0])) {
         this.uniqueEntityVideos.push(entity.videos[0]);
       }
     }
@@ -120,6 +161,7 @@ export class MovementComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
+    this.urlParamService.changeQueryParams({tab: null}).resolve();
   }
 
 

@@ -1,5 +1,5 @@
-<nav class="container border-bottom navbar navbar-expand-sm mb-3">
-  <div class="navbar-collapse" id="navbar">
+<nav class="navbar navbar-expand-sm pb-0 pt-0">
+  <div class="container border-bottom navbar-collapse p-3" id="navbar" #navbar>
     <ul class="navbar-nav">
       <li class="nav-item flex-shrink-0">
         <a class="navbar-brand" [routerLink]="['/']">
@@ -46,3 +46,4 @@
     </ul>
   </div>
 </nav>
+<div #spacer [style.height.px]="spacerHeight"></div>

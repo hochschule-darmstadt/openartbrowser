@@ -1,10 +1,11 @@
 import * as _ from 'lodash';
-import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable, LOCALE_ID } from '@angular/core';
-import { ArtSearch, Artwork, Entity, EntityIcon, EntityType, Iconclass, Movement } from 'src/app/shared/models/models';
-import { elasticEnvironment } from 'src/environments/environment';
-import QueryBuilder from './query.builder';
-import { usePlural } from 'src/app/shared/models/entity.interface';
+import {HttpClient} from '@angular/common/http';
+import {Inject, Injectable, LOCALE_ID} from '@angular/core';
+import {ArtSearch, Artwork, Entity, EntityIcon, EntityType, Iconclass, Movement} from 'src/app/shared/models/models';
+import {environment} from 'src/environments/environment';
+import {usePlural} from 'src/app/shared/models/entity.interface';
+import * as bodyBuilder from 'bodybuilder';
+import {Bodybuilder} from 'bodybuilder';
 
 const defaultSortField = 'relativeRank';
 
@@ -14,7 +15,8 @@ const defaultSortField = 'relativeRank';
 @Injectable()
 export class DataService {
   /** base url of elasticSearch server */
-  private readonly baseUrl: string;
+  private readonly searchEndPoint: string;
+  private readonly countEndPoint: string;
   private readonly ISO_639_1_LOCALE: string;
 
   /**
@@ -23,7 +25,8 @@ export class DataService {
   constructor(private http: HttpClient, @Inject(LOCALE_ID) localeId: string) {
     // build backend api url with specific index by localeId
     this.ISO_639_1_LOCALE = localeId.substr(0, 2);
-    this.baseUrl = elasticEnvironment.serverURI + '/' + (this.ISO_639_1_LOCALE || 'en') + '/_search';
+    this.searchEndPoint = environment.elastic.base + '/' + (this.ISO_639_1_LOCALE || 'en') + '/_search';
+    this.countEndPoint = environment.elastic.base + '/' + (this.ISO_639_1_LOCALE || 'en') + '/_count';
   }
 
   /**
@@ -33,10 +36,9 @@ export class DataService {
    * @param type if specified, it is assured that the returned entity has this entityType
    */
   public async findById<T>(id: string, type?: EntityType): Promise<T> {
-    const response = await this.http.get<T>(this.baseUrl + '?q=id:' + id).toPromise();
-    const entities = this.filterData<T>(response, type);
-    // set type specific attributes
-    entities.forEach(entity => this.setTypes(entity));
+    const body = bodyBuilder()
+      .query('match', 'id', id);
+    const entities = await this.performQuery<T>(body, this.searchEndPoint, type);
     return !entities.length ? null : entities[0];
   }
 
@@ -44,30 +46,43 @@ export class DataService {
    * Fetches multiple entities from the server
    * @param ids ids of entities that should be retrieved
    * @param type if specified, it is assured that the returned entities have this entityType
+   * @param count the number of items returned
    */
-  public async findMultipleById<T>(ids: string[], type?: EntityType): Promise<T[]> {
+  public async findMultipleById<T>(ids: string[], type?: EntityType, count = 400): Promise<T[]> {
     const copyids = ids && ids.filter(id => !!id);
     if (!copyids || copyids.length === 0) {
       return [];
     }
-    const query = new QueryBuilder().size(400);
-    copyids.forEach(id => query.shouldMatch('id', `${id}`));
-    return this.performQuery<T>(query, this.baseUrl, type);
+    const body = bodyBuilder().size(count);
+    _.each(ids, id => body.orQuery('match', 'id', id));
+    return this.performQuery<T>(body, this.searchEndPoint, type);
   }
 
   /**
    * Find Artworks by the given ids for the given type
    * @param type the type to search in
    * @param ids the ids to search for
+   * @param count the number of items returned
+   * @param from the offset from where the result set should start
    */
-  public findArtworksByType(type: EntityType, ids: string[], count = 200): Promise<Artwork[]> {
-    const query = new QueryBuilder()
+  public findArtworksByType(type: EntityType, ids: string[], count = 200, from = 0): Promise<Artwork[]> {
+    const body = bodyBuilder()
+      .queryMinimumShouldMatch(1, true)
+      .query('match', 'type', EntityType.ARTWORK)
+      .sort(defaultSortField, 'desc')
       .size(count)
-      .sort(defaultSortField)
-      .minimumShouldMatch(1)
-      .ofType(EntityType.ARTWORK);
-    ids.forEach(id => query.shouldMatch(usePlural(type), `${id}`));
-    return this.performQuery<Artwork>(query);
+      .from(from);
+    _.each(ids, id => body.orQuery('match', usePlural(type), id));
+    return this.performQuery<Artwork>(body);
+  }
+
+  public async countArtworksByType(type: EntityType, ids: string[]) {
+    let body = bodyBuilder()
+      .queryMinimumShouldMatch(1, true)
+      .query('match', 'type', EntityType.ARTWORK)
+    _.each(ids, id => body.orQuery('match', usePlural(type), id));
+    const response: any = await this.http.post(this.countEndPoint, body.build()).toPromise()
+    return response && response.count ? response.count : undefined
   }
 
   /**
@@ -95,94 +110,75 @@ export class DataService {
   }
 
   /**
-   * Find an artwork by label
-   * @param label artwork label
-   */
-  public findArtworksByLabel(label: string): Promise<Artwork[]> {
-    const query = new QueryBuilder()
-      .size(20)
-      .sort(defaultSortField)
-      .mustMatch('type', 'artwork')
-      .shouldMatch('label', `${label}`);
-    return this.performQuery<Artwork>(query);
-  }
-
-  /**
    * Find an artwork by movement
    * @param movement label of movement
+   * @param count number of returned items
    */
-  public findArtworksByMovement(movement: string): Promise<Artwork[]> {
-    const query = new QueryBuilder()
-      .size(5)
-      .sort(defaultSortField)
-      .mustMatch('type', 'artwork')
-      .mustMatch('movements', `${movement}`);
-    return this.performQuery<Artwork>(query);
+  public findArtworksByMovement(movement: string, count = 5): Promise<Artwork[]> {
+    const body = bodyBuilder()
+      .size(count)
+      .sort(defaultSortField, 'desc')
+      .query('match', 'type', EntityType.ARTWORK)
+      .query('match', usePlural(EntityType.MOVEMENT), movement);
+    return this.performQuery<Artwork>(body);
   }
 
   /**
    * Returns the artworks that contain all the given arguments.
    * @param searchObj the arguments to search for.
    * @param keywords the list of words to search for.
-   *
+   * @param count the number of items returned
    */
-  public searchArtworks(searchObj: ArtSearch, keywords: string[] = []): Promise<Artwork[]> {
-    const query = new QueryBuilder()
-      .size(400)
-      .sort(defaultSortField)
-      .mustMatch('type', 'artwork');
-
+  public searchArtworks(searchObj: ArtSearch, keywords: string[] = [], count = 400): Promise<Artwork[]> {
+    const body = bodyBuilder()
+      .size(count)
+      .sort(defaultSortField, 'desc');
     _.each(searchObj, (arr, key) => {
       if (Array.isArray(arr)) {
-        arr.forEach(val => query.mustMatch(key, val));
+        _.each(arr, val => body.query('match', key, val));
       }
     });
-
-    keywords.forEach(keyword =>
-      query.mustShouldMatch([
-        { key: 'label', value: keyword },
-        { key: 'description', value: keyword }
-      ])
+    _.each(keywords, keyword =>
+      body.query('bool', (q) => {
+        return q.orQuery('match', 'label', keyword)
+          .orQuery('match', 'description', keyword)
+      })
     );
-    return this.performQuery(query);
-  }
-
-  public async getEntityItems<T>(type: EntityType, count = 20, from = 0): Promise<T[]> {
-    const query = new QueryBuilder()
-      .mustMatch('type', type)
-      .sort(defaultSortField)
-      .size(count)
-      .from(from);
-    return this.performQuery<T>(query);
-  }
-
-  public async countEntityItems<T>(type: EntityType) {
-    const response: any = await this.http
-      .get('https://openartbrowser.org/' + elasticEnvironment.serverURI + '/' + (this.ISO_639_1_LOCALE || 'en') + '/_count?q=type:' + type)
-      .toPromise();
-    return response && response.count ? response.count : undefined;
-  }
-
-  public async getRandomMovementArtwork<T>(movementId: string, count = 20): Promise<T[]> {
-    const query = new QueryBuilder()
-      .mustMatch('type', 'artwork')
-      .mustPrefix('image', 'http')
-      .sort(defaultSortField)
-      .size(count);
-    return this.performQuery<T>(query);
+    return this.performQuery(body);
   }
 
   /**
-   * Find any obejct in the index by the field label with the given label
-   * @param label object label
+   * Get items match by type
+   * @param type the related type
+   * @param count the number of items returned
+   * @param from the offset of the query
    */
-  public findByLabel(label: string): Promise<any[]> {
-    const query = new QueryBuilder()
-      .shouldMatch('label', `${label}`)
-      .shouldWildcard('label', `${label}`)
-      .sort(defaultSortField)
-      .size(200);
-    return this.performQuery(query);
+  public async getEntityItems<T>(type: EntityType, count = 20, from = 0): Promise<T[]> {
+    const body = bodyBuilder()
+      .query('match', 'type', type)
+      .sort(defaultSortField, 'desc')
+      .size(count)
+      .from(from);
+    return this.performQuery<T>(body);
+  }
+
+  public async countEntityItems<T>(type: EntityType) {
+    const response: any = await this.http.get(this.countEndPoint + '?q=type:' + type).toPromise();
+    return response && response.count ? response.count : undefined;
+  }
+
+  /**
+   * Find any object in the index by the field label with the given label
+   * @param label object label
+   * @param count the number of items returned
+   */
+  public findByLabel(label: string, count = 200): Promise<any[]> {
+    const body = bodyBuilder()
+      .orQuery('match', 'label', label)
+      .orQuery('wildcard', 'label', '*' + label + '*')
+      .sort(defaultSortField, 'desc')
+      .size(count);
+    return this.performQuery(body);
   }
 
   /**
@@ -191,12 +187,12 @@ export class DataService {
    * @param count size of return set
    */
   public async getCategoryItems<T>(type: EntityType, count = 20): Promise<T[]> {
-    const query = new QueryBuilder()
-      .mustMatch('type', type)
-      .mustPrefix('image', 'http')
-      .sort(defaultSortField)
+    const body = bodyBuilder()
+      .query('match', 'type', type)
+      .query('prefix', 'image', 'http')
+      .sort(defaultSortField, 'desc')
       .size(count);
-    return this.performQuery<T>(query);
+    return this.performQuery(body);
   }
 
   /**
@@ -225,7 +221,7 @@ export class DataService {
    * @param url endpoint
    * @param type type to filter for
    */
-  private async performQuery<T>(query: QueryBuilder, url: string = this.baseUrl, type?: EntityType) {
+  private async performQuery<T>(query: Bodybuilder, url: string = this.searchEndPoint, type?: EntityType) {
     const response = await this.http.post<T>(url, query.build()).toPromise();
     const entities = this.filterData<T>(response, type);
     // set type specific attributes
@@ -234,7 +230,6 @@ export class DataService {
     if (!entities.length) {
       console.warn(NoResultsWarning(query));
     }
-
     return entities;
   }
 
@@ -247,7 +242,7 @@ export class DataService {
     const entities: T[] = [];
     _.each(
       data.hits.hits,
-      function(val) {
+      function (val) {
         if (!filterBy || (filterBy && val._source.type === filterBy)) {
           entities.push(this.addThumbnails(val._source));
         }
@@ -288,9 +283,8 @@ export class DataService {
 }
 
 const NoResultsWarning = query => `
-The performed es-query did not yield any results. This might result in strange behavior in the application.
+  The performed es-query did not yield any results. This might result in strange behavior in the application.
 
-If you encounter any such issues please consider opening a bug report: https://github.com/hochschule-darmstadt/openartbrowser/issues/new?assignees=&labels=&template=bug_report.md&title=
+  If you encounter any such issues please consider opening a bug report: https://github.com/hochschule-darmstadt/openartbrowser/issues/new?assignees=&labels=&template=bug_report.md&title=
 
-Query: ${query.toString()}
-`;
+  Query: ${query.toString()}`;

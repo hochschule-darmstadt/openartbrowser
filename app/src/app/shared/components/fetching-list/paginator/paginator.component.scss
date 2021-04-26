@@ -1,0 +1,19 @@
+.paginator {
+  //font-size: 1.3rem;
+  color: #222222;
+
+  &-item {
+    cursor: pointer;
+    width: 2rem;
+    height: 2rem;
+    background: #dddddd;
+    margin-top: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &-selected {
+    background: #00bc8c;
+  }
+}

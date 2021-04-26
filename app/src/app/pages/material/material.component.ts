@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
-import { Material, Artwork, EntityType } from 'src/app/shared/models/models';
+import {Material, EntityType, Entity} from 'src/app/shared/models/models';
 import { Subject } from 'rxjs';
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
-import { shuffle } from 'src/app/core/services/utils.service';
+import {FetchOptions} from "../../shared/components/fetching-list/fetching-list.component";
 
 @Component({
   selector: 'app-material',
@@ -19,7 +19,13 @@ export class MaterialComponent implements OnInit, OnDestroy {
   material: Material = null;
 
   /** Related artworks */
-  sliderItems: Artwork[] = [];
+  fetchOptions = {
+    initOffset: 0,
+    fetchSize: 30,
+    queryCount: undefined,
+    entityType: EntityType.ARTWORK
+  } as FetchOptions;
+  query: (offset: number) => Promise<Entity[]>;
 
   constructor(private dataService: DataService, private route: ActivatedRoute) {}
 
@@ -28,12 +34,16 @@ export class MaterialComponent implements OnInit, OnDestroy {
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
       const materialId = params.get('materialId');
+      this.fetchOptions.queryCount = this.dataService.countArtworksByType(EntityType.MATERIAL, [materialId]);
+
+      /** load fetching list items */
+      this.query = async (offset) => {
+        return await this.dataService.findArtworksByType(
+          EntityType.MATERIAL, [materialId], this.fetchOptions.fetchSize, offset)
+      };
 
       /** Use data service to fetch entity from database */
       this.material = await this.dataService.findById<Material>(materialId, EntityType.MATERIAL);
-
-      /** load slider items */
-      this.dataService.findArtworksByType(EntityType.MATERIAL, [this.material.id]).then(artworks => (this.sliderItems = shuffle(artworks)));
     });
   }
 

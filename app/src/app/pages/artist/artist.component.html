@@ -2,22 +2,28 @@
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7" *ngIf="artist">
       <app-title [entity]="artist"></app-title>
+      <app-sticky-title [entity]="artist"></app-sticky-title>
+
 
       <table class="table-fit">
         <tbody>
-          <tr *ngIf="artist?.date_of_birth">
-            <td class="text-muted"><ng-container i18n="Born infos @@born">Born</ng-container>:</td>
-            <td>{{ artist?.date_of_birth + (artist?.place_of_birth ? ' in ' + artist?.place_of_birth : '') }}</td>
-          </tr>
+        <tr *ngIf="artist?.date_of_birth">
+          <td class="text-muted">
+            <ng-container i18n="Born infos @@born">Born</ng-container>
+            :
+          </td>
+          <td>{{ artist?.date_of_birth + (artist?.place_of_birth ? ' in ' + artist?.place_of_birth : '') }}</td>
+        </tr>
 
-          <tr *ngIf="artist?.date_of_death">
-            <td class="text-muted"><span i18n="Died infos label@@died">Died</span>:</td>
-            <td>{{ artist?.date_of_death + (artist?.place_of_death ? ' in ' + artist.place_of_death : '') }}</td>
-          </tr>
+        <tr *ngIf="artist?.date_of_death">
+          <td class="text-muted"><span i18n="Died infos label@@died">Died</span>:</td>
+          <td>{{ artist?.date_of_death + (artist?.place_of_death ? ' in ' + artist.place_of_death : '') }}</td>
+        </tr>
         </tbody>
       </table>
 
-      <div *ngIf="artist?.gender || artist?.citizenship || artist?.movements?.length || artist?.influenced_by?.length || artist?.abstract">
+      <div
+        *ngIf="artist?.gender || artist?.citizenship || artist?.movements?.length || artist?.influenced_by?.length || artist?.abstract">
         <app-collapse [showVideo]="videoExists">
           <app-abstract [entity]="artist"></app-abstract>
 
@@ -29,49 +35,65 @@
 
           <table class="table-fit">
             <tbody>
-              <tr *ngIf="artist?.gender">
-                <td class="text-muted"><ng-container i18n="Artist gender label@@gender">Gender</ng-container>:</td>
-                <td>{{ artist?.gender }}</td>
-              </tr>
+            <tr *ngIf="artist?.gender">
+              <td class="text-muted">
+                <ng-container i18n="Artist gender label@@gender">Gender</ng-container>
+                :
+              </td>
+              <td>{{ artist?.gender }}</td>
+            </tr>
 
-              <tr *ngIf="artist?.citizenship">
-                <td class="text-muted"><ng-container i18n="Artist citizenship label@@citizenship">Citizenship</ng-container>:</td>
-                <td>{{ artist?.citizenship }}</td>
-              </tr>
+            <tr *ngIf="artist?.citizenship">
+              <td class="text-muted">
+                <ng-container i18n="Artist citizenship label@@citizenship">Citizenship</ng-container>
+                :
+              </td>
+              <td>{{ artist?.citizenship }}</td>
+            </tr>
 
-              <tr *ngIf="artist?.movements?.length">
-                <td class="text-muted"><ng-container i18n="Movement label@@movement">Movement</ng-container>:</td>
-                <td>
-                  <app-badge *ngFor="let movement of artist?.movements" [entity]="movement"> </app-badge>
-                </td>
-              </tr>
+            <tr *ngIf="artist?.movements?.length">
+              <td class="text-muted">
+                <ng-container i18n="Movement label@@movement">Movement</ng-container>
+                :
+              </td>
+              <td>
+                <app-badge *ngFor="let movement of artist?.movements" [entity]="movement"></app-badge>
+              </td>
+            </tr>
 
-              <tr *ngIf="artist?.influenced_by?.length">
-                <td class="text-muted"><ng-container i18n="Influenced by label@@influenced_by">Influenced by</ng-container>:</td>
-                <td>
-                  <app-badge *ngFor="let influencer of artist?.influenced_by" [entity]="influencer"> </app-badge>
-                </td>
-              </tr>
+            <tr *ngIf="artist?.influenced_by?.length">
+              <td class="text-muted">
+                <ng-container i18n="Influenced by label@@influenced_by">Influenced by</ng-container>
+                :
+              </td>
+              <td>
+                <app-badge *ngFor="let influencer of artist?.influenced_by" [entity]="influencer"></app-badge>
+              </td>
+            </tr>
             </tbody>
           </table>
         </app-collapse>
       </div>
     </div>
     <div class="col-sm-5 img" *ngIf="artist?.image">
-      <img class="img-fluid rounded-circle" src="{{ artist?.imageSmall }}" alt="" />
+      <img class="img-fluid rounded-circle" src="{{ artist?.imageSmall }}" alt=""/>
     </div>
   </div>
 
   <div *ngIf="sliderItems?.length">
     <ul class="nav nav-tabs">
       <li class="nav-item">
-        <a class="nav-link" [ngClass]="{ active: showTimelineNotArtworks }" data-toggle="tab" href="#timeline_tab">
+        <a class="nav-link" (click)="setActiveTab(Tab.Timeline)"
+           [ngClass]="{ active:  activeTab === Tab.Timeline }"
+           data-toggle="tab" href="#timeline_tab">
           <i class="mr-1 fa fa-ruler-horizontal"></i>
           <ng-container i18n="Timeline toggle label@@toggletimeline">Timeline</ng-container>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" [ngClass]="{ active: !showTimelineNotArtworks }" data-toggle="tab" href="#artworks_tab">
+        <a class="nav-link" (click)="setActiveTab(Tab.Artworks)"
+           [ngClass]="{ active:  activeTab === Tab.Artworks }"
+           data-toggle="tab" href="#artworks_tab">
           <i class="mr-1 fa fa-palette"></i>
           <span class="ml-1 mt-auto mb-auto mr-1 artworks-amount">{{ artist?.absoluteRank }}</span>
           <ng-container i18n="Timeline toggle label@@toggleartworks">Artworks</ng-container>
@@ -79,11 +101,11 @@
       </li>
     </ul>
     <div class="tab-content">
-      <div class="tab-pane fade" [ngClass]="{ 'show active': showTimelineNotArtworks }" id="timeline_tab">
+      <div class="tab-pane fade" [ngClass]="{ 'show active': activeTab === Tab.Timeline }" id="timeline_tab">
         <app-timeline [artworks]="sliderItems"></app-timeline>
       </div>
-      <div class="tab-pane fade" [ngClass]="{ 'show active': !showTimelineNotArtworks }" id="artworks_tab">
-        <app-slider [items]="sliderItems"></app-slider>
+      <div class="tab-pane fade pt-2" [ngClass]="{ 'show active': activeTab === Tab.Artworks }" id="artworks_tab">
+        <app-fetching-list id="artworks_tab-list" [query]="query" [options]="fetchOptions"></app-fetching-list>
       </div>
     </div>
   </div>

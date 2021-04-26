@@ -18,7 +18,7 @@ import {
 export class InfiniteScrollComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() options = {};
   @Output() scrolled = new EventEmitter();
-  @ViewChild('anchor', {static: false}) anchor: ElementRef<HTMLElement>;
+  @ViewChild('anchor') anchor: ElementRef<HTMLElement>;
 
   private observer: IntersectionObserver;
 
@@ -34,16 +34,12 @@ export class InfiniteScrollComponent implements OnInit, OnDestroy, AfterViewInit
       ...this.options
     };
 
-    this.observer = new IntersectionObserver(([entry]) => {
-      this.scrolled.emit();
-    }, options);
-
+    this.observer = new IntersectionObserver(() => {}, options);
     this.observer.observe(this.anchor.nativeElement);
-    console.log(this.anchor.nativeElement, this.observer);
   }
 
   ngOnDestroy() {
-    this.observer.disconnect();
+    if (this.observer) this.observer.disconnect();
   }
 
   get element() {

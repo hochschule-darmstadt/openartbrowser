@@ -67,6 +67,13 @@
           <context context-type="linenumber">17</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="ngb.carousel.slide-number" datatype="html">
+        <source> Slide {$INTERPOLATION} of {$INTERPOLATION_1} </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/carousel/carousel.d.ts</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="ngb.datepicker.previous-month" datatype="html">
         <source>Previous month</source>
         <context-group purpose="location">
@@ -689,6 +696,14 @@
           <context context-type="linenumber">4</context>
         </context-group>
         <note priority="1" from="description">Iconography</note>
+      </trans-unit>
+      <trans-unit id="fetching_list_error" datatype="html">
+        <source>Painting in progress</source>
+        <context-group purpose="fetching_list_error">
+          <context context-type="sourcefile">app/shared/components/fetching-list/fetching-list.component.html</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+        <note priority="1" from="description">error text for missing images</note>
       </trans-unit>
     </body>
   </file>

@@ -1,8 +1,8 @@
-import { AfterViewInit, Component, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
+import {AfterViewInit, Component, HostListener, Input, OnDestroy, OnInit} from '@angular/core';
 import {animate, state, style, transition, trigger} from '@angular/animations';
-import {Options} from 'ng5-slider';
+import {Options} from '@angular-slider/ngx-slider';
 import {Subject, timer} from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import {switchMap} from 'rxjs/operators';
 import {DataService} from '../../../core/services/elasticsearch/data.service';
 import {EntityType} from '../../models/entity.interface';
 import {Artwork} from '../../models/artwork.interface';
@@ -20,8 +20,8 @@ interface MovementItem extends Movement {
   styleUrls: ['./movement-overview.component.scss'],
   animations: [
     trigger('newThumb', [
-      state('hide', style({ opacity: '0' })), // transform: 'scale(0)'})),
-      state('show', style({ opacity: '1' })), // transform: 'scale(1)'})),
+      state('hide', style({opacity: '0'})), // transform: 'scale(0)'})),
+      state('show', style({opacity: '1'})), // transform: 'scale(1)'})),
       transition('show => hide', [animate(0)]),
       transition('hide => show', [animate(500)])
     ])
@@ -111,7 +111,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
       movement.artworks = [];
     }
 
-    this.movements.sort((a, b) => (this.getStartTime(a) > this.getEndTime(b) ? 1 : -1));
+    this.movements.sort((a, b) => (MovementOverviewComponent.getStartTime(a) > MovementOverviewComponent.getEndTime(b) ? 1 : -1));
     this.currentMovementId = this.movements[0].id;
 
     // get all movementIds except currentMovementId
@@ -155,8 +155,8 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
 
   /** finds start and end of displayed period */
   private setTimeline() {
-    const firstStart = Math.min.apply(Math, this.movements.map((m) => this.getStartTime(m)));
-    const lastEnd = Math.max.apply(Math, this.movements.map((m) => this.getEndTime(m)));
+    const firstStart = Math.min.apply(Math, this.movements.map((m) => MovementOverviewComponent.getStartTime(m)));
+    const lastEnd = Math.max.apply(Math, this.movements.map((m) => MovementOverviewComponent.getEndTime(m)));
 
 
     const dateSpan = lastEnd - firstStart;
@@ -207,7 +207,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
           this.boxes[rowNum].push(this.movements[i]); // if first item in row, insert
           rowNum = 0; // start again at first row
           set = true;
-        } else if (this.getStartTime(this.movements[i]) < this.getEndTime(this.boxes[rowNum].slice(-1)[0])) {
+        } else if (MovementOverviewComponent.getStartTime(this.movements[i]) < MovementOverviewComponent.getEndTime(this.boxes[rowNum].slice(-1)[0])) {
           // if overlapping, continue at next row
           rowNum++;
         } else {
@@ -233,22 +233,22 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
     for (row of this.boxes) {
       // fill in first space
       row.splice(0, 0, {
-        width: (this.getStartTime(row[0]) - this.timelineStart) / (timelineLen / 100)
+        width: (MovementOverviewComponent.getStartTime(row[0]) - this.timelineStart) / (timelineLen / 100)
       } as MovementItem);
       // fill in spaces between all movements in one row
       for (let j = 1; j < row.length; j++) {
         // set width of current movement
-        row[j].width = (this.getEndTime(row[j]) - this.getStartTime(row[j])) / (timelineLen / 100);
+        row[j].width = (MovementOverviewComponent.getEndTime(row[j]) - MovementOverviewComponent.getStartTime(row[j])) / (timelineLen / 100);
         // fill in space between predecessor and current item
-        if (this.getStartTime(row[j]) > this.getEndTime(row[j - 1])) {
+        if (MovementOverviewComponent.getStartTime(row[j]) > MovementOverviewComponent.getEndTime(row[j - 1])) {
           row.splice(j, 0, {
-            width: (this.getStartTime(row[j]) - this.getEndTime(row[j - 1])) / (timelineLen / 100)
+            width: (MovementOverviewComponent.getStartTime(row[j]) - MovementOverviewComponent.getEndTime(row[j - 1])) / (timelineLen / 100)
           } as MovementItem);
         }
       }
       // fill space between last movement and end of period
       row.push({
-        width: (this.timelineEnd - this.getEndTime(row.slice(-1)[0])) / (timelineLen / 100)
+        width: (this.timelineEnd - MovementOverviewComponent.getEndTime(row.slice(-1)[0])) / (timelineLen / 100)
       } as MovementItem);
     }
   }
@@ -320,7 +320,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
   /** choose random image out of artworks of current movement */
   private async setRandomThumbnail(movementId) {
     const currMovementIndex = this.movements.findIndex(move => move.id === movementId);
-    if (!this.movements[currMovementIndex].artworks.length) {
+    if (!this.movements[currMovementIndex].artworks || !this.movements[currMovementIndex].artworks.length) {
       return;
     }
     // choose random new thumb out of first n-1
@@ -331,7 +331,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
 
     // TODO: move this?
     this.currentMovementLabel = this.movements[currMovementIndex].label;
-    this.currentDate = this.getStartTime(this.movements[currMovementIndex]) + ' - ' + this.getEndTime(this.movements[currMovementIndex]);
+    this.currentDate = MovementOverviewComponent.getStartTime(this.movements[currMovementIndex]) + ' - ' + MovementOverviewComponent.getEndTime(this.movements[currMovementIndex]);
   }
 
   selectRandomMovement() {
@@ -356,11 +356,11 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
     this.showThumbnail = true;
   }
 
-  private getStartTime(movement: Movement): number {
+  private static getStartTime(movement: Movement): number {
     return movement.start_time || movement.start_time_est;
   }
 
-  private getEndTime(movement: Movement): number {
+  private static getEndTime(movement: Movement): number {
     return movement.end_time || movement.end_time_est;
   }
 

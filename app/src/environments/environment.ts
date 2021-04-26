@@ -3,17 +3,17 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
-};
-
-export const elasticEnvironment = {
-  serverURI: '/api'
-};
-
-export const analyticsEnvironment = {
-  enabled: false,
-  url: 'https://openartbrowser.org/api/analytics/',
-  propertyId: '2'
+  production: false,
+  elastic: {
+    base: '/api',
+    nonScrollingMaxQuerySize: 10000
+  },
+  imagesBase: '/api/images',
+  analytics: {
+    enabled: false,
+    url: 'https://openartbrowser.org/api/analytics/',
+    propertyId: '2'
+  }
 };
 
 /*

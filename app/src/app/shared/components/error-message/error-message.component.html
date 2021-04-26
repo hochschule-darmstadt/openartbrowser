@@ -1,0 +1,9 @@
+<div *ngIf="id">
+  <h2 class="title-color" i18n="id not found title@@id_not_found_title">
+    Page not found for following id:
+  </h2>
+  <p class="id"> {{ id }}</p>
+  <p i18n="id not found message@@id_not_found_message">It looks like nothing was found for the specified id. Maybe try a different id?</p>
+
+  <a class="d-block mt-5" [routerLink]="['/']" i18n="Go home@@go_home_link">Click here to go back to the start page &rArr;</a>
+</div>

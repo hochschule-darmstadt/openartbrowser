@@ -46,6 +46,7 @@
             ],
             "aot": true,
             "outputPath": "dist/art-browser",
+            "deleteOutputPath": false,
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -186,7 +187,7 @@
                 }
               ],
               "aot": true,
-              "outputPath": "dist/browser",
+              "outputPath": "dist/browser/en",
               "i18nMissingTranslation": "error"
             },
             "fr-production": {
@@ -250,7 +251,7 @@
                 }
               ],
               "aot": true,
-              "outputPath": "dist/browser",
+              "outputPath": "dist/browser/de",
               "i18nMissingTranslation": "error"
             },
             "es-production": {

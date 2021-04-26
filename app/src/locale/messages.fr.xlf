@@ -914,6 +914,14 @@
         <source>Click here to go back to the start page &rArr;</source>
         <target state="final">Cliquez ici pour revenir à la page d'accueil &rArr;</target>
       </trans-unit>
+      <trans-unit id="id_not_found_title" datatype="html">
+        <source>Page not found for following id:</source>
+        <target state="final">Page non trouvée pour l'identifiant suivant:</target>
+      </trans-unit>
+      <trans-unit id="id_not_found_message" datatype="html">
+        <source>It looks like nothing was found for the specified id. Maybe try a different id?</source>
+        <target state="final">Il semble que rien n'ait été trouvé pour l'identifiant spécifié. Essayez peut-être un autre identifiant.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

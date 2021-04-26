@@ -888,6 +888,14 @@
         <source>Click here to go back to the start page &rArr;</source>
         <target state="final">Click here to go back to the start page &rArr;</target>
       </trans-unit>
+      <trans-unit id="id_not_found_title" datatype="html">
+        <source>Page not found for following id:</source>
+        <target state="final">Page not found for following id:</target>
+      </trans-unit>
+      <trans-unit id="id_not_found_message" datatype="html">
+        <source>It looks like nothing was found for the specified id. Maybe try a different id?</source>
+        <target state="final">It looks like nothing was found for the specified id. Maybe try a different id?</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

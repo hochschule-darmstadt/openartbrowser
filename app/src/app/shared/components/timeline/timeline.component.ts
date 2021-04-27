@@ -1,4 +1,4 @@
-import {Component, Input, HostListener} from '@angular/core';
+import {Component, Input, HostListener, OnChanges} from '@angular/core';
 import {Artist, Artwork, Entity, EntityType} from 'src/app/shared/models/models';
 import {CustomStepDefinition, Options} from '@angular-slider/ngx-slider';
 import {animate, state, style, transition, trigger} from '@angular/animations';
@@ -27,7 +27,7 @@ interface TimelineItem extends Entity {
     ])
   ]
 })
-export class TimelineComponent {
+export class TimelineComponent implements OnChanges {
   /** Artworks that should be displayed in this slider */
   @Input() artworks: Artwork[] = [];
   /** Decide whether artists should be displayed */
@@ -74,7 +74,7 @@ export class TimelineComponent {
     showTicks: true,
     showSelectionBar: false,
     stepsArray: [],
-    animateOnMove:true,
+    animateOnMove: true,
     getPointerColor() {
       return '#00bc8c';
     },
@@ -179,17 +179,28 @@ export class TimelineComponent {
       const distinctItems = this.items.filter(
         (thing, i, arr) => arr.findIndex(t => t.date === thing.date) === i
       );
+
+      /**
+       *  determine indices which divide distinctItems in averagePeriodCount blocks of roughly the same length
+       *  this method guarantees that the first and last element are always an index
+       */
+      const stepNr = (distinctItems.length - 1) / (this.averagePeriodCount - 1);
+      const indices = [];
+      for (let i = 0; i < this.averagePeriodCount; i++) {
+        indices.push(Math.floor(stepNr * i));
+      }
+
       sliderSteps = distinctItems.map((item, index) => {
         const step = {
           value: item.date,
           legend: ''
         };
-        if (index % Math.floor(distinctItems.length / this.averagePeriodCount) === 0) {
+
+        /** if current index is in indices make this item a legend point */
+        if (indices.includes(index)) {
           step.legend = item.date.toString();
         }
-        if (index === distinctItems.length - 1){
-          step.legend = item.date.toString();
-        }
+
         return step;
       });
     }

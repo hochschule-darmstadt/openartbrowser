@@ -126,7 +126,8 @@ export class TimelineComponent implements OnChanges {
       const endOfTimeline = this.items[this.items.length - 1].date -
         (this.items[this.items.length - 1].date % this.periodSpan) + this.periodSpan;
       // Set the slider of the timeline to the middle!
-      this.value = (beginOfTimeline + endOfTimeline) / 2;
+      // this.value = (beginOfTimeline + endOfTimeline) / 2;
+      this.value = this.items[Math.floor(this.items.length / 2)].date;
       this.previousValue = this.value;
       this.refreshComponent();
     }
@@ -209,8 +210,6 @@ export class TimelineComponent implements OnChanges {
     /** Set slider options */
     const newOptions: Options = Object.assign({}, this.options);
     newOptions.stepsArray = sliderSteps;
-    newOptions.minLimit = firstDate - firstPeriod;
-    newOptions.maxLimit = lastDate - firstPeriod;
     this.options = newOptions;
   }
 

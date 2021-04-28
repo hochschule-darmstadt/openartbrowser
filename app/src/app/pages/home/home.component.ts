@@ -14,6 +14,7 @@ import {
 } from 'src/app/shared/models/models';
 import {DataService} from 'src/app/core/services/elasticsearch/data.service';
 import {shuffle} from 'src/app/core/services/utils.service';
+import * as ConfigJson from '../../../config/home_content.json';
 
 /**
  * @description Interface for the category sliders.
@@ -66,9 +67,6 @@ export class HomeComponent implements OnInit {
 
       // need to have a bit delay of time (last categories that is fetched is not refreshing carousel cycle)
       setTimeout(() => this.refreshCarousel(), 500);
-
-      // assign backgroundImageUrl with a random image from one of the artworks.
-      this.setBackground();
     });
   }
 
@@ -105,11 +103,9 @@ export class HomeComponent implements OnInit {
   }
 
   private setBackground() {
-    // assign backgroundImageUrl with a random image from one of the artworks.
-    const artworks = this.categories && this.categories.length ? this.categories[0].items : [];
-    if (artworks.length > 0) {
-      this.backgroundImageUrl = artworks[Math.floor(Math.random() * artworks.length)].imageMedium;
-    }
+    // assign backgroundImageUrl with a random image specified in the config folder.
+    const backgroundArtworksUrls = ConfigJson.images;
+    this.backgroundImageUrl = backgroundArtworksUrls[Math.floor(Math.random() * backgroundArtworksUrls.length)];
   }
 
   /**

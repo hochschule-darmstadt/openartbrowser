@@ -165,6 +165,9 @@ export class TimelineComponent implements OnChanges {
     const firstPeriod = firstDate - (firstDate % this.periodSpan);
     const lastPeriod = lastDate - (lastDate % this.periodSpan) + this.periodSpan;
 
+    /** setup options */
+    const newOptions: Options = Object.assign({}, this.options);
+
     /** Fill the slider steps with period legends respectively steps */
     const timeDifference = lastPeriod - firstPeriod;
     if (timeDifference <= this.maxSliderSteps) {
@@ -175,8 +178,16 @@ export class TimelineComponent implements OnChanges {
           sliderSteps.push({value: i});
         }
       }
+
+      /** set min and max slider limits */
+      newOptions.minLimit = firstDate - firstPeriod;
+      newOptions.maxLimit = lastDate - firstPeriod;
+
     } else {
-      /** if timeDifference bigger than maxSliderSteps, use the date values of the items */
+      /**
+       * if timeDifference bigger than maxSliderSteps, use distinct date values of the items
+       * This is done to avoid too much items in the timeline
+       */
       const distinctItems = this.items.filter(
         (thing, i, arr) => arr.findIndex(t => t.date === thing.date) === i
       );
@@ -206,9 +217,7 @@ export class TimelineComponent implements OnChanges {
       });
     }
 
-
     /** Set slider options */
-    const newOptions: Options = Object.assign({}, this.options);
     newOptions.stepsArray = sliderSteps;
     this.options = newOptions;
   }

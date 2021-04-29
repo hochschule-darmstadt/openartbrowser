@@ -1,0 +1,39 @@
+<div class="mb-4 container-category">
+  <div class="carousel-wrapper">
+    <ngb-carousel [animation]="false">
+
+      <ng-template ngbSlide *ngFor="let item of category.items">
+        <a
+          class="container-image"
+          [routerLink]="['/' + category.type, item?.id]"
+          angulartics2On="click"
+          angularticsAction="Home tiles"
+          angularticsCategory="Navigation"
+        >
+          <img class="image" (error)="onLoadingError(category, item)" src="{{ item?.imageSmall }}"
+                alt="{{ item?.label }}"/>
+          <div class="overlay">
+            <span class="type badge badge-secondary badge-pill chip">
+              <i class="fas {{ category.icon }}"></i>
+              <ng-container i18n="Entity Type Labels@@entity_labels" *ngIf="category.type; let type">
+                {type, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre
+                  {Genre} movement {Movement} material {Material}}
+              </ng-container>
+            </span>
+            <span class="label">{{ item?.label | titlecase }}</span>
+          </div>
+        </a>
+      </ng-template>
+    </ngb-carousel>
+
+    <a class="entities-link" [routerLink]="['/' + category.type + 's']">
+      <span class="entities-caption">
+        <span i18n="All@@all">all</span>
+        <span class="ml-1 mr-1" i18n="Entities Type Labels@@entities_labels" *ngIf="category.type; let type">
+          {type, select, artwork {Artworks} motif {Motifs} artist {Artists} location {Locations} genre {Genres} movement {Movements} material {Materials}}
+        </span>
+        <i class="fas fa-chevron-right"></i>
+      </span>
+    </a>
+  </div>
+</div>

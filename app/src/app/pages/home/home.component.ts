@@ -50,7 +50,13 @@ export class HomeComponent implements OnInit {
   /**
    * variable of the categories.
    */
-  categories: SliderCategory[] = [];
+  artworkCategory: SliderCategory;
+  artistCategory: SliderCategory;
+  movementCategory: SliderCategory;
+  locationCategory: SliderCategory;
+  materialCategory: SliderCategory;
+  genreCategory: SliderCategory;
+  motifCategory: SliderCategory;
 
   constructor(public dataService: DataService, ngbConfig: NgbCarouselConfig) {
     /** set configuration of ngbCarousel */
@@ -63,27 +69,18 @@ export class HomeComponent implements OnInit {
     this.setBackground();
     this.getSlides();
   }
-
-  /**
-   * removes entity from category suggestions if image of item cannot be loaded
-   * @param category category the item should be removed from
-   * @param item item that should be removed
-   */
-  onLoadingError(category: SliderCategory, item: Entity) {
-    category.items = category.items.filter(i => item.id !== i.id);
-  }
-
+  
   /**
    * @description Fetch items for each category using the service. Retrun an array of slider category items.
    */
   private getSlides() {
-    this.getSliderCategory<Artwork>(EntityType.ARTWORK).then(slide => this.categories.push(slide));
-    this.getSliderCategory<Artist>(EntityType.ARTIST).then(slide => this.categories.push(slide));
-    this.getSliderCategory<Movement>(EntityType.MOVEMENT).then(slide => this.categories.push(slide));
-    this.getSliderCategory<Location>(EntityType.LOCATION).then(slide => this.categories.push(slide));
-    this.getSliderCategory<Material>(EntityType.MATERIAL).then(slide => this.categories.push(slide));
-    this.getSliderCategory<Genre>(EntityType.GENRE).then(slide => this.categories.push(slide));
-    this.getSliderCategory<Motif>(EntityType.MOTIF).then(slide => this.categories.push(slide));
+    this.getSliderCategory<Artwork>(EntityType.ARTWORK).then(slide => this.artworkCategory = slide);
+    this.getSliderCategory<Artist>(EntityType.ARTIST).then(slide => this.artistCategory = slide);
+    this.getSliderCategory<Movement>(EntityType.MOVEMENT).then(slide => this.movementCategory = slide);
+    this.getSliderCategory<Location>(EntityType.LOCATION).then(slide => this.locationCategory = slide);
+    this.getSliderCategory<Material>(EntityType.MATERIAL).then(slide => this.materialCategory = slide);
+    this.getSliderCategory<Genre>(EntityType.GENRE).then(slide => this.genreCategory = slide);
+    this.getSliderCategory<Motif>(EntityType.MOTIF).then(slide => this.motifCategory = slide);
   }
 
   /**

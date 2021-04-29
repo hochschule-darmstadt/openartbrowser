@@ -12,14 +12,16 @@
     </div>
   </div>
 
-  <div class="row pt-4 mb-4">
-    <app-category-container *ngIf="artworkCategory" class="col-lg-4" [category]="artworkCategory"></app-category-container>
-    <app-category-container *ngIf="artistCategory" class="col-lg-4"[category]="artistCategory"></app-category-container>
-    <app-category-container *ngIf="movementCategory" class="col-lg-4" [category]="movementCategory"></app-category-container>
-    <app-category-container *ngIf="locationCategory" class="col-lg-3" [category]="locationCategory"></app-category-container>
-    <app-category-container *ngIf="materialCategory" class="col-lg-3" [category]="materialCategory"></app-category-container>
-    <app-category-container *ngIf="genreCategory" class="col-lg-3" [category]="genreCategory"></app-category-container>
-    <app-category-container *ngIf="motifCategory" class="col-lg-3" [category]="motifCategory"></app-category-container>
+  <div class="categories-box">
+    <div class="row pt-4 mb-4">
+      <app-category-container *ngIf="artworkCategory" class="col-lg-4" [category]="artworkCategory"></app-category-container>
+      <app-category-container *ngIf="artistCategory" class="col-lg-4"[category]="artistCategory"></app-category-container>
+      <app-category-container *ngIf="movementCategory" class="col-lg-4" [category]="movementCategory"></app-category-container>
+      <app-category-container *ngIf="locationCategory" class="col-lg-3" [category]="locationCategory"></app-category-container>
+      <app-category-container *ngIf="materialCategory" class="col-lg-3" [category]="materialCategory"></app-category-container>
+      <app-category-container *ngIf="genreCategory" class="col-lg-3" [category]="genreCategory"></app-category-container>
+      <app-category-container *ngIf="motifCategory" class="col-lg-3" [category]="motifCategory"></app-category-container>
+    </div>
   </div>
   <app-movement-overview id="mv_overview"></app-movement-overview>
 </div>

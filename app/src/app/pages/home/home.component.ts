@@ -61,13 +61,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.setBackground();
-    this.getSlides().then(slides => {
-      // Fetch items for each category using the service;
-      this.categories = slides;
-
-      // need to have a bit delay of time (last categories that is fetched is not refreshing carousel cycle)
-      setTimeout(() => this.refreshCarousel(), 500);
-    });
+    this.getSlides();
   }
 
   /**
@@ -82,16 +76,14 @@ export class HomeComponent implements OnInit {
   /**
    * @description Fetch items for each category using the service. Retrun an array of slider category items.
    */
-  private getSlides = async (): Promise<SliderCategory[]> => {
-    const cats = [];
-    cats.push(await this.getSliderCategory<Artwork>(EntityType.ARTWORK));
-    cats.push(await this.getSliderCategory<Artist>(EntityType.ARTIST));
-    cats.push(await this.getSliderCategory<Movement>(EntityType.MOVEMENT));
-    cats.push(await this.getSliderCategory<Location>(EntityType.LOCATION));
-    cats.push(await this.getSliderCategory<Material>(EntityType.MATERIAL));
-    cats.push(await this.getSliderCategory<Genre>(EntityType.GENRE));
-    cats.push(await this.getSliderCategory<Motif>(EntityType.MOTIF));
-    return cats;
+  private getSlides() {
+    this.getSliderCategory<Artwork>(EntityType.ARTWORK).then(slide => this.categories.push(slide));
+    this.getSliderCategory<Artist>(EntityType.ARTIST).then(slide => this.categories.push(slide));
+    this.getSliderCategory<Movement>(EntityType.MOVEMENT).then(slide => this.categories.push(slide));
+    this.getSliderCategory<Location>(EntityType.LOCATION).then(slide => this.categories.push(slide));
+    this.getSliderCategory<Material>(EntityType.MATERIAL).then(slide => this.categories.push(slide));
+    this.getSliderCategory<Genre>(EntityType.GENRE).then(slide => this.categories.push(slide));
+    this.getSliderCategory<Motif>(EntityType.MOTIF).then(slide => this.categories.push(slide));
   }
 
   /**

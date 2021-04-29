@@ -87,7 +87,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       this.imageHidden = this.modalIsVisible = this.commonTagsCollapsed = false;
       // define tabs
       this.artworkTabs = [];
-      Object.values(EntityType).forEach(type => this.addTab(type, type === EntityType.ALL))
+      Object.values(EntityType).forEach(type => this.addTab(type, type === EntityType.ALL));
 
       /** Use data service to fetch entity from database */
       const artworkId = params.get('artworkId');
@@ -239,9 +239,11 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    * since main motifs are of type motif and not a new entity type, this custom tab logic exists
    */
   async insertMainMotifTab() {
-    const main_motifs = this.artwork.main_subjects.map(entity => entity.id);
-    const items = await this.dataService.findArtworksByType(EntityType.MOTIF, main_motifs);
-    if (!items.length || !main_motifs.length) {
+    // filter main_subjects to remove duplicates and keep only the ones where the type is 'motif'
+    this.artwork.main_subjects = this.artwork.main_subjects.filter(entity => entity.type === 'motif');
+    const mainMotifs = this.artwork.main_subjects.map(entity => entity.id);
+    const items = await this.dataService.findArtworksByType(EntityType.MOTIF, mainMotifs);
+    if (!items.length || !mainMotifs.length) {
       return;
     }
 

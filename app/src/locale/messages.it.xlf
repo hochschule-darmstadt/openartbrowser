@@ -887,6 +887,22 @@
           Principale} }
         </target>
       </trans-unit>
+      <trans-unit id="error_message" datatype="html">
+        <source>Sorry, the page you requested could not be found.</source>
+        <target state="final">Siamo spiacenti, la pagina che hai richiesto non è stata trovata.</target>
+      </trans-unit>
+      <trans-unit id="go_home_link" datatype="html">
+        <source>Click here to go back to the start page &rArr;</source>
+        <target state="final">Clicca qui per tornare alla pagina iniziale &rArr;</target>
+      </trans-unit>
+      <trans-unit id="id_not_found_title" datatype="html">
+        <source>Page not found for following id:</source>
+        <target state="final">Pagina non trovata per il seguente id:</target>
+      </trans-unit>
+      <trans-unit id="id_not_found_message" datatype="html">
+        <source>It looks like nothing was found for the specified id. Maybe try a different id?</source>
+        <target state="final">Sembra che non sia stato trovato nulla per l'id specificato. Forse provare un id diverso?</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

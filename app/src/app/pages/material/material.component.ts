@@ -18,6 +18,9 @@ export class MaterialComponent implements OnInit, OnDestroy {
   /** The entity this page is about */
   material: Material = null;
 
+  idDoesNotExist = false;
+  materialId: string;
+
   /** Related artworks */
   fetchOptions = {
     initOffset: 0,
@@ -33,17 +36,19 @@ export class MaterialComponent implements OnInit, OnDestroy {
   ngOnInit() {
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
-      const materialId = params.get('materialId');
-      this.fetchOptions.queryCount = this.dataService.countArtworksByType(EntityType.MATERIAL, [materialId]);
+      this.materialId = params.get('materialId');
+      this.fetchOptions.queryCount = this.dataService.countArtworksByType(EntityType.MATERIAL, [this.materialId]);
 
       /** load fetching list items */
       this.query = async (offset) => {
         return await this.dataService.findArtworksByType(
-          EntityType.MATERIAL, [materialId], this.fetchOptions.fetchSize, offset)
+          EntityType.MATERIAL, [this.materialId], this.fetchOptions.fetchSize, offset)
       };
 
       /** Use data service to fetch entity from database */
-      this.material = await this.dataService.findById<Material>(materialId, EntityType.MATERIAL);
+      this.material = await this.dataService.findById<Material>(this.materialId, EntityType.MATERIAL);
+
+      if (!this.material) { this.idDoesNotExist = true }
     });
   }
 

@@ -143,6 +143,12 @@ export class MovementComponent implements OnInit, OnDestroy {
       // trigger onChanges lifecycle method of movement-overview
       this.relatedMovements = this.relatedMovements.slice();
     });
+
+    this.route.params.subscribe(() => {
+      if(this.relatedMovements.length === 0) {
+        this.activeTab = "timeline";
+      }
+    });
   }
 
   setActiveTab(tab: Tab) {

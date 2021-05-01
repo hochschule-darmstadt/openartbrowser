@@ -46,6 +46,7 @@
             ],
             "aot": true,
             "outputPath": "dist/art-browser",
+            "deleteOutputPath": false,
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",

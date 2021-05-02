@@ -1,4 +1,6 @@
 import {Component, Input, HostListener} from '@angular/core';
+import {Subject, timer} from 'rxjs';
+import {switchMap} from 'rxjs/operators';
 import {Artist, Artwork, Entity, EntityType} from 'src/app/shared/models/models';
 import {CustomStepDefinition, Options} from '@angular-slider/ngx-slider';
 import {animate, state, style, transition, trigger} from '@angular/animations';
@@ -68,6 +70,11 @@ export class TimelineComponent {
    */
   private referenceItem: number;
 
+  /** variables to control automatic rotation of the timeline  */
+  private nextRotationTime = 5; // number in seconds, set to '0' to disable
+  private rotationTimer$ = new Subject();
+  private timerSubscription;
+
   /** The current value of the slider */
   value: number;
   /** Used to determine which animation direction to trigger when slider was clicked */
@@ -133,6 +140,24 @@ export class TimelineComponent {
       this.value = (beginOfTimeline + endOfTimeline) / 2;
       this.previousValue = this.value;
       this.refreshComponent();
+    }
+  }
+
+  ngOnInit() {
+    // setup timer for automatic timeline rotation
+    // This will run the function 'nextClicked' every 'nextRotationTime' seconds
+    if (this.nextRotationTime > 0) {
+      this.timerSubscription = this.rotationTimer$.pipe(
+        switchMap(() => timer(this.nextRotationTime * 1000, this.nextRotationTime * 1000))
+      ).subscribe(() => this.nextClicked(true));
+      // start timer
+      this.rotationTimer$.next();
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.timerSubscription) {
+      this.timerSubscription.unsubscribe();
     }
   }
 
@@ -275,9 +300,17 @@ export class TimelineComponent {
   }
 
   /** Handler for click event from right control button. Updates startSlide, value and animation. */
-  nextClicked() {
+  nextClicked(isAutomatic: boolean = false) {
+    // this resets the 'rotationTimer$'
+    this.rotationTimer$.next();
+
     if (this.slideEnd >= this.items.length) {
-      // Return if last slide
+      // Start from the beginning if this is called from the automatic rotation, otherwise do nothing
+      if(isAutomatic) {
+        this.slideStart = 0;
+        this.value = this.items[0].date;
+        this.updateSliderItems();
+      }
       return;
     }
     this.slideOutRight = true;

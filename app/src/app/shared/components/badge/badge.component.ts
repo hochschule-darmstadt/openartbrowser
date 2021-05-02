@@ -39,6 +39,7 @@ export class BadgeComponent implements OnInit, OnChanges {
         this.tooltip.trim();
       }
     }
+    
 
     /*
       Generate an abstract to show as tooltip.
@@ -53,7 +54,12 @@ export class BadgeComponent implements OnInit, OnChanges {
       let substrTo = this.tooltip.indexOf('.', this.tooltipBreakLimit);
       if (substrTo < this.tooltipBreakLimit) substrTo = this.tooltip.indexOf(' ', this.tooltipBreakLimit);
       if (substrTo < this.tooltipBreakLimit) substrTo = this.tooltipBreakLimit;
-      this.tooltip = this.tooltip.substr(0, substrTo).replace(/ *\([^)]*\) */g, '') + ' [...]';
+      this.tooltip = this.tooltip.substr(0, substrTo).replace(/ *\([^)]*\) */g, '')+ ' [...]';
+    }
+    else if(this.tooltip && this.tooltip.length < this.tooltipBreakLimit){
+      
+      this.tooltip = this.tooltip.substr(0).replace(/ *\([^)]*\) */g, '').charAt(0).toUpperCase() + this.tooltip.slice(1);
+
     }
   }
 

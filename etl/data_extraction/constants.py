@@ -46,9 +46,11 @@ EN = "en"
 ENTITIES = "entities"
 ABBREVIATION = "abbreviation"
 # The wd: prefix is used here because these ids are used in a SPARQL query
-DRAWING = {PLURAL: "drawings", ID: "wd:Q93184"}
-SCULPTURE = {PLURAL: "sculptures", ID: "wd:Q860861"}
-PAINTING = {PLURAL: "paintings", ID: "wd:Q3305213"}
+SOURCE_TYPES = [
+    {SINGULAR: "drawing", PLURAL: "drawings", ID: "wd:Q93184"},
+    {SINGULAR: "sculpture", PLURAL: "sculptures", ID: "wd:Q860861"},
+    {SINGULAR: "painting", PLURAL: "paintings", ID: "wd:Q3305213"}
+]
 LATITUDE = {SINGULAR: "latitude", ABBREVIATION: "lat"}
 LONGITUDE = {SINGULAR: "longitude", ABBREVIATION: "lon"}
 ART_MOVEMENT = {SINGULAR: "art_movement", ID: "Q968159"}

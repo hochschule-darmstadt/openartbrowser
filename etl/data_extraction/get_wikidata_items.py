@@ -53,14 +53,14 @@ lang_keys = [item[0] for item in language_config_to_list()]
 
 
 def write_data_to_json_and_csv(
-    motifs: List[Dict],
-    genres: List[Dict],
-    extracted_classes: List[Dict],
-    materials: List[Dict],
-    movements: List[Dict],
-    locations: List[Dict],
-    merged_artworks: List[Dict],
-    artists: List[Dict],
+        motifs: List[Dict],
+        genres: List[Dict],
+        extracted_classes: List[Dict],
+        materials: List[Dict],
+        movements: List[Dict],
+        locations: List[Dict],
+        merged_artworks: List[Dict],
+        artists: List[Dict],
 ) -> None:
     """Writes the given lists of dictionaries to json and csv files
 
@@ -126,7 +126,7 @@ def write_data_to_json_and_csv(
 
 # region csv file functions
 def get_fields(
-    type_name: str, language_keys: Optional[List[str]] = lang_keys,
+        type_name: str, language_keys: Optional[List[str]] = lang_keys,
 ) -> List[str]:
     """Returns all columns for a specific type, e. g. 'artworks'
 
@@ -144,12 +144,7 @@ def get_fields(
             f"{DESCRIPTION[SINGULAR]}_{langkey}",
             f"{WIKIPEDIA_LINK}_{langkey}",
         ]
-    if type_name in [
-        DRAWING[PLURAL],
-        SCULPTURE[PLURAL],
-        PAINTING[PLURAL],
-        ARTWORK[PLURAL],
-    ]:
+    if type_name in [source_type[PLURAL] for source_type in SOURCE_TYPES] + [ARTWORK[PLURAL]]:
         fields += [
             ARTIST[PLURAL],
             LOCATION[PLURAL],
@@ -223,7 +218,7 @@ def generate_csv(extract_dicts: List[Dict], fields: List[str], filename: str) ->
     """
     filename.parent.mkdir(parents=True, exist_ok=True)
     with open(
-        filename.with_suffix(f".{CSV}"), "w", newline="", encoding="utf-8"
+            filename.with_suffix(f".{CSV}"), "w", newline="", encoding="utf-8"
     ) as file:
         writer = csv.DictWriter(file, fieldnames=fields, delimiter=";", quotechar='"')
         writer.writeheader()
@@ -244,11 +239,7 @@ def merge_artworks() -> List[Dict]:
     """
     print(datetime.datetime.now(), "Starting with", "merging artworks")
     artworks = set()
-    file_names = [
-        f"{PAINTING[PLURAL]}.{JSON}",
-        f"{DRAWING[PLURAL]}.{JSON}",
-        f"{SCULPTURE[PLURAL]}.{JSON}",
-    ]
+    file_names = [f"{source_type[PLURAL]}.{JSON}" for source_type in SOURCE_TYPES]
     file_names = [
         create_new_path(ARTWORK[PLURAL], subpath=file_name) for file_name in file_names
     ]
@@ -275,19 +266,15 @@ def extract_art_ontology() -> None:
     # Array of already crawled wikidata items
     already_crawled_wikidata_items = set()
 
-    for artwork, wd in [
-        (DRAWING[PLURAL], DRAWING[ID]),
-        (SCULPTURE[PLURAL], SCULPTURE[ID]),
-        (PAINTING[PLURAL], PAINTING[ID]),
-    ]:
+    for source in SOURCE_TYPES:
         extracted_artwork = load_wd_entities.extract_artworks(
-            artwork, wd, already_crawled_wikidata_items, DEV, DEV_CHUNK_LIMIT
+            source[PLURAL], source[ID], already_crawled_wikidata_items, DEV, DEV_CHUNK_LIMIT
         )
 
-        path_name = create_new_path(ARTWORK[PLURAL], artwork, CSV)
-        generate_csv(extracted_artwork, get_fields(artwork), path_name)
+        path_name = create_new_path(ARTWORK[PLURAL], source[PLURAL], CSV)
+        generate_csv(extracted_artwork, get_fields(source[PLURAL]), path_name)
 
-        path_name = create_new_path(ARTWORK[PLURAL], artwork, JSON)
+        path_name = create_new_path(ARTWORK[PLURAL], source[PLURAL], JSON)
         generate_json(extracted_artwork, path_name)
 
     merged_artworks = merge_artworks()

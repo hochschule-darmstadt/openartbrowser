@@ -34,7 +34,7 @@ const routes: Routes = [
   { path: 'movement/:movementId', loadChildren: () => import('./pages/movement/movement.routing.module').then(m => m.MovementRoutingModule) },
   { path: 'motif/:motifId', loadChildren: () => import('./pages/motif/motif.routing.module').then(m => m.MotifRoutingModule) },
   { path: 'search', loadChildren: () => import('./pages/search-result/search-result.routing.module').then(m => m.SearchResultRoutingModule) },
-  { path: '**', redirectTo: '' }
+  { path: '**', loadChildren: () => import('./pages/error/error.routing.module').then(m => m.ErrorRoutingModule) }
 ];
 
 @NgModule({

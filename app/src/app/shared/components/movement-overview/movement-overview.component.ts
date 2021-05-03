@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, HostListener, Input, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, HostListener, Input, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {Options} from '@angular-slider/ngx-slider';
 import {Subject, timer} from 'rxjs';
@@ -78,10 +78,8 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   ngOnInit() {
-    if (this.inputMovements !== undefined) {
-      this.movements = this.inputMovements as MovementItem[];
-      this.initializeMovements();
-    } else {
+    // handle case if this component is not part of a movement.component page - show default
+    if ((this.inputMovements === undefined)) {
       this.dataService.findMultipleById<Movement>(this.defaultMovementIds, EntityType.MOVEMENT)
         .then(movements => {
           this.movements = movements.filter(m => {
@@ -91,6 +89,15 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
           }) as MovementItem[];
           this.initializeMovements();
         });
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    // trigger for rerender of movement-overview if there are prop inputs
+    if(changes.inputMovements.currentValue) {
+      this.boxes = [[]];
+      this.movements = changes.inputMovements.currentValue as MovementItem[];
+      this.initializeMovements();
     }
   }
 
@@ -163,7 +170,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
     /** The period span must be either a multiple of reasonablePeriodDistance or minimumPeriodDistance */
     let reasonablePeriodDistance = 50;
     if (dateSpan < this.averagePeriodCount * reasonablePeriodDistance) {
-      reasonablePeriodDistance = 10 * (Math.floor(dateSpan / this.averagePeriodCount / 10) + 1);
+      reasonablePeriodDistance = 5 * (Math.floor(dateSpan / this.averagePeriodCount / 5) + 1);
     }
     const minimumPeriodDistance = 1;
     /** Example:  30/7 = 4,28 ; 4,28 / 5 = 0,85 ; Math.max( Math.round(0.85)*5, 1) = 5 */
@@ -173,7 +180,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
     this.timelineStart = firstStart - (firstStart % this.periodSpan);
     this.timelineEnd = lastEnd - (lastEnd % this.periodSpan) + this.periodSpan;
 
-
+    
     /** Set slider options */
     const newOptions: Options = Object.assign({}, this.options);
     newOptions.ceil = this.timelineEnd;
@@ -296,8 +303,6 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   private async updateShownMovement(newMovementId) {
-    this.showThumbnail = false;
-    this.thumbnailLoaded = false;
     this.currentMovementId = newMovementId;
     this.setRandomThumbnail(this.currentMovementId).then(() => {
       this.drawThumbnail(this.currentMovementId);
@@ -319,19 +324,31 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
 
   /** choose random image out of artworks of current movement */
   private async setRandomThumbnail(movementId) {
+    this.showThumbnail = false;
+    this.thumbnailLoaded = false;
+
     const currMovementIndex = this.movements.findIndex(move => move.id === movementId);
-    if (!this.movements[currMovementIndex].artworks || !this.movements[currMovementIndex].artworks.length) {
+    const currMovement = this.movements[currMovementIndex];
+    if (!currMovement.artworks || !currMovement.artworks.length) {
       return;
     }
     // choose random new thumb out of first n-1
-    const thumbIndex = Math.floor(Math.random() * this.movements[currMovementIndex].artworks.length - 1);
-    this.thumbnail = this.movements[currMovementIndex].artworks.splice(thumbIndex, 1)[0];
+    const thumbIndex = (currMovement.artworks.length > 1) ? Math.floor(Math.random() * currMovement.artworks.length-1) : 0;
+
+    const oldThumbnail = this.thumbnail;
+    const newThumbnail = currMovement.artworks.splice(thumbIndex, 1)[0];
+    if(oldThumbnail === newThumbnail) {
+      this.showThumbnail = true;
+      this.thumbnailLoaded = true;
+    }
+    this.thumbnail = newThumbnail;
+
     // move thumbnail to end of list
-    this.movements[currMovementIndex].artworks.push(this.thumbnail);
+    currMovement.artworks.push(this.thumbnail);
 
     // TODO: move this?
-    this.currentMovementLabel = this.movements[currMovementIndex].label;
-    this.currentDate = MovementOverviewComponent.getStartTime(this.movements[currMovementIndex]) + ' - ' + MovementOverviewComponent.getEndTime(this.movements[currMovementIndex]);
+    this.currentMovementLabel = currMovement.label;
+    this.currentDate = MovementOverviewComponent.getStartTime(currMovement) + ' - ' + MovementOverviewComponent.getEndTime(currMovement);
   }
 
   selectRandomMovement() {

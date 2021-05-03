@@ -35,6 +35,9 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   artwork: Artwork = null;
 
+  idDoesNotExist = false;
+  artworkId: string;
+
   /**
    * whether artwork image should be hidden
    */
@@ -90,8 +93,13 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       Object.values(EntityType).forEach(type => this.addTab(type, type === EntityType.ALL))
 
       /** Use data service to fetch entity from database */
-      const artworkId = params.get('artworkId');
-      this.artwork = await this.dataService.findById<Artwork>(artworkId, EntityType.ARTWORK);
+      this.artworkId = params.get('artworkId');
+      this.artwork = await this.dataService.findById<Artwork>(this.artworkId, EntityType.ARTWORK);
+
+      if (!this.artwork) { 
+        this.idDoesNotExist = true;
+        return;
+      }
 
       if (this.artwork.videos && this.artwork.videos.length > 0) {
         this.uniqueVideos.unshift(this.artwork.videos[0]);

@@ -24,6 +24,7 @@ import { EventTableComponent } from './components/event-table/event-table.compon
 import { InViewportModule } from 'ng-in-viewport';
 import { PaginatorComponent } from './components/fetching-list/paginator/paginator.component';
 import { StickyTitleComponent } from './components/sticky-title/sticky-title.component';
+import { ErrorMessageComponent } from './components/error-message/error-message.component';
 import {NgxSliderModule} from "@angular-slider/ngx-slider";
 import { CategoryContainerComponent } from './components/category-container/category-container.component';
 
@@ -48,7 +49,8 @@ import { CategoryContainerComponent } from './components/category-container/cate
     EventTableComponent,
     PaginatorComponent,
     StickyTitleComponent,
-    CategoryContainerComponent
+    CategoryContainerComponent,
+    ErrorMessageComponent
   ],
     imports: [
         CommonModule,
@@ -81,6 +83,7 @@ import { CategoryContainerComponent } from './components/category-container/cate
     StickyTitleComponent,
     PaginatorComponent,
     CategoryContainerComponent,
+    ErrorMessageComponent
   ]
 })
 export class SharedModule {

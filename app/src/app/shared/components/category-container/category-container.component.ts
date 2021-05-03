@@ -18,8 +18,8 @@ export class CategoryContainerComponent implements OnInit {
    * @param category category the item should be removed from
    * @param item item that should be removed
    */
-   onLoadingError(category, item) {
-    category.items = category.items.filter(i => item.id !== i.id);
+  onLoadingError(category, item) {
+    if(category) category.items = category.items.filter(i => item.id !== i.id);
   }
 
 }

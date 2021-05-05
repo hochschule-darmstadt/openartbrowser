@@ -1,9 +1,18 @@
 <div class="mb-4 container-category">
-  <div class="carousel-wrapper">
-    <div *ngIf="category === undefined">
-      Loading...
+  <div class="carousel-wrapper" [class.is-loaded]="isLoaded">
+    <div *ngIf="!isLoaded" class="loading-placeholder" >
+      <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+      <img
+        *ngIf="category && category.items && category.items.length > 0"
+        src="{{ category.items[0].imageSmall }}"
+        alt="Preloading Image..."
+        (load)="onImgPreloaded()"
+        (error)="onLoadingError(category, item)"
+      />
     </div>
-    <div *ngIf="category !== undefined">
+    <div *ngIf="isLoaded">
       <ngb-carousel [animation]="false">
         <ng-template ngbSlide *ngFor="let item of category.items">
           <a
@@ -13,8 +22,12 @@
             angularticsAction="Home tiles"
             angularticsCategory="Navigation"
           >
-            <img class="image" (error)="onLoadingError(category, item)" src="{{ item?.imageSmall }}"
-                  alt="{{ item?.label }}"/>
+            <img
+              class="image"
+              src="{{ item?.imageSmall }}"
+              alt="{{ item?.label }}"
+              (error)="onLoadingError(category, item)"
+            />
             <div class="overlay">
               <span class="type badge badge-secondary badge-pill chip">
                 <i class="fas {{ category.icon }}"></i>

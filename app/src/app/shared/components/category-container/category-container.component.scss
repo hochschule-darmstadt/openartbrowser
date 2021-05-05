@@ -33,6 +33,28 @@
     background-color: #444444;
     border-radius: 15px;
     text-align: center;
+    opacity: 1;
+    transition: .2s opacity ease-in-out, .2s background ease-in-out;
+  }
+
+  .carousel-wrapper:not(.is-loaded) {
+    opacity: .75;
+    background-color: rgba(68,68,68,.75);
+  }
+
+  .loading-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 17rem;
+    
+    img {
+      width: 0;
+      height: 0;
+      opacity: 0;
+      pointer-events: none;
+      user-select: none;
+    }
   }
 
   .overlay {

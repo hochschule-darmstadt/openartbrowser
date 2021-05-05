@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-category-container',
@@ -8,9 +8,15 @@ import { Component, OnInit, Input } from '@angular/core';
 export class CategoryContainerComponent implements OnInit {
   @Input() category: any;
 
+  isLoaded: boolean = false;
+
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  onImgPreloaded() {
+    if(this.category !== undefined && !this.isLoaded) this.isLoaded = true;
   }
 
   /**

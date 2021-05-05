@@ -204,8 +204,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
           this.boxes[rowNum] = Array();
         }
         if (!this.boxes[rowNum].length) {
-          this.boxes[rowNum].push(this.movements[i]); // if first item in row, insert
-          rowNum = 0; // start again at first row
+          this.boxes[rowNum].push(this.movements[i]); // if first item in     rowNum = 0; // start again at first row
           set = true;
         } else if (MovementOverviewComponent.getStartTime(this.movements[i]) < MovementOverviewComponent.getEndTime(this.boxes[rowNum].slice(-1)[0])) {
           // if overlapping, continue at next row

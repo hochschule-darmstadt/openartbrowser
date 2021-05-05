@@ -300,17 +300,15 @@ export class TimelineComponent {
   }
 
   /** Handler for click event from right control button. Updates startSlide, value and animation. */
-  nextClicked(isAutomatic: boolean = false) {
+  nextClicked(event) {
     // this resets the 'rotationTimer$'
     this.rotationTimer$.next();
 
     if (this.slideEnd >= this.items.length) {
       // Start from the beginning if this is called from the automatic rotation, otherwise do nothing
-      if(isAutomatic) {
         this.slideStart = 0;
         this.value = this.items[0].date;
         this.updateSliderItems();
-      }
       return;
     }
     this.slideOutRight = true;

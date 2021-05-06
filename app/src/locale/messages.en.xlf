@@ -567,24 +567,6 @@
         </context-group>
         <note priority="1" from="description">Motif label</note>
       </trans-unit>
-      <trans-unit id="terms" datatype="html">
-        <source>Terms</source>
-        <target state="final">Terms</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/pages/search-result/search-result.component.html</context>
-          <context context-type="linenumber">102</context>
-        </context-group>
-        <note priority="1" from="description">Search Terms label</note>
-      </trans-unit>
-      <trans-unit id="hits" datatype="html">
-        <source>Hits</source>
-        <target state="final">Hits</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/pages/search-result/search-result.component.html</context>
-          <context context-type="linenumber">114</context>
-        </context-group>
-        <note priority="1" from="description">Search Hits label</note>
-      </trans-unit>
       <trans-unit id="artworks" datatype="html">
         <source>Artworks</source>
         <target state="final">Artworks</target>
@@ -871,6 +853,18 @@
       <trans-unit id="fetching_list_error" datatype="html">
         <source>Painting in progress</source>
         <target state="final">Painting in progress</target>
+      </trans-unit>
+      <trans-unit id="searchResults" datatype="html">
+        <source>Search results</source>
+        <target state="final">Search results</target>
+      </trans-unit>
+      <trans-unit id="terms" datatype="html">
+        <source>Terms</source>
+        <target state="final">Terms</target>
+      </trans-unit>
+      <trans-unit id="results" datatype="html">
+        <source>Results</source>
+        <target state="final">Results</target>
       </trans-unit>
       <trans-unit id="d92b19d3d60f5e8db9974b16602fe83c00d05b7c" datatype="html">
         <source>{VAR_SELECT, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre

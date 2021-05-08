@@ -87,4 +87,4 @@ def generate_json(extract_dicts: List[Dict], filename: str) -> None:
     with open(
         filename.with_suffix(f".{JSON}"), "w", newline="", encoding="utf-8"
     ) as file:
-        file.write(json.dumps(extract_dicts, ensure_ascii=False))
+        json.dump(extract_dicts, file, ensure_ascii=False)

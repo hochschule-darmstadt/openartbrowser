@@ -23,6 +23,7 @@ Returns:
     - materials.json/.csv
     - motifs.json/.csv
     - movements.json/.csv
+    - classes.json/.csv
 """
 import csv
 import datetime
@@ -61,6 +62,7 @@ def write_data_to_json_and_csv(
         locations: List[Dict],
         merged_artworks: List[Dict],
         artists: List[Dict],
+        classes: List[Dict],
 ) -> None:
     """Writes the given lists of dictionaries to json and csv files
 
@@ -73,6 +75,7 @@ def write_data_to_json_and_csv(
         locations: List of locations
         merged_artworks: List of artworks
         artists: List of artists
+        classes: List of classes
     """
     generate_json(motifs, create_new_path(MOTIF[PLURAL]))
     generate_csv(
@@ -121,6 +124,12 @@ def write_data_to_json_and_csv(
         artists,
         get_fields(ARTIST[PLURAL]),
         create_new_path(ARTIST[PLURAL], file_type=CSV),
+    )
+    generate_json(classes, create_new_path(CLASS[PLURAL]))
+    generate_csv(
+        classes,
+        get_fields(CLASS[PLURAL]),
+        create_new_path(CLASS[PLURAL], file_type=CSV),
     )
 
 
@@ -199,12 +208,7 @@ def get_fields(
         for langkey in language_keys:
             fields += [f"{COUNTRY}_{langkey}"]
     elif type_name == CLASS[PLURAL]:
-        fields = [ID, LABEL[SINGULAR], DESCRIPTION[SINGULAR], SUBCLASS_OF, TYPE]
-        for langkey in language_keys:
-            fields += [
-                f"{LABEL[SINGULAR]}_{langkey}",
-                f"{DESCRIPTION[SINGULAR]}_{langkey}",
-            ]
+        fields += [SUBCLASS_OF]
     return fields
 
 
@@ -291,6 +295,7 @@ def extract_art_ontology() -> None:
         movements,
         artists,
         locations,
+        classes,
     ) = load_wd_entities.bundle_extract_subjects_calls(
         [
             GENRE[PLURAL],
@@ -298,6 +303,7 @@ def extract_art_ontology() -> None:
             MOVEMENT[PLURAL],
             ARTIST[PLURAL],
             LOCATION[PLURAL],
+            CLASS[PLURAL],
         ],
         merged_artworks,
     )
@@ -309,12 +315,13 @@ def extract_art_ontology() -> None:
         (movements, MOVEMENT[SINGULAR]),
         (artists, ARTIST[SINGULAR]),
         (locations, LOCATION[SINGULAR]),
+        (classes, CLASS[SINGULAR]),
     ]:
         [entity.update({TYPE: type_name}) for entity in subject]
 
     # Get distinct classes from artworks, motifs, etc.
     extracted_classes = load_wd_entities.get_distinct_extracted_classes(
-        merged_artworks, motifs, genres, materials, movements, artists, locations,
+        merged_artworks, motifs, genres, materials, movements, artists, locations, classes,
     )
     [c.update({TYPE: CLASS[SINGULAR]}) for c in extracted_classes]
     print("Total classes after transitive closure loading: ", len(extracted_classes))
@@ -357,6 +364,7 @@ def extract_art_ontology() -> None:
         locations,
         merged_artworks,
         artists,
+        classes,
     )
 
 

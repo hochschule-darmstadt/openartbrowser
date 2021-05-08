@@ -755,6 +755,7 @@ def get_distinct_extracted_classes(
     movements: List[Dict],
     artists: List[Dict],
     locations: List[Dict],
+    classes: List[Dict],
 ) -> List[Dict]:
     """Load the distinct qids from the classes lists of all entities
 
@@ -766,6 +767,7 @@ def get_distinct_extracted_classes(
         movements: List of movement entities
         artists: List of artist entities
         locations: List of location entities
+        classes: List of class entities
 
     Returns:
         List of class entities
@@ -774,7 +776,7 @@ def get_distinct_extracted_classes(
         CLASS[PLURAL], merged_artworks
     )
     distinct_classes = bundle_class_union_calls(
-        distinct_classes, [motifs, genres, materials, movements, artists, locations],
+        distinct_classes, [motifs, genres, materials, movements, artists, locations, classes],
     )
     return get_classes(CLASS[PLURAL], distinct_classes)
 

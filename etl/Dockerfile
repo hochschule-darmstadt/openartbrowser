@@ -10,9 +10,9 @@ RUN pip install pywikibot
 COPY ["./data_extraction/", "/app/data_extraction"]
 COPY ["./user-config.py", "/app"]
 COPY ["./shared/", "/app/shared"]
+RUN mkdir "/app/logs"
 # run get_wikidata_items in development mode
 RUN pip install SPARQLWrapper
-RUN mkdir logs
 RUN ["python", "/app/data_extraction/get_wikidata_items.py", "-d", "5"]
 RUN ["python", "/app/data_extraction/get_wikipedia_extracts.py"]
 
@@ -66,9 +66,7 @@ RUN ["python", "data_enhancement/split_languages.py"]
 
 # art_ontology.json is moved to /root because elasticsearch_helper.py
 # expects the json file in the home directory
-ADD "https://www.random.org/cgi-bin/randbyte?nbytes=10&format=h" skipcache
-RUN echo $(ls)
-ADD crawler_output /root/crawler_output/
+RUN ["cp", "-r", "/app/crawler_output", "/root/crawler_output/"]
 
 # ------------------------------------------------
 

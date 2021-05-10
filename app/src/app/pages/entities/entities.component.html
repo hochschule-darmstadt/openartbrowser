@@ -18,7 +18,7 @@
     </ng-template>
   </app-sticky-title>
 
-  <app-fetching-list [query]="query" [options]="fetchOptions">
+  <app-fetching-list [query]="query" [(options)]="fetchOptions">
     <ng-template let-entity="entity" let-type="entityType">
       <div class="item-caption" [ngbTooltip]="entity?.label?.length > 60 ? htmlContent : ''">
         <ng-template #htmlContent>

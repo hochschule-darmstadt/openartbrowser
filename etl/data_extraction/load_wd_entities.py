@@ -56,7 +56,7 @@ def query_artwork_qids(type_name: str, wikidata_id: str) -> List[str]:
         try:
             query_result = sparql.query().convert()
             break
-        except HTTPError as error:
+        except (HTTPError, JSONDecodeError) as error:
             print(error)
             print("Waiting for 5 seconds")
             time.sleep(5)

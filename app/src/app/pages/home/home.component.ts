@@ -14,6 +14,7 @@ import {
 } from 'src/app/shared/models/models';
 import {DataService} from 'src/app/core/services/elasticsearch/data.service';
 import {shuffle} from 'src/app/core/services/utils.service';
+import * as ConfigJson from '../../../config/home_content.json';
 
 /**
  * @description Interface for the category sliders.
@@ -49,7 +50,13 @@ export class HomeComponent implements OnInit {
   /**
    * variable of the categories.
    */
-  categories: SliderCategory[] = [];
+  artworkCategory: SliderCategory;
+  artistCategory: SliderCategory;
+  movementCategory: SliderCategory;
+  locationCategory: SliderCategory;
+  materialCategory: SliderCategory;
+  genreCategory: SliderCategory;
+  motifCategory: SliderCategory;
 
   constructor(public dataService: DataService, ngbConfig: NgbCarouselConfig) {
     /** set configuration of ngbCarousel */
@@ -60,40 +67,20 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.setBackground();
-    this.getSlides().then(slides => {
-      // Fetch items for each category using the service;
-      this.categories = slides;
-
-      // need to have a bit delay of time (last categories that is fetched is not refreshing carousel cycle)
-      setTimeout(() => this.refreshCarousel(), 500);
-
-      // assign backgroundImageUrl with a random image from one of the artworks.
-      this.setBackground();
-    });
+    this.getSlides();
   }
-
-  /**
-   * removes entity from category suggestions if image of item cannot be loaded
-   * @param category category the item should be removed from
-   * @param item item that should be removed
-   */
-  onLoadingError(category: SliderCategory, item: Entity) {
-    category.items = category.items.filter(i => item.id !== i.id);
-  }
-
+  
   /**
    * @description Fetch items for each category using the service. Retrun an array of slider category items.
    */
-  private getSlides = async (): Promise<SliderCategory[]> => {
-    const cats = [];
-    cats.push(await this.getSliderCategory<Artwork>(EntityType.ARTWORK));
-    cats.push(await this.getSliderCategory<Artist>(EntityType.ARTIST));
-    cats.push(await this.getSliderCategory<Movement>(EntityType.MOVEMENT));
-    cats.push(await this.getSliderCategory<Location>(EntityType.LOCATION));
-    cats.push(await this.getSliderCategory<Material>(EntityType.MATERIAL));
-    cats.push(await this.getSliderCategory<Genre>(EntityType.GENRE));
-    cats.push(await this.getSliderCategory<Motif>(EntityType.MOTIF));
-    return cats;
+  private getSlides() {
+    this.getSliderCategory<Artwork>(EntityType.ARTWORK).then(slide => this.artworkCategory = slide);
+    this.getSliderCategory<Artist>(EntityType.ARTIST).then(slide => this.artistCategory = slide);
+    this.getSliderCategory<Movement>(EntityType.MOVEMENT).then(slide => this.movementCategory = slide);
+    this.getSliderCategory<Location>(EntityType.LOCATION).then(slide => this.locationCategory = slide);
+    this.getSliderCategory<Material>(EntityType.MATERIAL).then(slide => this.materialCategory = slide);
+    this.getSliderCategory<Genre>(EntityType.GENRE).then(slide => this.genreCategory = slide);
+    this.getSliderCategory<Motif>(EntityType.MOTIF).then(slide => this.motifCategory = slide);
   }
 
   /**
@@ -105,11 +92,9 @@ export class HomeComponent implements OnInit {
   }
 
   private setBackground() {
-    // assign backgroundImageUrl with a random image from one of the artworks.
-    const artworks = this.categories && this.categories.length ? this.categories[0].items : [];
-    if (artworks.length > 0) {
-      this.backgroundImageUrl = artworks[Math.floor(Math.random() * artworks.length)].imageMedium;
-    }
+    // assign backgroundImageUrl with a random image specified in the config folder.
+    const backgroundArtworksUrls = ConfigJson.images;
+    this.backgroundImageUrl = backgroundArtworksUrls[Math.floor(Math.random() * backgroundArtworksUrls.length)];
   }
 
   /**

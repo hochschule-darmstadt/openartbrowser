@@ -187,6 +187,7 @@ def add_wikipedia_extracts(language_keys: Optional[List[str]] = lang_keys,) -> N
         MOVEMENT[PLURAL],
         ARTIST[PLURAL],
         LOCATION[PLURAL],
+        CLASS[PLURAL],
     ]:
         print(
             datetime.datetime.now(),

@@ -37,7 +37,8 @@ RUN ["python", "./data_enhancement/has_part_part_of_enhancement.py"]
 RUN ["python", "./data_enhancement/add_youtube_videos.py"]
 
 RUN ["python", "./data_enhancement/ranking.py"]
-
+ADD "https://www.random.org/cgi-bin/randbyte?nbytes=10&format=h" skipcache
+RUN echo $(ls)
 # ------------------------------------------------
 
 FROM stedolan/jq:latest as merge_files
@@ -47,7 +48,7 @@ WORKDIR /app
 # get files from previous stage
 COPY --from=data_enhancement /app/crawler_output/intermediate_files/json/ /app/
 
-RUN jq -s "[.[][]]" artworks.json genres.json artists.json locations.json materials.json movements.json motifs.json > art_ontology.json
+RUN jq -s "[.[][]]" artworks.json genres.json artists.json locations.json materials.json movements.json motifs.json classes.json > art_ontology.json
 
 # ------------------------------------------------
 

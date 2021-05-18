@@ -86,6 +86,7 @@ if __name__ == "__main__":
         MOVEMENT[PLURAL],
         ARTIST[PLURAL],
         LOCATION[PLURAL],
+        CLASS[PLURAL],
     ]:
         print(
             datetime.datetime.now(), "Starting ranking with", filename,

@@ -3,11 +3,12 @@
 import csv
 import json
 import logging
+import os
 import pkgutil
 from pathlib import Path
 from typing import Dict, List
 
-from shared.constants import CRAWLER_OUTPUT, INTERMEDIATE_FILES, JSON
+from shared.constants import CRAWLER_OUTPUT, INTERMEDIATE_FILES, LOGS, JSON, ETL_STATES
 
 root_logger = logging.getLogger()  # setup root logger
 root_logger.setLevel(
@@ -72,6 +73,31 @@ def chunks(lst, n):
 
 def create_new_path(name, subpath="", file_type=JSON):
     return Path.cwd() / CRAWLER_OUTPUT / INTERMEDIATE_FILES / file_type / name / subpath
+
+
+def write_state(state):
+    path = Path.cwd().parent / LOGS / ETL_STATES.FILENAME
+    append_write = 'a' if os.path.exists(path) else 'w'  # check if file exists, create if not
+    try:
+        with open(path, append_write, newline='') as file:
+            file.write(f'\n{state}')
+    except Exception as e:
+        print(e)
+
+
+def check_state(state):
+    path = Path.cwd().parent / LOGS / ETL_STATES.FILENAME
+    if not os.path.exists(path):
+        return False
+    try:
+        with open(path, "r") as file:
+            for line in file:
+                if line[:-1] == state:
+                    print(f"State {state} recovered")
+                    return True
+        return False
+    except Exception as e:
+        print(e)
 
 
 def is_jsonable(x):

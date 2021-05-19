@@ -41,10 +41,12 @@ from shared.utils import (
     language_config_to_list,
     setup_logger,
     is_jsonable,
+    check_state, write_state
 )
 
 DEV = False
 DEV_CHUNK_LIMIT = 2  # Not entry but chunks of 50
+RECOVER_MODE = False
 
 logger = setup_logger(
     "data_extraction.get_wikidata_items",
@@ -277,6 +279,8 @@ def extract_art_ontology() -> None:
     already_crawled_wikidata_items = set()
 
     for source in SOURCE_TYPES:
+        if RECOVER_MODE and check_state(ETL_STATES.GET_WIKIDATA_ITEMS.EXTRACT_SOURCE + source[PLURAL]):
+            continue
         extracted_artwork = load_wd_entities.extract_artworks(
             source[PLURAL], source[ID], already_crawled_wikidata_items, DEV, DEV_CHUNK_LIMIT
         )
@@ -286,7 +290,10 @@ def extract_art_ontology() -> None:
 
         path_name = create_new_path(ARTWORK[PLURAL], source[PLURAL], JSON)
         generate_json(extracted_artwork, path_name)
+        write_state(ETL_STATES.GET_WIKIDATA_ITEMS.EXTRACT_SOURCE + source[PLURAL])
 
+    if RECOVER_MODE and check_state(ETL_STATES.GET_WIKIDATA_ITEMS.MERGED_ARTWORKS):
+        return
     merged_artworks = merge_artworks()
 
     path_name = create_new_path(ARTWORK[PLURAL], file_type=CSV)
@@ -372,14 +379,20 @@ def extract_art_ontology() -> None:
         artists,
         classes,
     )
+    write_state(ETL_STATES.GET_WIKIDATA_ITEMS.MERGED_ARTWORKS)
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1 and sys.argv[1] == "-d":
-        if len(sys.argv) > 2 and sys.argv[2].isdigit():
-            DEV_CHUNK_LIMIT = int(sys.argv[2])
-        print("DEV MODE: on, DEV_LIM={0}".format(DEV_CHUNK_LIMIT))
-        DEV = True
-
+    if len(sys.argv) > 1:
+        if "-d" in sys.argv:
+            if any([c.isdigit() for c in sys.argv]):
+                DEV_CHUNK_LIMIT = int([x.isdigit() for x in sys.argv].index(True))
+            print("DEV MODE: on, DEV_LIM={0}".format(DEV_CHUNK_LIMIT))
+            DEV = True
+        if "-r" in sys.argv:
+            RECOVER_MODE = True
+    if RECOVER_MODE and check_state(ETL_STATES.GET_WIKIDATA_ITEMS.STATE):
+        exit(0)
     logger.info("Extracting Art Ontology")
     extract_art_ontology()
+    write_state(ETL_STATES.GET_WIKIDATA_ITEMS.STATE)

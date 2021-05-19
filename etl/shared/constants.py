@@ -5,6 +5,7 @@ JSON = "json"
 CSV = "csv"
 CRAWLER_OUTPUT = "crawler_output"
 INTERMEDIATE_FILES = "intermediate_files"
+LOGS = "logs"
 TYPE = "type"
 SINGULAR = "singular"
 PLURAL = "plural"
@@ -35,3 +36,15 @@ PART_OF = "part_of"
 HAS_PART = "has_part"
 VIDEOS = "videos"
 YOUTUBE_VIDEOS_FILE = "youtube_videos.csv"
+
+
+# ETL states
+class ETL_STATES:
+    FILENAME = "etl_states.log"
+    class GET_WIKIDATA_ITEMS:
+        STATE = "get_wikidata_items"
+        EXTRACT_SOURCE = "extract_source_"
+        MERGED_ARTWORKS = "merged_artworks"
+    class GET_WIKIPEDIA_EXTRACTS:
+        EXTRACT_ABSTRACTS = "extract_abstracts_"
+        STATE = "get_wikipedia_extracts"

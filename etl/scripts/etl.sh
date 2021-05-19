@@ -2,6 +2,21 @@
 set -eE
 set -x
 
+DEV_COUNT=5
+
+# Get parameters d and r (dev counter and recovery mode)
+while getopts "d:r" opt; do
+  echo $opt
+  case $opt in
+    d) DEV_MODE=true && DEV_COUNT="$OPTARG"
+    ;;
+    r) REC_MODE=true
+    ;;
+    \?) echo "Invalid option -$OPTARG" >&2 && exit 1
+    ;;
+  esac
+done
+
 LOCKFILE=/tmp/etl.lock
 TOKEN=$(cat tokens/bot_user_oauth_token)
 WD=$(pwd)
@@ -13,12 +28,18 @@ export PYWIKIBOT_DIR="${WD}"
 
 trap "curl -F file=@${WD}/logs/etl.log -F \"initial_comment=Oops! Something went wrong while executing the ETL-process on server ${SERVERNAME}. Here is the log file: \" -F channels=CSY0DLRDG -H \"Authorization: Bearer ${TOKEN}\" https://slack.com/api/files.upload" ERR
 
-curl -X POST https://slack.com/api/chat.postMessage -H "Authorization: Bearer ${TOKEN}" -H 'Content-type: application/json' --data '{"channel":"CSY0DLRDG","text":"The ETL-process is starting on server '${SERVERNAME}' at '${DATE}'","as_user":"true"}'
+ETL_STATES_FILE=$WD/logs/etl_states.log
+[[ -z ${REC_MODE+x} &&  -f "$ETL_STATES_FILE" ]] && rm $ETL_STATES_FILE
 
-python3 data_extraction/get_wikidata_items.py
-python3 data_extraction/get_wikipedia_extracts.py
+# build parameters for each script
+params=() && [[ $DEV_MODE == true ]] && params+=('-d' "$DEV_COUNT")
+[[ $REC_MODE == true ]] && params+=('-r')
+python3 data_extraction/get_wikidata_items.py "${params[@]}"
 
-# DATA ENRICHMENT
+params=() && [[ $REC_MODE == true ]] && params+=(-r)
+python3 data_extraction/get_wikipedia_extracts.py "${params[@]}"
+
+# DATA TRANSFORMATION / "Enhancement
 
 python3 data_enhancement/estimate_movement_period.py
 

@@ -47,7 +47,7 @@ ENTITIES = "entities"
 ABBREVIATION = "abbreviation"
 # The wd: prefix is used here because these ids are used in a SPARQL query
 SOURCE_TYPES = [
-    #{SINGULAR: 'artwork', PLURAL: 'artworks', ID: 'wd:Q838948'},
+    # {SINGULAR: 'artwork', PLURAL: 'artworks', ID: 'wd:Q838948'},
     {SINGULAR: 'painting', PLURAL: 'paintings', ID: 'wd:Q3305213'},
     {SINGULAR: 'oil_sketch', PLURAL: 'oil_sketches', ID: 'wd:Q1964917'},
     {SINGULAR: 'watercolor_painting', PLURAL: 'watercolor_paintings', ID: 'wd:Q18761202'},

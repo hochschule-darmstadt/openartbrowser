@@ -29,6 +29,7 @@ import csv
 import datetime
 import json
 import sys
+import ijson
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -251,7 +252,8 @@ def merge_artworks() -> List[Dict]:
 
     for file_name in file_names:
         with open(file_name, encoding="utf-8") as input:
-            object_array = json.load(input)
+            objects = ijson.items(input, 'item')
+            object_array = (o for o in objects)
             for object in object_array:
                 if not object[ID] in artworks:  # remove duplicates
                     object[TYPE] = ARTWORK[SINGULAR]

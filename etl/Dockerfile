@@ -4,7 +4,7 @@ WORKDIR /app
 # The pythonpath is needed for package/module imports
 ENV PYTHONPATH "${PYTHONPATH}:/app"
 
-RUN pip install pywikibot
+RUN pip install pywikibot ijson
 
 #copy necessary files
 COPY ["./data_extraction/", "/app/data_extraction"]

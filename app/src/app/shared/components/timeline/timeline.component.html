@@ -3,7 +3,7 @@
     <ngx-slider id="ngxSlider" [(value)]="value" [options]="options" (valueChange)="onSliderMoved()"></ngx-slider>
   </div>
   <div class="carou">
-    <div class="carou-control" (click)="prevClicked()">
+    <div class="carou-control" (click)="prevClicked($event)">
       <div class="carousel-control-prev-icon carou-control-icon" aria-hidden="true"></div>
     </div>
     <!-- container for content of the carousel -->

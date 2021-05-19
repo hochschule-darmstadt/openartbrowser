@@ -27,7 +27,6 @@ Returns:
 """
 import csv
 import datetime
-import json
 import sys
 import ijson
 from pathlib import Path
@@ -41,6 +40,7 @@ from shared.utils import (
     generate_json,
     language_config_to_list,
     setup_logger,
+    is_jsonable,
 )
 
 DEV = False
@@ -251,15 +251,19 @@ def merge_artworks() -> List[Dict]:
     extract_dicts = []
 
     for file_name in file_names:
-        with open(file_name, encoding="utf-8") as input:
-            objects = ijson.items(input, 'item')
-            object_array = (o for o in objects)
-            for object in object_array:
-                if not object[ID] in artworks:  # remove duplicates
-                    object[TYPE] = ARTWORK[SINGULAR]
-                    extract_dicts.append(object)
-                    artworks.add(object[ID])
-
+        try:
+            with open(file_name, encoding="utf-8") as input:
+                objects = ijson.items(input, 'item')
+                object_array = (o for o in objects)
+                for object in object_array:
+                    if not object[ID] in artworks and is_jsonable(object):  # remove duplicates
+                        object[TYPE] = ARTWORK[SINGULAR]
+                        extract_dicts.append(object)
+                        artworks.add(object[ID])
+        except Exception as e:
+            logger.error(f"Error when opening following file: {file_name}. Skipping file now.")
+            logger.error(e)
+            continue
     print(datetime.datetime.now(), "Finished with", "merging artworks")
     print()
     return extract_dicts

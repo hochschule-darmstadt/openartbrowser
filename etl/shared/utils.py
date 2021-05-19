@@ -23,8 +23,8 @@ def language_config_to_list() -> List[List[str]]:
     """
     configReader = csv.reader(
         pkgutil.get_data("shared.utils", "languageconfig.csv")
-        .decode("utf-8")
-        .splitlines(),
+            .decode("utf-8")
+            .splitlines(),
         delimiter=";",
     )
     languageValues = []
@@ -67,11 +67,19 @@ def setup_logger(logger_name: str, filename: str):
 def chunks(lst, n):
     """Yield successive n-sized chunks from lst."""
     for i in range(0, len(lst), n):
-        yield lst[i : i + n]
+        yield lst[i: i + n]
 
 
 def create_new_path(name, subpath="", file_type=JSON):
     return Path.cwd() / CRAWLER_OUTPUT / INTERMEDIATE_FILES / file_type / name / subpath
+
+
+def is_jsonable(x):
+    try:
+        json.dumps(x)
+        return True
+    except (TypeError, OverflowError):
+        return False
 
 
 def generate_json(extract_dicts: List[Dict], filename: str) -> None:
@@ -85,6 +93,6 @@ def generate_json(extract_dicts: List[Dict], filename: str) -> None:
         return
     filename.parent.mkdir(parents=True, exist_ok=True)
     with open(
-        filename.with_suffix(f".{JSON}"), "w", newline="", encoding="utf-8"
+            filename.with_suffix(f".{JSON}"), "w", newline="", encoding="utf-8"
     ) as file:
-        json.dump(extract_dicts, file, ensure_ascii=False)
+        json.dump(extract_dicts, file, skipkeys=True, ensure_ascii=False)

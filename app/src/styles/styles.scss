@@ -34,6 +34,12 @@ hr {
   margin-right: 4px;
   margin-bottom: 4px;
   text-transform: capitalize;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: text-top;
 }
 
 .badge:hover {
@@ -106,4 +112,26 @@ hr {
   0% {opacity: 0;}
   75% {opacity: 0;} /* Set this to 99% for no fade-in. */
   100% {opacity: 1;}
+}
+
+@media only screen and (max-width: 576px) {
+  .h1, h1 { font-size: 2.25rem; }
+  .h2, h2 { font-size: 1.75rem; }
+  .h3, h3, .slider-heading { font-size: 1.5rem; }
+  .h4, h4 { font-size: 1.25rem; }
+  .h5, h5 { font-size: 1rem; }
+  .h6, h6 { font-size: .9rem; }
+}
+
+.text-overflow-ellipsis {
+  display: inline-block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.title-label {
+  word-wrap: break-word;
+  hyphens: auto;
 }

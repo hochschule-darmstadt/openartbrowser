@@ -22,6 +22,7 @@ jobs:
           pip install -r requirements.txt
       - name: Run crawler test
         run: |
+          cd etl/
           python data_extraction/get_wikidata_items.py -d 1
           python data_extraction/get_wikipedia_extracts.py
 
@@ -31,10 +32,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js 12
+      - name: Use Node.js 13
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 13
       - name: Cache Node.js modules
         uses: actions/cache@v2
         with:

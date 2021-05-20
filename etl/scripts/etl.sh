@@ -41,13 +41,13 @@ python3 data_extraction/get_wikipedia_extracts.py "${params[@]}"
 
 # DATA TRANSFORMATION / "Enhancement
 
-python3 data_enhancement/estimate_movement_period.py
+python3 data_enhancement/estimate_movement_period.py "${params[@]}"
 
-python3 data_enhancement/has_part_part_of_enhancement.py
+python3 data_enhancement/has_part_part_of_enhancement.py "${params[@]}"
 
-python3 data_enhancement/add_youtube_videos.py
+python3 data_enhancement/add_youtube_videos.py "${params[@]}"
 
-python3 data_enhancement/ranking.py
+python3 data_enhancement/ranking.py "${params[@]}"
 
 cd crawler_output/intermediate_files/json/
 
@@ -59,7 +59,7 @@ rm -f ../../../crawler_output/art_ontology.json
 # Move the generated art_ontology.json to the directory crawler_output
 mv art_ontology.json ../../../crawler_output/art_ontology.json
 
-python3 ../../../data_enhancement/split_languages.py
+python3 ../../../data_enhancement/split_languages.py "${params[@]}"
 
 python3 ../../../upload_to_elasticsearch/elasticsearch_helper.py
 

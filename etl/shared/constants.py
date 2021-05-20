@@ -41,10 +41,19 @@ YOUTUBE_VIDEOS_FILE = "youtube_videos.csv"
 # ETL states
 class ETL_STATES:
     FILENAME = "etl_states.log"
+
     class GET_WIKIDATA_ITEMS:
         STATE = "get_wikidata_items"
         EXTRACT_SOURCE = "extract_source_"
         MERGED_ARTWORKS = "merged_artworks"
+
     class GET_WIKIPEDIA_EXTRACTS:
         EXTRACT_ABSTRACTS = "extract_abstracts_"
         STATE = "get_wikipedia_extracts"
+
+    class DATA_TRANSFORMATION:
+        ESTIMATE_MOVEMENT_PERIOD = "estimate_movement_period"
+        HAS_PART_PART_OF_ENHANCEMENT = "has_part_part_of_enhancement"
+        ADD_YOUTUBE_VIDEOS = "add_youtube_videos"
+        RANKING = "ranking"
+        SPLIT_LANGUAGES = "split_languages"

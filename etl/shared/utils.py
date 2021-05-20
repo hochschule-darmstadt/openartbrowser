@@ -75,9 +75,9 @@ def create_new_path(name, subpath="", file_type=JSON):
     return Path.cwd() / CRAWLER_OUTPUT / INTERMEDIATE_FILES / file_type / name / subpath
 
 
-def write_state(state):
-    path = Path.cwd().parent / LOGS / ETL_STATES.FILENAME
-    append_write = 'a' if os.path.exists(path) else 'w'  # check if file exists, create if not
+def write_state(state, parent_path=None):
+    path = (parent_path if parent_path else Path.cwd()) / LOGS / ETL_STATES.FILENAME
+    append_write = 'a' if os.path.exists(path) else 'w+'  # check if file exists, create if not
     try:
         with open(path, append_write, newline='') as file:
             file.write(f'\n{state}')
@@ -85,8 +85,8 @@ def write_state(state):
         print(e)
 
 
-def check_state(state):
-    path = Path.cwd().parent / LOGS / ETL_STATES.FILENAME
+def check_state(state, parent_path=None):
+    path = (parent_path if parent_path else Path.cwd()) / LOGS / ETL_STATES.FILENAME
     if not os.path.exists(path):
         return False
     try:

@@ -15,6 +15,9 @@ import datetime
 import json
 from pathlib import Path
 from typing import Any, Dict, List
+from shared.utils import write_state, check_state
+from shared.constants import ETL_STATES
+import sys
 
 from shared.constants import (
     ABSTRACT,
@@ -134,8 +137,8 @@ def modify_langdict(jsonobject: Dict, langkey: str) -> List[List[Any]]:
                     try:
                         for attribute in [LABEL[SINGULAR], DESCRIPTION[SINGULAR]]:
                             if (
-                                not exhibition[f"{attribute}_{langkey}"]
-                                and attribute not in ignored_attributes
+                                    not exhibition[f"{attribute}_{langkey}"]
+                                    and attribute not in ignored_attributes
                             ):
                                 exhibition = fill_language_gaps(attribute, exhibition)
                             else:
@@ -164,8 +167,8 @@ def modify_langdict(jsonobject: Dict, langkey: str) -> List[List[Any]]:
 
             # Check if element has language data and if attribute needs to be ignored by gap filling
             elif (
-                not tempjson[element + "_" + langkey]
-                and element not in ignored_attributes
+                    not tempjson[element + "_" + langkey]
+                    and element not in ignored_attributes
             ):
                 tempjson = fill_language_gaps(element, tempjson)
             else:
@@ -189,7 +192,7 @@ def modify_langdict(jsonobject: Dict, langkey: str) -> List[List[Any]]:
 
 
 def remove_language_key_attributes_in_exhibitions(
-    language_file: List[Dict], lang_keys: List[str] = language_keys
+        language_file: List[Dict], lang_keys: List[str] = language_keys
 ) -> List[Dict]:
     """Removes the language dependent attributes from the exhibitions objects
 
@@ -212,8 +215,13 @@ def remove_language_key_attributes_in_exhibitions(
 
 
 if __name__ == "__main__":
+    if len(sys.argv) > 1 and "-r" in sys.argv:
+        RECOVER_MODE = True
+    if RECOVER_MODE and check_state(ETL_STATES.DATA_TRANSFORMATION.SPLIT_LANGUAGES,
+                                    Path(__file__).parent.parent):
+        exit(0)
     art_ontology_file = (
-        Path(__file__).resolve().parent.parent / CRAWLER_OUTPUT / "art_ontology.json"
+            Path(__file__).resolve().parent.parent / CRAWLER_OUTPUT / "art_ontology.json"
     )
     print(
         datetime.datetime.now(),
@@ -245,3 +253,4 @@ if __name__ == "__main__":
         datetime.datetime.now(),
         "Finished with splitting art_ontology.json to its language files",
     )
+    write_state(ETL_STATES.DATA_TRANSFORMATION.SPLIT_LANGUAGES, Path(__file__).parent.parent)

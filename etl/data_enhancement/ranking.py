@@ -10,11 +10,12 @@ import datetime
 from numbers import Number
 from typing import List, Dict
 from shared.constants import *
-from shared.utils import create_new_path
+from shared.utils import create_new_path, write_state, check_state
+import sys
 
 
 def rank_artworks(
-    artworks: List[Dict], ignore_keys: List[str] = [ABSOLUTE_RANK, RELATIVE_RANK]
+        artworks: List[Dict], ignore_keys: List[str] = [ABSOLUTE_RANK, RELATIVE_RANK]
 ) -> List[Dict]:
     """Ranks a list of artwork entities (JSON-Objects)
 
@@ -42,7 +43,7 @@ def rank_artworks(
 
 
 def rank_subjects(
-    attribute_name: str, subjects: List[Dict], artworks: List[Dict]
+        attribute_name: str, subjects: List[Dict], artworks: List[Dict]
 ) -> List[Dict]:
     """Ranks subjects like movements
 
@@ -77,6 +78,10 @@ def calc_relative_rank(entities: List[Dict]) -> List[Dict]:
 
 
 if __name__ == "__main__":
+    if len(sys.argv) > 1 and "-r" in sys.argv:
+        RECOVER_MODE = True
+    if RECOVER_MODE and check_state(ETL_STATES.DATA_TRANSFORMATION.RANKING):
+        exit(0)
     artworks = []
     for filename in [
         ARTWORK[PLURAL],  # Artworks has to be first otherwise the ranking doesn't work
@@ -94,7 +99,7 @@ if __name__ == "__main__":
         try:
             # Read in file
             with open(
-                (create_new_path(filename)).with_suffix(f".{JSON}"), encoding="utf-8"
+                    (create_new_path(filename)).with_suffix(f".{JSON}"), encoding="utf-8"
             ) as file:
                 if filename is ARTWORK[PLURAL]:
                     artworks = out_file = rank_artworks(json.load(file))
@@ -103,10 +108,10 @@ if __name__ == "__main__":
             # Overwrite file
             # TODO if merging is done with sth else as js script than overwrite current file
             with open(
-                (create_new_path(filename)).with_suffix(f".{JSON}"),
-                "w",
-                newline="",
-                encoding="utf-8",
+                    (create_new_path(filename)).with_suffix(f".{JSON}"),
+                    "w",
+                    newline="",
+                    encoding="utf-8",
             ) as file:
                 file.write(json.dumps(out_file, ensure_ascii=False))
             print(
@@ -117,3 +122,4 @@ if __name__ == "__main__":
                 f"Error when opening following file: {filename}. Error: {error}. Skipping file now."
             )
             continue
+    write_state(ETL_STATES.DATA_TRANSFORMATION.RANKING)

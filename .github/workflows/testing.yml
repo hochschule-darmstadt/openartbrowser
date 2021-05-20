@@ -22,6 +22,7 @@ jobs:
       - name: Run crawler test
         run: |
           cd etl/
+          export PYTHONPATH="${PYTHONPATH}:${pwd}"
           python data_extraction/get_wikidata_items.py -d 1
           python data_extraction/get_wikipedia_extracts.py
 

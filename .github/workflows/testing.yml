@@ -1,5 +1,5 @@
 name: TESTING
-on: [ push,pull_request ]
+on: [ workflow_dispatch,pull_request ]
 
 jobs:
   crawler_test:
@@ -32,12 +32,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
- #       with:
- #         persist-credentials: false
- #     - name: Reconfigure git to use HTTP authentication
- #       run: >
- #         git config --global url."https://github.com/".insteadOf
- #         ssh://git@github.com/
+        with:
+          persist-credentials: false
+      - name: Reconfigure git to use HTTP authentication
+        run: >
+          git config --global url."https://github.com/".insteadOf
+          ssh://git@github.com/
       - name: Use Node.js 12
         uses: actions/setup-node@v2
         with:
@@ -59,4 +59,3 @@ jobs:
         run: |
           cd app/
           npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
-          echo "no backend / crawler / other tests specified"

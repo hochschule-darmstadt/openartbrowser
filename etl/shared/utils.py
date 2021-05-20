@@ -5,6 +5,7 @@ import json
 import logging
 import os
 import pkgutil
+from decimal import Decimal
 from pathlib import Path
 from typing import Dict, List
 
@@ -100,12 +101,19 @@ def check_state(state, parent_path=None):
         print(e)
 
 
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, Decimal):
+            return str(o)
+        return super(DecimalEncoder, self).default(o)
+
+
 def is_jsonable(x):
     try:
-        json.dumps(x)
+        json.dumps(x, skipkeys=True, ensure_ascii=False, cls=DecimalEncoder)
         return True
-    except (TypeError, OverflowError):
-        logging.error(f'Object was not jsonable! Object:\n{x}')
+    except (TypeError, OverflowError) as e:
+        logging.error(f'Object was not json serializable! Object:\n{x}')
         return False
 
 
@@ -122,4 +130,4 @@ def generate_json(extract_dicts: List[Dict], filename: str) -> None:
     with open(
             filename.with_suffix(f".{JSON}"), "w", newline="", encoding="utf-8"
     ) as file:
-        json.dump(extract_dicts, file, skipkeys=True, ensure_ascii=False)
+        json.dump(extract_dicts, file, skipkeys=True, ensure_ascii=False, cls=DecimalEncoder)

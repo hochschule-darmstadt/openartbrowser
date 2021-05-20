@@ -57,5 +57,6 @@ jobs:
           npm ci
       - name: Test frontend
         run: |
+          cd app/
           npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
           echo "no backend / crawler / other tests specified"

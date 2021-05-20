@@ -15,6 +15,9 @@ import datetime
 import json
 from pathlib import Path
 from typing import Any, Dict, List
+
+import ijson
+
 from shared.utils import write_state, check_state
 from shared.constants import ETL_STATES
 import sys
@@ -229,8 +232,7 @@ if __name__ == "__main__":
     )
 
     with open(art_ontology_file, encoding="utf-8") as json_file:
-        art_ontology = json.load(json_file)
-
+        art_ontology = ijson.items(json_file, 'item')
         for lang_key in language_keys:
             art_ontology_for_lang = []
             print(f"Start generating art_ontology_{lang_key}.{JSON}")

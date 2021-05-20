@@ -35,6 +35,18 @@
   .dropdown.show .dropdown-toggle {
     text-align: center;
   }
+  .dropdown-menu {
+    position: absolute !important;
+  }
+  #navbar {
+    padding: 0.5rem 0 0 0 !important;
+  }
+  .navbar {
+    padding: 0;
+  }
+  #navbar ::ng-deep .form-group {
+    width: 100%;
+  }
 }
 
 #title {

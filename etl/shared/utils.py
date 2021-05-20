@@ -105,6 +105,7 @@ def is_jsonable(x):
         json.dumps(x)
         return True
     except (TypeError, OverflowError):
+        logging.error(f'Object was not jsonable! Object:\n{x}')
         return False
 
 

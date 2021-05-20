@@ -8,11 +8,14 @@ DEV_COUNT=5
 while getopts "d:r" opt; do
   echo $opt
   case $opt in
-    d) DEV_MODE=true && DEV_COUNT="$OPTARG"
+  d)
+    DEV_MODE=true && DEV_COUNT="$OPTARG"
     ;;
-    r) REC_MODE=true
+  r)
+    REC_MODE=true
     ;;
-    \?) echo "Invalid option -$OPTARG" >&2 && exit 1
+  \?)
+    echo "Invalid option -$OPTARG" >&2 && exit 1
     ;;
   esac
 done
@@ -28,8 +31,9 @@ export PYWIKIBOT_DIR="${WD}"
 
 trap "curl -F file=@${WD}/logs/etl.log -F \"initial_comment=Oops! Something went wrong while executing the ETL-process on server ${SERVERNAME}. Here is the log file: \" -F channels=CSY0DLRDG -H \"Authorization: Bearer ${TOKEN}\" https://slack.com/api/files.upload" ERR
 
+curl -X POST https://slack.com/api/chat.postMessage -H "Authorization: Bearer ${TOKEN}" -H 'Content-type: application/json' --data '{"channel":"CSY0DLRDG","text":"The ETL-process is starting on server '${SERVERNAME}' at '${DATE}'","as_user":"true"}'
 ETL_STATES_FILE=$WD/logs/etl_states.log
-[[ -z ${REC_MODE+x} &&  -f "$ETL_STATES_FILE" ]] && rm $ETL_STATES_FILE
+[[ -z ${REC_MODE+x} && -f "$ETL_STATES_FILE" ]] && rm $ETL_STATES_FILE
 
 # build parameters for each script
 params=() && [[ $DEV_MODE == true ]] && params+=('-d' "$DEV_COUNT")
@@ -52,7 +56,7 @@ python3 data_enhancement/ranking.py "${params[@]}"
 cd crawler_output/intermediate_files/json/
 
 # Merges all *.json files in the json dir into art_ontology.json
-jq -s "[.[][]]" artworks.json genres.json artists.json locations.json materials.json movements.json motifs.json classes.json > art_ontology.json
+jq -s "[.[][]]" artworks.json genres.json artists.json locations.json materials.json movements.json motifs.json classes.json >art_ontology.json
 
 rm -f ../../../crawler_output/art_ontology.json
 

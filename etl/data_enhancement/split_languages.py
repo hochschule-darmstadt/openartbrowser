@@ -12,13 +12,12 @@ Returns:
 """
 import copy
 import datetime
-import json
 from pathlib import Path
 from typing import Any, Dict, List
 
 import ijson
 
-from shared.utils import write_state, check_state
+from shared.utils import write_state, check_state, is_jsonable
 from shared.constants import ETL_STATES
 import sys
 
@@ -237,7 +236,8 @@ if __name__ == "__main__":
             art_ontology_for_lang = []
             print(f"Start generating art_ontology_{lang_key}.{JSON}")
             for i, item in enumerate(art_ontology):
-                art_ontology_for_lang.append(modify_langdict(item, lang_key))
+                if is_jsonable(item):
+                    art_ontology_for_lang.append(modify_langdict(item, lang_key))
 
             art_ontology_for_lang = remove_language_key_attributes_in_exhibitions(
                 art_ontology_for_lang

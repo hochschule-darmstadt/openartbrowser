@@ -26,6 +26,7 @@ const routes: Routes = [
   { path: 'motifs', loadChildren: () => import('./pages/entities/entities.routing.module').then(m => m.EntitiesRoutingModule) },
   { path: 'locations', loadChildren: () => import('./pages/entities/entities.routing.module').then(m => m.EntitiesRoutingModule) },
   { path: 'materials', loadChildren: () => import('./pages/entities/entities.routing.module').then(m => m.EntitiesRoutingModule) },
+  { path: 'classes', loadChildren: () => import('./pages/entities/entities.routing.module').then(m => m.EntitiesRoutingModule) },
   { path: 'artist/:artistId', loadChildren: () => import('./pages/artist/artist.routing.module').then(m => m.ArtistRoutingModule) },
   { path: 'artwork/:artworkId', loadChildren: () => import('./pages/artwork/artwork.routing.module').then(m => m.ArtworkRoutingModule) },
   { path: 'genre/:genreId', loadChildren: () => import('./pages/genre/genre.routing.module').then(m => m.GenreRoutingModule) },

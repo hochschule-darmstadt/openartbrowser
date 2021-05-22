@@ -83,10 +83,7 @@ export class HomeComponent implements OnInit {
     this.getSliderCategory<Material>(EntityType.MATERIAL).then(slide => this.materialCategory = slide);
     this.getSliderCategory<Genre>(EntityType.GENRE).then(slide => this.genreCategory = slide);
     this.getSliderCategory<Motif>(EntityType.MOTIF).then(slide => this.motifCategory = slide);
-    this.getSliderCategory<Class>(EntityType.CLASS).then(slide => {
-      this.classCategory = slide;
-      console.log(this.classCategory);
-    });
+    this.getSliderCategory<Class>(EntityType.CLASS).then(slide => this.classCategory = slide);
   }
 
   /**

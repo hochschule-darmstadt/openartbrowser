@@ -9,6 +9,7 @@ import {
   Location,
   Genre,
   Motif,
+  Class,
   EntityIcon,
   EntityType
 } from 'src/app/shared/models/models';
@@ -57,6 +58,7 @@ export class HomeComponent implements OnInit {
   materialCategory: SliderCategory;
   genreCategory: SliderCategory;
   motifCategory: SliderCategory;
+  classCategory: SliderCategory;
 
   constructor(public dataService: DataService, ngbConfig: NgbCarouselConfig) {
     /** set configuration of ngbCarousel */
@@ -81,6 +83,10 @@ export class HomeComponent implements OnInit {
     this.getSliderCategory<Material>(EntityType.MATERIAL).then(slide => this.materialCategory = slide);
     this.getSliderCategory<Genre>(EntityType.GENRE).then(slide => this.genreCategory = slide);
     this.getSliderCategory<Motif>(EntityType.MOTIF).then(slide => this.motifCategory = slide);
+    this.getSliderCategory<Class>(EntityType.CLASS).then(slide => {
+      this.classCategory = slide;
+      console.log(this.classCategory);
+    });
   }
 
   /**

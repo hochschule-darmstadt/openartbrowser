@@ -37,6 +37,14 @@ jobs:
           cd app/
           npm run build-locale
       - name: Sync directories
-        run: |
-          cd app/
-          rsync -rltDvz --delete --rsh="sshpass -p ${SFTP_PASS_PROD} ssh -o StrictHostKeyChecking=no -l ${SFTP_USER_PROD}" ./dist/browser/* ${SFTP_USER_PROD}@${PROD_ADDR}:${SFTP_PATH_PROD}
+        uses: up9cloud/action-rsync@master
+        env:
+          HOST: ${PROD_ADDR}
+          KEY: ${SFTP_PASS_PROD}
+          TARGET: ${SFTP_PATH_PROD}
+
+          VERBOSE: true
+          USER: ${SFTP_USER_PROD}
+          ARGS: -rltDvz --delete
+          SSH_ARGS: '-o StrictHostKeyChecking=no'
+          SOURCE: ./dist/browser/*

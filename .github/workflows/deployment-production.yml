@@ -1,7 +1,7 @@
 name: DEPLOY-TO-PRODUCTION
-on:
-  push:
-    branches:
+#on:
+  #push:
+    #branches:
       #- master
 jobs:
   build:

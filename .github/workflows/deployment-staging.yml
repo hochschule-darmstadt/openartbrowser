@@ -1,7 +1,7 @@
 name: DEPLOY-TO-STAGING
-on:
-  push:
-    branches:
+#on:
+  #push:
+    #branches:
       #- staging
 jobs:
   build:

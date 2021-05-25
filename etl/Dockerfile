@@ -61,6 +61,7 @@ COPY --from=merge_files /app/art_ontology.json/ /app/crawler_output/
 COPY ["./data_enhancement/split_languages.py", "/app/data_enhancement/split_languages.py"]
 COPY --from=Wikicrawler /app/shared/ /app/shared/
 
+RUN pip install ijson
 RUN ["python", "data_enhancement/split_languages.py"]
 
 # art_ontology.json is moved to /root because elasticsearch_helper.py

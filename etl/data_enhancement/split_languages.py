@@ -42,6 +42,7 @@ from shared.utils import generate_json, language_config_to_list
 language_values = language_config_to_list()
 language_keys = [item[0] for item in language_values]
 
+RECOVER_MODE = False
 
 def get_language_attributes() -> List[str]:
     """Returns all attributes in crawler .csv/.json files that need language handling

@@ -10,7 +10,7 @@ from shared.utils import write_state, check_state
 import sys
 
 from shared.constants import HAS_PART, ID, PART_OF, ETL_STATES
-
+RECOVER_MODE = False
 
 def inverse_attribute_enhancement(
         attribute: str, inverse_attribute: str, movements: List[Dict]

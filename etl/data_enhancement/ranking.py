@@ -13,6 +13,7 @@ from shared.constants import *
 from shared.utils import create_new_path, write_state, check_state
 import sys
 
+RECOVER_MODE = False
 
 def rank_artworks(
         artworks: List[Dict], ignore_keys: List[str] = [ABSOLUTE_RANK, RELATIVE_RANK]

@@ -39,6 +39,7 @@ try:
 except FileNotFoundError:
     GOOGLE_DEV_KEY = ""
 
+RECOVER_MODE = False
 
 def check_yt_id_valid(id: str) -> bool:
     """Connects to the YT API and checks if the is valid

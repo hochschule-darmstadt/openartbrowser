@@ -8,7 +8,7 @@ from shared.constants import ETL_STATES
 import sys
 
 inceptions = {}
-
+RECOVER_MODE = False
 
 def find_start_end_in_artworks(artworks_file):
     """Finds the first and last inception for each movement in a batch of artworks.

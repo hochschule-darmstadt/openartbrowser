@@ -6,6 +6,7 @@ import time
 from pathlib import Path
 from typing import Callable, Dict, Iterator, List, Optional, Set
 from urllib.error import HTTPError
+from json import JSONDecodeError
 
 from SPARQLWrapper import SPARQLWrapper
 

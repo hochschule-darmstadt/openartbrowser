@@ -30,7 +30,11 @@ export enum EntityType {
   CLASS = 'class'
 }
 
-export const usePlural = (type: EntityType) => (type === 'all' ? type : type + 's');
+export const usePlural = (type: EntityType) => {
+  if(type === 'all') return type;
+  else if(type === 'class') return 'classes';
+  else return type + 's';
+}
 
 export enum EntityIcon {
   ALL = 'fa-list-ul',

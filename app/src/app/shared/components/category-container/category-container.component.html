@@ -42,7 +42,7 @@
         </ng-template>
       </ngb-carousel>
 
-      <a class="entities-link" [routerLink]="['/' + category.type + ((category.type === 'class') ? 'es' : 's')]">
+      <a class="entities-link" [routerLink]="['/' + usePlural(category.type)]">
         <span class="entities-caption">
           <span i18n="All@@all">all</span>
           <span class="ml-1 mr-1" i18n="Entities Type Labels@@entities_labels" *ngIf="category.type; let type">

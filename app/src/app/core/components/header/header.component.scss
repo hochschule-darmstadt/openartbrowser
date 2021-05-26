@@ -163,4 +163,9 @@
   #navbar ::ng-deep .form-group {
     width: 100%;
   }
+
+  #navbar:hover ::ng-deep .form-control,
+  .form-group:focus-within ::ng-deep .form-control {
+    height: auto !important;
+  }
 }

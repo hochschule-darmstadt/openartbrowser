@@ -286,9 +286,11 @@ export class TimelineComponent {
   }
 
   /** Handler for click event from left control button. Updates startSlide, value and animation. */
-  prevClicked() {
+  prevClicked(event) {
     if (this.slideStart <= 0) {
-      // Return if first slide
+      this.slideStart = this.items.length;
+      this.value = this.items[-1].date;
+      this.updateSliderItems();
       return;
     }
     this.slideOutLeft = true;
@@ -306,9 +308,9 @@ export class TimelineComponent {
 
     if (this.slideEnd >= this.items.length) {
       // Start from the beginning if this is called from the automatic rotation, otherwise do nothing
-        this.slideStart = 0;
-        this.value = this.items[0].date;
-        this.updateSliderItems();
+      this.slideStart = 0;
+      this.value = this.items[0].date;
+      this.updateSliderItems();
       return;
     }
     this.slideOutRight = true;

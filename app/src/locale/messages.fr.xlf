@@ -567,24 +567,6 @@
         </context-group>
         <note priority="1" from="description">Motif label</note>
       </trans-unit>
-      <trans-unit id="terms" datatype="html">
-        <source>Terms</source>
-        <target state="final">Termes</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/pages/search-result/search-result.component.html</context>
-          <context context-type="linenumber">102</context>
-        </context-group>
-        <note priority="1" from="description">Search Terms label</note>
-      </trans-unit>
-      <trans-unit id="hits" datatype="html">
-        <source>Hits</source>
-        <target state="final">Coups</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/pages/search-result/search-result.component.html</context>
-          <context context-type="linenumber">114</context>
-        </context-group>
-        <note priority="1" from="description">Search Hits label</note>
-      </trans-unit>
       <trans-unit id="artworks" datatype="html">
         <source>Artworks</source>
         <target state="final">Œuvres d'art</target>
@@ -898,6 +880,18 @@
         <source>Painting in progress</source>
         <target state="final">Peinture en cours</target>
       </trans-unit>
+      <trans-unit id="searchResults" datatype="html">
+        <source>Search results</source>
+        <target state="final">Résultats de la recherche</target>
+      </trans-unit>
+      <trans-unit id="terms" datatype="html">
+        <source>Terms</source>
+        <target state="final">Termes</target>
+      </trans-unit>
+      <trans-unit id="results" datatype="html">
+        <source>Results</source>
+        <target state="final">Résultats</target>
+      </trans-unit>
       <trans-unit id="d92b19d3d60f5e8db9974b16602fe83c00d05b7c" datatype="html">
         <source>{VAR_SELECT, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre
           {Genre} movement {Movement} material {Material} main_motif {Main Motif} }
@@ -905,6 +899,22 @@
         <target state="final">{VAR_SELECT, select, all {Tous} artwork {Œuvre d'art} motif {Motif} artist {Artiste}
           location {Emplacement} genre {Genre} movement {Mouvement} material {Matériel} main_motif {Motif Principal} }
         </target>
+      </trans-unit>
+      <trans-unit id="error_message" datatype="html">
+        <source>Sorry, the page you requested could not be found.</source>
+        <target state="final">Désolé, la page que vous avez demandée n'a pas pu être trouvée.</target>
+      </trans-unit>
+      <trans-unit id="go_home_link" datatype="html">
+        <source>Click here to go back to the start page &rArr;</source>
+        <target state="final">Cliquez ici pour revenir à la page d'accueil &rArr;</target>
+      </trans-unit>
+      <trans-unit id="id_not_found_title" datatype="html">
+        <source>Page not found for following id:</source>
+        <target state="final">Page non trouvée pour l'identifiant suivant:</target>
+      </trans-unit>
+      <trans-unit id="id_not_found_message" datatype="html">
+        <source>It looks like nothing was found for the specified id. Maybe try a different id?</source>
+        <target state="final">Il semble que rien n'ait été trouvé pour l'identifiant spécifié. Essayez peut-être un autre identifiant.</target>
       </trans-unit>
     </body>
   </file>

@@ -1,4 +1,10 @@
-<div class="container entity artist">
+<div *ngIf="idDoesNotExist" class="container entity artist">
+  <div class="row mb-5 border-bottom pb-5">
+    <app-error-message  [id]="artistId"></app-error-message>
+  </div>
+</div>
+
+<div *ngIf="!idDoesNotExist" class="container entity artist">
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7" *ngIf="artist">
       <app-title [entity]="artist"></app-title>

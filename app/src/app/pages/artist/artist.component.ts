@@ -34,6 +34,9 @@ export class ArtistComponent implements OnInit, OnDestroy {
   /** Timeline artworks */
   sliderItems: Artwork[] = [];
 
+  idDoesNotExist = false;
+  artistId: string;
+
   /** Related artworks */
   fetchOptions = {
     initOffset: 0,
@@ -75,18 +78,24 @@ export class ArtistComponent implements OnInit, OnDestroy {
 
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
-      const artistId = params.get('artistId');
+      this.artistId = params.get('artistId');
 
-      this.fetchOptions.queryCount = this.dataService.countArtworksByType(EntityType.ARTIST, [artistId]);
+      this.fetchOptions.queryCount = this.dataService.countArtworksByType(EntityType.ARTIST, [this.artistId]);
 
       /** load fetching list items */
       this.query = async (offset) => {
         return await this.dataService.findArtworksByType(
-          EntityType.ARTIST, [artistId], this.fetchOptions.fetchSize, offset)
+          EntityType.ARTIST, [this.artistId], this.fetchOptions.fetchSize, offset)
       }
 
       /** Use data service to fetch entity from database */
-      this.artist = await this.dataService.findById<Artist>(artistId, EntityType.ARTIST);
+      this.artist = await this.dataService.findById<Artist>(this.artistId, EntityType.ARTIST);
+      
+      if (!this.artist) { 
+        this.idDoesNotExist = true;
+        return; 
+      }
+
       if (this.artist.videos && this.artist.videos.length > 0) {
         this.uniqueEntityVideos.unshift(this.artist.videos[0]);
       }

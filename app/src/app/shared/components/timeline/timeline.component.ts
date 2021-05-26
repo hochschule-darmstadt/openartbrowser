@@ -29,7 +29,7 @@ interface TimelineItem extends Entity {
     ])
   ]
 })
-export class TimelineComponent {
+export class TimelineComponent implements OnChanges {
   /** Artworks that should be displayed in this slider */
   @Input() artworks: Artwork[] = [];
   /** Decide whether artists should be displayed */
@@ -85,7 +85,7 @@ export class TimelineComponent {
     showTicks: true,
     showSelectionBar: false,
     stepsArray: [],
-    animateOnMove:true,
+    animateOnMove: true,
     getPointerColor() {
       return '#00bc8c';
     },
@@ -137,7 +137,8 @@ export class TimelineComponent {
       const endOfTimeline = this.items[this.items.length - 1].date -
         (this.items[this.items.length - 1].date % this.periodSpan) + this.periodSpan;
       // Set the slider of the timeline to the middle!
-      this.value = (beginOfTimeline + endOfTimeline) / 2;
+      // this.value = (beginOfTimeline + endOfTimeline) / 2;
+      this.value = this.items[Math.floor(this.items.length / 2)].date;
       this.previousValue = this.value;
       this.refreshComponent();
     }
@@ -193,6 +194,9 @@ export class TimelineComponent {
     const firstPeriod = firstDate - (firstDate % this.periodSpan);
     const lastPeriod = lastDate - (lastDate % this.periodSpan) + this.periodSpan;
 
+    /** setup options */
+    const newOptions: Options = Object.assign({}, this.options);
+
     /** Fill the slider steps with period legends respectively steps */
     const timeDifference = lastPeriod - firstPeriod;
     if (timeDifference <= this.maxSliderSteps) {
@@ -203,26 +207,47 @@ export class TimelineComponent {
           sliderSteps.push({value: i});
         }
       }
+
+      /** set min and max slider limits */
+      newOptions.minLimit = firstDate - firstPeriod;
+      newOptions.maxLimit = lastDate - firstPeriod;
+
     } else {
-      /** if timeDifference bigger than maxSliderSteps, use the date values of the items */
-      sliderSteps = this.items.map((item, index) => {
+      /**
+       * if timeDifference bigger than maxSliderSteps, use distinct date values of the items
+       * This is done to avoid too much items in the timeline
+       */
+      const distinctItems = this.items.filter(
+        (thing, i, arr) => arr.findIndex(t => t.date === thing.date) === i
+      );
+
+      /**
+       *  determine indices which divide distinctItems in averagePeriodCount blocks of roughly the same length
+       *  this method guarantees that the first and last element are always an index
+       */
+      const stepNr = (distinctItems.length - 1) / (this.averagePeriodCount - 1);
+      const indices = [];
+      for (let i = 0; i < this.averagePeriodCount; i++) {
+        indices.push(Math.floor(stepNr * i));
+      }
+
+      sliderSteps = distinctItems.map((item, index) => {
         const step = {
           value: item.date,
           legend: ''
         };
-        if (index % Math.floor(this.items.length / this.averagePeriodCount) === 0) {
+
+        /** if current index is in indices make this item a legend point */
+        if (indices.includes(index)) {
           step.legend = item.date.toString();
         }
+
         return step;
       });
     }
 
-
     /** Set slider options */
-    const newOptions: Options = Object.assign({}, this.options);
     newOptions.stepsArray = sliderSteps;
-    newOptions.minLimit = firstDate - firstPeriod;
-    newOptions.maxLimit = lastDate - firstPeriod;
     this.options = newOptions;
   }
 
@@ -234,7 +259,6 @@ export class TimelineComponent {
     const itemCountSmallerReference = 2;
     /** Amount of items where date is the exact slider value */
     const countReference = this.items.filter(item => +item.date === this.value).length;
-
     /** ReferenceIndex is the index of the first item with date equal to slider value or bigger */
     let referenceIndex: number;
     if (countReference > itemCountSmallerReference) {
@@ -243,7 +267,6 @@ export class TimelineComponent {
       const firstBiggerRef = this.items.findIndex(item => +item.date > this.value);
       referenceIndex = firstBiggerRef > 0 ? firstBiggerRef - 1 : this.items.length - (this.itemCountPerPeriod - 1);
     }
-
     /** Determine start index */
     if (0 >= referenceIndex - 1 && referenceIndex <= this.items.length - 3) {
       // first slide

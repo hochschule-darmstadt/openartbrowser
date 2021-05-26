@@ -136,26 +136,21 @@
     position: absolute !important;
   }
   #navbar {
-    padding: .5rem 0 1rem 0 !important;
+    padding: 0 0.5 0.5 0.5rem !important;
   }
   .navbar {
     padding: 0;
     &-nav {
       flex-direction: row;
-      justify-content: center;
     }
-    li:first-child {
+    li:nth-child(2), li:nth-child(3) { 
+      margin-left: auto;
+    }
+    li:nth-child(2) {
       flex: 0 0 100%;
-      text-align: center;
+      margin-top: 0.5rem;
+      order: 4;
     }
-  }
-  .navbar-brand {
-    margin: 0;
-  }
-  .search-form {
-    width: auto;
-    min-width: initial;
-    flex: 1 1 50%;
   }
   .nav-item.dropdown h3 {
     margin-bottom: 0;
@@ -163,9 +158,7 @@
   #navbar ::ng-deep .form-group {
     width: 100%;
   }
-
-  #navbar:hover ::ng-deep .form-control,
-  .form-group:focus-within ::ng-deep .form-control {
-    height: auto !important;
+  .form-group {
+    margin: 0 0.5em !important;
   }
 }

@@ -29,7 +29,7 @@ interface TimelineItem extends Entity {
     ])
   ]
 })
-export class TimelineComponent implements OnChanges {
+export class TimelineComponent{
   /** Artworks that should be displayed in this slider */
   @Input() artworks: Artwork[] = [];
   /** Decide whether artists should be displayed */

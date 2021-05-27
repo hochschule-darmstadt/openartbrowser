@@ -39,7 +39,7 @@ jobs:
       - name: Sync directories
         uses: up9cloud/action-rsync@master
         env:
-          HOST: ${STAGE_ADDR}
+          HOST: cai-artbrowserstaging.fbi.h-da.de
           KEY: ${SFTP_PASS_STAGE}
           #TARGET: ${SFTP_PATH_STAGE}
           TARGET: /home/dreyer/test/

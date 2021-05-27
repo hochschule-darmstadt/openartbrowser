@@ -26,6 +26,7 @@ MOTIF = {SINGULAR: "motif", PLURAL: "motifs"}
 GENRE = {SINGULAR: "genre", PLURAL: "genres"}
 MOVEMENT = {SINGULAR: "movement", PLURAL: "movements"}
 CLASS = {SINGULAR: "class", PLURAL: "classes"}
+EXTRACTED_CLASS = {SINGULAR: "extracted_class", PLURAL: "extracted_classes"}
 ARTIST = {SINGULAR: "artist", PLURAL: "artists"}
 LOCATION = {SINGULAR: "location", PLURAL: "locations"}
 ABSOLUTE_RANK = "absoluteRank"

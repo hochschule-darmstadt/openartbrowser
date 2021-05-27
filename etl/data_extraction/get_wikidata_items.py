@@ -92,11 +92,11 @@ def write_data_to_json_and_csv(
         get_fields(GENRE[PLURAL]),
         create_new_path(GENRE[PLURAL], file_type=CSV),
     )
-    generate_json(extracted_classes, create_new_path(CLASS[PLURAL]))
+    generate_json(extracted_classes, create_new_path(EXTRACTED_CLASS[PLURAL]))
     generate_csv(
         extracted_classes,
-        get_fields(CLASS[PLURAL]),
-        create_new_path(CLASS[PLURAL], file_type=CSV),
+        get_fields(EXTRACTED_CLASS[PLURAL]),
+        create_new_path(EXTRACTED_CLASS[PLURAL], file_type=CSV),
     )
     generate_json(materials, create_new_path(MATERIAL[PLURAL]))
     generate_csv(

@@ -1,8 +1,8 @@
 name: DEPLOY-TO-STAGING
-#on:
-  #push:
-    #branches:
-      #- staging
+on:
+  push:
+    branches:
+      - 502/github_actions_deployment
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -41,7 +41,8 @@ jobs:
         env:
           HOST: ${STAGE_ADDR}
           KEY: ${SFTP_PASS_STAGE}
-          TARGET: ${SFTP_PATH_STAGE}
+          #TARGET: ${SFTP_PATH_STAGE}
+          TARGET: /home/dreyer/test/
 
           VERBOSE: true
           USER: ${SFTP_USER_STAGE}

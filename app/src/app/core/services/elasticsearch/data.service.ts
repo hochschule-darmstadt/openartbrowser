@@ -77,12 +77,12 @@ export class DataService {
   }
 
   public async countArtworksByType(type: EntityType, ids: string[]) {
-    let body = bodyBuilder()
+    const body = bodyBuilder()
       .queryMinimumShouldMatch(1, true)
-      .query('match', 'type', EntityType.ARTWORK)
+      .query('match', 'type', EntityType.ARTWORK);
     _.each(ids, id => body.orQuery('match', usePlural(type), id));
-    const response: any = await this.http.post(this.countEndPoint, body.build()).toPromise()
-    return response && response.count ? response.count : undefined
+    const response: any = await this.http.post(this.countEndPoint, body.build()).toPromise();
+    return response && response.count ? response.count : undefined;
   }
 
   /**
@@ -129,7 +129,7 @@ export class DataService {
    * @param keywords the list of words to search for.
    * @param count the number of items returned
    */
-  public searchArtworks(searchObj: ArtSearch, keywords: string[] = [], count = 400): Promise<Artwork[]> {
+  public searchArtworks<T>(searchObj: ArtSearch, keywords: string[] = [], count = 400): Promise<T[]> {
     const body = bodyBuilder()
       .size(count)
       .sort(defaultSortField, 'desc');
@@ -142,9 +142,10 @@ export class DataService {
       body.query('bool', (q) => {
         return q.orQuery('match', 'label', keyword)
           .orQuery('match', 'description', keyword)
+          .orQuery('match', 'abstract', keyword);
       })
     );
-    return this.performQuery(body);
+    return this.performQuery<T>(body);
   }
 
   /**
@@ -242,7 +243,7 @@ export class DataService {
     const entities: T[] = [];
     _.each(
       data.hits.hits,
-      function (val) {
+      function(val) {
         if (!filterBy || (filterBy && val._source.type === filterBy)) {
           entities.push(this.addThumbnails(val._source));
         }

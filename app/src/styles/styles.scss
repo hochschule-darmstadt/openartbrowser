@@ -115,7 +115,7 @@ hr {
 }
 
 @media only screen and (max-width: 576px) {
-  .h1, h1 { font-size: 2.25rem; }
+  .h1, h1 { font-size: 2rem; }
   .h2, h2 { font-size: 1.75rem; }
   .h3, h3, .slider-heading { font-size: 1.5rem; }
   .h4, h4 { font-size: 1.25rem; }
@@ -129,6 +129,13 @@ hr {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.text-overflow-break {
+  display: inline-block;
+  max-width: 100%;
+  word-wrap: break-word;
+  hyphens: auto;
 }
 
 .title-label {

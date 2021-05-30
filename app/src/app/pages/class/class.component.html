@@ -16,6 +16,8 @@
         </p>
       </div>
 
+      <app-information *ngIf="parentClass" i18n-label="Parent Class label@@parentClass" label="Parent Class" [values]="[parentClass]"></app-information>
+
       <div *ngIf="class.abstract">
         <app-collapse>
           <app-abstract [entity]="class"></app-abstract>

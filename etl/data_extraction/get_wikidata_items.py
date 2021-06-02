@@ -210,7 +210,7 @@ def get_fields(
         ]
         for langkey in language_keys:
             fields += [f"{COUNTRY}_{langkey}"]
-    elif type_name == CLASS[PLURAL]:
+    elif type_name == CLASS[PLURAL] or type_name == EXTRACTED_CLASS[PLURAL]:
         fields += [SUBCLASS_OF]
     return fields
 

@@ -61,11 +61,12 @@ def query_artwork_qids(type_name: str, wikidata_id: str) -> List[str]:
             print(error)
             print("Waiting for 5 seconds")
             time.sleep(5)
-            if error.errno != 403:
-                continue
-            else:
-                print("Looks like the bot was blocked.")
-                exit(-1)
+            if HTTPError.errno in error:
+                if error.errno != 403:
+                    continue
+                else:
+                    print("Looks like the bot was blocked.")
+                    exit(-1)
 
     artwork_ids = list(
         map(

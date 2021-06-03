@@ -150,7 +150,7 @@ export class TimelineComponent{
     if (this.nextRotationTime > 0) {
       this.timerSubscription = this.rotationTimer$.pipe(
         switchMap(() => timer(this.nextRotationTime * 1000, this.nextRotationTime * 1000))
-      ).subscribe(() => this.nextClicked(true));
+      ).subscribe(() => this.nextClicked());
       // start timer
       this.rotationTimer$.next();
     }
@@ -309,10 +309,13 @@ export class TimelineComponent{
   }
 
   /** Handler for click event from left control button. Updates startSlide, value and animation. */
-  prevClicked(event) {
+  prevClicked() {
+    // this resets the 'rotationTimer$'
+    this.rotationTimer$.next();
+
     if (this.slideStart <= 0) {
       this.slideStart = this.items.length;
-      this.value = this.items[-1].date;
+      this.value = this.items[(this.items.length - 1) - this.itemCountPerPeriod].date;
       this.updateSliderItems();
       return;
     }
@@ -325,7 +328,7 @@ export class TimelineComponent{
   }
 
   /** Handler for click event from right control button. Updates startSlide, value and animation. */
-  nextClicked(event) {
+  nextClicked() {
     // this resets the 'rotationTimer$'
     this.rotationTimer$.next();
 

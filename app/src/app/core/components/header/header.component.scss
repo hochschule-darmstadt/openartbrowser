@@ -161,4 +161,10 @@
   .form-group {
     margin: 0 0.5em !important;
   }
+
+  #navbar:hover ::ng-deep .form-control,
+  .form-group:focus-within ::ng-deep .form-control {
+    // Just keep input height the same size while focused/hovered on mobiel
+    height: 1.4em !important;
+  }
 }

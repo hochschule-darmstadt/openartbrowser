@@ -289,6 +289,17 @@ export class ArtworkComponent implements OnInit, OnDestroy {
 
   
   onChange(event){
-    console.log(event.target.value);
+    const value = event.target.value
+    
+    for(let tab of this.artworkTabs){
+
+      if(tab.type==value){
+        tab.active=true
+      }
+      else{
+        tab.active=false
+      }
+
+    }
   }
 }

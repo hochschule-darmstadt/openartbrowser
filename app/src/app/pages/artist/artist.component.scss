@@ -10,3 +10,23 @@
 .video:last-child {
   margin: 0;
 }
+
+@media (max-width: 768px) {
+  .tabs{
+    display: none;
+  }
+  .tabs-select{
+    display: block;
+    background: #222;
+    color: white;
+    margin: 0 auto;
+
+  }
+}
+
+@media (min-width: 768px) {
+  .tabs-select{
+    display: none;
+    
+  }
+}

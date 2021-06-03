@@ -231,12 +231,12 @@ if __name__ == "__main__":
         "Starting with splitting art_ontology.json to its language files",
     )
 
-    with open(art_ontology_file, encoding="utf-8") as json_file:
-        art_ontology = ijson.items(json_file, 'item')
-        for lang_key in language_keys:
+    for lang_key in language_keys:
+        with open(art_ontology_file, encoding="utf-8") as json_file:
+            art_ontology = ijson.items(json_file, 'item')
             art_ontology_for_lang = []
             print(f"Start generating art_ontology_{lang_key}.{JSON}")
-            for i, item in enumerate(art_ontology):
+            for item in art_ontology:
                 if is_jsonable(item):
                     art_ontology_for_lang.append(modify_langdict(item, lang_key))
 
@@ -250,6 +250,7 @@ if __name__ == "__main__":
                 / CRAWLER_OUTPUT
                 / f"art_ontology_{lang_key}",
             )
+            json_file.close()
             print(f"Finished generating art_ontology_{lang_key}.{JSON}")
 
     print(

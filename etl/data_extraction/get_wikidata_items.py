@@ -116,11 +116,12 @@ def write_data_to_json_and_csv(
         get_fields(LOCATION[PLURAL]),
         create_new_path(LOCATION[PLURAL], file_type=CSV),
     )
+    print(f"writing json of {len(merged_artworks)} artworks")
     generate_json(merged_artworks, create_new_path(ARTWORK[PLURAL]))
     generate_csv(
         merged_artworks,
         get_fields(ARTWORK[PLURAL]),
-        create_new_path(ARTWORK[SINGULAR], file_type=CSV),
+        create_new_path(ARTWORK[PLURAL], file_type=CSV),
     )
     generate_json(artists, create_new_path(ARTIST[PLURAL]))
     generate_csv(

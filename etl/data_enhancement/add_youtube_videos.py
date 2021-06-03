@@ -179,7 +179,7 @@ if __name__ == "__main__":
                     newline="",
                     encoding="utf-8",
             ) as file:
-                file.write(json.dumps(entities, ensure_ascii=False))
+                json.dump(entities, file, ensure_ascii=False)
         except Exception as error:
             print(
                 f"Error when opening following file: {entity_type}. Error: {error}. Skipping file now."

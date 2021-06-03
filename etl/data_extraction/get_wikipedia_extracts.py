@@ -254,7 +254,7 @@ def add_wikipedia_extracts(language_keys: Optional[List[str]] = lang_keys, ) -> 
                     newline="",
                     encoding="utf-8",
             ) as file:
-                file.write(json.dumps(items, ensure_ascii=False))
+                json.dump(items, file, ensure_ascii=False)
             write_state(ETL_STATES.GET_WIKIPEDIA_EXTRACTS.EXTRACT_ABSTRACTS + filename)
 
         except Exception as error:

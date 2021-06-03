@@ -20,6 +20,7 @@ export class EntitiesComponent implements OnInit {
     entityType: undefined
   } as FetchOptions;
   query: (offset: number) => Promise<Entity[]> = undefined;
+  counter: number;
 
   constructor(private dataService: DataService, private route: ActivatedRoute) {
   }

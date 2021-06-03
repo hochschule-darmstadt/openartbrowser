@@ -162,8 +162,14 @@ export class DataService {
     return this.performQuery<T>(body);
   }
 
-  public async countEntityItems<T>(type: EntityType) {
-    const response: any = await this.http.get(this.countEndPoint + '?q=type:' + type).toPromise();
+  /**
+   * Get item count of type
+   * @param type the type which should be counted
+   */
+  public async countEntityItems<T>(type: EntityType){
+    const body = bodyBuilder()
+      .query('match', 'type', type);
+    const response: any = await this.http.post(this.countEndPoint, body.build()).toPromise();
     return response && response.count ? response.count : undefined;
   }
 

@@ -1,24 +1,24 @@
 <div class="container">
   <h2>
-    <span
-      i18n="All@@all">All{{fetchOptions.queryCount.constructor.name === 'Number' ? ' ' + fetchOptions.queryCount : ''}}</span>
-    <span class="ml-2" i18n="Entities Type Labels@@entities_labels" *ngIf="fetchOptions.entityType; let type">
+    <span i18n="All@@all">All</span>
+    <span>{{fetchOptions.queryCount.constructor.name === 'Number' ? ' ' + fetchOptions.queryCount : ''}}</span>
+    <span i18n="Entities Type Labels@@entities_labels" *ngIf="fetchOptions.entityType; let type">
     {type, select, artwork {Artworks} motif {Motifs} artist {Artists} location {Locations} genre {Genres} movement {Movements} material {Materials} class {Classes}}
   </span>
   </h2>
   <app-sticky-title>
     <ng-template>
       <h5>
-        <span
-          i18n="All@@all">All{{fetchOptions.queryCount.constructor.name === 'Number' ? ' ' + fetchOptions.queryCount : ''}}</span>
-        <span class="ml-1" i18n="Entities Type Labels@@entities_labels" *ngIf="fetchOptions.entityType; let type">
+        <span i18n="All@@all">All</span>
+        <span>{{fetchOptions.queryCount.constructor.name === 'Number' ? ' ' + fetchOptions.queryCount : ''}}</span>
+        <span i18n="Entities Type Labels@@entities_labels" *ngIf="fetchOptions.entityType; let type">
           {type, select, artwork {Artworks} motif {Motifs} artist {Artists} location {Locations} genre {Genres} movement {Movements} material {Materials} class {Classes}}
         </span>
       </h5>
     </ng-template>
   </app-sticky-title>
 
-  <app-fetching-list [query]="query" [options]="fetchOptions">
+  <app-fetching-list [query]="query" [(options)]="fetchOptions">
     <ng-template let-entity="entity" let-type="entityType">
       <div class="item-caption" [ngbTooltip]="entity?.label?.length > 60 ? htmlContent : ''">
         <ng-template #htmlContent>

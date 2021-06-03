@@ -353,7 +353,6 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   selectRandomMovement() {
-    console.log("TEST")
     let randIndex = Math.floor(Math.random() * this.movements.length);
     if (this.movements[randIndex].id === this.currentMovementId) {
       randIndex = (randIndex + 1) % this.movements.length;

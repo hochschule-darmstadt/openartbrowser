@@ -3,7 +3,7 @@
 import json
 from pathlib import Path
 import ijson
-from shared.utils import write_state, check_state
+from shared.utils import write_state, check_state, DecimalEncoder
 from shared.constants import ETL_STATES
 import sys
 
@@ -105,7 +105,7 @@ if __name__ == "__main__":
         movements_modified.append(movement)
 
     with open(movements_output_file, "w", newline="", encoding="utf-8") as file:
-        file.write(json.dumps(movements_modified, ensure_ascii=False))
+        json.dump(movements_modified, file, ensure_ascii=False, cls=DecimalEncoder)
     write_state(ETL_STATES.DATA_TRANSFORMATION.ESTIMATE_MOVEMENT_PERIOD)
 
     # print('took ', datetime.now() - start)

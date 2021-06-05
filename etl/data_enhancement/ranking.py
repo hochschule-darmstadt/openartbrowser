@@ -114,7 +114,7 @@ if __name__ == "__main__":
                     newline="",
                     encoding="utf-8",
             ) as file:
-                file.write(json.dumps(out_file, ensure_ascii=False))
+                json.dump(out_file, file, ensure_ascii=False)
             print(
                 datetime.datetime.now(), "Finished ranking with", filename,
             )

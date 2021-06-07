@@ -71,7 +71,7 @@ export class TimelineComponent{
   private referenceItem: number;
 
   /** variables to control automatic rotation of the timeline  */
-  private nextRotationTime = 5; // number in seconds, set to '0' to disable
+  private nextRotationTime = 10; // number in seconds, set to '0' to disable
   private rotationTimer$ = new Subject();
   private timerSubscription;
 
@@ -294,6 +294,9 @@ export class TimelineComponent{
       this.sliderAllowEvent = true;
       return;
     }
+    // this resets the 'rotationTimer$'
+    this.rotationTimer$.next();
+
     this.calcSlideStart();
     this.updateSliderItems();
 
@@ -313,17 +316,16 @@ export class TimelineComponent{
     // this resets the 'rotationTimer$'
     this.rotationTimer$.next();
 
-    if (this.slideStart <= 0) {
-      this.slideStart = this.items.length;
-      this.value = this.items[(this.items.length - 1) - this.itemCountPerPeriod].date;
-      this.updateSliderItems();
-      return;
-    }
-    this.slideOutLeft = true;
-    this.slideStart = Math.max(this.slideStart - this.itemCountPerPeriod, 0);
-    this.value = +this.items[this.slideStart + this.referenceItem].date;
     // decide if sliderMoved-Event should be suppressed
     this.sliderAllowEvent = false;
+    this.slideOutLeft = true;
+    if(this.slideStart <= 0) {
+      this.slideStart = this.items.length - this.itemCountPerPeriod;
+      this.value = this.items[this.items.length - 1].date;
+    } else {
+      this.slideStart = Math.max(this.slideStart - this.itemCountPerPeriod, 0);
+      this.value = +this.items[this.slideStart + this.referenceItem].date;
+    }
     this.updateSliderItems();
   }
 
@@ -332,19 +334,16 @@ export class TimelineComponent{
     // this resets the 'rotationTimer$'
     this.rotationTimer$.next();
 
-    if (this.slideEnd >= this.items.length) {
-      // Start from the beginning if this is called from the automatic rotation, otherwise do nothing
-      this.slideStart = 0;
-      this.value = this.items[0].date;
-      this.updateSliderItems();
-      return;
-    }
-    this.slideOutRight = true;
-    this.slideStart = Math.min(this.slideStart + 2 * this.itemCountPerPeriod, this.items.length) - this.itemCountPerPeriod;
-    this.value = +this.items[this.slideStart + this.referenceItem].date;
     // decide if sliderMoved-Event should be suppressed
     this.sliderAllowEvent = false;
-
+    this.slideOutRight = true;
+    if(this.slideEnd >= this.items.length) {
+      this.slideStart = 0;
+      this.value = this.items[0].date;
+    } else {
+      this.slideStart = Math.min(this.slideStart + 2 * this.itemCountPerPeriod, this.items.length) - this.itemCountPerPeriod;
+      this.value = +this.items[this.slideStart + this.referenceItem].date;
+    }
     this.updateSliderItems();
   }
 

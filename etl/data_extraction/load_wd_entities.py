@@ -6,6 +6,7 @@ import time
 from pathlib import Path
 from typing import Callable, Dict, Iterator, List, Optional, Set
 from urllib.error import HTTPError
+from json import JSONDecodeError
 
 from SPARQLWrapper import SPARQLWrapper
 
@@ -65,6 +66,11 @@ def query_artwork_qids(type_name: str, wikidata_id: str) -> List[str]:
             else:
                 print("Looks like the bot was blocked.")
                 exit(-1)
+        except JSONDecodeError as error:
+            print(error)
+            print("Waiting for 5 seconds")
+            time.sleep(5)
+            continue
 
     artwork_ids = list(
         map(
@@ -755,6 +761,7 @@ def get_distinct_extracted_classes(
     movements: List[Dict],
     artists: List[Dict],
     locations: List[Dict],
+    classes: List[Dict],
 ) -> List[Dict]:
     """Load the distinct qids from the classes lists of all entities
 
@@ -766,6 +773,7 @@ def get_distinct_extracted_classes(
         movements: List of movement entities
         artists: List of artist entities
         locations: List of location entities
+        classes: List of class entities
 
     Returns:
         List of class entities
@@ -774,7 +782,7 @@ def get_distinct_extracted_classes(
         CLASS[PLURAL], merged_artworks
     )
     distinct_classes = bundle_class_union_calls(
-        distinct_classes, [motifs, genres, materials, movements, artists, locations],
+        distinct_classes, [motifs, genres, materials, movements, artists, locations, classes],
     )
     return get_classes(CLASS[PLURAL], distinct_classes)
 

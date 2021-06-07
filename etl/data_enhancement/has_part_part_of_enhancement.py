@@ -6,12 +6,14 @@ import datetime
 import json
 from pathlib import Path
 from typing import Dict, List
+from shared.utils import write_state, check_state
+import sys
 
-from shared.constants import HAS_PART, ID, PART_OF
-
+from shared.constants import HAS_PART, ID, PART_OF, ETL_STATES
+RECOVER_MODE = False
 
 def inverse_attribute_enhancement(
-    attribute: str, inverse_attribute: str, movements: List[Dict]
+        attribute: str, inverse_attribute: str, movements: List[Dict]
 ) -> List[Dict]:
     """Enhance all attributes which have a inverse attribute by adding the corresponding ids to
     the inverse attribute in the movement JSON objects
@@ -37,8 +39,8 @@ def inverse_attribute_enhancement(
             for qid in movement[attribute]:
                 # Add the current movement id to the inverse attribute list
                 if (
-                    movement[ID]
-                    not in movements[qid_index_dict[qid]][inverse_attribute]
+                        movement[ID]
+                        not in movements[qid_index_dict[qid]][inverse_attribute]
                 ):
                     movements[qid_index_dict[qid]][inverse_attribute].append(
                         movement[ID]
@@ -49,15 +51,21 @@ def inverse_attribute_enhancement(
 
 if __name__ == "__main__":
 
+    if len(sys.argv) > 1 and "-r" in sys.argv:
+        RECOVER_MODE = True
+
+    if RECOVER_MODE and check_state(ETL_STATES.DATA_TRANSFORMATION.HAS_PART_PART_OF_ENHANCEMENT):
+        exit(0)
+
     print(
         "Starting part of, has part enhancement on movements", datetime.datetime.now()
     )
     movements_file = (
-        Path(__file__).resolve().parent.parent
-        / "crawler_output"
-        / "intermediate_files"
-        / "json"
-        / "movements.json"
+            Path(__file__).resolve().parent.parent
+            / "crawler_output"
+            / "intermediate_files"
+            / "json"
+            / "movements.json"
     )
 
     with open(movements_file, encoding="utf-8") as file:
@@ -71,3 +79,4 @@ if __name__ == "__main__":
     print(
         "Finished part of, has part enhancement on movements", datetime.datetime.now()
     )
+    write_state(ETL_STATES.DATA_TRANSFORMATION.HAS_PART_PART_OF_ENHANCEMENT)

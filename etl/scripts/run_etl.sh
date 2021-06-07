@@ -14,4 +14,4 @@ if ! mkdir $LOCKFILE 2>/dev/null; then
 fi
 
 mkdir -p logs
-script -q -c "./scripts/etl.sh" /dev/null | tee ./logs/etl.log
+script -q -c "./scripts/etl.sh $1 $2 $3" /dev/null | tee ./logs/etl.log

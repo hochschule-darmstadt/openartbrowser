@@ -38,10 +38,10 @@ jobs:
           npm run build-locale
       - name: List dir
         run: |
-          ll
-          ll app
-          ll dist
-          ll app/dist
+          ls -la
+          ls -la app
+          ls -la dist
+          ls -la app/dist
       - name: Sync directories
         uses: up9cloud/action-rsync@master
         env:

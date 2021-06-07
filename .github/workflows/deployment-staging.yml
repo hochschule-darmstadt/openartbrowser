@@ -36,12 +36,15 @@ jobs:
         run: |
           cd app/
           npm run build-locale
+          
       - name: List dir
+        continue-on-error: true
         run: |
           ls -la
           ls -la app
-          ls -la dist
           ls -la app/dist
+          ls -la app/dist/browser
+
       - name: Sync directories
         uses: up9cloud/action-rsync@master
         env:

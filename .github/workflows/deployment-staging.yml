@@ -39,13 +39,13 @@ jobs:
       - name: Sync directories
         uses: up9cloud/action-rsync@master
         env:
-          HOST: ${STAGE_ADDR}
-          KEY: ${SFTP_PASS_STAGE}
+          HOST: ${DEPLOYMENT_SERVER_STAGING}
+          KEY: ${GithubActionsKey}
           #TARGET: ${SFTP_PATH_STAGE}
           TARGET: /home/dreyer/test/
 
           VERBOSE: true
-          USER: ${SFTP_USER_STAGE}
+          USER: ${DEPLOYMENT_USER_STAGING}
           ARGS: -rltDvz --delete
           SSH_ARGS: '-o StrictHostKeyChecking=no'
           SOURCE: ./dist/browser/*

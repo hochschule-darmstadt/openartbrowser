@@ -40,10 +40,8 @@ jobs:
         uses: up9cloud/action-rsync@master
         env:
           HOST: ${DEPLOYMENT_SERVER_STAGING}
-          KEY: ${GithubActionsKey}
-          #TARGET: ${SFTP_PATH_STAGE}
-          TARGET: /home/dreyer/test/
-
+          KEY: ${DEPLOYMENT_SERVER_STAGING_SSHKEY}
+          TARGET: ${DEPLOYMENT_SERVER_STAGING_PATH}
           VERBOSE: true
           USER: ${DEPLOYMENT_USER_STAGING}
           ARGS: -rltDvz --delete

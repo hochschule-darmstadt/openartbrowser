@@ -2,7 +2,7 @@ name: DEPLOY-TO-STAGING
 on:
   push:
     branches:
-      - 502/github_actions_deployment
+      - staging
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -36,15 +36,6 @@ jobs:
         run: |
           cd app/
           npm run build-locale
-          
-      - name: List dir
-        continue-on-error: true
-        run: |
-          ls -la
-          ls -la app
-          ls -la app/dist
-          ls -la app/dist/browser
-
       - name: Sync directories
         uses: up9cloud/action-rsync@master
         env:

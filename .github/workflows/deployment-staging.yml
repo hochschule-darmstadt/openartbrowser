@@ -36,6 +36,12 @@ jobs:
         run: |
           cd app/
           npm run build-locale
+      - name: List dir
+        run: |
+          ll/
+          ll app/
+          ll dist/
+          ll app/dist
       - name: Sync directories
         uses: up9cloud/action-rsync@master
         env:
@@ -46,4 +52,4 @@ jobs:
           USER: ${{ secrets.DEPLOYMENT_USER_STAGING }}
           ARGS: -rltDvz --delete
           SSH_ARGS: '-o StrictHostKeyChecking=no'
-          SOURCE: ./dist/browser/*
+          SOURCE: ./app/dist/browser/*

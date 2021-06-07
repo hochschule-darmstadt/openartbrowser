@@ -49,9 +49,6 @@ python3 data_enhancement/estimate_movement_period.py "${params[@]}"
 
 python3 data_enhancement/has_part_part_of_enhancement.py "${params[@]}"
 
-mkdir ./artworksbackup
-cp crawler_output/intermediate_files/json/artworks.json /artworksbackup
-
 python3 data_enhancement/add_youtube_videos.py "${params[@]}"
 
 python3 data_enhancement/ranking.py "${params[@]}"

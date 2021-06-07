@@ -1,8 +1,8 @@
 name: DEPLOY-TO-PRODUCTION
-#on:
-  #push:
-    #branches:
-      #- master
+on:
+  push:
+    branches:
+      - master
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -39,12 +39,11 @@ jobs:
       - name: Sync directories
         uses: up9cloud/action-rsync@master
         env:
-          HOST: ${PROD_ADDR}
-          KEY: ${SFTP_PASS_PROD}
-          TARGET: ${SFTP_PATH_PROD}
-
+          HOST: ${{ secrets.DEPLOYMENT_SERVER_PRODUCTION }}
+          KEY: ${{ secrets.DEPLOYMENT_SERVER_PRODUCTION_SSHKEY }}
+          TARGET: ${{ secrets.DEPLOYMENT_SERVER_PRODUCTION_PATH }}
           VERBOSE: true
-          USER: ${SFTP_USER_PROD}
+          USER: ${{ secrets.DEPLOYMENT_USER_PRODUCTION }}
           ARGS: -rltDvz --delete
           SSH_ARGS: '-o StrictHostKeyChecking=no'
-          SOURCE: ./dist/browser/*
+          SOURCE: ./app/dist/browser/*

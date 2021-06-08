@@ -2,17 +2,35 @@
 set -eE
 set -x
 
-DEV_COUNT=5
-
-# Get parameters d and r (dev counter and recovery mode)
-while getopts "d:r" opt; do
-  echo $opt
+# Get parameters d, r and t (dev counter, recovery mode and test mode)
+while getopts "drt" opt; do
   case $opt in
   d)
-    DEV_MODE=true && DEV_COUNT="$OPTARG"
+    DEV_MODE=true
+    # Check next positional parameter
+    eval nextopt=\${$OPTIND}
+    # existing or starting with dash?
+    if [[ -n $nextopt && $nextopt != -* ]] ; then
+      OPTIND=$((OPTIND + 1))
+      DEV_COUNT=$nextopt
+    else
+      DEV_COUNT=5
+    fi
     ;;
   r)
     REC_MODE=true
+    ;;
+  t)
+    TEST_MODE=true
+    # Check next positional parameter
+    eval nextopt=\${$OPTIND}
+    # existing or starting with dash?
+    if [[ -n $nextopt && $nextopt != -* ]] ; then
+      OPTIND=$((OPTIND + 1))
+      CLASS_LIM=$nextopt
+    else
+      CLASS_LIM=5
+    fi
     ;;
   \?)
     echo "Invalid option -$OPTARG" >&2 && exit 1
@@ -38,6 +56,7 @@ ETL_STATES_FILE=$WD/logs/etl_states.log
 # build parameters for each script
 params=() && [[ $DEV_MODE == true ]] && params+=('-d' "$DEV_COUNT")
 [[ $REC_MODE == true ]] && params+=('-r')
+[[ $TEST_MODE == true ]] && params+=('-t' "$CLASS_LIM")
 python3 data_extraction/get_wikidata_items.py "${params[@]}"
 
 params=() && [[ $REC_MODE == true ]] && params+=(-r)

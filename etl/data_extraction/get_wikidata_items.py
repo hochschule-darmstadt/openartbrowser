@@ -47,6 +47,8 @@ from shared.utils import (
 DEV = False
 DEV_CHUNK_LIMIT = 2  # Not entry but chunks of 50
 RECOVER_MODE = False
+TEST_MODE = False
+CLASS_LIM = 2
 
 logger = setup_logger(
     "data_extraction.get_wikidata_items",
@@ -279,7 +281,7 @@ def extract_art_ontology() -> None:
     # Array of already crawled wikidata items
     already_crawled_wikidata_items = set()
 
-    for source in SOURCE_TYPES:
+    for source in SOURCE_TYPES if not TEST_MODE else SOURCE_TYPES[:CLASS_LIM]:
         if RECOVER_MODE and check_state(ETL_STATES.GET_WIKIDATA_ITEMS.EXTRACT_SOURCE + source[PLURAL]):
             continue
         extracted_artwork = load_wd_entities.extract_artworks(
@@ -338,6 +340,12 @@ def extract_art_ontology() -> None:
         merged_artworks, motifs, genres, materials, movements, artists, locations, classes,
     )
     [c.update({TYPE: CLASS[SINGULAR]}) for c in extracted_classes]
+
+    # Add the "subclass_of" parameter from the extracted_classes to the crawled classes
+    for class_itm in classes:
+        extracted_class = [d for i, d in enumerate(extracted_classes) if class_itm[ID] in d.values()]
+        class_itm.update({SUBCLASS_OF: extracted_class[0][SUBCLASS_OF]}) if len(extracted_class) > 0 else ""
+
     print("Total classes after transitive closure loading: ", len(extracted_classes))
     # Get country labels for merged artworks and locations
     (
@@ -385,13 +393,24 @@ def extract_art_ontology() -> None:
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
+        print(sys.argv)
+        dev_count_set = False
         if "-d" in sys.argv:
-            if any([c.isdigit() for c in sys.argv]):
-                DEV_CHUNK_LIMIT = int([x.isdigit() for x in sys.argv].index(True))
+            if len(sys.argv) > sys.argv.index('-d') + 1 and any([c.isdigit() for c in sys.argv]):
+                DEV_CHUNK_LIMIT = int(sys.argv[sys.argv.index('-d') + 1])
+                dev_count_set = True
             print("DEV MODE: on, DEV_LIM={0}".format(DEV_CHUNK_LIMIT))
             DEV = True
         if "-r" in sys.argv:
             RECOVER_MODE = True
+        if "-t" in sys.argv:
+            if len(sys.argv) > sys.argv.index('-t') + 1 and sys.argv[sys.argv.index('-t') + 1].isdigit():
+                CLASS_LIM = int(sys.argv[sys.argv.index('-t') + 1])
+            print("TEST MODE: on, CLASS_LIM={0}".format(CLASS_LIM))
+            TEST_MODE = True
+            DEV = True
+            if not dev_count_set:
+                DEV_CHUNK_LIMIT = 3
     if RECOVER_MODE and check_state(ETL_STATES.GET_WIKIDATA_ITEMS.STATE):
         exit(0)
     logger.info("Extracting Art Ontology")

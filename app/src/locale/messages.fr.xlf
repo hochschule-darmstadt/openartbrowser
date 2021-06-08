@@ -34,7 +34,7 @@
         <note priority="1" from="description">Entity Type Labels</note>
       </trans-unit>
       <trans-unit id="480d33207a8003c4e3d38902d7769ac338138974" datatype="html">
-        <source>{VAR_SELECT, select, all {All} artwork {Kunstwerk} motif {Motif} artist {Artist} location {Location}
+        <source>{VAR_SELECT, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location}
           genre {Genre} movement {Movement} material {Material} class {Class}}
         </source>
         <target state="final">{VAR_SELECT, select, all {Tous} artwork {Œuvre d'art} motif {Motif} artist {Artiste}

@@ -4,6 +4,26 @@ if [ $(id -u) -ne 0 ]
 	exit 1
 fi
 
+
+# Get parameters
+while getopts "hdrt" opt; do
+  case $opt in
+  h)
+    echo "
+Usage: run_etl.sh [options]
+
+  -d [number] limits the etl process to a given number of crawled batches per crawled class, default 5
+  -r          runs etl process in recovery mode, skipping steps that were already successful in the previous run
+  -t [number] runs etl process in test mode, limiting the amount of crawled classes, default 3
+  -h          this test message
+    "
+    ;;
+  \?)
+    echo "Invalid option -$OPTARG" >&2 && exit 1
+    ;;
+  esac
+done
+
 LOCKFILE=/tmp/etl.lock
 TOKEN=$(cat tokens/bot_user_oauth_token)
 SERVERNAME=$(uname -n)
@@ -14,4 +34,4 @@ if ! mkdir $LOCKFILE 2>/dev/null; then
 fi
 
 mkdir -p logs
-script -q -c "./scripts/etl.sh $1 $2 $3" /dev/null | tee ./logs/etl.log
+script -q -c "./scripts/etl.sh $1 $2 $3 $4 $5" /dev/null | tee ./logs/etl.log

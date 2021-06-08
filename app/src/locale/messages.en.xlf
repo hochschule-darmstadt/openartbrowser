@@ -910,6 +910,11 @@
         <source>Parent class</source>
         <target state="final">Parent class</target>
       </trans-unit>
+      <trans-unit id="class" datatype="html">
+        <source>Type</source>
+        <target state="final">Type</target>
+        <note priority="1" from="description">Class label</note>
+      </trans-unit>
     </body>
   </file>
 </xliff>

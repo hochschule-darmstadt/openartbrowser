@@ -917,9 +917,11 @@
         <source>Parent class</source>
         <target state="final">Classe superiore</target>
       </trans-unit>
+      <trans-unit id="class" datatype="html">
+        <source>Type</source>
+        <target state="final">Tipo</target>
+        <note priority="1" from="description">Class label</note>
+      </trans-unit>
     </body>
   </file>
 </xliff>
-
->{VAR_SELECT, select, all {Tutto} artwork {Opera d'arte} motif {Motivo} artist {Artista}
-          location {Collocazione} genre {Genere} movement {Movimento} material {Materiale}}

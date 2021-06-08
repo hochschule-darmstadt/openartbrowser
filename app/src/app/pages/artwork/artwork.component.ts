@@ -95,6 +95,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       /** Use data service to fetch entity from database */
       this.artworkId = params.get('artworkId');
       this.artwork = await this.dataService.findById<Artwork>(this.artworkId, EntityType.ARTWORK);
+      console.log(this.artwork);
 
       if (!this.artwork) { 
         this.idDoesNotExist = true;

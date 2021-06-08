@@ -183,6 +183,11 @@
               <app-badge *ngFor="let location of artwork?.locations" [entity]="location" [isHoverBadge]="true"
                          [hoveredArtwork]="hoveredArtwork"> </app-badge>
             </span>
+
+            <span *ngIf="artwork?.classes?.length && (tab.type == 'class' || tab.type == 'all')" class="mb-1">
+              <app-badge *ngFor="let class of artwork?.classes" [entity]="class" [isHoverBadge]="true"
+                         [hoveredArtwork]="hoveredArtwork"> </app-badge>
+            </span>
           </div>
         </div>
       </div>

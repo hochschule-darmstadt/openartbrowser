@@ -911,7 +911,7 @@
         <target state="final">{VAR_SELECT, select, all {Todos} artwork {Obra de arte} motif {Motivo} artist {Artista} location {Emplazamiento} genre {Género} movement {Movimiento} material {Matériau} class {Tipo}}</target>
       </trans-unit>
       <trans-unit id="2015419283931430022" datatype="html">
-        <source>{VAR_SELECT, select, all {all} motif {motif} artist {artist} location {location} genre {genre} movement {movement} material {material} class {Type}}</source>
+        <source>{VAR_SELECT, select, all {all} motif {motif} artist {artist} location {location} genre {genre} movement {movement} material {material} class {type}}</source>
         <target state="final">{VAR_SELECT, select, all {Todos} artwork {Obra de arte} motif {Motivo} artist {Artista} location {Emplazamiento} genre {Género} movement {Movimiento} material {Matériau} class {Tipo}}</target>
       </trans-unit>
       <trans-unit id="4522530217414433838" datatype="html">

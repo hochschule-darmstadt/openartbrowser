@@ -3,11 +3,13 @@
 import csv
 import json
 import logging
+import os
 import pkgutil
+from decimal import Decimal
 from pathlib import Path
 from typing import Dict, List
 
-from shared.constants import CRAWLER_OUTPUT, INTERMEDIATE_FILES, JSON
+from shared.constants import CRAWLER_OUTPUT, INTERMEDIATE_FILES, LOGS, JSON, ETL_STATES
 
 root_logger = logging.getLogger()  # setup root logger
 root_logger.setLevel(
@@ -23,8 +25,8 @@ def language_config_to_list() -> List[List[str]]:
     """
     configReader = csv.reader(
         pkgutil.get_data("shared.utils", "languageconfig.csv")
-        .decode("utf-8")
-        .splitlines(),
+            .decode("utf-8")
+            .splitlines(),
         delimiter=";",
     )
     languageValues = []
@@ -67,11 +69,52 @@ def setup_logger(logger_name: str, filename: str):
 def chunks(lst, n):
     """Yield successive n-sized chunks from lst."""
     for i in range(0, len(lst), n):
-        yield lst[i : i + n]
+        yield lst[i: i + n]
 
 
 def create_new_path(name, subpath="", file_type=JSON):
     return Path.cwd() / CRAWLER_OUTPUT / INTERMEDIATE_FILES / file_type / name / subpath
+
+
+def write_state(state, parent_path=None):
+    path = (parent_path if parent_path else Path.cwd()) / LOGS / ETL_STATES.FILENAME
+    append_write = 'a' if os.path.exists(path) else 'w+'  # check if file exists, create if not
+    try:
+        with open(path, append_write, newline='') as file:
+            file.write(f'\n{state}')
+    except Exception as e:
+        print(e)
+
+
+def check_state(state, parent_path=None):
+    path = (parent_path if parent_path else Path.cwd()) / LOGS / ETL_STATES.FILENAME
+    if not os.path.exists(path):
+        return False
+    try:
+        with open(path, "r") as file:
+            for line in file:
+                if line[:-1] == state:
+                    print(f"State {state} recovered")
+                    return True
+        return False
+    except Exception as e:
+        print(e)
+
+
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, Decimal):
+            return str(o)
+        return super(DecimalEncoder, self).default(o)
+
+
+def is_jsonable(x):
+    try:
+        json.dumps(x, skipkeys=True, ensure_ascii=False, cls=DecimalEncoder)
+        return True
+    except (TypeError, OverflowError) as e:
+        logging.error(f'Object was not json serializable! Object:\n{x}')
+        return False
 
 
 def generate_json(extract_dicts: List[Dict], filename: str) -> None:
@@ -85,6 +128,6 @@ def generate_json(extract_dicts: List[Dict], filename: str) -> None:
         return
     filename.parent.mkdir(parents=True, exist_ok=True)
     with open(
-        filename.with_suffix(f".{JSON}"), "w", newline="", encoding="utf-8"
+            filename.with_suffix(f".{JSON}"), "w", newline="", encoding="utf-8"
     ) as file:
-        file.write(json.dumps(extract_dicts, ensure_ascii=False))
+        json.dump(extract_dicts, file, skipkeys=True, ensure_ascii=False, cls=DecimalEncoder)

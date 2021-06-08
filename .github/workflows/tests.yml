@@ -21,6 +21,7 @@ jobs:
           pip install -r requirements.txt
       - name: Run crawler test
         run: |
+          cd etl/
           export PYTHONPATH="${PYTHONPATH}:${pwd}"
           python data_extraction/get_wikidata_items.py -t 2 -d 1
           python data_extraction/get_wikipedia_extracts.py

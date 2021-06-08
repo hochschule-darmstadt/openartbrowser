@@ -22,12 +22,8 @@ jobs:
       - name: Run crawler test
         continue-on-error: true
         run: |
-          pwd
-          ls -la
-          cd etl/
-          pip list
           export PYTHONPATH="${PYTHONPATH}:${pwd}"
-          python data_extraction/get_wikidata_items.py -d 1
+          python data_extraction/get_wikidata_items.py -t 2 -d 1
           python data_extraction/get_wikipedia_extracts.py
 
   frontend_test:

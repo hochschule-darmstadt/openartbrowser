@@ -10,13 +10,13 @@
       <app-title [entity]="class"></app-title>
       <app-sticky-title [entity]="class"></app-sticky-title>
 
-      <div class="mb-3 mt-5 pl-2">
+      <div class="mb-3 mt-5">
         <p *ngIf="class?.description" class="mb-1 first-letter">
           {{ class?.description }}
         </p>
       </div>
 
-      <app-information *ngIf="parentClasses" i18n-label="Parent Class label@@parent_class" label="Parent Class" [values]="parentClasses"></app-information>
+      <app-information *ngIf="parentClasses" i18n-label="Parent Class label@@parent_class" label="Parent Class" [values]="parentClasses" [isEntityPage]="true"></app-information>
 
       <div *ngIf="class.abstract">
         <app-collapse>

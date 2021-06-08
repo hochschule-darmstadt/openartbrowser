@@ -19,7 +19,7 @@ export class ClassComponent implements OnInit, OnDestroy {
   class: Class = null;
 
   /** The parent class of this entity */
-  parentClass: Class = null;
+  parentClasses: Class[] = null;
 
   idDoesNotExist = false;
   classId: string;
@@ -53,8 +53,7 @@ export class ClassComponent implements OnInit, OnDestroy {
       this.class = await this.dataService.findById<Class>(this.classId, EntityType.CLASS);
 
       /** Use data service to fetch parent class entity from database */
-      if(this.class?.subclass_of) this.parentClass = await this.dataService.findById<Class>(this.class?.subclass_of, EntityType.CLASS);
-
+      if(this.class?.subclass_of) this.parentClasses = await this.dataService.findMultipleById<Class>(this.class?.subclass_of, EntityType.CLASS);
       if (!this.class) { this.idDoesNotExist = true }
     });
   }

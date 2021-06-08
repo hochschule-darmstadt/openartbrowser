@@ -45,5 +45,5 @@ export enum EntityIcon {
   MOTIF = 'fa-image',
   GENRE = 'fa-tag',
   MATERIAL = 'fa-scroll',
-  CLASS = 'fa-tag'
+  CLASS = 'fa-shapes'
 }

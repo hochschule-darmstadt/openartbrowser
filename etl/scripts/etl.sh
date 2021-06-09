@@ -3,7 +3,7 @@ set -eE
 set -x
 
 # Get parameters d, r and t (dev counter, recovery mode and test mode)
-while getopts "drt" opt; do
+while getopts "dlrt" opt; do
   case $opt in
   d)
     DEV_MODE=true
@@ -16,6 +16,9 @@ while getopts "drt" opt; do
     else
       DEV_COUNT=5
     fi
+    ;;
+  l)
+    LOCAL_MODE=true
     ;;
   r)
     REC_MODE=true
@@ -37,9 +40,15 @@ while getopts "drt" opt; do
     ;;
   esac
 done
+echo "
+DEV_MODE $DEV_MODE
+DEV_COUNT $DEV_COUNT
+REC_MODE $REC_MODE
+TEST_MODE $TEST_MODE
+CLASS_LIM $CLASS_LIM
+LOCAL_MODE $LOCAL_MODE"
 
 LOCKFILE=/tmp/etl.lock
-TOKEN=$(cat tokens/bot_user_oauth_token)
 WD=$(pwd)
 DATE=$(date +%T_%d-%m-%Y) # German format
 SERVERNAME=$(uname -n)
@@ -47,7 +56,12 @@ SERVERNAME=$(uname -n)
 export PYTHONPATH="${PYTHONPATH}:${WD}"
 export PYWIKIBOT_DIR="${WD}"
 
-trap "curl -F file=@${WD}/logs/etl.log -F \"initial_comment=Oops! Something went wrong while executing the ETL-process on server ${SERVERNAME}. Here is the log file: \" -F channels=CSY0DLRDG -H \"Authorization: Bearer ${TOKEN}\" https://slack.com/api/files.upload" ERR
+if [ $LOCAL_MODE == true ]; then
+  trap "echo \"Oops! Something went wrong while executing the ETL-process\"" ERR
+else
+  TOKEN=$(cat tokens/bot_user_oauth_token)
+  trap "curl -F file=@${WD}/logs/etl.log -F \"initial_comment=Oops! Something went wrong while executing the ETL-process on server ${SERVERNAME}. Here is the log file: \" -F channels=CSY0DLRDG -H \"Authorization: Bearer ${TOKEN}\" https://slack.com/api/files.upload" ERR
+fi
 
 curl -X POST https://slack.com/api/chat.postMessage -H "Authorization: Bearer ${TOKEN}" -H 'Content-type: application/json' --data '{"channel":"CSY0DLRDG","text":"The ETL-process is starting on server '${SERVERNAME}' at '${DATE}'","as_user":"true"}'
 ETL_STATES_FILE=$WD/logs/etl_states.log
@@ -94,7 +108,11 @@ tar cfvz crawler_output.tar.gz crawler_output/
 
 cp crawler_output.tar.gz /var/www/html
 
-rm -r $LOCKFILE
-
 FINISHED_DATE=$(date +%T_%d-%m-%Y)
-curl -F file=@${WD}/logs/etl.log -F "initial_comment=ETL-process finished on server ${SERVERNAME} at ${FINISHED_DATE}. The lockfile was removed. Here is the log file" -F channels=CSY0DLRDG -H "Authorization: Bearer ${TOKEN}" https://slack.com/api/files.upload
+
+if [ $LOCAL_MODE == true ]; then
+  trap "echo \"ETL-process finished. The lockfile was removed.\""
+else
+  curl -F file=@${WD}/logs/etl.log -F "initial_comment=ETL-process finished on server ${SERVERNAME} at ${FINISHED_DATE}. The lockfile was removed. Here is the log file" -F channels=CSY0DLRDG -H "Authorization: Bearer ${TOKEN}" https://slack.com/api/files.upload
+fi
+

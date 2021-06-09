@@ -19,6 +19,9 @@ export class InformationComponent {
   @Input()
   values: Entity[];
 
+  @Input()
+  isEntityPage: boolean;
+
   constructor() {}
 
   ngOnChanges() {

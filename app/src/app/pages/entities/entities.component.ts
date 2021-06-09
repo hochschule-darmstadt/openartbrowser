@@ -6,6 +6,7 @@ import {
   Motif, Location, Material, Class, EntityType
 } from 'src/app/shared/models/models';
 import {FetchOptions} from '../../shared/components/fetching-list/fetching-list.component';
+import { useSingular } from 'src/app/shared/models/entity.interface';
 
 @Component({
   selector: 'app-entities',
@@ -29,8 +30,7 @@ export class EntitiesComponent implements OnInit {
     if (this.route.pathFromRoot[1]) {
       /** get type which shall be handled from url */
       this.route.pathFromRoot[1].url.subscribe(val => {
-        /** remove last two characters instead of one from plural of pathvalue if it is classes */
-        const lastPathSegment = val[0].path === "classes" ? val[0].path.slice(0, -2) : val[0].path.slice(0, -1);
+        const lastPathSegment = useSingular(val[0].path);
         this.fetchOptions.entityType = EntityType[lastPathSegment.toUpperCase() as keyof typeof EntityType];
         /** get max number of elements */
         this.fetchOptions.queryCount = this.dataService.countEntityItems(this.fetchOptions.entityType);

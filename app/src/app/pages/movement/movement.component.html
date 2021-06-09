@@ -70,7 +70,7 @@
       </div>
       <div class="tab-pane fade" [ngClass]="{ 'show active': activeTab === Tab.MovementOverview }" id="movement_overview_tab">
         <app-movement-overview
-          *ngIf="(activeTab === Tab.MovementOverview || movementOverviewLoaded) && movement && relatedMovements.length > 0"
+          *ngIf="(activeTab === Tab.MovementOverview) && movement && relatedMovements.length > 0"
           [inputMovements]="relatedMovements"></app-movement-overview>
       </div>
     </div>

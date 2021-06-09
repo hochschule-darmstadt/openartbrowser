@@ -310,6 +310,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   onThumbnailLoaded() {
+    this.showThumbnail = true;
     this.thumbnailLoaded = true;
   }
 

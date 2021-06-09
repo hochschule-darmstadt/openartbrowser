@@ -342,11 +342,18 @@ def extract_art_ontology() -> None:
     [c.update({TYPE: CLASS[SINGULAR]}) for c in extracted_classes]
 
     # Add the "subclass_of" parameter from the extracted_classes to the crawled classes
+    existing_classes = []
     for class_itm in classes:
         extracted_class = [d for i, d in enumerate(extracted_classes) if class_itm[ID] in d.values()]
         class_itm.update({SUBCLASS_OF: extracted_class[0][SUBCLASS_OF]}) if len(extracted_class) > 0 else ""
+        existing_classes.append(class_itm[ID])
 
-    print("Total classes after transitive closure loading: ", len(extracted_classes))
+    # append classes that are missing from our first list
+    for class_itm in extracted_classes:
+        if class_itm[ID] not in existing_classes:
+            classes.append(class_itm)
+
+    print("Total classes after transitive closure loading: ", len(classes))
     # Get country labels for merged artworks and locations
     (
         locations,

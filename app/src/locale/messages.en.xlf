@@ -5,11 +5,11 @@
       <trans-unit id="entity_labels" datatype="html">
         <source>
           <x id="ICU"
-             equiv-text="{type, select, all {...} artwork {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/>
+             equiv-text="{type, select, all {...} artwork {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...} class {...}}"/>
         </source>
         <target state="final">
           <x id="ICU"
-             equiv-text="{type, select, all {...} artwork {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/>
+             equiv-text="{type, select, all {...} artwork {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...} class {...}}"/>
         </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/components/search/search.component.html</context>
@@ -34,20 +34,20 @@
       <trans-unit id="entities_labels" datatype="html">
         <source>
           <x id="ICU"
-             equiv-text="{VAR_SELECT, select, artwork {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/>
+             equiv-text="{VAR_SELECT, select, artwork {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...} class {...}}"/>
         </source>
         <target state="final">
           <x id="ICU"
-             equiv-text="{VAR_SELECT, select, artwork {Artworks} motif {Motifs} artist {Artists} location {Locations} genre {Genres} movement {Movements} material {Materials}}"/>
+             equiv-text="{VAR_SELECT, select, artwork {Artworks} motif {Motifs} artist {Artists} location {Locations} genre {Genres} movement {Movements} material {Materials} class {Types}}"/>
         </target>
         <note priority="1" from="description">Entities Type Labels</note>
       </trans-unit>
       <trans-unit id="6357030966454994625" datatype="html">
         <source>{VAR_SELECT, select, artwork {...} motif {...} artist {...} location {...} genre {...} movement {...}
-          material {...}}
+          material {...} class {...}}
         </source>
         <target state="final">{VAR_SELECT, select, artwork {Artworks} motif {Motifs} artist {Artists} location
-          {Locations} genre {Genres} movement {Movements} material {Materials}}
+          {Locations} genre {Genres} movement {Movements} material {Materials} class {Types}}
         </target>
         <note priority="1" from="description">Entities Type Labels</note>
       </trans-unit>
@@ -58,10 +58,10 @@
       </trans-unit>
       <trans-unit id="480d33207a8003c4e3d38902d7769ac338138974" datatype="html">
         <source>{VAR_SELECT, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre
-          {Genre} movement {Movement} material {Material} }
+          {Genre} movement {Movement} material {Material} class {Type}}
         </source>
         <target state="final">{VAR_SELECT, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location
-          {Location} genre {Genre} movement {Movement} material {Material}}
+          {Location} genre {Genre} movement {Movement} material {Material} class {Type}}
         </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/components/search/search.component.html</context>
@@ -770,11 +770,11 @@
       <trans-unit id="related_artworks_headline_tab_name" datatype="html">
         <source>
           <x id="ICU"
-             equiv-text="{tab, select, all {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/>
+             equiv-text="{tab, select, all {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...} class {...}}"/>
         </source>
         <target state="final">
           <x id="ICU"
-             equiv-text="{tab, select, all {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}"/>
+             equiv-text="{tab, select, all {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...} class {...}}"/>
         </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
@@ -784,10 +784,10 @@
       </trans-unit>
       <trans-unit id="2894531d7a06d45b9e13ff93785def69b5963e57" datatype="html">
         <source>{VAR_SELECT, select, all {all} motif {motif} artist {artist} location {location} genre {genre} movement
-          {movement} material {material} }
+          {movement} material {material} class {type} }
         </source>
         <target state="final">{VAR_SELECT, select, all {all } motif {motif } artist {artist } location {location } genre
-          {genre } movement {movement } material {material } }
+          {genre } movement {movement } material {material } class {type } }
         </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/artwork/artwork.component.html</context>
@@ -868,10 +868,10 @@
       </trans-unit>
       <trans-unit id="d92b19d3d60f5e8db9974b16602fe83c00d05b7c" datatype="html">
         <source>{VAR_SELECT, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre
-          {Genre} movement {Movement} material {Material} main_motif {Main Motif} }
+          {Genre} movement {Movement} material {Material} main_motif {Main Motif} class {Type} }
         </source>
         <target state="final">{VAR_SELECT, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location
-          {Location} genre {Genre} movement {Movement} material {Material} main_motif {Main Motif} }
+          {Location} genre {Genre} movement {Movement} material {Material} main_motif {Main Motif} class {Type} }
         </target>
       </trans-unit>
       <trans-unit id="error_message" datatype="html">
@@ -889,6 +889,31 @@
       <trans-unit id="id_not_found_message" datatype="html">
         <source>It looks like nothing was found for the specified id. Maybe try a different id?</source>
         <target state="final">It looks like nothing was found for the specified id. Maybe try a different id?</target>
+      </trans-unit>
+      <trans-unit id="1341457774524620488" datatype="html">
+        <source>{VAR_SELECT, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material} main_motif {Main Motif} class {Type}}</source>
+        <target state="final">{VAR_SELECT, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material} class {Type}}</target>
+      </trans-unit>
+      <trans-unit id="2015419283931430022" datatype="html">
+        <source>{VAR_SELECT, select, all {all} motif {motif} artist {artist} location {location} genre {genre} movement {movement} material {material} class {type}}</source>
+        <target state="final">{VAR_SELECT, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material} class {Type}}</target>
+      </trans-unit>
+      <trans-unit id="4522530217414433838" datatype="html">
+        <source>{VAR_SELECT, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material} class {Type}}</source>
+        <target state="final">{VAR_SELECT, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material} class {Type}}</target>
+      </trans-unit>
+      <trans-unit id="6011716873832268948" datatype="html">
+        <source>{VAR_SELECT, select, artwork {Artworks} motif {Motifs} artist {Artists} location {Locations} genre {Genres} movement {Movements} material {Materials} class {Types}}</source>
+        <target state="final">{VAR_SELECT, select, all {All} artwork {Artworks} motif {Motifs} artist {Artists} location {Locations} genre {Genres} movement {Movements} material {Materialis} main_motif {Main Motifs} class {Types}}</target>
+      </trans-unit>
+      <trans-unit id="parent_class" datatype="html">
+        <source>Parent class</source>
+        <target state="final">Parent class</target>
+      </trans-unit>
+      <trans-unit id="class" datatype="html">
+        <source>Type</source>
+        <target state="final">Type</target>
+        <note priority="1" from="description">Class label</note>
       </trans-unit>
     </body>
   </file>

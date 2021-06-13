@@ -28,13 +28,15 @@ Returns:
 import csv
 import datetime
 import sys
-import ijson
 from pathlib import Path
 from typing import Dict, List, Optional
+
+import ijson
 
 from data_extraction import load_wd_entities
 from data_extraction.constants import *
 from shared.constants import *
+from shared.blocklist import BLOCKLIST
 from shared.utils import (
     create_new_path,
     generate_json,
@@ -279,7 +281,7 @@ def extract_art_ontology() -> None:
     """
 
     # Array of already crawled wikidata items
-    already_crawled_wikidata_items = set()
+    already_crawled_wikidata_items = set(BLOCKLIST)
 
     for source in SOURCE_TYPES if not TEST_MODE else SOURCE_TYPES[:CLASS_LIM]:
         if RECOVER_MODE and check_state(ETL_STATES.GET_WIKIDATA_ITEMS.EXTRACT_SOURCE + source[PLURAL]):

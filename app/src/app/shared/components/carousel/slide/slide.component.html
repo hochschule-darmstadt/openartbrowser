@@ -8,7 +8,7 @@
     <a
       *ngIf="slide.loadContent"
       class="item"
-      [routerLink]="['/'+item?.type, item?.id]"
+      [routerLink]="['/', item?.type, item?.id]"
       angulartics2On="click"
       angularticsAction="Carousel"
       angularticsCategory="Navigation"

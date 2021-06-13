@@ -10,7 +10,7 @@
       <app-title [entity]="movement"></app-title>
       <app-sticky-title [entity]="movement"></app-sticky-title>
 
-      <app-information i18n-label="Period label@@period" label="Period" [value]="movement.start_time + ' - ' + movement.end_time" *ngIf="movement.start_time && movement.end_time"></app-information>
+      <app-information i18n-label="Period label@@period" label="Period" [value]="movement.start_time + ' - ' + movement.end_time" *ngIf="movement.start_time && movement.end_time" [isEntityPage]="true"></app-information>
       <div *ngIf="movement?.abstract?.length || movement?.influenced_by?.length">
         <app-collapse [showVideo]="videoExists">
           <app-abstract [entity]="movement"></app-abstract>
@@ -21,7 +21,7 @@
             </div>
           </div>
 
-          <app-information i18n-label="Influenced by label@@influenced_by" label="Influenced by" [values]="movement?.influenced_by"> </app-information>
+          <app-information i18n-label="Influenced by label@@influenced_by" label="Influenced by" [values]="movement?.influenced_by" [isEntityPage]="true"> </app-information>
         </app-collapse>
       </div>
     </div>

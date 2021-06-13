@@ -16,11 +16,13 @@
     display: none;
   }
   .tabs-select{
+    margin: auto;
     display: block;
     background: #222;
     color: white;
-    margin: 0 auto;
-
+    font-weight: bold;
+    text-align: center;
+    font-size: 20px;
   }
 }
 

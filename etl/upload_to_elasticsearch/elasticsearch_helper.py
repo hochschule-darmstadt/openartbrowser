@@ -6,7 +6,15 @@ from pathlib import Path
 from typing import List, Dict, Optional
 import requests
 from elasticsearch import Elasticsearch, helpers
-from shared.utils import language_config_to_list
+from shared.utils import language_config_to_list, setup_logger
+from shared.constants import ELASTICSEARCH_HELPER_LOG_FILENAME
+
+# setup logger
+logger = setup_logger(
+    "upload_to_elasticsearch.elasticsearch_helper",
+    Path(__file__).parent.parent.absolute() / "logs" / ELASTICSEARCH_HELPER_LOG_FILENAME,
+)
+
 
 # Increase timeout because snapshot-operations have exceeded the default timeout of 10 seconds
 # This depends on the size of the indices on the elasticsearch server.
@@ -258,7 +266,7 @@ def apply_snapshot_from_repository(
         )
         print(str(result))
     except Exception as e:
-        print(str(e))
+        logger.exception(e)
 
 
 def delete_snapshot_from_repository(
@@ -288,7 +296,7 @@ def delete_snapshot_from_repository(
         es.snapshot.delete(repository=repository_name, snapshot=snapshot_name)
     except Exception as e:
         print("There was a problem deleting the snapshot:")
-        print(str(e))
+        logger.exception(e)
 
 
 def list_all_snapshots_from_repository(
@@ -307,7 +315,7 @@ def list_all_snapshots_from_repository(
         )
         print(req.text)
     except Exception as e:
-        print(str(e))
+        logger.exception(e)
 
 
 def list_all_indices(elastic_search_url: Optional[str] = "localhost:9200") -> None:
@@ -320,7 +328,7 @@ def list_all_indices(elastic_search_url: Optional[str] = "localhost:9200") -> No
         req = requests.get(url="http://" + elastic_search_url + "/_cat/indices")
         print(req.text)
     except Exception as e:
-        print(str(e))
+        logger.exception(e)
 
 
 def create_index_for_each_language(

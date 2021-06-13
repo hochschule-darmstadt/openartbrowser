@@ -10,8 +10,15 @@ import datetime
 from numbers import Number
 from typing import List, Dict
 from shared.constants import *
-from shared.utils import create_new_path, write_state, check_state
+from shared.utils import create_new_path, write_state, check_state, setup_logger
+from pathlib import Path
 import sys
+
+# setup logger
+logger = setup_logger(
+    "data_enhancement.ranking",
+    Path(__file__).parent.parent.absolute() / "logs" / RANKING_LOG_FILENAME,
+)
 
 RECOVER_MODE = False
 
@@ -119,8 +126,9 @@ if __name__ == "__main__":
                 datetime.datetime.now(), "Finished ranking with", filename,
             )
         except Exception as error:
-            print(
-                f"Error when opening following file: {filename}. Error: {error}. Skipping file now."
+            logger.error(
+                f"Error when opening following file: {filename}. Skipping file now.\nError:"
             )
+            logger.exception(error)
             continue
     write_state(ETL_STATES.DATA_TRANSFORMATION.RANKING)

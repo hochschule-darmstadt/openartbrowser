@@ -1,11 +1,11 @@
 import * as _ from 'lodash';
-import {HttpClient} from '@angular/common/http';
-import {Inject, Injectable, LOCALE_ID} from '@angular/core';
-import {ArtSearch, Artwork, Entity, EntityIcon, EntityType, Iconclass, Movement} from 'src/app/shared/models/models';
-import {environment} from 'src/environments/environment';
-import {usePlural} from 'src/app/shared/models/entity.interface';
+import { HttpClient } from '@angular/common/http';
+import { Inject, Injectable, LOCALE_ID } from '@angular/core';
+import { ArtSearch, Artwork, Entity, EntityIcon, EntityType, Iconclass, Movement } from 'src/app/shared/models/models';
+import { environment } from 'src/environments/environment';
+import { usePlural } from 'src/app/shared/models/entity.interface';
 import * as bodyBuilder from 'bodybuilder';
-import {Bodybuilder} from 'bodybuilder';
+import { Bodybuilder } from 'bodybuilder';
 
 const defaultSortField = 'relativeRank';
 
@@ -131,8 +131,7 @@ export class DataService {
    */
   public searchArtworks<T>(searchObj: ArtSearch, keywords: string[] = [], count = 400): Promise<T[]> {
     const body = bodyBuilder()
-      .size(count)
-      .sort(defaultSortField, 'desc');
+      .size(count);
     _.each(searchObj, (arr, key) => {
       if (Array.isArray(arr)) {
         _.each(arr, val => body.query('match', key, val));
@@ -146,6 +145,27 @@ export class DataService {
       })
     );
     return this.performQuery<T>(body);
+  }
+
+  // could be fused with searchArtworks, waiting for updates in searchArtworks
+  public async countSearchResultItems<T>(searchObj: ArtSearch, keywords: string[] = [], type: EntityType): Promise<T[]> {
+    const body = bodyBuilder()
+      .query('match', 'type', type);
+    _.each(searchObj, (arr, key) => {
+      if (Array.isArray(arr)) {
+        _.each(arr, val => body.query('match', key, val));
+      }
+    });
+    _.each(keywords, keyword =>
+      body.query('bool', (q) => {
+        return q.orQuery('match', 'label', keyword)
+          .orQuery('match', 'description', keyword)
+          .orQuery('match', 'abstract', keyword);
+      })
+    );
+    const response: any = await this.http.post(this.countEndPoint, body.build()).toPromise();
+    console.log(response);
+    return response && response.count ? response.count : undefined;
   }
 
   /**
@@ -167,7 +187,7 @@ export class DataService {
    * Get item count of type
    * @param type the type which should be counted
    */
-  public async countEntityItems<T>(type: EntityType){
+  public async countEntityItems<T>(type: EntityType) {
     const body = bodyBuilder()
       .query('match', 'type', type);
     const response: any = await this.http.post(this.countEndPoint, body.build()).toPromise();

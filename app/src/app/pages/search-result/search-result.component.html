@@ -46,7 +46,7 @@
   <div *ngIf='searchResults?.length'>
     <ul class='nav nav-tabs'>
       <ng-container *ngFor='let tab of entityTabs'>
-        <li class='nav-item' *ngIf='tab.itemsFound'>
+        <li class='nav-item'>
           <a class='nav-link' [ngClass]='{ active: tab.active }' data-toggle='tab' href='#{{ tab.type }}_tab'
              (click)='tabClicked(tab)'>
             <i class='mr-1 fa fa-{{ tab.icon }}'></i>

@@ -30,9 +30,16 @@ from shared.constants import (
     ID,
     VIDEOS,
     YOUTUBE_VIDEOS_FILE,
-    ETL_STATES
+    ETL_STATES,
+    ADD_YOUTUBE_VIDEOS_LOG_FILENAME
 )
-from shared.utils import create_new_path, write_state, check_state
+from shared.utils import create_new_path, write_state, check_state, setup_logger
+
+# setup logger
+logger = setup_logger(
+    "data_enhancement.add_youtube_videos",
+    Path(__file__).parent.parent.absolute() / "logs" / ADD_YOUTUBE_VIDEOS_LOG_FILENAME,
+)
 
 try:
     GOOGLE_DEV_KEY = open("google_dev_key.txt").read()
@@ -97,9 +104,10 @@ def get_qid_video_url_dict(
             if broken_ids:
                 write_broken_links_to_file(broken_ids)
     except Exception as error:
-        print(
-            f"Error when opening following file: {csv_file}. Error: {error}. Skipping file now."
+        logger.error(
+            f"Error when opening following file: {csv_file}. Skipping file now.\nError:"
         )
+        logger.exception(error)
         return None
 
     return videos
@@ -181,9 +189,10 @@ if __name__ == "__main__":
             ) as file:
                 json.dump(entities, file, ensure_ascii=False)
         except Exception as error:
-            print(
-                f"Error when opening following file: {entity_type}. Error: {error}. Skipping file now."
+            logger.error(
+                f"Error when opening following file: {entity_type}. Skipping file now.\nError:"
             )
+            logger.exception(error)
             continue
         print(
             datetime.datetime.now(),

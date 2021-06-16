@@ -90,6 +90,7 @@ export class SearchResultComponent implements OnInit, OnDestroy {
         }
       });
     });
+
     // All tab should be added by default and set active
     this.addTab(EntityType.ALL, true);
 

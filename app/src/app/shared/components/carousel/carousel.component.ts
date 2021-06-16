@@ -1,6 +1,9 @@
 import { Component, Input, SimpleChanges, OnChanges, EventEmitter, Output } from '@angular/core';
 import { Entity } from '../../models/models';
 import { HostListener } from '@angular/core';
+import { HammerGestureConfig } from "@angular/platform-browser";
+import * as hammer from "hammerjs";
+import {TimelineComponent} from 'src/app/shared/components/timeline/timeline.component';
 
 export interface Slide {
   /** artworks displayed on this slide */
@@ -43,6 +46,11 @@ export function makeDefaultSlide(id: number = 0, items: Array<Entity> = []): Sli
   styleUrls: ['./carousel.component.scss']
 })
 export class CarouselComponent implements OnChanges {
+  overrides = <any>{
+    swipe: { direction: hammer.DIRECTION_HORIZONTAL },
+    pinch: { enable: false },
+    rotate: { enable: false }
+  };
   /** title of this slider */
   @Input() heading: string;
 

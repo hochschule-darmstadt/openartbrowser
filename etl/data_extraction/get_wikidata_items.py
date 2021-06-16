@@ -23,26 +23,34 @@ Returns:
     - materials.json/.csv
     - motifs.json/.csv
     - movements.json/.csv
+    - classes.json/.csv
 """
 import csv
 import datetime
-import json
 import sys
 from pathlib import Path
 from typing import Dict, List, Optional
 
+import ijson
+
 from data_extraction import load_wd_entities
 from data_extraction.constants import *
 from shared.constants import *
+from shared.blocklist import BLOCKLIST
 from shared.utils import (
     create_new_path,
     generate_json,
     language_config_to_list,
     setup_logger,
+    is_jsonable,
+    check_state, write_state
 )
 
 DEV = False
 DEV_CHUNK_LIMIT = 2  # Not entry but chunks of 50
+RECOVER_MODE = False
+TEST_MODE = False
+CLASS_LIM = 2
 
 logger = setup_logger(
     "data_extraction.get_wikidata_items",
@@ -53,14 +61,15 @@ lang_keys = [item[0] for item in language_config_to_list()]
 
 
 def write_data_to_json_and_csv(
-    motifs: List[Dict],
-    genres: List[Dict],
-    extracted_classes: List[Dict],
-    materials: List[Dict],
-    movements: List[Dict],
-    locations: List[Dict],
-    merged_artworks: List[Dict],
-    artists: List[Dict],
+        motifs: List[Dict],
+        genres: List[Dict],
+        extracted_classes: List[Dict],
+        materials: List[Dict],
+        movements: List[Dict],
+        locations: List[Dict],
+        merged_artworks: List[Dict],
+        artists: List[Dict],
+        classes: List[Dict],
 ) -> None:
     """Writes the given lists of dictionaries to json and csv files
 
@@ -73,6 +82,7 @@ def write_data_to_json_and_csv(
         locations: List of locations
         merged_artworks: List of artworks
         artists: List of artists
+        classes: List of classes
     """
     generate_json(motifs, create_new_path(MOTIF[PLURAL]))
     generate_csv(
@@ -86,11 +96,11 @@ def write_data_to_json_and_csv(
         get_fields(GENRE[PLURAL]),
         create_new_path(GENRE[PLURAL], file_type=CSV),
     )
-    generate_json(extracted_classes, create_new_path(CLASS[PLURAL]))
+    generate_json(extracted_classes, create_new_path(EXTRACTED_CLASS[PLURAL]))
     generate_csv(
         extracted_classes,
-        get_fields(CLASS[PLURAL]),
-        create_new_path(CLASS[PLURAL], file_type=CSV),
+        get_fields(EXTRACTED_CLASS[PLURAL]),
+        create_new_path(EXTRACTED_CLASS[PLURAL], file_type=CSV),
     )
     generate_json(materials, create_new_path(MATERIAL[PLURAL]))
     generate_csv(
@@ -110,11 +120,12 @@ def write_data_to_json_and_csv(
         get_fields(LOCATION[PLURAL]),
         create_new_path(LOCATION[PLURAL], file_type=CSV),
     )
+    print(f"writing json of {len(merged_artworks)} artworks")
     generate_json(merged_artworks, create_new_path(ARTWORK[PLURAL]))
     generate_csv(
         merged_artworks,
         get_fields(ARTWORK[PLURAL]),
-        create_new_path(ARTWORK[SINGULAR], file_type=CSV),
+        create_new_path(ARTWORK[PLURAL], file_type=CSV),
     )
     generate_json(artists, create_new_path(ARTIST[PLURAL]))
     generate_csv(
@@ -122,11 +133,17 @@ def write_data_to_json_and_csv(
         get_fields(ARTIST[PLURAL]),
         create_new_path(ARTIST[PLURAL], file_type=CSV),
     )
+    generate_json(classes, create_new_path(CLASS[PLURAL]))
+    generate_csv(
+        classes,
+        get_fields(CLASS[PLURAL]),
+        create_new_path(CLASS[PLURAL], file_type=CSV),
+    )
 
 
 # region csv file functions
 def get_fields(
-    type_name: str, language_keys: Optional[List[str]] = lang_keys,
+        type_name: str, language_keys: Optional[List[str]] = lang_keys,
 ) -> List[str]:
     """Returns all columns for a specific type, e. g. 'artworks'
 
@@ -144,12 +161,7 @@ def get_fields(
             f"{DESCRIPTION[SINGULAR]}_{langkey}",
             f"{WIKIPEDIA_LINK}_{langkey}",
         ]
-    if type_name in [
-        DRAWING[PLURAL],
-        SCULPTURE[PLURAL],
-        PAINTING[PLURAL],
-        ARTWORK[PLURAL],
-    ]:
+    if type_name in [source_type[PLURAL] for source_type in SOURCE_TYPES] + [ARTWORK[PLURAL]]:
         fields += [
             ARTIST[PLURAL],
             LOCATION[PLURAL],
@@ -203,13 +215,8 @@ def get_fields(
         ]
         for langkey in language_keys:
             fields += [f"{COUNTRY}_{langkey}"]
-    elif type_name == CLASS[PLURAL]:
-        fields = [ID, LABEL[SINGULAR], DESCRIPTION[SINGULAR], SUBCLASS_OF, TYPE]
-        for langkey in language_keys:
-            fields += [
-                f"{LABEL[SINGULAR]}_{langkey}",
-                f"{DESCRIPTION[SINGULAR]}_{langkey}",
-            ]
+    elif type_name == CLASS[PLURAL] or type_name == EXTRACTED_CLASS[PLURAL]:
+        fields += [SUBCLASS_OF]
     return fields
 
 
@@ -223,7 +230,7 @@ def generate_csv(extract_dicts: List[Dict], fields: List[str], filename: str) ->
     """
     filename.parent.mkdir(parents=True, exist_ok=True)
     with open(
-        filename.with_suffix(f".{CSV}"), "w", newline="", encoding="utf-8"
+            filename.with_suffix(f".{CSV}"), "w", newline="", encoding="utf-8"
     ) as file:
         writer = csv.DictWriter(file, fieldnames=fields, delimiter=";", quotechar='"')
         writer.writeheader()
@@ -244,25 +251,26 @@ def merge_artworks() -> List[Dict]:
     """
     print(datetime.datetime.now(), "Starting with", "merging artworks")
     artworks = set()
-    file_names = [
-        f"{PAINTING[PLURAL]}.{JSON}",
-        f"{DRAWING[PLURAL]}.{JSON}",
-        f"{SCULPTURE[PLURAL]}.{JSON}",
-    ]
+    file_names = [f"{source_type[PLURAL]}.{JSON}" for source_type in SOURCE_TYPES]
     file_names = [
         create_new_path(ARTWORK[PLURAL], subpath=file_name) for file_name in file_names
     ]
     extract_dicts = []
 
     for file_name in file_names:
-        with open(file_name, encoding="utf-8") as input:
-            object_array = json.load(input)
-            for object in object_array:
-                if not object[ID] in artworks:  # remove duplicates
-                    object[TYPE] = ARTWORK[SINGULAR]
-                    extract_dicts.append(object)
-                    artworks.add(object[ID])
-
+        try:
+            with open(file_name, encoding="utf-8") as input:
+                objects = ijson.items(input, 'item')
+                object_array = (o for o in objects)
+                for object in object_array:
+                    if not object[ID] in artworks and is_jsonable(object):  # remove duplicates
+                        object[TYPE] = ARTWORK[SINGULAR]
+                        extract_dicts.append(object)
+                        artworks.add(object[ID])
+        except Exception as e:
+            logger.error(f"Error when opening following file: {file_name}. Skipping file now.")
+            logger.error(e)
+            continue
     print(datetime.datetime.now(), "Finished with", "merging artworks")
     print()
     return extract_dicts
@@ -273,23 +281,24 @@ def extract_art_ontology() -> None:
     """
 
     # Array of already crawled wikidata items
-    already_crawled_wikidata_items = set()
+    already_crawled_wikidata_items = set(BLOCKLIST)
 
-    for artwork, wd in [
-        (DRAWING[PLURAL], DRAWING[ID]),
-        (SCULPTURE[PLURAL], SCULPTURE[ID]),
-        (PAINTING[PLURAL], PAINTING[ID]),
-    ]:
+    for source in SOURCE_TYPES if not TEST_MODE else SOURCE_TYPES[:CLASS_LIM]:
+        if RECOVER_MODE and check_state(ETL_STATES.GET_WIKIDATA_ITEMS.EXTRACT_SOURCE + source[PLURAL]):
+            continue
         extracted_artwork = load_wd_entities.extract_artworks(
-            artwork, wd, already_crawled_wikidata_items, DEV, DEV_CHUNK_LIMIT
+            source[PLURAL], source[ID], already_crawled_wikidata_items, DEV, DEV_CHUNK_LIMIT
         )
 
-        path_name = create_new_path(ARTWORK[PLURAL], artwork, CSV)
-        generate_csv(extracted_artwork, get_fields(artwork), path_name)
+        path_name = create_new_path(ARTWORK[PLURAL], source[PLURAL], CSV)
+        generate_csv(extracted_artwork, get_fields(source[PLURAL]), path_name)
 
-        path_name = create_new_path(ARTWORK[PLURAL], artwork, JSON)
+        path_name = create_new_path(ARTWORK[PLURAL], source[PLURAL], JSON)
         generate_json(extracted_artwork, path_name)
+        write_state(ETL_STATES.GET_WIKIDATA_ITEMS.EXTRACT_SOURCE + source[PLURAL])
 
+    if RECOVER_MODE and check_state(ETL_STATES.GET_WIKIDATA_ITEMS.MERGED_ARTWORKS):
+        return
     merged_artworks = merge_artworks()
 
     path_name = create_new_path(ARTWORK[PLURAL], file_type=CSV)
@@ -304,6 +313,7 @@ def extract_art_ontology() -> None:
         movements,
         artists,
         locations,
+        classes,
     ) = load_wd_entities.bundle_extract_subjects_calls(
         [
             GENRE[PLURAL],
@@ -311,6 +321,7 @@ def extract_art_ontology() -> None:
             MOVEMENT[PLURAL],
             ARTIST[PLURAL],
             LOCATION[PLURAL],
+            CLASS[PLURAL],
         ],
         merged_artworks,
     )
@@ -322,14 +333,21 @@ def extract_art_ontology() -> None:
         (movements, MOVEMENT[SINGULAR]),
         (artists, ARTIST[SINGULAR]),
         (locations, LOCATION[SINGULAR]),
+        (classes, CLASS[SINGULAR]),
     ]:
         [entity.update({TYPE: type_name}) for entity in subject]
 
     # Get distinct classes from artworks, motifs, etc.
     extracted_classes = load_wd_entities.get_distinct_extracted_classes(
-        merged_artworks, motifs, genres, materials, movements, artists, locations,
+        merged_artworks, motifs, genres, materials, movements, artists, locations, classes,
     )
     [c.update({TYPE: CLASS[SINGULAR]}) for c in extracted_classes]
+
+    # Add the "subclass_of" parameter from the extracted_classes to the crawled classes
+    for class_itm in classes:
+        extracted_class = [d for i, d in enumerate(extracted_classes) if class_itm[ID] in d.values()]
+        class_itm.update({SUBCLASS_OF: extracted_class[0][SUBCLASS_OF]}) if len(extracted_class) > 0 else ""
+
     print("Total classes after transitive closure loading: ", len(extracted_classes))
     # Get country labels for merged artworks and locations
     (
@@ -370,15 +388,33 @@ def extract_art_ontology() -> None:
         locations,
         merged_artworks,
         artists,
+        classes,
     )
+    write_state(ETL_STATES.GET_WIKIDATA_ITEMS.MERGED_ARTWORKS)
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1 and sys.argv[1] == "-d":
-        if len(sys.argv) > 2 and sys.argv[2].isdigit():
-            DEV_CHUNK_LIMIT = int(sys.argv[2])
-        print("DEV MODE: on, DEV_LIM={0}".format(DEV_CHUNK_LIMIT))
-        DEV = True
-
+    if len(sys.argv) > 1:
+        print(sys.argv)
+        dev_count_set = False
+        if "-d" in sys.argv:
+            if len(sys.argv) > sys.argv.index('-d') + 1 and any([c.isdigit() for c in sys.argv]):
+                DEV_CHUNK_LIMIT = int(sys.argv[sys.argv.index('-d') + 1])
+                dev_count_set = True
+            print("DEV MODE: on, DEV_LIM={0}".format(DEV_CHUNK_LIMIT))
+            DEV = True
+        if "-r" in sys.argv:
+            RECOVER_MODE = True
+        if "-t" in sys.argv:
+            if len(sys.argv) > sys.argv.index('-t') + 1 and sys.argv[sys.argv.index('-t') + 1].isdigit():
+                CLASS_LIM = int(sys.argv[sys.argv.index('-t') + 1])
+            print("TEST MODE: on, CLASS_LIM={0}".format(CLASS_LIM))
+            TEST_MODE = True
+            DEV = True
+            if not dev_count_set:
+                DEV_CHUNK_LIMIT = 3
+    if RECOVER_MODE and check_state(ETL_STATES.GET_WIKIDATA_ITEMS.STATE):
+        exit(0)
     logger.info("Extracting Art Ontology")
     extract_art_ontology()
+    write_state(ETL_STATES.GET_WIKIDATA_ITEMS.STATE)

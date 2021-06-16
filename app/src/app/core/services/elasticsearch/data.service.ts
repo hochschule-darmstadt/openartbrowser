@@ -162,8 +162,14 @@ export class DataService {
     return this.performQuery<T>(body);
   }
 
-  public async countEntityItems<T>(type: EntityType) {
-    const response: any = await this.http.get(this.countEndPoint + '?q=type:' + type).toPromise();
+  /**
+   * Get item count of type
+   * @param type the type which should be counted
+   */
+  public async countEntityItems<T>(type: EntityType){
+    const body = bodyBuilder()
+      .query('match', 'type', type);
+    const response: any = await this.http.post(this.countEndPoint, body.build()).toPromise();
     return response && response.count ? response.count : undefined;
   }
 
@@ -262,10 +268,12 @@ export class DataService {
       entity.imageMedium = entity.image.replace(prefix, prefix + 'thumb/') + '/512px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1);
     } else {
       // There can only be loaded 4 images at once https://phabricator.wikimedia.org/T255854 so HTTP 429 error may occur.
-      entity.imageSmall =
-        entity.image.replace(prefix, prefix + 'thumb/') + '/lossy-page1-256px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1) + '.jpg';
-      entity.image = entity.imageMedium =
-        entity.image.replace(prefix, prefix + 'thumb/') + '/lossy-page1-512px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1) + '.jpg';
+      if (entity.image) {
+        entity.imageSmall =
+          entity.image.replace(prefix, prefix + 'thumb/') + '/lossy-page1-256px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1) + '.jpg';
+        entity.image = entity.imageMedium =
+          entity.image.replace(prefix, prefix + 'thumb/') + '/lossy-page1-512px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1) + '.jpg';
+      }
     }
     return entity;
   }

@@ -30,14 +30,23 @@ from shared.constants import (
     ID,
     VIDEOS,
     YOUTUBE_VIDEOS_FILE,
+    ETL_STATES,
+    ADD_YOUTUBE_VIDEOS_LOG_FILENAME
 )
-from shared.utils import create_new_path
+from shared.utils import create_new_path, write_state, check_state, setup_logger
+
+# setup logger
+logger = setup_logger(
+    "data_enhancement.add_youtube_videos",
+    Path(__file__).parent.parent.absolute() / "logs" / ADD_YOUTUBE_VIDEOS_LOG_FILENAME,
+)
 
 try:
     GOOGLE_DEV_KEY = open("google_dev_key.txt").read()
 except FileNotFoundError:
     GOOGLE_DEV_KEY = ""
 
+RECOVER_MODE = False
 
 def check_yt_id_valid(id: str) -> bool:
     """Connects to the YT API and checks if the is valid
@@ -65,7 +74,7 @@ def check_yt_id_valid(id: str) -> bool:
 
 
 def get_qid_video_url_dict(
-    check_ids: bool, videofile_location: Optional[str]
+        check_ids: bool, videofile_location: Optional[str]
 ) -> Dict[str, str]:
     """Loads the file 'youtube_videos.csv' and creates a dict of it
 
@@ -95,19 +104,20 @@ def get_qid_video_url_dict(
             if broken_ids:
                 write_broken_links_to_file(broken_ids)
     except Exception as error:
-        print(
-            f"Error when opening following file: {csv_file}. Error: {error}. Skipping file now."
+        logger.error(
+            f"Error when opening following file: {csv_file}. Skipping file now.\nError:"
         )
+        logger.exception(error)
         return None
 
     return videos
 
 
 def write_broken_links_to_file(
-    broken_ids: List[str],
-    broken_ids_logging_location: Optional[str] = Path(__file__).resolve().parent.parent
-    / "logs"
-    / "broken_links.json",
+        broken_ids: List[str],
+        broken_ids_logging_location: Optional[str] = Path(__file__).resolve().parent.parent
+                                                     / "logs"
+                                                     / "broken_links.json",
 ) -> None:
     """Writes broken video links to file
 
@@ -121,10 +131,10 @@ def write_broken_links_to_file(
 
 
 def add_youtube_videos(
-    entities: Dict,
-    videofile_location: Optional[str] = Path(__file__).resolve().parent
-    / YOUTUBE_VIDEOS_FILE,
-    check_ids: bool = True,
+        entities: Dict,
+        videofile_location: Optional[str] = Path(__file__).resolve().parent
+                                            / YOUTUBE_VIDEOS_FILE,
+        check_ids: bool = True,
 ) -> Dict:
     """Load the video csv file and add the links to the ontology file
 
@@ -151,6 +161,10 @@ def add_youtube_videos(
 
 
 if __name__ == "__main__":
+    if len(sys.argv) > 1 and "-r" in sys.argv:
+        RECOVER_MODE = True
+    if RECOVER_MODE and check_state(ETL_STATES.DATA_TRANSFORMATION.ADD_YOUTUBE_VIDEOS):
+        exit(0)
     check = "-c" in sys.argv
     for entity_type in [ARTWORK[PLURAL], ARTIST[PLURAL], MOVEMENT[PLURAL]]:
         print(
@@ -160,7 +174,7 @@ if __name__ == "__main__":
         try:
             # Open file
             with open(
-                (create_new_path(entity_type)).with_suffix(f".{JSON}"), encoding="utf-8"
+                    (create_new_path(entity_type)).with_suffix(f".{JSON}"), encoding="utf-8"
             ) as file:
                 items = json.load(file)
 
@@ -168,18 +182,20 @@ if __name__ == "__main__":
 
             # Overwrite file
             with open(
-                (create_new_path(entity_type)).with_suffix(f".{JSON}"),
-                "w",
-                newline="",
-                encoding="utf-8",
+                    (create_new_path(entity_type)).with_suffix(f".{JSON}"),
+                    "w",
+                    newline="",
+                    encoding="utf-8",
             ) as file:
-                file.write(json.dumps(entities, ensure_ascii=False))
+                json.dump(entities, file, ensure_ascii=False)
         except Exception as error:
-            print(
-                f"Error when opening following file: {entity_type}. Error: {error}. Skipping file now."
+            logger.error(
+                f"Error when opening following file: {entity_type}. Skipping file now.\nError:"
             )
+            logger.exception(error)
             continue
         print(
             datetime.datetime.now(),
             f"Finished adding youtube videos for file: {entity_type}",
         )
+    write_state(ETL_STATES.DATA_TRANSFORMATION.ADD_YOUTUBE_VIDEOS)

@@ -1,7 +1,7 @@
 <div class="container">
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7">
-      <h2 class="mb-3 first-letter">Search result</h2>
+      <h2 class="mb-3 first-letter" i18n="Search results label@@searchResults">Search results</h2>
 
       <div class="row">
         <ng-container *ngFor="let result of searchResults; let i = index">
@@ -20,7 +20,7 @@
         </ng-container>
 
         <div class="col-md-3 pr-0" *ngIf="searchTerms?.length">
-          <p class="mb-1 text-muted">Terms:</p>
+          <p class="mb-1 text-muted colon-suffix" i18n="Terms label@@terms">Terms</p>
         </div>
 
         <div class="col-md-9 pl-0 info" *ngIf="searchTerms?.length">
@@ -30,7 +30,7 @@
         </div>
 
         <div class="col-md-3 pr-0">
-          <p class="mb-1 text-muted">Hits:</p>
+          <p class="mb-1 text-muted colon-suffix" i18n="Results label@@results">Results</p>
         </div>
 
         <div class="col-md-9 pl-0 info">
@@ -41,5 +41,5 @@
       </div>
     </div>
   </div>
-  <app-slider [items]="sliderItems" heading="Artworks"></app-slider>
+  <app-slider [items]='sliderItems' heading="Results label@@results"></app-slider>
 </div>

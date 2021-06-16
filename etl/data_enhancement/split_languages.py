@@ -12,9 +12,14 @@ Returns:
 """
 import copy
 import datetime
-import json
 from pathlib import Path
 from typing import Any, Dict, List
+
+import ijson
+
+from shared.utils import write_state, check_state, is_jsonable
+from shared.constants import ETL_STATES
+import sys
 
 from shared.constants import (
     ABSTRACT,
@@ -37,6 +42,7 @@ from shared.utils import generate_json, language_config_to_list
 language_values = language_config_to_list()
 language_keys = [item[0] for item in language_values]
 
+RECOVER_MODE = False
 
 def get_language_attributes() -> List[str]:
     """Returns all attributes in crawler .csv/.json files that need language handling
@@ -134,8 +140,8 @@ def modify_langdict(jsonobject: Dict, langkey: str) -> List[List[Any]]:
                     try:
                         for attribute in [LABEL[SINGULAR], DESCRIPTION[SINGULAR]]:
                             if (
-                                not exhibition[f"{attribute}_{langkey}"]
-                                and attribute not in ignored_attributes
+                                    not exhibition[f"{attribute}_{langkey}"]
+                                    and attribute not in ignored_attributes
                             ):
                                 exhibition = fill_language_gaps(attribute, exhibition)
                             else:
@@ -164,8 +170,8 @@ def modify_langdict(jsonobject: Dict, langkey: str) -> List[List[Any]]:
 
             # Check if element has language data and if attribute needs to be ignored by gap filling
             elif (
-                not tempjson[element + "_" + langkey]
-                and element not in ignored_attributes
+                    not tempjson[element + "_" + langkey]
+                    and element not in ignored_attributes
             ):
                 tempjson = fill_language_gaps(element, tempjson)
             else:
@@ -189,7 +195,7 @@ def modify_langdict(jsonobject: Dict, langkey: str) -> List[List[Any]]:
 
 
 def remove_language_key_attributes_in_exhibitions(
-    language_file: List[Dict], lang_keys: List[str] = language_keys
+        language_file: List[Dict], lang_keys: List[str] = language_keys
 ) -> List[Dict]:
     """Removes the language dependent attributes from the exhibitions objects
 
@@ -212,22 +218,27 @@ def remove_language_key_attributes_in_exhibitions(
 
 
 if __name__ == "__main__":
+    if len(sys.argv) > 1 and "-r" in sys.argv:
+        RECOVER_MODE = True
+    if RECOVER_MODE and check_state(ETL_STATES.DATA_TRANSFORMATION.SPLIT_LANGUAGES,
+                                    Path(__file__).parent.parent):
+        exit(0)
     art_ontology_file = (
-        Path(__file__).resolve().parent.parent / CRAWLER_OUTPUT / "art_ontology.json"
+            Path(__file__).resolve().parent.parent / CRAWLER_OUTPUT / "art_ontology.json"
     )
     print(
         datetime.datetime.now(),
         "Starting with splitting art_ontology.json to its language files",
     )
 
-    with open(art_ontology_file, encoding="utf-8") as json_file:
-        art_ontology = json.load(json_file)
-
-        for lang_key in language_keys:
+    for lang_key in language_keys:
+        with open(art_ontology_file, encoding="utf-8") as json_file:
+            art_ontology = ijson.items(json_file, 'item')
             art_ontology_for_lang = []
             print(f"Start generating art_ontology_{lang_key}.{JSON}")
-            for i, item in enumerate(art_ontology):
-                art_ontology_for_lang.append(modify_langdict(item, lang_key))
+            for item in art_ontology:
+                if is_jsonable(item):
+                    art_ontology_for_lang.append(modify_langdict(item, lang_key))
 
             art_ontology_for_lang = remove_language_key_attributes_in_exhibitions(
                 art_ontology_for_lang
@@ -239,9 +250,11 @@ if __name__ == "__main__":
                 / CRAWLER_OUTPUT
                 / f"art_ontology_{lang_key}",
             )
+            json_file.close()
             print(f"Finished generating art_ontology_{lang_key}.{JSON}")
 
     print(
         datetime.datetime.now(),
         "Finished with splitting art_ontology.json to its language files",
     )
+    write_state(ETL_STATES.DATA_TRANSFORMATION.SPLIT_LANGUAGES, Path(__file__).parent.parent)

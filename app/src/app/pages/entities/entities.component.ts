@@ -3,9 +3,10 @@ import {DataService} from '../../core/services/elasticsearch/data.service';
 import {ActivatedRoute} from '@angular/router';
 import {
   Entity, Movement, Artwork, Artist, Genre,
-  Motif, Location, Material, EntityType
+  Motif, Location, Material, Class, EntityType
 } from 'src/app/shared/models/models';
 import {FetchOptions} from '../../shared/components/fetching-list/fetching-list.component';
+import { useSingular } from 'src/app/shared/models/entity.interface';
 
 @Component({
   selector: 'app-entities',
@@ -20,6 +21,7 @@ export class EntitiesComponent implements OnInit {
     entityType: undefined
   } as FetchOptions;
   query: (offset: number) => Promise<Entity[]> = undefined;
+  counter: number;
 
   constructor(private dataService: DataService, private route: ActivatedRoute) {
   }
@@ -28,7 +30,7 @@ export class EntitiesComponent implements OnInit {
     if (this.route.pathFromRoot[1]) {
       /** get type which shall be handled from url */
       this.route.pathFromRoot[1].url.subscribe(val => {
-        const lastPathSegment = val[0].path.substr(0, val[0].path.length - 1);
+        const lastPathSegment = useSingular(val[0].path);
         this.fetchOptions.entityType = EntityType[lastPathSegment.toUpperCase() as keyof typeof EntityType];
         /** get max number of elements */
         this.fetchOptions.queryCount = this.dataService.countEntityItems(this.fetchOptions.entityType);
@@ -57,6 +59,9 @@ export class EntitiesComponent implements OnInit {
             this.fetchOptions.entityType, this.fetchOptions.fetchSize, offset);
         case EntityType.MATERIAL:
           return await this.dataService.getEntityItems<Material>(
+            this.fetchOptions.entityType, this.fetchOptions.fetchSize, offset);
+        case EntityType.CLASS:
+          return await this.dataService.getEntityItems<Class>(
             this.fetchOptions.entityType, this.fetchOptions.fetchSize, offset);
       }
     };

@@ -87,17 +87,19 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
     }
     if (this.options.queryCount) {
       // queryCount is a promise for a number or a number => ready for init
-      this.init()
+      this.init();
+      this.fetchData.emit(this.options.queryCount);
     }
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.hasOwnProperty('query')) {
-      this.pages = {}
+      this.pages = {};
     }
     if (this.options.queryCount) {
       // queryCount is a promise for a number or a number => ready for init
-      this.init()
+      this.init();
+      this.fetchData.emit(this.options.queryCount);
     }
   }
 

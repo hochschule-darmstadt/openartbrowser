@@ -4,7 +4,7 @@ WORKDIR /app
 # The pythonpath is needed for package/module imports
 ENV PYTHONPATH "${PYTHONPATH}:/app"
 
-RUN pip install pywikibot ijson
+RUN pip install pywikibot ijson wikitextparser
 
 #copy necessary files
 COPY ["./data_extraction/", "/app/data_extraction"]
@@ -30,6 +30,7 @@ COPY --from=Wikicrawler /app/crawler_output/ /app/crawler_output/
 RUN mkdir data_enhancement
 COPY ["./data_enhancement/", "/app/data_enhancement"]
 COPY ["./shared/", "/app/shared"]
+RUN mkdir "/app/logs"
 
 RUN pip install ijson requests
 RUN ["python", "./data_enhancement/estimate_movement_period.py"]

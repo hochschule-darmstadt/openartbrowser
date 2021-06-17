@@ -6,12 +6,24 @@ from pathlib import Path
 from typing import List, Dict, Optional
 import requests
 from elasticsearch import Elasticsearch, helpers
-from shared.utils import language_config_to_list
+from shared.utils import language_config_to_list, setup_logger
+from shared.constants import ELASTICSEARCH_HELPER_LOG_FILENAME
+
+# setup logger
+logger = setup_logger(
+    "upload_to_elasticsearch.elasticsearch_helper",
+    Path(__file__).parent.parent.absolute() / "logs" / ELASTICSEARCH_HELPER_LOG_FILENAME,
+)
+
 
 # Increase timeout because snapshot-operations have exceeded the default timeout of 10 seconds
 # This depends on the size of the indices on the elasticsearch server.
 # It's easier to set an estimated value here than calculate it. The value varies within seconds.
-SNAPSHOT_TIMEOUT = 40
+SNAPSHOT_TIMEOUT = 50
+
+# Set if a snapshot-operation should be retried after timeout and if so how many times
+RETRY_ON_TIMEOUT = True
+MAX_RETRIES_ON_TIMEOUT = 10
 
 # Some attributes on the elasticsearch have to be explicitly typed
 # Otherwise the sort functionallity doesn't work (e. g. for long datatypes)
@@ -201,7 +213,7 @@ def create_snapshot_for_index(
                                 - Following entry in elasticsearch.yml required:
                                 path.repo: ["path_to_folder"]
     """
-    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, max_retries=10, retry_on_timeout=True)
+    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT)
 
     try:
         # Check if repository already was created
@@ -242,7 +254,7 @@ def apply_snapshot_from_repository(
         repository_name: Name of the repository the snapshot is in
         snapshot_name: Name of the snapshot
     """
-    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT)
+    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT)
 
     try:
         es.indices.close(index=index_name)
@@ -258,7 +270,7 @@ def apply_snapshot_from_repository(
         )
         print(str(result))
     except Exception as e:
-        print(str(e))
+        logger.exception(e)
 
 
 def delete_snapshot_from_repository(
@@ -274,7 +286,7 @@ def delete_snapshot_from_repository(
         backup_directory: Directory in which the repository is located
                            See create_snapshot_for_index for more information on that
     """
-    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT)
+    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT)
 
     try:
         # Check if repository already was created
@@ -288,7 +300,7 @@ def delete_snapshot_from_repository(
         es.snapshot.delete(repository=repository_name, snapshot=snapshot_name)
     except Exception as e:
         print("There was a problem deleting the snapshot:")
-        print(str(e))
+        logger.exception(e)
 
 
 def list_all_snapshots_from_repository(
@@ -307,7 +319,7 @@ def list_all_snapshots_from_repository(
         )
         print(req.text)
     except Exception as e:
-        print(str(e))
+        logger.exception(e)
 
 
 def list_all_indices(elastic_search_url: Optional[str] = "localhost:9200") -> None:
@@ -320,7 +332,7 @@ def list_all_indices(elastic_search_url: Optional[str] = "localhost:9200") -> No
         req = requests.get(url="http://" + elastic_search_url + "/_cat/indices")
         print(req.text)
     except Exception as e:
-        print(str(e))
+        logger.exception(e)
 
 
 def create_index_for_each_language(

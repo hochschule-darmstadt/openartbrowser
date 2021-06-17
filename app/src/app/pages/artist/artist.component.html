@@ -1,4 +1,10 @@
-<div class="container entity artist">
+<div *ngIf="idDoesNotExist" class="container entity artist">
+  <div class="row mb-5 border-bottom pb-5">
+    <app-error-message  [id]="artistId"></app-error-message>
+  </div>
+</div>
+
+<div *ngIf="!idDoesNotExist" class="container entity artist">
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7" *ngIf="artist">
       <app-title [entity]="artist"></app-title>
@@ -8,10 +14,7 @@
       <table class="table-fit">
         <tbody>
         <tr *ngIf="artist?.date_of_birth">
-          <td class="text-muted">
-            <ng-container i18n="Born infos @@born">Born</ng-container>
-            :
-          </td>
+          <td class="text-muted"><ng-container i18n="Born infos @@born">Born</ng-container>:</td>
           <td>{{ artist?.date_of_birth + (artist?.place_of_birth ? ' in ' + artist?.place_of_birth : '') }}</td>
         </tr>
 
@@ -36,26 +39,19 @@
           <table class="table-fit">
             <tbody>
             <tr *ngIf="artist?.gender">
-              <td class="text-muted">
-                <ng-container i18n="Artist gender label@@gender">Gender</ng-container>
-                :
-              </td>
+              <td class="text-muted"><ng-container i18n="Artist gender label@@gender">Gender</ng-container>:</td>
               <td>{{ artist?.gender }}</td>
             </tr>
 
             <tr *ngIf="artist?.citizenship">
               <td class="text-muted">
-                <ng-container i18n="Artist citizenship label@@citizenship">Citizenship</ng-container>
-                :
-              </td>
+                <ng-container i18n="Artist citizenship label@@citizenship">Citizenship</ng-container>:</td>
               <td>{{ artist?.citizenship }}</td>
             </tr>
 
             <tr *ngIf="artist?.movements?.length">
               <td class="text-muted">
-                <ng-container i18n="Movement label@@movement">Movement</ng-container>
-                :
-              </td>
+                <ng-container i18n="Movement label@@movement">Movement</ng-container>:</td>
               <td>
                 <app-badge *ngFor="let movement of artist?.movements" [entity]="movement"></app-badge>
               </td>
@@ -63,9 +59,7 @@
 
             <tr *ngIf="artist?.influenced_by?.length">
               <td class="text-muted">
-                <ng-container i18n="Influenced by label@@influenced_by">Influenced by</ng-container>
-                :
-              </td>
+                <ng-container i18n="Influenced by label@@influenced_by">Influenced by</ng-container>:</td>
               <td>
                 <app-badge *ngFor="let influencer of artist?.influenced_by" [entity]="influencer"></app-badge>
               </td>

@@ -1,4 +1,6 @@
 import {Component, Input, HostListener} from '@angular/core';
+import {Subject, timer} from 'rxjs';
+import {switchMap} from 'rxjs/operators';
 import {Artist, Artwork, Entity, EntityType} from 'src/app/shared/models/models';
 import {CustomStepDefinition, Options} from '@angular-slider/ngx-slider';
 import {animate, state, style, transition, trigger} from '@angular/animations';
@@ -27,14 +29,18 @@ interface TimelineItem extends Entity {
     ])
   ]
 })
-export class TimelineComponent {
+export class TimelineComponent{
   /** Artworks that should be displayed in this slider */
   @Input() artworks: Artwork[] = [];
   /** Decide whether artists should be displayed */
   @Input() displayArtists = false;
 
+  /** title of this slider */
+  @Input() heading: string;
+
   /** TimelineItems that should be displayed in this slider */
   items: TimelineItem[] = [];
+  
   private periodSpan = 1;
 
   private maxSliderSteps = 1000;
@@ -64,6 +70,11 @@ export class TimelineComponent {
    */
   private referenceItem: number;
 
+  /** variables to control automatic rotation of the timeline  */
+  private nextRotationTime = 10; // number in seconds, set to '0' to disable
+  private rotationTimer$ = new Subject();
+  private timerSubscription;
+
   /** The current value of the slider */
   value: number;
   /** Used to determine which animation direction to trigger when slider was clicked */
@@ -74,7 +85,7 @@ export class TimelineComponent {
     showTicks: true,
     showSelectionBar: false,
     stepsArray: [],
-    animateOnMove:true,
+    animateOnMove: true,
     getPointerColor() {
       return '#00bc8c';
     },
@@ -126,9 +137,28 @@ export class TimelineComponent {
       const endOfTimeline = this.items[this.items.length - 1].date -
         (this.items[this.items.length - 1].date % this.periodSpan) + this.periodSpan;
       // Set the slider of the timeline to the middle!
-      this.value = (beginOfTimeline + endOfTimeline) / 2;
+      // this.value = (beginOfTimeline + endOfTimeline) / 2;
+      this.value = this.items[Math.floor(this.items.length / 2)].date;
       this.previousValue = this.value;
       this.refreshComponent();
+    }
+  }
+
+  ngOnInit() {
+    // setup timer for automatic timeline rotation
+    // This will run the function 'nextClicked' every 'nextRotationTime' seconds
+    if (this.nextRotationTime > 0) {
+      this.timerSubscription = this.rotationTimer$.pipe(
+        switchMap(() => timer(this.nextRotationTime * 1000, this.nextRotationTime * 1000))
+      ).subscribe(() => this.nextClicked());
+      // start timer
+      this.rotationTimer$.next();
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.timerSubscription) {
+      this.timerSubscription.unsubscribe();
     }
   }
 
@@ -164,6 +194,9 @@ export class TimelineComponent {
     const firstPeriod = firstDate - (firstDate % this.periodSpan);
     const lastPeriod = lastDate - (lastDate % this.periodSpan) + this.periodSpan;
 
+    /** setup options */
+    const newOptions: Options = Object.assign({}, this.options);
+
     /** Fill the slider steps with period legends respectively steps */
     const timeDifference = lastPeriod - firstPeriod;
     if (timeDifference <= this.maxSliderSteps) {
@@ -174,26 +207,47 @@ export class TimelineComponent {
           sliderSteps.push({value: i});
         }
       }
+
+      /** set min and max slider limits */
+      newOptions.minLimit = firstDate - firstPeriod;
+      newOptions.maxLimit = lastDate - firstPeriod;
+
     } else {
-      /** if timeDifference bigger than maxSliderSteps, use the date values of the items */
-      sliderSteps = this.items.map((item, index) => {
+      /**
+       * if timeDifference bigger than maxSliderSteps, use distinct date values of the items
+       * This is done to avoid too much items in the timeline
+       */
+      const distinctItems = this.items.filter(
+        (thing, i, arr) => arr.findIndex(t => t.date === thing.date) === i
+      );
+
+      /**
+       *  determine indices which divide distinctItems in averagePeriodCount blocks of roughly the same length
+       *  this method guarantees that the first and last element are always an index
+       */
+      const stepNr = (distinctItems.length - 1) / (this.averagePeriodCount - 1);
+      const indices = [];
+      for (let i = 0; i < this.averagePeriodCount; i++) {
+        indices.push(Math.floor(stepNr * i));
+      }
+
+      sliderSteps = distinctItems.map((item, index) => {
         const step = {
           value: item.date,
           legend: ''
         };
-        if (index % Math.floor(this.items.length / this.averagePeriodCount) === 0) {
+
+        /** if current index is in indices make this item a legend point */
+        if (indices.includes(index)) {
           step.legend = item.date.toString();
         }
+
         return step;
       });
     }
 
-
     /** Set slider options */
-    const newOptions: Options = Object.assign({}, this.options);
     newOptions.stepsArray = sliderSteps;
-    newOptions.minLimit = firstDate - firstPeriod;
-    newOptions.maxLimit = lastDate - firstPeriod;
     this.options = newOptions;
   }
 
@@ -205,7 +259,6 @@ export class TimelineComponent {
     const itemCountSmallerReference = 2;
     /** Amount of items where date is the exact slider value */
     const countReference = this.items.filter(item => +item.date === this.value).length;
-
     /** ReferenceIndex is the index of the first item with date equal to slider value or bigger */
     let referenceIndex: number;
     if (countReference > itemCountSmallerReference) {
@@ -214,7 +267,6 @@ export class TimelineComponent {
       const firstBiggerRef = this.items.findIndex(item => +item.date > this.value);
       referenceIndex = firstBiggerRef > 0 ? firstBiggerRef - 1 : this.items.length - (this.itemCountPerPeriod - 1);
     }
-
     /** Determine start index */
     if (0 >= referenceIndex - 1 && referenceIndex <= this.items.length - 3) {
       // first slide
@@ -242,6 +294,9 @@ export class TimelineComponent {
       this.sliderAllowEvent = true;
       return;
     }
+    // this resets the 'rotationTimer$'
+    this.rotationTimer$.next();
+
     this.calcSlideStart();
     this.updateSliderItems();
 
@@ -258,30 +313,37 @@ export class TimelineComponent {
 
   /** Handler for click event from left control button. Updates startSlide, value and animation. */
   prevClicked() {
-    if (this.slideStart <= 0) {
-      // Return if first slide
-      return;
-    }
-    this.slideOutLeft = true;
-    this.slideStart = Math.max(this.slideStart - this.itemCountPerPeriod, 0);
-    this.value = +this.items[this.slideStart + this.referenceItem].date;
+    // this resets the 'rotationTimer$'
+    this.rotationTimer$.next();
+
     // decide if sliderMoved-Event should be suppressed
     this.sliderAllowEvent = false;
+    this.slideOutLeft = true;
+    if(this.slideStart <= 0) {
+      this.slideStart = this.items.length - this.itemCountPerPeriod;
+      this.value = this.items[this.items.length - 1].date;
+    } else {
+      this.slideStart = Math.max(this.slideStart - this.itemCountPerPeriod, 0);
+      this.value = +this.items[this.slideStart + this.referenceItem].date;
+    }
     this.updateSliderItems();
   }
 
   /** Handler for click event from right control button. Updates startSlide, value and animation. */
   nextClicked() {
-    if (this.slideEnd >= this.items.length) {
-      // Return if last slide
-      return;
-    }
-    this.slideOutRight = true;
-    this.slideStart = Math.min(this.slideStart + 2 * this.itemCountPerPeriod, this.items.length) - this.itemCountPerPeriod;
-    this.value = +this.items[this.slideStart + this.referenceItem].date;
+    // this resets the 'rotationTimer$'
+    this.rotationTimer$.next();
+
     // decide if sliderMoved-Event should be suppressed
     this.sliderAllowEvent = false;
-
+    this.slideOutRight = true;
+    if(this.slideEnd >= this.items.length) {
+      this.slideStart = 0;
+      this.value = this.items[0].date;
+    } else {
+      this.slideStart = Math.min(this.slideStart + 2 * this.itemCountPerPeriod, this.items.length) - this.itemCountPerPeriod;
+      this.value = +this.items[this.slideStart + this.referenceItem].date;
+    }
     this.updateSliderItems();
   }
 

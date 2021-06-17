@@ -26,6 +26,7 @@ const routes: Routes = [
   { path: 'motifs', loadChildren: () => import('./pages/entities/entities.routing.module').then(m => m.EntitiesRoutingModule) },
   { path: 'locations', loadChildren: () => import('./pages/entities/entities.routing.module').then(m => m.EntitiesRoutingModule) },
   { path: 'materials', loadChildren: () => import('./pages/entities/entities.routing.module').then(m => m.EntitiesRoutingModule) },
+  { path: 'classes', loadChildren: () => import('./pages/entities/entities.routing.module').then(m => m.EntitiesRoutingModule) },
   { path: 'artist/:artistId', loadChildren: () => import('./pages/artist/artist.routing.module').then(m => m.ArtistRoutingModule) },
   { path: 'artwork/:artworkId', loadChildren: () => import('./pages/artwork/artwork.routing.module').then(m => m.ArtworkRoutingModule) },
   { path: 'genre/:genreId', loadChildren: () => import('./pages/genre/genre.routing.module').then(m => m.GenreRoutingModule) },
@@ -33,8 +34,9 @@ const routes: Routes = [
   { path: 'material/:materialId', loadChildren: () => import('./pages/material/material.routing.module').then(m => m.MaterialRoutingModule) },
   { path: 'movement/:movementId', loadChildren: () => import('./pages/movement/movement.routing.module').then(m => m.MovementRoutingModule) },
   { path: 'motif/:motifId', loadChildren: () => import('./pages/motif/motif.routing.module').then(m => m.MotifRoutingModule) },
+  { path: 'class/:classId', loadChildren: () => import('./pages/class/class.routing.module').then(m => m.ClassRoutingModule) },
   { path: 'search', loadChildren: () => import('./pages/search-result/search-result.routing.module').then(m => m.SearchResultRoutingModule) },
-  { path: '**', redirectTo: '' }
+  { path: '**', loadChildren: () => import('./pages/error/error.routing.module').then(m => m.ErrorRoutingModule) }
 ];
 
 @NgModule({

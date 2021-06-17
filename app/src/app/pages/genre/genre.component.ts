@@ -27,6 +27,9 @@ export class GenreComponent implements OnInit, OnDestroy {
   /** The entity this page is about */
   genre: Genre = null;
 
+  idDoesNotExist = false;
+  genreId: string;
+
   /** Related artworks */
   fetchOptions = {
     initOffset: 0,
@@ -42,17 +45,19 @@ export class GenreComponent implements OnInit, OnDestroy {
   ngOnInit() {
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
-      const genreId = params.get('genreId');
-      this.fetchOptions.queryCount = this.dataService.countArtworksByType(EntityType.GENRE, [genreId]);
+      this.genreId = params.get('genreId');
+      this.fetchOptions.queryCount = this.dataService.countArtworksByType(EntityType.GENRE, [this.genreId]);
 
       /** load fetching list items */
       this.query = async (offset) => {
         return await this.dataService.findArtworksByType(
-          EntityType.GENRE, [genreId], this.fetchOptions.fetchSize, offset)
+          EntityType.GENRE, [this.genreId], this.fetchOptions.fetchSize, offset)
       };
 
       /** Use data service to fetch entity from database */
-      this.genre = await this.dataService.findById<Genre>(genreId, EntityType.GENRE);
+      this.genre = await this.dataService.findById<Genre>(this.genreId, EntityType.GENRE);
+
+      if (!this.genre) { this.idDoesNotExist = true }
     });
   }
 

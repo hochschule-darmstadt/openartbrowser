@@ -39,6 +39,9 @@ export class MovementComponent implements OnInit, OnDestroy {
   /** The entity this page is about */
   movement: Movement = null;
 
+  idDoesNotExist = false;
+  movementId: string;
+
   /** Related artworks */
   fetchOptions = {
     initOffset: 0,
@@ -82,20 +85,26 @@ export class MovementComponent implements OnInit, OnDestroy {
 
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
-      const movementId = params.get('movementId');
+      this.movementId = params.get('movementId');
       // Reset attributes
       this.relatedMovements = [];
 
-      this.fetchOptions.queryCount = this.dataService.countArtworksByType(EntityType.MOVEMENT, [movementId]);
+      this.fetchOptions.queryCount = this.dataService.countArtworksByType(EntityType.MOVEMENT, [this.movementId]);
 
       /** load fetching list items */
       this.query = async (offset) => {
         return await this.dataService.findArtworksByType(
-          EntityType.MOVEMENT, [movementId], this.fetchOptions.fetchSize, offset)
+          EntityType.MOVEMENT, [this.movementId], this.fetchOptions.fetchSize, offset)
       };
 
       /** Use data service to fetch entity from database */
-      this.movement = await this.dataService.findById<Movement>(movementId, EntityType.MOVEMENT);
+      this.movement = await this.dataService.findById<Movement>(this.movementId, EntityType.MOVEMENT);
+
+      if (!this.movement) {
+        this.idDoesNotExist = true;
+        return; 
+      }
+
       if (this.movement.videos && this.movement.videos.length > 0) {
         this.uniqueEntityVideos.unshift(this.movement.videos[0]);
       }
@@ -120,15 +129,24 @@ export class MovementComponent implements OnInit, OnDestroy {
         .then(influences => (this.movement.influenced_by = influences));
 
       /** get is part movements */
-      let movements = await this.dataService.getHasPartMovements(movementId);
+      let movements = await this.dataService.getHasPartMovements(this.movementId);
       this.relatedMovements.push(...movements);
 
       /** get part of movements */
-      movements = await this.dataService.getPartOfMovements(movementId);
+      movements = await this.dataService.getPartOfMovements(this.movementId);
       this.relatedMovements.push(...movements);
 
       if (this.relatedMovements.length >= 1 && this.movement.start_time && this.movement.end_time) {
         this.relatedMovements.push(this.movement);
+      }
+
+      // trigger onChanges lifecycle method of movement-overview
+      this.relatedMovements = this.relatedMovements.slice();
+    });
+
+    this.route.params.subscribe(() => {
+      if(this.relatedMovements.length === 0) {
+        this.activeTab = "timeline";
       }
     });
   }

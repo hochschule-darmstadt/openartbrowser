@@ -27,6 +27,9 @@ export class LocationComponent implements OnInit, OnDestroy {
   /** The entity this page is about */
   location: Location = null;
 
+  idDoesNotExist = false;
+  locationId: string;
+
   /** Related artworks */
   fetchOptions = {
     initOffset: 0,
@@ -43,18 +46,20 @@ export class LocationComponent implements OnInit, OnDestroy {
   ngOnInit() {
     /** Extract the id of entity from URL params. */
     this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
-      const locationId = params.get('locationId');
+      this.locationId = params.get('locationId');
 
-      this.fetchOptions.queryCount = this.dataService.countArtworksByType(EntityType.LOCATION, [locationId]);
+      this.fetchOptions.queryCount = this.dataService.countArtworksByType(EntityType.LOCATION, [this.locationId]);
 
       /** load fetching list items */
       this.query = async (offset) => {
         return await this.dataService.findArtworksByType(
-          EntityType.LOCATION, [locationId], this.fetchOptions.fetchSize, offset)
+          EntityType.LOCATION, [this.locationId], this.fetchOptions.fetchSize, offset)
       };
 
       /** Use data service to fetch entity from database */
-      this.location = await this.dataService.findById<Location>(locationId, EntityType.LOCATION);
+      this.location = await this.dataService.findById<Location>(this.locationId, EntityType.LOCATION);
+
+      if (!this.location) { this.idDoesNotExist = true }
     });
   }
 

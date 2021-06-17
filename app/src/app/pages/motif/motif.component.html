@@ -1,10 +1,16 @@
-<div class="container entity motif">
+<div *ngIf="idDoesNotExist" class="container entity motif">
+  <div class="row mb-5 border-bottom pb-5">
+    <app-error-message  [id]="motifId"></app-error-message>
+  </div>
+</div>
+
+<div *ngIf="!idDoesNotExist" class="container entity motif">
   <div class="row mb-5 border-bottom pb-5">
     <div class="col-sm-7" *ngIf="motif">
       <app-title [entity]="motif"></app-title>
       <app-sticky-title [entity]="motif"></app-sticky-title>
 
-      <div class="mb-3 mt-5 pl-2">
+      <div class="mb-3 mt-5">
         <p *ngIf="motif?.description" class="mb-1 first-letter">
           {{ motif?.description }}
         </p>

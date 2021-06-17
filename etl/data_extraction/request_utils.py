@@ -55,9 +55,9 @@ def send_http_request(
             response = response.json()
             if abstracts and "batchcomplete" not in response:
                 logging.error(
-                    "Looks like not all extracts were loaded from wikipedia. Decrease the groupsize to avoid this behavior. Exiting script now"
+                    "Looks like not all extracts were loaded from wikipedia. Decrease the groupsize to avoid this behavior. Raising RuntimeError"
                 )
-                exit(-1)
+                raise RuntimeError
             if "error" in response:
                 # ToDo: more specific error handling since unknown ids error throws a different message
                 print(
@@ -91,6 +91,8 @@ def send_http_request(
                 return ""
             else:
                 continue
+        except RuntimeError as runtimeError:
+            raise runtimeError
         except Exception as error:
             print(
                 f"Unknown error. Time: {datetime.datetime.now()}. Error: {error}. Following items couldn't be loaded: {items}"

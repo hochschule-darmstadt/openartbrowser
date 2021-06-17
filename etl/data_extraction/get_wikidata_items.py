@@ -28,6 +28,7 @@ Returns:
 import csv
 import datetime
 import sys
+import pandas as pd
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -40,6 +41,7 @@ from shared.blocklist import BLOCKLIST
 from shared.utils import (
     create_new_path,
     generate_json,
+    generate_csv,
     language_config_to_list,
     setup_logger,
     is_jsonable,
@@ -120,7 +122,6 @@ def write_data_to_json_and_csv(
         get_fields(LOCATION[PLURAL]),
         create_new_path(LOCATION[PLURAL], file_type=CSV),
     )
-    print(f"writing json of {len(merged_artworks)} artworks")
     generate_json(merged_artworks, create_new_path(ARTWORK[PLURAL]))
     generate_csv(
         merged_artworks,
@@ -220,27 +221,6 @@ def get_fields(
     return fields
 
 
-def generate_csv(extract_dicts: List[Dict], fields: List[str], filename: str) -> None:
-    """Generates a csv file from a dictionary
-
-    Args:
-        extract_dicts: List of dicts that containing wikidata entities transformed to oab entities
-        fields: Column names for the given dicts
-        filename: Name of the file to write the data to
-    """
-    filename.parent.mkdir(parents=True, exist_ok=True)
-    with open(
-            filename.with_suffix(f".{CSV}"), "w", newline="", encoding="utf-8"
-    ) as file:
-        writer = csv.DictWriter(file, fieldnames=fields, delimiter=";", quotechar='"')
-        writer.writeheader()
-        for extract_dict in extract_dicts:
-            writer.writerow(extract_dict)
-
-
-# endregion
-
-
 def merge_artworks() -> List[Dict]:
     """Merges artworks from files 'paintings.json', 'drawings.json',
     'sculptures.json' (function extract_artworks) and
@@ -250,27 +230,23 @@ def merge_artworks() -> List[Dict]:
         A list of dictionaries containing all artworks
     """
     print(datetime.datetime.now(), "Starting with", "merging artworks")
-    artworks = set()
     file_names = [f"{source_type[PLURAL]}.{JSON}" for source_type in SOURCE_TYPES]
     file_names = [
         create_new_path(ARTWORK[PLURAL], subpath=file_name) for file_name in file_names
     ]
-    extract_dicts = []
+    extract_dicts = pd.DataFrame()
 
     for file_name in file_names:
         try:
-            with open(file_name, encoding="utf-8") as input:
-                objects = ijson.items(input, 'item')
-                object_array = (o for o in objects)
-                for object in object_array:
-                    if not object[ID] in artworks and is_jsonable(object):  # remove duplicates
-                        object[TYPE] = ARTWORK[SINGULAR]
-                        extract_dicts.append(object)
-                        artworks.add(object[ID])
+            objects = pd.read_json(path_or_buf=file_name, orient='records')
+            extract_dicts = pd.concat([objects.set_index('id'), objects.set_index('id')], axis=1).reset_index()
         except Exception as e:
             logger.error(f"Error when opening following file: {file_name}. Skipping file now.")
             logger.error(e)
             continue
+
+    extract_dicts[TYPE] = ARTWORK[PLURAL]
+
     print(datetime.datetime.now(), "Finished with", "merging artworks")
     print()
     return extract_dicts
@@ -300,8 +276,6 @@ def extract_art_ontology() -> None:
     if RECOVER_MODE and check_state(ETL_STATES.GET_WIKIDATA_ITEMS.MERGED_ARTWORKS):
         return
     merged_artworks = merge_artworks()
-
-    path_name = create_new_path(ARTWORK[PLURAL], file_type=CSV)
 
     # Get motifs and main subjects
     motifs = load_wd_entities.extract_motifs_and_main_subjects(merged_artworks)

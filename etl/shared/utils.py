@@ -9,7 +9,9 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Dict, List
 
-from shared.constants import CRAWLER_OUTPUT, INTERMEDIATE_FILES, LOGS, JSON, ETL_STATES
+import pandas as pd
+
+from shared.constants import CRAWLER_OUTPUT, INTERMEDIATE_FILES, LOGS, JSON, CSV, ETL_STATES
 
 root_logger = logging.getLogger()  # setup root logger
 root_logger.setLevel(
@@ -117,7 +119,7 @@ def is_jsonable(x):
         return False
 
 
-def generate_json(extract_dicts: List[Dict], filename: str) -> None:
+def generate_json(extract_dicts: pd.DataFrame, filename: str) -> None:
     """Generates a JSON file from a dictionary
 
     Args:
@@ -127,7 +129,17 @@ def generate_json(extract_dicts: List[Dict], filename: str) -> None:
     if len(extract_dicts) == 0:
         return
     filename.parent.mkdir(parents=True, exist_ok=True)
-    with open(
-            filename.with_suffix(f".{JSON}"), "w", newline="", encoding="utf-8"
-    ) as file:
-        json.dump(extract_dicts, file, skipkeys=True, ensure_ascii=False, cls=DecimalEncoder)
+    extract_dicts.to_json(path_or_buf=filename.with_suffix(f".{JSON}"), orient='records')
+
+
+def generate_csv(extract_dicts: pd.DataFrame, fields: List[str], filename: str) -> None:
+    """Generates a csv file from a DataFrame
+
+    Args:
+        extract_dicts: List of dicts that containing wikidata entities transformed to oab entities
+        fields: Column names for the given dicts
+        filename: Name of the file to write the data to
+    """
+    filename.parent.mkdir(parents=True, exist_ok=True)
+    extract_dicts = extract_dicts.reindex(columns=fields)
+    extract_dicts.to_csv(path_or_buf=filename.with_suffix(f".{CSV}"), sep=";", quotechar='"', columns=fields, index=False)

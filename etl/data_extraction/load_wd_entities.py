@@ -3,6 +3,7 @@
 import datetime
 import re
 import time
+import pandas as pd
 from pathlib import Path
 from typing import Callable, Dict, Iterator, List, Optional, Set
 from urllib.error import HTTPError
@@ -171,7 +172,7 @@ def extract_artworks(
     """
     print(datetime.datetime.now(), "Starting with", type_name)
 
-    extract_dicts = []
+    extract_dicts = pd.DataFrame()
     chunk_count = 0
     item_count = 0
     artwork_ids = query_artwork_qids(type_name, wikidata_id)
@@ -348,7 +349,9 @@ def extract_artworks(
                         f"{WIKIPEDIA_LINK}_{langkey}": wikipedia_link_lang,
                     }
                 )
-            extract_dicts.append(artwork_dictionary)
+            artwork_df = pd.DataFrame.from_dict(artwork_dictionary, orient='index')
+            artwork_df = artwork_df.transpose()
+            extract_dicts = pd.concat([extract_dicts, artwork_df]).reset_index(drop=True)
             already_crawled_wikidata_items.add(qid)
 
         item_count += len(chunk)

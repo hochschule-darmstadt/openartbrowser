@@ -1,4 +1,4 @@
-<div class="custom-bootgrid col justify-content-center">
+<div class="normal-timeline custom-bootgrid col justify-content-center">
   <div class="custom-slider">
     <ngx-slider *ngIf="movements.length > 0" id="ngxSlider" [options]="options"></ngx-slider>
   </div>
@@ -43,4 +43,10 @@
   <svg id="svg">
     <line id="line" class="connection-line"/>
   </svg>
+</div>
+
+<div class="badge-timeline custom-bootgrid col justify-content-center">
+  <span *ngFor="let movement of inputMovements">
+    <app-information label="{{movement.start_time}}-{{movement.end_time}}" [values]="[movement]"></app-information>
+  </span>
 </div>

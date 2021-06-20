@@ -6,6 +6,8 @@ import { Subject } from 'rxjs';
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 import { Angulartics2 } from 'angulartics2';
 import { usePlural } from 'src/app/shared/models/entity.interface';
+import { shuffle } from '../../core/services/utils.service';
+import { FetchOptions } from '../../shared/components/fetching-list/fetching-list.component';
 
 /**
  * @description Interface for the search results.
@@ -22,6 +24,8 @@ interface EntityTab {
   type: EntityType;
   icon: EntityIcon;
   active: boolean;
+  query: (offset: number) => Promise<Entity[]>;
+  fetchOptions: FetchOptions;
 }
 
 @Component({
@@ -34,7 +38,7 @@ export class SearchResultComponent implements OnInit, OnDestroy {
   searchResults: Artwork[] = [];
 
   /**
-   * @description for the tabs in slider/carousel.
+   * tabs
    */
   entityTabs: EntityTab[] = [];
 
@@ -79,7 +83,18 @@ export class SearchResultComponent implements OnInit, OnDestroy {
       if (params.material) {
         this.searchObjects.push(await this.getSearchObjects(params.material, EntityType.MATERIAL, EntityIcon.MATERIAL));
       }
+      // TODO: unnecessary afterwads?
       this.searchResults = await this.getSearchResults(this.searchObjects, this.searchTerms);
+
+      /** construct artSearch-Object and pass to every tab */
+      const search: ArtSearch = {};
+      this.searchObjects.forEach(typeArray => (search[usePlural(typeArray.key)] = typeArray.items.map((e: Entity) => e.id)));
+
+      /** clear tabs for every route parameter change */
+      this.entityTabs = [];
+      Object.values(EntityType).forEach(type => this.addTab(search, type, type === EntityType.ALL));
+
+      this.loadTabs();
 
       this.angulartics2.eventTrack.next({
         action: 'trackSiteSearch',
@@ -89,22 +104,6 @@ export class SearchResultComponent implements OnInit, OnDestroy {
           searchCount: this.searchResults.length
         }
       });
-    });
-
-    // All tab should be added by default and set active
-    this.addTab(EntityType.ALL, true);
-
-    /**
-     * Look in elasticSearch if results exist for current query and depending on result add a tab for it
-     */
-    Object.values(EntityType).forEach(async type => {
-      if (type === 'all') { // skip all-type
-        return;
-      }
-      const results = await this.getSearchResults(this.searchObjects, this.searchTerms, true, type);
-      if (results) {
-        this.addTab(type);
-      }
     });
   }
 
@@ -125,14 +124,36 @@ export class SearchResultComponent implements OnInit, OnDestroy {
    * @param results search result array
    * @param terms terms array
    */
-  private async getSearchResults(results: SearchObject[], terms: string[], returnCountOnly = false, type = null): Promise<Artwork[]> {
+  // TODO: unnecessary afterwards
+  private async getSearchResults(results: SearchObject[], terms: string[]): Promise<Artwork[]> {
     const search: ArtSearch = {};
     results.forEach(typeArray => (search[usePlural(typeArray.key)] = typeArray.items.map((e: Entity) => e.id)));
-    if (returnCountOnly) {
-      return await this.dataService.countSearchResultItems(search, terms, type);
-    } else {
-      return await this.dataService.searchArtworks(search, terms);
-    }
+    return await this.dataService.searchArtworks(search, terms);
+  }
+
+  private async getSearchResultsCounts(results: SearchObject[], terms: string[], type = null): Promise<number> {
+    const search: ArtSearch = {};
+    results.forEach(typeArray => (search[usePlural(typeArray.key)] = typeArray.items.map((e: Entity) => e.id)));
+    return await this.dataService.countSearchResultItems(search, terms, type);
+  }
+
+  private loadTabs() {
+    Promise.all(
+      /** load related data for each tab  */
+      this.entityTabs.map(async (tab: EntityTab) => {
+        if (tab.type === EntityType.ALL) {
+          return;
+        }
+
+        this.getSearchResultsCounts(this.searchObjects, this.searchTerms, tab.type).then(items => {
+          if (items === 0) {
+            // TODO: queryCount set right?
+            tab.fetchOptions.queryCount = items;
+            this.entityTabs = this.entityTabs.filter(t => t.type !== tab.type);
+          }
+        });
+      })
+    );
   }
 
   /**
@@ -141,11 +162,28 @@ export class SearchResultComponent implements OnInit, OnDestroy {
    * @param itemsFound If Items where found in elastic search
    * @param active Is active tab
    */
-  private addTab(type: EntityType, active: boolean = false) {
+  private addTab(search: ArtSearch, type: EntityType, active: boolean = false) {
+
+    /** set fetchOptions and pass to tab later */
+    const fetchOptions = {
+      initOffset: 0,
+      fetchSize: 30,
+      queryCount: undefined,
+      entityType: type
+    } as FetchOptions;
+
+    // TODO: query festlegen
+    /** load fetching list items */
+    const query = async (offset) => {
+      return await this.dataService.searchResultsByType(search, this.searchTerms, fetchOptions.fetchSize, offset, type);
+    };
+
     this.entityTabs.push({
       active,
       icon: EntityIcon[type.toUpperCase()],
-      type
+      type,
+      fetchOptions,
+      query
     });
   }
 

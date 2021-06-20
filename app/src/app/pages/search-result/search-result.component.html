@@ -43,7 +43,7 @@
     </div>
   </div>
 
-  <div *ngIf='searchResults?.length'>
+  <!--<div *ngIf='searchResults?.length'> -->
     <ul class='nav nav-tabs'>
       <ng-container *ngFor='let tab of entityTabs'>
         <li class='nav-item'>
@@ -58,8 +58,16 @@
         </li>
       </ng-container>
     </ul>
-  </div>
 
-  <app-slider [items]='searchResults'></app-slider>
+    <div class='tab-content'>
+      <div *ngFor='let tab of entityTabs' class='tab-pane fade'
+           [ngClass]="{ 'show active': tab.active }" id='{{ tab.type }}_tab'>
+        <app-fetching-list id='{{ tab.type }}_list' [query]='tab.query' [options]='tab.fetchOptions'></app-fetching-list>
+      </div>
+
+    </div>
+  <!--</div> -->
+
+  <!--<app-slider [items]='searchResults'></app-slider> -->
 </div>
 

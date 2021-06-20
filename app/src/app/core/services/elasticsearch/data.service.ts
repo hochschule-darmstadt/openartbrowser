@@ -82,7 +82,7 @@ export class DataService {
       .query('match', 'type', EntityType.ARTWORK);
     _.each(ids, id => body.orQuery('match', usePlural(type), id));
     const response: any = await this.http.post(this.countEndPoint, body.build()).toPromise();
-    return response && response.count ? response.count : undefined;
+    return (response && response.count) ? response.count : undefined;
   }
 
   /**
@@ -131,7 +131,8 @@ export class DataService {
    */
   public searchArtworks<T>(searchObj: ArtSearch, keywords: string[] = [], count = 400): Promise<T[]> {
     const body = bodyBuilder()
-      .size(count);
+      .size(count)
+      .sort(defaultSortField, 'desc');
     _.each(searchObj, (arr, key) => {
       if (Array.isArray(arr)) {
         _.each(arr, val => body.query('match', key, val));
@@ -147,8 +148,28 @@ export class DataService {
     return this.performQuery<T>(body);
   }
 
-  // could be fused with searchArtworks, waiting for updates in searchArtworks
-  public async countSearchResultItems<T>(searchObj: ArtSearch, keywords: string[] = [], type: EntityType): Promise<T[]> {
+  public searchResultsByType(searchObj: ArtSearch, keywords: string[] = [], count = 200, from = 0, type: EntityType): Promise<Entity[]> {
+    const body = bodyBuilder()
+      .size(count)
+      .sort(defaultSortField, 'desc')
+      .from(from)
+      .query('match', 'type', type);
+    _.each(searchObj, (arr, key) => {
+      if (Array.isArray(arr)) {
+        _.each(arr, val => body.query('match', key, val));
+      }
+    });
+    _.each(keywords, keyword =>
+      body.query('bool', (q) => {
+        return q.orQuery('match', 'label', keyword)
+          .orQuery('match', 'description', keyword)
+          .orQuery('match', 'abstract', keyword);
+      })
+    );
+    return this.performQuery<Entity>(body);
+  }
+
+  public async countSearchResultItems<T>(searchObj: ArtSearch, keywords: string[] = [], type: EntityType): Promise<number> {
     const body = bodyBuilder()
       .query('match', 'type', type);
     _.each(searchObj, (arr, key) => {
@@ -164,8 +185,7 @@ export class DataService {
       })
     );
     const response: any = await this.http.post(this.countEndPoint, body.build()).toPromise();
-    console.log(response);
-    return response && response.count ? response.count : undefined;
+    return (response && response.count) ? response.count : 0;
   }
 
   /**

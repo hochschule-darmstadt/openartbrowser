@@ -79,3 +79,13 @@ a {
     text-decoration: none;
   }
 }
+
+@media (max-width: 575px) { 
+  .slide {
+    min-height: 20em;
+    height: 20em;
+  }
+  .item-container {
+    max-height: 100%;
+  }
+}

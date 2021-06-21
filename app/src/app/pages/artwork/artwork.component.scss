@@ -98,6 +98,10 @@
   cursor: pointer;
 }
 
+#common-tags-mobile {
+  display: none;
+}
+
 /* Adds padding when page gets smaller to avoid overflow between information on the left and information on the right
  * changes image size
 */
@@ -119,10 +123,18 @@
   }
 }
 
-@media (max-width: 576px) {
+@media (max-width: 575px) {
   #image-main {
     max-width: 100%;
     max-height: 30vh;
+  }
+  
+  #common-tags {
+    display: none;
+  }
+
+  #common-tags-mobile {
+    display: block;
   }
 }
 

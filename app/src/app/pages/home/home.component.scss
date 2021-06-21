@@ -22,7 +22,7 @@ $color1: #00bc8c;
 .container-search {
   width: 80%;
 
-  @media (min-width: 377px) and (max-width: 576px) {
+  @media (min-width: 377px) and (max-width: 575px) {
     width: 90%;
   }
   @media (min-width: 0px) and (max-width: 376px) {
@@ -38,7 +38,7 @@ $color1: #00bc8c;
   @media (min-width: 577px) and (max-width: 767px) {
     margin-bottom: 4rem;
   }
-  @media (min-width: 0px) and (max-width: 576px) {
+  @media (min-width: 0px) and (max-width: 575px) {
     margin-bottom: 1em;
   }
 
@@ -57,7 +57,7 @@ $color1: #00bc8c;
         font-size: 3vh;
         padding-top: 0;
       }
-      @media (min-width: 377px) and (max-width: 576px) {
+      @media (min-width: 377px) and (max-width: 575px) {
         font-size: 1.5vh;
         padding-top: 0;
       }
@@ -78,7 +78,7 @@ $color1: #00bc8c;
       @media (min-width: 577px) and (max-width: 767px) {
         font-size: 5vh;
       }
-      @media (min-width: 377px) and (max-width: 576px) {
+      @media (min-width: 377px) and (max-width: 575px) {
         font-size: 3.5vh;
       }
       @media (min-width: 0px) and (max-width: 376px) {
@@ -108,7 +108,7 @@ $color1: #00bc8c;
     height: 2.5rem;
     font-size: 1.1rem;
   }
-  @media (min-width: 377px) and (max-width: 576px) {
+  @media (min-width: 377px) and (max-width: 575px) {
     height: 2rem;
     font-size: 1rem;
   }

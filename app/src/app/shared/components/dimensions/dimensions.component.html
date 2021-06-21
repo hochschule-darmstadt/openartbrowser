@@ -1,4 +1,20 @@
 <div *ngIf="dimensionLabel && artwork && dimensionValue">
+  <div [ngSwitch]="dimensionLabel">
+    <app-information *ngSwitchCase="'Dimension'" i18n-label="Artwork Dimension label@@dimension" label="Dimension"
+                     [value]="dimensionValue"></app-information>
+
+    <app-information *ngSwitchCase="'Width'" i18n-label="Artwork Dimension label@@width" label="Width"
+                     [value]="dimensionValue"></app-information>
+
+    <app-information *ngSwitchCase="'Height'" i18n-label="Artwork Dimension label@@height" label="Height"
+                     [value]="dimensionValue"></app-information>
+
+    <app-information *ngSwitchCase="'Length'" i18n-label="Artwork Dimension label@@length" label="Length"
+                     [value]="dimensionValue"></app-information>
+
+    <app-information *ngSwitchCase="'Diameter'" i18n-label="Artwork Dimension label@@diameter" label="Diameter"
+                     [value]="dimensionValue"></app-information>
+  </div>
   <div
     class="col-md-11 illustration-container"
     [ngClass]="{ 'align-bottom': illustrationHeight > 92, 'align-top': illustrationHeight < 92 }"
@@ -31,22 +47,5 @@
     >
       <rect class="rect"/>
     </svg>
-  </div>
-
-  <div [ngSwitch]="dimensionLabel">
-    <app-information *ngSwitchCase="'Dimension'" i18n-label="Artwork Dimension label@@dimension" label="Dimension"
-                     [value]="dimensionValue"></app-information>
-
-    <app-information *ngSwitchCase="'Width'" i18n-label="Artwork Dimension label@@width" label="Width"
-                     [value]="dimensionValue"></app-information>
-
-    <app-information *ngSwitchCase="'Height'" i18n-label="Artwork Dimension label@@height" label="Height"
-                     [value]="dimensionValue"></app-information>
-
-    <app-information *ngSwitchCase="'Length'" i18n-label="Artwork Dimension label@@length" label="Length"
-                     [value]="dimensionValue"></app-information>
-
-    <app-information *ngSwitchCase="'Diameter'" i18n-label="Artwork Dimension label@@diameter" label="Diameter"
-                     [value]="dimensionValue"></app-information>
   </div>
 </div>

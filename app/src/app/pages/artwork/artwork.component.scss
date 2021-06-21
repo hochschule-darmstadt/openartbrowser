@@ -136,3 +136,6 @@
 .video:last-child {
   margin: 0;
 }
+.video:empty {
+  display: none;
+}

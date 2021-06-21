@@ -1,16 +1,14 @@
 <div *ngIf="idDoesNotExist" class="container entity material">
-  <div class="row mb-5 border-bottom pb-5">
+  <div class="row pb-4 pb-sm-5 mb-sm-5">
     <app-error-message  [id]="materialId"></app-error-message>
   </div>
 </div>
 
 <div *ngIf="!idDoesNotExist" class="container entity material">
-  <div class="row mb-5 border-bottom pb-5">
+  <div class="row mb-4 pb-4 border-bottom">
     <div class="col-sm-7" *ngIf="material">
       <app-title [entity]="material"></app-title>
       <app-sticky-title [entity]="material"></app-sticky-title>
-
-      <div class="mb-3 mt-5"></div>
     </div>
 
     <div class="col-sm-5 img" *ngIf="material?.image">

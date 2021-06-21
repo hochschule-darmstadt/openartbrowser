@@ -11,6 +11,33 @@ body {
   outline: transparent;
 }
 
+@media (max-width: 576px) {
+  .mobile-hidden {
+    display: none !important;
+  }
+
+  .mobile-no-border {
+    border: none !important;
+  }
+
+  .content .container {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .video, .video iframe {
+    width: 100%;
+  }
+
+  .container.entity,
+  .container.entity > .row {
+    margin: 0;
+  }
+  .container.entity > .row > [class^="col-"] {
+    padding: 0;
+  }
+}
+
 .first-letter::first-letter {
   text-transform: uppercase;
 }

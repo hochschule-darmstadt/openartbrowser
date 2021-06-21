@@ -26,10 +26,25 @@ export enum EntityType {
   LOCATION = 'location',
   MATERIAL = 'material',
   MOVEMENT = 'movement',
-  MOTIF = 'motif'
+  MOTIF = 'motif',
+  CLASS = 'class'
 }
 
-export const usePlural = (type: EntityType) => (type === 'all' ? type : type + 's');
+export const usePlural = (type: EntityType) => {
+  if(type === 'all')
+    return type;
+  else if (type === 'class')
+    return 'classes';
+  else 
+    return type + 's';
+}
+
+export const useSingular = (entityType: string) => {
+  if(entityType === 'classes')
+    return entityType.slice(0, -2); 
+  else
+    return entityType.slice(0, -1);
+}
 
 export enum EntityIcon {
   ALL = 'fa-list-ul',
@@ -39,5 +54,6 @@ export enum EntityIcon {
   LOCATION = 'fa-archway',
   MOTIF = 'fa-image',
   GENRE = 'fa-tag',
-  MATERIAL = 'fa-scroll'
+  MATERIAL = 'fa-scroll',
+  CLASS = 'fa-shapes'
 }

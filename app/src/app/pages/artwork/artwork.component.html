@@ -54,6 +54,9 @@
           <app-information i18n-label="Material label@@material" label="Material"
                            [values]="artwork?.materials"></app-information>
 
+          <app-information i18n-label="Class label@@class" label="Class"
+            [values]="artwork?.classes"></app-information>
+
           <app-information i18n-label="Main Motif label@@main_motif" label="Main Motif"
                            [values]="artwork?.main_subjects"></app-information>
 
@@ -85,7 +88,7 @@
               <i class="mr-1 fa fa-{{ tab.icon }}"></i>
               <ng-container i18n="Entity Type Labels@@entity_labels" *ngIf="tab.type; let type">
                 {type, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material
-                  {Material} main_motif {Main Motif} }
+                  {Material} main_motif {Main Motif} class {Class} }
               </ng-container>
             </a>
           </li>
@@ -116,7 +119,7 @@
             </ng-container>
             <span *ngIf="tab != 'all'">
               <ng-container i18n="Related Artworks headline text tab name@@related_artworks_headline_tab_name">
-                {tab, select, all {all} motif {motif} artist {artist} location {location} genre {genre} movement {movement} material {material}}
+                {tab, select, all {all} motif {motif} artist {artist} location {location} genre {genre} movement {movement} material {material} class {class}}
               </ng-container>
             </span>
             <ng-container i18n="Related Artworks headline text after tab name @@related_artworks_headline_after">
@@ -178,6 +181,11 @@
 
             <span *ngIf="artwork?.locations?.length && (tab.type == 'location' || tab.type == 'all')" class="mb-1">
               <app-badge *ngFor="let location of artwork?.locations" [entity]="location" [isHoverBadge]="true"
+                         [hoveredArtwork]="hoveredArtwork"> </app-badge>
+            </span>
+
+            <span *ngIf="artwork?.classes?.length && (tab.type == 'class' || tab.type == 'all')" class="mb-1">
+              <app-badge *ngFor="let class of artwork?.classes" [entity]="class" [isHoverBadge]="true"
                          [hoveredArtwork]="hoveredArtwork"> </app-badge>
             </span>
           </div>

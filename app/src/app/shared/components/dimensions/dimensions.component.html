@@ -26,8 +26,8 @@
     <svg
       [ngClass]="{ 'illustration-margin': illustrationHeight < 92 }"
       xml:space="preserve"
-      [attr.width.px]="illustrationHeight < 1855 && illustrationHeight > 290 ? 40 : illustrationWidth ? illustrationWidth : 40"
-      [attr.height.px]="illustrationHeight < 1855 && illustrationHeight > 290 ? 140 : illustrationHeight"
+      [style.width.px]="illustrationHeight < 1855 && illustrationHeight > 290 ? 40 : illustrationWidth ? illustrationWidth : 40"
+      [style.height.px]="illustrationHeight < 1855 && illustrationHeight > 290 ? 140 : illustrationHeight"
     >
       <rect class="rect"/>
     </svg>

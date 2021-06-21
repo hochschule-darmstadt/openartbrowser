@@ -6,12 +6,14 @@ import time
 from pathlib import Path
 from typing import Callable, Dict, Iterator, List, Optional, Set
 from urllib.error import HTTPError
+from json import JSONDecodeError
 
 from SPARQLWrapper import SPARQLWrapper
 
 from data_extraction import map_wd_attribute, map_wd_response
 from data_extraction.constants import *
 from data_extraction.request_utils import send_http_request
+from shared.blocklist import BLOCKLIST
 from shared.utils import (
     chunks,
     language_config_to_list,
@@ -42,8 +44,8 @@ def query_artwork_qids(type_name: str, wikidata_id: str) -> List[str]:
     artwork_ids_filepath = Path(__file__).parent.absolute() / ARTWORK_IDS_QUERY_FILENAME
     QID_BY_ARTWORK_TYPE_QUERY = (
         open(artwork_ids_filepath, "r", encoding="utf8")
-        .read()
-        .replace("$QID", wikidata_id)
+            .read()
+            .replace("$QID", wikidata_id)
     )
 
     sparql = SPARQLWrapper(WIKIDATA_SPARQL_URL, agent=AGENT_HEADER)
@@ -65,6 +67,11 @@ def query_artwork_qids(type_name: str, wikidata_id: str) -> List[str]:
             else:
                 print("Looks like the bot was blocked.")
                 exit(-1)
+        except JSONDecodeError as error:
+            print(error)
+            print("Waiting for 5 seconds")
+            time.sleep(5)
+            continue
 
     artwork_ids = list(
         map(
@@ -78,17 +85,17 @@ def query_artwork_qids(type_name: str, wikidata_id: str) -> List[str]:
 
 
 def wikidata_entity_request(
-    qids: List[str],
-    language_keys: Optional[List[str]] = lang_keys,
-    props: Optional[List[str]] = [
-        CLAIMS,
-        DESCRIPTION[PLURAL],
-        LABEL[PLURAL],
-        SITELINKS,
-    ],
-    timeout: Optional[int] = TIMEOUT,
-    sleep_time: Optional[int] = SLEEP_TIME,
-    maxlag: Optional[int] = MAX_LAG,
+        qids: List[str],
+        language_keys: Optional[List[str]] = lang_keys,
+        props: Optional[List[str]] = [
+            CLAIMS,
+            DESCRIPTION[PLURAL],
+            LABEL[PLURAL],
+            SITELINKS,
+        ],
+        timeout: Optional[int] = TIMEOUT,
+        sleep_time: Optional[int] = SLEEP_TIME,
+        maxlag: Optional[int] = MAX_LAG,
 ) -> Dict:
     """Represents an wikidata entity request for a list of qids
     The API specifies that 50 items can be loaded at once without needing additional permissions:
@@ -138,12 +145,12 @@ def wikidata_entity_request(
 
 
 def extract_artworks(
-    type_name: str,
-    wikidata_id: str,
-    already_crawled_wikidata_items: Set,
-    dev_mode: bool,
-    dev_chunk_limit: int,
-    language_keys: Optional[List[str]] = lang_keys,
+        type_name: str,
+        wikidata_id: str,
+        already_crawled_wikidata_items: Set,
+        dev_mode: bool,
+        dev_chunk_limit: int,
+        language_keys: Optional[List[str]] = lang_keys,
 ) -> List[Dict]:
     """Extracts artworks metadata from Wikidata and stores them in a dictionary.
 
@@ -307,6 +314,23 @@ def extract_artworks(
                 TYPE: ARTWORK[SINGULAR],
             }
 
+            # Apply blocklist to artwork dictionary
+            for t in [CLASS[PLURAL],
+                      ARTIST[PLURAL],
+                      LOCATION[PLURAL],
+                      GENRE[PLURAL],
+                      MOVEMENT[PLURAL],
+                      MATERIAL[PLURAL],
+                      MOTIF[PLURAL],
+                      ICONCLASS[PLURAL],
+                      MAIN_SUBJECT[PLURAL],
+                      EXHIBITION_HISTORY]:
+                try:
+                    artwork_dictionary[t] = list(set(artwork_dictionary[t]) - set(BLOCKLIST))
+                except Exception as e:
+                    logger.exception(e)
+                    continue
+
             for langkey in language_keys:
                 label_lang = map_wd_attribute.try_get_label_or_description(
                     result, LABEL[PLURAL], langkey, type_name
@@ -341,9 +365,9 @@ def extract_artworks(
 
 
 def get_distinct_attribute_values_from_dict(
-    attribute_name: str,
-    entry_dicts: List[Dict],
-    is_single_value_column: Optional[bool] = False,
+        attribute_name: str,
+        entry_dicts: List[Dict],
+        is_single_value_column: Optional[bool] = False,
 ) -> Set[str]:
     """Function to get the distinct attribute values from a list of dicts
 
@@ -369,14 +393,14 @@ def get_distinct_attribute_values_from_dict(
 
 
 def load_entities_by_attribute_with_transitive_closure(
-    extract_dicts: List[Dict],
-    attribute_name: str,
-    oab_type: str,
-    already_extracted_ids: Set[str],
-    entity_extraction_func: Callable[
-        [str, List[str], Set[str], Optional[List[str]]], List[Dict]
-    ],
-    allowed_instances_of: List[str],
+        extract_dicts: List[Dict],
+        attribute_name: str,
+        oab_type: str,
+        already_extracted_ids: Set[str],
+        entity_extraction_func: Callable[
+            [str, List[str], Set[str], Optional[List[str]]], List[Dict]
+        ],
+        allowed_instances_of: List[str],
 ) -> List[Dict]:
     """Recursive function to load all entities which a attribute contains.
 
@@ -422,10 +446,10 @@ def load_entities_by_attribute_with_transitive_closure(
 
 # region subjects
 def get_subject(
-    type_name: str,
-    qids: List[str],
-    already_extracted_movement_ids: Set[str] = set(),
-    language_keys: Optional[List[str]] = lang_keys,
+        type_name: str,
+        qids: List[str],
+        already_extracted_movement_ids: Set[str] = set(),
+        language_keys: Optional[List[str]] = lang_keys,
 ) -> List[Dict]:
     """Extract subjects (in our definition everything except artworks e. g. movements, motifs, etc.) from wikidata
 
@@ -501,7 +525,7 @@ def get_subject(
 
 
 def bundle_extract_subjects_calls(
-    oab_type_list: List[str], merged_artworks: List[Dict]
+        oab_type_list: List[str], merged_artworks: List[Dict]
 ) -> Iterator[List[Dict]]:
     """Bundles the extract subjects calls
 
@@ -605,7 +629,7 @@ def get_unit_symbols(qids: List[str]) -> List[Dict]:
 
 
 def resolve_unit_id_to_unit_symbol(
-    artwork_dict: List[Dict], unit_symbols: List[Dict]
+        artwork_dict: List[Dict], unit_symbols: List[Dict]
 ) -> List[Dict]:
     """Function to resolve the unit id to the unit symbol
 
@@ -639,10 +663,10 @@ def resolve_unit_id_to_unit_symbol(
 
 # region classes
 def get_classes(
-    type_name: str,
-    qids: List[str],
-    already_extracted_superclass_ids: Set[str] = set(),
-    language_keys: Optional[List[str]] = lang_keys,
+        type_name: str,
+        qids: List[str],
+        already_extracted_superclass_ids: Set[str] = set(),
+        language_keys: Optional[List[str]] = lang_keys,
 ) -> List[Dict]:
     """Function to extract the classes of the extracted wikidata entities (meaning the 'instance of' attribute wikidata entity qids).
     Their subclasses are also extracted recursively (also called transitive closure)
@@ -728,7 +752,7 @@ def get_classes(
 
 
 def bundle_class_union_calls(
-    distinct_classes: Set[str], oab_type_list: List[str]
+        distinct_classes: Set[str], oab_type_list: List[str]
 ) -> Set[str]:
     """Bundles the calls for each openArtBrowser type where the 'instance of' ids are extracted from
     to a set of class qids
@@ -748,13 +772,14 @@ def bundle_class_union_calls(
 
 
 def get_distinct_extracted_classes(
-    merged_artworks: List[Dict],
-    motifs: List[Dict],
-    genres: List[Dict],
-    materials: List[Dict],
-    movements: List[Dict],
-    artists: List[Dict],
-    locations: List[Dict],
+        merged_artworks: List[Dict],
+        motifs: List[Dict],
+        genres: List[Dict],
+        materials: List[Dict],
+        movements: List[Dict],
+        artists: List[Dict],
+        locations: List[Dict],
+        classes: List[Dict],
 ) -> List[Dict]:
     """Load the distinct qids from the classes lists of all entities
 
@@ -766,6 +791,7 @@ def get_distinct_extracted_classes(
         movements: List of movement entities
         artists: List of artist entities
         locations: List of location entities
+        classes: List of class entities
 
     Returns:
         List of class entities
@@ -774,7 +800,7 @@ def get_distinct_extracted_classes(
         CLASS[PLURAL], merged_artworks
     )
     distinct_classes = bundle_class_union_calls(
-        distinct_classes, [motifs, genres, materials, movements, artists, locations],
+        distinct_classes, [motifs, genres, materials, movements, artists, locations, classes],
     )
     return get_classes(CLASS[PLURAL], distinct_classes)
 
@@ -784,7 +810,7 @@ def get_distinct_extracted_classes(
 
 # region resolve qids to labels
 def get_entity_labels(
-    type_name: str, qids: List[str], language_keys: Optional[List[str]] = lang_keys,
+        type_name: str, qids: List[str], language_keys: Optional[List[str]] = lang_keys,
 ) -> List[Dict]:
     """Function to get the entity labels from wikidata
 
@@ -845,10 +871,10 @@ def get_entity_labels(
 
 
 def resolve_entity_id_to_label(
-    attribute_name: str,
-    extract_dicts: List[Dict],
-    labels: List[Dict],
-    language_keys: Optional[List[str]] = lang_keys,
+        attribute_name: str,
+        extract_dicts: List[Dict],
+        labels: List[Dict],
+        language_keys: Optional[List[str]] = lang_keys,
 ) -> List[Dict]:
     """Function to resolve the entity id from an attribute to their label
 
@@ -901,7 +927,7 @@ def get_labels_for_artists(artists: List[Dict], prop_list: List[str]) -> List[Di
 
 
 def get_country_labels_for_merged_artworks_and_locations(
-    locations: List[Dict], merged_artworks: List[Dict], movements: List[Dict]
+        locations: List[Dict], merged_artworks: List[Dict], movements: List[Dict]
 ) -> Iterator[List[Dict]]:
     """Resolve the country qids for the merged artworks and locations to labels
 
@@ -930,9 +956,9 @@ def get_country_labels_for_merged_artworks_and_locations(
 
 # region exhibitions
 def get_exhibition_entities(
-    qids: Set[str],
-    language_keys: Optional[List[str]] = lang_keys,
-    type_name: str = EXHIBITION,
+        qids: Set[str],
+        language_keys: Optional[List[str]] = lang_keys,
+        type_name: str = EXHIBITION,
 ) -> Dict[str, Dict]:
     """Function to get the exhibition entities from wikidata
 
@@ -1050,10 +1076,10 @@ def resolve_significant_event_id_entities_to_labels(artwork_dict: List[Dict]):
                     if key == TYPE:
                         continue
                     elif (
-                        key in PROPERTY_ID_TO_PROPERTY_NAME
-                        or key == LABEL[SINGULAR]
-                        or key in PROPERTY_NAME_TO_PROPERTY_ID
-                        or key.endswith(f"_{UNIT}")
+                            key in PROPERTY_ID_TO_PROPERTY_NAME
+                            or key == LABEL[SINGULAR]
+                            or key in PROPERTY_NAME_TO_PROPERTY_ID
+                            or key.endswith(f"_{UNIT}")
                     ):
                         pass  # go on if the key is recognized
                     else:

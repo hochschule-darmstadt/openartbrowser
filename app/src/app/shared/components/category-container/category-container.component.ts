@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import { usePlural } from '../../models/entity.interface';
 
 @Component({
   selector: 'app-category-container',
@@ -9,6 +10,8 @@ export class CategoryContainerComponent implements OnInit {
   @Input() category: any;
 
   isLoaded: boolean = false;
+  
+  usePlural = usePlural;
 
   constructor() { }
 

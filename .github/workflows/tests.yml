@@ -1,0 +1,61 @@
+name: TESTING
+on: [ workflow_dispatch, push, pull_request ]
+
+jobs:
+  crawler_test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          # Semantic version range syntax or exact version of a Python version
+          python-version: '3.7'
+      - name: Install dependencies
+        run: |
+          cd etl/
+          export PYTHONPATH="${PYTHONPATH}:${pwd}"
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run crawler test
+        run: |
+          cd etl/
+          export PYTHONPATH="${PYTHONPATH}:${pwd}"
+          python data_extraction/get_wikidata_items.py -t 2 -d 1
+          python data_extraction/get_wikipedia_extracts.py
+
+  frontend_test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+      - name: Reconfigure git to use HTTP authentication
+        run: >
+          git config --global url."https://github.com/".insteadOf
+          ssh://git@github.com/
+      - name: Use Node.js 12
+        uses: actions/setup-node@v2
+        with:
+          node-version: 12
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: ~/.npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+            ${{ runner.OS }}-
+      - name: Install dependencies
+        run: |
+          cd app/
+          npm ci
+      - name: Test frontend
+        run: |
+          cd app/
+          npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox

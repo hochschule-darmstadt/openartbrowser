@@ -12,6 +12,13 @@ body {
 }
 
 @media (max-width: 576px) {
+  html, body {
+    display: block;
+    width: 100vw;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
   .mobile-hidden {
     display: none !important;
   }

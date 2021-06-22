@@ -125,7 +125,7 @@ export class SearchResultComponent implements OnInit, OnDestroy {
    * @param terms terms array
    */
   // TODO: unnecessary afterwards
-  private async getSearchResults(results: SearchObject[], terms: string[]): Promise<Artwork[]> {
+  private async getSearchResults<T>(results: SearchObject[], terms: string[]): Promise<T[]> {
     const search: ArtSearch = {};
     results.forEach(typeArray => (search[usePlural(typeArray.key)] = typeArray.items.map((e: Entity) => e.id)));
     return await this.dataService.searchArtworks(search, terms);

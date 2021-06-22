@@ -59,6 +59,8 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   hoveredArtwork: Artwork = null;
 
+  currentSlideImage: Artwork = null;
+
   /**
    * @description for the tabs in slider/carousel.
    */

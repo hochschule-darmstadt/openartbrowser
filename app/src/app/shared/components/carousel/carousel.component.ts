@@ -1,9 +1,6 @@
 import { Component, Input, SimpleChanges, OnChanges, EventEmitter, Output } from '@angular/core';
-import { Entity, Artwork, EntityType } from '../../models/models';
+import { Entity, Artwork } from '../../models/models';
 import { HostListener } from '@angular/core';
-import { NgbSlideEvent, NgbSlideEventSource } from '@ng-bootstrap/ng-bootstrap';
-import { DataService } from 'src/app/core/services/elasticsearch/data.service';
-
 export interface Slide {
   /** artworks displayed on this slide */
   items: Entity[];
@@ -51,6 +48,10 @@ export class CarouselComponent implements OnChanges {
   /**  entities that should be displayed in this slider */
   @Input() items: Entity[] = [];
 
+  @Input() artwork: Artwork;
+
+  @Input() tab_type: string;
+
   // slides of the slider, max 8 items each.
   slides: Slide[];
 
@@ -59,16 +60,8 @@ export class CarouselComponent implements OnChanges {
   /** emits hovered artwork on hover event. */
   @Output() itemHover: EventEmitter<Entity> = new EventEmitter<Entity>();
 
-  @Output() currentSlide: EventEmitter<Entity> = new EventEmitter<Entity>();
-
-  constructor(private dataService: DataService) {
+  constructor() {
     this.checkIsMobile();
-  }
-
-  onSlide(slideEvent: NgbSlideEvent) {
-    this.dataService.findById<Artwork>(slideEvent.current, EntityType.ARTWORK).then(res => {
-      this.currentSlide.emit(res);
-    });
   }
 
   /** Hook that is called when any data-bound property of a directive changes. */
@@ -115,7 +108,6 @@ export class CarouselComponent implements OnChanges {
 
       slides.push(slide);
     }
-    console.log(slides)
     return slides;
   }
 

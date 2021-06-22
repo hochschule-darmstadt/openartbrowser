@@ -80,6 +80,10 @@ a {
   }
 }
 
+#common-tags-mobile {
+  display: none;
+}
+
 @media (max-width: 575px) { 
   .slide {
     min-height: 20em;
@@ -87,5 +91,9 @@ a {
   }
   .item-container {
     max-height: 100%;
+  }
+  #common-tags-mobile {
+    display: block;
+    top: 10rem
   }
 }

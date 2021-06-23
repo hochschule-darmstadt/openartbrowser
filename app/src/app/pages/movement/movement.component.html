@@ -70,16 +70,7 @@
       <option *ngIf="movement && relatedMovements.length > 0"  [value]="Tab.MovementOverview">
         <ng-container i18n="Timeline toggle label@@togglerelatedmovements">Related Movements</ng-container>
       </option>
-  </select>
-
-
-
-
-
-
-
-
-
+    </select>
 
     <div class="tab-content">
       <div class="tab-pane fade" [ngClass]="{ 'show active': activeTab === Tab.Timeline }" id="timeline_tab">

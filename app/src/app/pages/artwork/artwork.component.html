@@ -92,7 +92,6 @@
         </ng-container>
       </ul>
 
-
       <select class="tabs-select form-select" (change)="onChange($event)">
         <ng-container *ngFor="let tab of artworkTabs">
           <option *ngIf="artwork && tab.items.length > 0" [value]="tab.type">            

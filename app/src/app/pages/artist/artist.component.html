@@ -108,7 +108,7 @@
     </ul>
 
     <select class="tabs-select form-select" (change)="onChange($event)">
-        <option [value]="Tab.Timeline">
+        <option [value]="Tab.Timeline" [selected]="Tab.Timeline">
           <ng-container i18n="Timeline toggle label@@toggletimeline">Timeline</ng-container>
         </option>
         <option [value]="Tab.Artworks">

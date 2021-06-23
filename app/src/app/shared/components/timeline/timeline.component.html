@@ -2,7 +2,9 @@
   <div class="custom-slider">
     <ngx-slider id="ngxSlider" [(value)]="value" [options]="options" (valueChange)="onSliderMoved()"></ngx-slider>
   </div>
-  <div class="carou">
+  <div class="carou" (swipeleft)="nextClicked()"
+                     (swiperight)="prevClicked()"
+                     >
     <div class="carou-control" (click)="prevClicked()">
       <div class="carousel-control-prev-icon carou-control-icon" aria-hidden="true"></div>
     </div>

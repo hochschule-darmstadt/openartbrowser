@@ -1,9 +1,9 @@
 <h3 *ngIf="items?.length > 0 && heading">{{ heading }}</h3>
-<ngb-carousel *ngIf="items.length" class="border-bottom mb-4 mt-4 custom-carousel" data-interval="15000">
+<ngb-carousel #carousel *ngIf="items.length" class="border-bottom mb-4 mt-4 custom-carousel" data-interval="15000">
   <ng-template ngbSlide *ngFor="let slide of slides">
-    <div (swipeleft)="prevClicked()"
-         (swiperight)="nextClicked()"
-         class="main-content">
+    <div (swipeleft)="carousel.next()"
+         (swiperight)="carousel.prev()"
+         >
       <app-slide [slide]="slide" (itemHover)="itemHover.emit($event)"
                 (deleteUnusedSlides)="deleteUnusedSlides()"></app-slide>
     </div>

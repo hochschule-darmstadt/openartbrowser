@@ -1,6 +1,6 @@
 <div id="stickyTitle" class="sticky-title">
   <div class="sticky-title-content container border-bottom pl-3 pb-2 pt-2">
-    <div *ngIf="entity">
+    <div *ngIf="entity" class="text-overflow-ellipsis">
       <a class="badge badge-secondary chip mr-2" [routerLink]="['/' + usePlural(entity.type)]">
         <i class="fas {{ entity?.icon }}"></i>
         <ng-container i18n="Entity Type Labels@@entity_labels" *ngIf="entity.type; let type">

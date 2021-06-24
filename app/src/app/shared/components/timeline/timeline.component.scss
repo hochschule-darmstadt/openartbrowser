@@ -164,3 +164,17 @@ a {
     text-decoration: none;
   }
 }
+
+@media (max-width: 768px) {
+  .desktop{
+    display: none;
+    }
+}
+@media (min-width: 768px) {
+  .mobile{
+    display: none;
+    font-size: 1em;
+    position: absolute;
+    text-align: center;
+    }
+}

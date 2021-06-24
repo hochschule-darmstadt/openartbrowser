@@ -15,10 +15,11 @@
   position: fixed;
   top: 200px;
   right: .1rem;
+  z-index: 70;
 }
 
 .item {
-  width: 10rem;
+  width: calc(16.6667% - .6rem);
   margin: .3rem;
 
   &:hover {
@@ -143,11 +144,13 @@
 @media (max-width: 1000px) {
   .item {
     margin: .5rem;
+    width: calc(16.6667% - 1rem);
   }
 }
 @media (max-width: 765px) {
   .item {
     margin: .2rem;
+    width: calc(16.6667% - .4rem);
   }
 }
 
@@ -158,7 +161,7 @@
   }
 
   .item {
-    width: 7rem;
+    width: calc(50% - .4rem);
     margin: .2rem;
   }
   .img {
@@ -166,11 +169,34 @@
       height: 10rem;
     }
   }
+
+  .fetching-list {
+    display: block;
+    position: relative;
+    box-sizing: border-box;
+    width: calc(100% - 2rem);
+  }
+
+  .fetching-list-paginator {
+    display: block;
+    position: absolute;
+    box-sizing: border-box;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .fetching-list-paginator .paginator {
+    top: 150px;
+    pointer-events: all;
+  }
 }
 
 @media (max-width: 502px) {
   .item {
-    width: 7rem;
+    width: calc(50% - .6rem);
     margin: .3rem;
   }
   .img {
@@ -186,7 +212,7 @@
   }
 
   .item {
-    width: 40%;
+    width: calc(50% - .4rem);
     margin: .2rem;
   }
   .img {

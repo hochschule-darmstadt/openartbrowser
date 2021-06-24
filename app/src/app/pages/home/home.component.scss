@@ -21,25 +21,21 @@ $color1: #00bc8c;
 /** Styling for the title & search div */
 .container-search {
   width: 80%;
-
-  @media (min-width: 377px) and (max-width: 575px) {
-    width: 90%;
-  }
-  @media (min-width: 0px) and (max-width: 376px) {
-    width: 100%;
-  }
-
   margin-left: auto;
   margin-right: auto;
   margin-top: 0;
   margin-bottom: 2rem;
   position: relative;
 
+  @media (min-width: 377px) and (max-width: 576px) {
+    display: none;
+  }
+
   @media (min-width: 577px) and (max-width: 767px) {
-    margin-bottom: 4rem;
+    display: none;
   }
   @media (min-width: 0px) and (max-width: 575px) {
-    margin-bottom: 1em;
+    display: none;
   }
 
   .logo {
@@ -55,14 +51,6 @@ $color1: #00bc8c;
       }
       @media (min-width: 577px) and (max-width: 767px) {
         font-size: 3vh;
-        padding-top: 0;
-      }
-      @media (min-width: 377px) and (max-width: 575px) {
-        font-size: 1.5vh;
-        padding-top: 0;
-      }
-      @media (min-width: 0px) and (max-width: 376px) {
-        font-size: 1vh;
         padding-top: 0;
       }
     }

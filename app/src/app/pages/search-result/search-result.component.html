@@ -64,9 +64,13 @@
       <div class='tab-pane fade'
            [ngClass]="{ 'show active': tab.active }" id='{{ tab.type }}_tab'>
         <app-fetching-list *ngIf='tab.fetchOptions.queryCount' id='{{ tab.type }}_list' [query]='tab.query'
-                           [options]='tab.fetchOptions'></app-fetching-list>
+                           [options]='tab.fetchOptions'>
+          <ng-template let-entity="entity" let-type="entityType">
+            <div class="typebadge"><i class="mr-1 fas" [ngClass]="entity.icon"></i></div>
+          </ng-template>
+        </app-fetching-list>
       </div>
-    </ng-container>
+  </ng-container>
   </div>
   <!--</div> -->
 

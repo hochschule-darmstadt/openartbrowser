@@ -60,14 +60,14 @@
       </li>
     </ul>
 
-    <select class="tabs-select form-select mb-2" (change)="onChange($event)" >
-      <option *ngIf="timelineItems?.length>0" [value]="Tab.Timeline" [selected]="Tab.Timeline">
+    <select class="tabs-select form-select mb-2" (change)="onChange($event)">
+      <option *ngIf="timelineItems?.length>0" [value]="Tab.Timeline" [selected]="activeTab === Tab.Timeline">
         <ng-container i18n="Timeline toggle label@@toggletimeline">Timeline</ng-container>
       </option>
-      <option *ngIf="fetchOptions?.queryCount" [value]="Tab.Artworks">
+      <option *ngIf="fetchOptions?.queryCount" [value]="Tab.Artworks" [selected]="activeTab === Tab.Artwork">
         <ng-container i18n="Timeline toggle label@@toggleartworks">Artworks</ng-container>
       </option>
-      <option *ngIf="movement && relatedMovements.length > 0"  [value]="Tab.MovementOverview">
+      <option *ngIf="movement && relatedMovements.length > 0"  [value]="Tab.MovementOverview" [selected]="activeTab === Tab.MovementOverview">
         <ng-container i18n="Timeline toggle label@@togglerelatedmovements">Related Movements</ng-container>
       </option>
     </select>

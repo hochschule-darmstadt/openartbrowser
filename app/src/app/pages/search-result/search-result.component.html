@@ -1,15 +1,15 @@
 <div class="container">
-  <div class="row mb-5 border-bottom pb-5">
+  <div class="row mb-4 mb-sm-5 pb-4 border-bottom">
     <div class="col-sm-7">
       <h2 class="mb-3 first-letter" i18n="Search results label@@searchResults">Search results</h2>
 
       <div class="row">
         <ng-container *ngFor="let result of searchResults; let i = index">
-          <div class="col-md-3 pr-0" *ngIf="result?.items">
+          <div class="col-md-3 pr-sm-0" *ngIf="result?.items">
             <p class="mb-1 text-muted">{{ result?.key | titlecase }}:</p>
           </div>
 
-          <div class="col-md-9 pl-0 info" *ngIf="result?.items">
+          <div class="col-md-9 pl-sm-0 info" *ngIf="result?.items">
             <p class="mb-1">
               <span *ngFor="let item of result?.items" class="badge badge-pill badge-secondary first-letter chip" [routerLink]="['/' + result?.key, item?.id]">
                 <i class="fas fa-{{ result?.icon }}"></i>
@@ -19,22 +19,22 @@
           </div>
         </ng-container>
 
-        <div class="col-md-3 pr-0" *ngIf="searchTerms?.length">
+        <div class="col-md-3 pr-sm-0" *ngIf="searchTerms?.length">
           <p class="mb-1 text-muted colon-suffix" i18n="Terms label@@terms">Terms</p>
         </div>
 
-        <div class="col-md-9 pl-0 info" *ngIf="searchTerms?.length">
-          <p class="mb-1 ml-2 mr-2">
+        <div class="col-md-9 pl-sm-0 info" *ngIf="searchTerms?.length">
+          <p class="mb-1 ml-sm-2 mr-sm-2">
             <span *ngFor="let term of searchTerms" class="first-letter"> "{{ term }}" </span>
           </p>
         </div>
 
-        <div class="col-md-3 pr-0">
+        <div class="col-md-3 pr-sm-0">
           <p class="mb-1 text-muted colon-suffix" i18n="Results label@@results">Results</p>
         </div>
 
-        <div class="col-md-9 pl-0 info">
-          <p class="mb-1 ml-2">
+        <div class="col-md-9 pl-sm-0 info">
+          <p class="mb-1 ml-sm-2">
             <span class="first-letter"> {{ sliderItems.length }} </span>
           </p>
         </div>

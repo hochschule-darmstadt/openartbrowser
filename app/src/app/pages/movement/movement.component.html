@@ -1,17 +1,17 @@
 <div *ngIf="idDoesNotExist" class="container entity movement">
-  <div class="row mb-5 border-bottom pb-5">
+  <div class="row pb-4 pb-sm-5 mb-sm-5">
     <app-error-message  [id]="movementId"></app-error-message>
   </div>
 </div>
 
 <div *ngIf="!idDoesNotExist" class="container entity movement">
-  <div class="row mb-5 border-bottom pb-5">
+  <div class="row mb-4 mb-sm-5 pb-4 border-bottom">
     <div class="col-sm-7" *ngIf="movement">
       <app-title [entity]="movement"></app-title>
       <app-sticky-title [entity]="movement"></app-sticky-title>
 
-      <app-information i18n-label="Period label@@period" label="Period" [value]="movement.start_time + ' - ' + movement.end_time" *ngIf="movement.start_time && movement.end_time"></app-information>
-      <div *ngIf="movement?.abstract?.length || movement?.influenced_by?.length">
+      <app-information i18n-label="Period label@@period" label="Period" [value]="movement.start_time + ' - ' + movement.end_time" *ngIf="movement.start_time && movement.end_time" [isEntityPage]="true"></app-information>
+      <div class="mt-2" *ngIf="movement?.abstract?.length || movement?.influenced_by?.length">
         <app-collapse [showVideo]="videoExists">
           <app-abstract [entity]="movement"></app-abstract>
 
@@ -21,7 +21,7 @@
             </div>
           </div>
 
-          <app-information i18n-label="Influenced by label@@influenced_by" label="Influenced by" [values]="movement?.influenced_by"> </app-information>
+          <app-information i18n-label="Influenced by label@@influenced_by" label="Influenced by" [values]="movement?.influenced_by" [isEntityPage]="true"> </app-information>
         </app-collapse>
       </div>
     </div>
@@ -70,7 +70,7 @@
       </div>
       <div class="tab-pane fade" [ngClass]="{ 'show active': activeTab === Tab.MovementOverview }" id="movement_overview_tab">
         <app-movement-overview
-          *ngIf="(activeTab === Tab.MovementOverview || movementOverviewLoaded) && movement && relatedMovements.length > 0"
+          *ngIf="(activeTab === Tab.MovementOverview) && movement && relatedMovements.length > 0"
           [inputMovements]="relatedMovements"></app-movement-overview>
       </div>
     </div>

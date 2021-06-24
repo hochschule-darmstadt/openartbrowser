@@ -7,3 +7,4 @@ export { Location } from './location.interface';
 export { Material } from './material.interface';
 export { Motif } from './motif.interface';
 export { Movement } from './movement.interface';
+export { Class } from './class.interface';

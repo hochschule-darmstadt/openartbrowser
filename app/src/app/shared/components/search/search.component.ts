@@ -146,6 +146,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     const motifs = [];
     const movements = [];
     const locations = [];
+    const classes = [];
     for (const ent of entities) {
       switch (ent.type) {
         case EntityType.ARTWORK: {
@@ -176,6 +177,10 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
           locations.push(ent);
           break;
         }
+        case EntityType.CLASS: {
+          classes.push(ent);
+          break;
+        }
       }
     }
 
@@ -186,7 +191,8 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
       .concat(genre.splice(0, 2))
       .concat(motifs.splice(0, 2))
       .concat(movements.splice(0, 2))
-      .concat(locations.splice(0, 2));
+      .concat(locations.splice(0, 2))
+      .concat(classes.splice(0, 2));
 
     let restItems = [];
     for (let i = 0; i < 10; ++i) {
@@ -197,7 +203,8 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
         .concat(genre.splice(0, 1))
         .concat(motifs.splice(0, 1))
         .concat(movements.splice(0, 1))
-        .concat(locations.splice(0, 1));
+        .concat(locations.splice(0, 1))
+        .concat(classes.splice(0, 1));
     }
     return newEntities.concat(restItems).splice(0, 10);
   }
@@ -233,7 +240,8 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
       movement: [],
       genre: [],
       material: [],
-      location: []
+      location: [],
+      class: []
     };
     for (const item of this.searchItems) {
       switch (item.type) {
@@ -259,6 +267,10 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         case EntityType.LOCATION: {
           params.location.push(item.id);
+          break;
+        }
+        case EntityType.CLASS: {
+          params.class.push(item.id);
           break;
         }
         case null:

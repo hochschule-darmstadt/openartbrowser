@@ -1,6 +1,6 @@
 import { Component, ViewEncapsulation, Input, OnInit, OnChanges } from '@angular/core';
 import { Entity, Artwork } from '../../models/models';
-import { usePlural } from '../../models/entity.interface';
+import { usePlural, EntityIcon } from '../../models/entity.interface';
 
 @Component({
   selector: 'app-badge',
@@ -30,7 +30,7 @@ export class BadgeComponent implements OnInit, OnChanges {
    */
   ngOnInit() {
     if (this.entity) {
-      this.icon = icons[this.entity.type] || 'fa-user';
+      this.icon = EntityIcon[this.entity.type] || 'fa-user';
       this.redirectUrl = `/${this.entity.type}/${this.entity.id}` || '/';
       this.label = this.entity.label || '';
 
@@ -39,7 +39,7 @@ export class BadgeComponent implements OnInit, OnChanges {
         this.tooltip.trim();
       }
     }
-    
+
 
     /*
       Generate an abstract to show as tooltip.
@@ -57,7 +57,7 @@ export class BadgeComponent implements OnInit, OnChanges {
       this.tooltip = this.tooltip.substr(0, substrTo).replace(/ *\([^)]*\) */g, '')+ ' [...]';
     }
     else if(this.tooltip && this.tooltip.length < this.tooltipBreakLimit){
-      
+
       this.tooltip = this.tooltip.substr(0).replace(/ *\([^)]*\) */g, '').charAt(0).toUpperCase() + this.tooltip.slice(1);
 
     }
@@ -75,14 +75,4 @@ export class BadgeComponent implements OnInit, OnChanges {
   handleInvalidImageSource() {
     this.isImageSourceValid = false;
   }
-}
-
-enum icons {
-  artist = 'fa-user',
-  artwork = 'fa-image',
-  movement = 'fa-wind',
-  location = 'fa-archway',
-  motif = 'fa-image',
-  genre = 'fa-tag',
-  material = 'fa-scroll'
 }

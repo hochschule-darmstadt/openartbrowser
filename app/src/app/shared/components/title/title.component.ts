@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Entity } from '../../models/models';
+import { usePlural } from '../../models/entity.interface';
 
 @Component({
   selector: 'app-title',
@@ -8,6 +9,8 @@ import { Entity } from '../../models/models';
 })
 export class TitleComponent implements OnInit {
   @Input() entity: Entity;
+  
+  usePlural = usePlural;
 
   constructor() {}
 

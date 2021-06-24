@@ -6,7 +6,9 @@
   display: inline-block;
   margin-right: 16px;
 }
-
 .video:last-child {
   margin: 0;
+}
+.video:empty {
+  display: none;
 }

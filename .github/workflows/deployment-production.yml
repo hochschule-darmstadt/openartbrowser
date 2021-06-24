@@ -1,0 +1,49 @@
+name: DEPLOY-TO-PRODUCTION
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+      - name: Reconfigure git to use HTTP authentication
+        run: >
+          git config --global url."https://github.com/".insteadOf
+          ssh://git@github.com/
+      - name: Use Node.js 12
+        uses: actions/setup-node@v2
+        with:
+          node-version: 12
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: ~/.npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+            ${{ runner.OS }}-
+      - name: Install dependencies
+        run: |
+          cd app/
+          npm install
+      - name: Run build script
+        run: |
+          cd app/
+          npm run build-locale
+      - name: Sync directories
+        uses: up9cloud/action-rsync@master
+        env:
+          HOST: ${{ secrets.DEPLOYMENT_SERVER_PRODUCTION }}
+          KEY: ${{ secrets.DEPLOYMENT_SERVER_PRODUCTION_SSHKEY }}
+          TARGET: ${{ secrets.DEPLOYMENT_SERVER_PRODUCTION_PATH }}
+          VERBOSE: true
+          USER: ${{ secrets.DEPLOYMENT_USER_PRODUCTION }}
+          ARGS: -rltDvz --delete
+          SSH_ARGS: '-o StrictHostKeyChecking=no'
+          SOURCE: ./app/dist/browser/*

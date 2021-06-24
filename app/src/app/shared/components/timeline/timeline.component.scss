@@ -68,7 +68,7 @@ $container-height: 20em;
 @media (max-width: 575px) {
   .carou-control {
     width: 8%;
-    }
+  }
 }
 
 .carou-content {
@@ -167,14 +167,11 @@ a {
 
 @media (max-width: 768px) {
   .desktop{
-    display: none;
-    }
+    display: none;   
+  }
 }
 @media (min-width: 768px) {
   .mobile{
-    display: none;
-    font-size: 1em;
-    position: absolute;
-    text-align: center;
-    }
+    display: none;   
+  }
 }

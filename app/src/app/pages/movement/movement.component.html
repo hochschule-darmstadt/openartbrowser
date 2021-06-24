@@ -60,7 +60,7 @@
       </li>
     </ul>
 
-    <select class="tabs-select form-select" (change)="onChange($event)" >
+    <select class="tabs-select form-select mb-2" (change)="onChange($event)" >
       <option *ngIf="timelineItems?.length>0" [value]="Tab.Timeline" [selected]="Tab.Timeline">
         <ng-container i18n="Timeline toggle label@@toggletimeline">Timeline</ng-container>
       </option>

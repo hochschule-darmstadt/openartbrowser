@@ -165,13 +165,22 @@ a {
   }
 }
 
+.item-caption{
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  text-align: center;
+}
 @media (max-width: 768px) {
   .desktop{
     display: none;   
   }
+  
 }
 @media (min-width: 768px) {
   .mobile{
-    display: none;   
+    display: none;      
   }
+  
 }

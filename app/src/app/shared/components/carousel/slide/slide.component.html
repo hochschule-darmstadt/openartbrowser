@@ -1,4 +1,4 @@
-<div class="row mx-3 slide position-relative overflow-hidden">
+<div class="row mx-3 slide position-relative">
   <div
     *ngFor="let item of slide.items"
     (mouseenter)="this.itemHover.emit(item)"
@@ -21,9 +21,9 @@
       </div>
     </a>
   </div>
-  <div class="position-absolute" id="common-tags-mobile">
+  <div id="common-tags-mobile">
     <span *ngIf="artwork?.main_subjects?.length && tab_type == 'main_motif' || tab_type == 'all'">
-      <span *ngFor="let main_subject of artwork?.main_subjects">    
+      <span *ngFor="let main_subject of artwork?.main_subjects">
         <app-badge [entity]="main_subject" *ngIf="slide.items[0]?.main_subjects?.includes(main_subject.id)"> </app-badge>
       </span>
     </span>
@@ -33,7 +33,7 @@
         <app-badge [entity]="motif" *ngIf="slide.items[0]?.motifs?.includes(motif.id)"> </app-badge>
       </span>
     </span>
-    
+
     <span *ngIf="artwork?.artists?.length && tab_type == 'artist' || tab_type == 'all'">
       <span *ngFor="let artist of artwork?.artists" >
         <app-badge [entity]="artist" *ngIf="slide.items[0]?.artists?.includes(artist.id)"> </app-badge>
@@ -45,25 +45,25 @@
         <app-badge [entity]="genre" *ngIf="slide.items[0]?.genres?.includes(genre.id)"> </app-badge>
       </span>
     </span>
-      
+
     <span *ngIf="artwork?.movements?.length && tab_type == 'movement' || tab_type == 'all'">
       <span *ngFor="let movement of artwork?.movements">
         <app-badge [entity]="movement" *ngIf="slide.items[0]?.movements?.includes(movement.id)"> </app-badge>
       </span>
     </span>
-      
+
     <span *ngIf="artwork?.materials?.length && tab_type == 'material' || tab_type == 'all'">
       <span *ngFor="let material of artwork?.materials">
         <app-badge [entity]="material" *ngIf="slide.items[0]?.materials?.includes(material.id)"> </app-badge>
       </span>
     </span>
-      
+
     <span *ngIf="artwork?.locations?.length && tab_type == 'location' || tab_type == 'all'">
       <span *ngFor="let location of artwork?.locations">
         <app-badge [entity]="location" *ngIf="slide.items[0]?.locations?.includes(location.id)"> </app-badge>
       </span>
     </span>
-    
+
     <span *ngIf="artwork?.classes?.length && tab_type == 'class' || tab_type == 'all'">
       <span *ngFor="let class of artwork?.classes">
         <app-badge [entity]="class" *ngIf="slide.items[0]?.classes?.includes(class.id)"> </app-badge>

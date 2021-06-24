@@ -44,28 +44,30 @@
   </div>
 
   <!--<div *ngIf='searchResults?.length'> -->
-    <ul class='nav nav-tabs'>
-      <ng-container *ngFor='let tab of entityTabs'>
-        <li class='nav-item'>
-          <a class='nav-link' [ngClass]='{ active: tab.active }' data-toggle='tab' href='#{{ tab.type }}_tab'
-             (click)='tabClicked(tab)'>
-            <i class='mr-1 fa fa-{{ tab.icon }}'></i>
-            <ng-container i18n='Entity Type Labels@@entity_labels' *ngIf='tab.type; let type'>
-              {type, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material
-                {Material} main_motif {Main Motif} }
-            </ng-container>
-          </a>
-        </li>
-      </ng-container>
-    </ul>
+  <ul class='nav nav-tabs'>
+    <ng-container *ngFor='let tab of entityTabs'>
+      <li class='nav-item'>
+        <a class='nav-link' [ngClass]='{ active: tab.active }' data-toggle='tab' href='#{{ tab.type }}_tab'
+           (click)='tabClicked(tab)'>
+          <i class='mr-1 fa fa-{{ tab.icon }}'></i>
+          <ng-container i18n='Entity Type Labels@@entity_labels' *ngIf='tab.type; let type'>
+            {type, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material
+              {Material} main_motif {Main Motif} }
+          </ng-container>
+        </a>
+      </li>
+    </ng-container>
+  </ul>
 
-    <div class='tab-content'>
-      <div *ngFor='let tab of entityTabs' class='tab-pane fade'
+  <div class='tab-content'>
+    <ng-container *ngFor='let tab of entityTabs'>
+      <div class='tab-pane fade'
            [ngClass]="{ 'show active': tab.active }" id='{{ tab.type }}_tab'>
-        <app-fetching-list id='{{ tab.type }}_list' [query]='tab.query' [options]='tab.fetchOptions'></app-fetching-list>
+        <app-fetching-list *ngIf='tab.fetchOptions.queryCount' id='{{ tab.type }}_list' [query]='tab.query'
+                           [options]='tab.fetchOptions'></app-fetching-list>
       </div>
-
-    </div>
+    </ng-container>
+  </div>
   <!--</div> -->
 
   <!--<app-slider [items]='searchResults'></app-slider> -->

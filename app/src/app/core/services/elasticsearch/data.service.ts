@@ -151,9 +151,11 @@ export class DataService {
   public searchResultsByType(searchObj: ArtSearch, keywords: string[] = [], count = 200, from = 0, type: EntityType): Promise<Entity[]> {
     const body = bodyBuilder()
       .size(count)
-      .sort(defaultSortField, 'desc')
-      .from(from)
-      .query('match', 'type', type);
+      // .sort(defaultSortField, 'desc')
+      .from(from);
+    if (type) {
+      body.query('match', 'type', type);
+    }
     _.each(searchObj, (arr, key) => {
       if (Array.isArray(arr)) {
         _.each(arr, val => body.query('match', key, val));
@@ -170,8 +172,10 @@ export class DataService {
   }
 
   public async countSearchResultItems<T>(searchObj: ArtSearch, keywords: string[] = [], type: EntityType): Promise<number> {
-    const body = bodyBuilder()
-      .query('match', 'type', type);
+    const body = bodyBuilder();
+    if (type) {
+      body.query('match', 'type', type);
+    }
     _.each(searchObj, (arr, key) => {
       if (Array.isArray(arr)) {
         _.each(arr, val => body.query('match', key, val));

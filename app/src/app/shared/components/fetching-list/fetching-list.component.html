@@ -6,7 +6,7 @@
     <div *ngFor="let entity of page.value.items; let i = index" class="item">
       <a *ngIf="entity"
          class="item-link"
-         [routerLink]="['/'+options.entityType, entity?.id]">
+         [routerLink]="['/'+entity?.type, entity?.id]">
         <div class="overlay-container">
           <div class="img-wrapper">
             <img
@@ -29,6 +29,7 @@
           </div>
 
           <div class="overlay" *ngIf="templateContainer.children.length == 0">
+            <!-- TODO: possible place for entity.icon -->
             <span class="img_description">{{ entity.label }}</span>
           </div>
         </div>

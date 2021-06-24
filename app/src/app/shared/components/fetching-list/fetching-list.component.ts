@@ -14,9 +14,9 @@ import {ActivatedRoute, Params} from '@angular/router';
 import {KeyValue} from '@angular/common';
 import {environment} from '../../../../environments/environment';
 import {Artwork} from '../../models/models';
-import {takeUntil} from "rxjs/operators";
-import {Subject} from "rxjs";
-import {UrlParamService} from "../../../core/services/urlparam.service";
+import {takeUntil} from 'rxjs/operators';
+import {Subject} from 'rxjs';
+import {UrlParamService} from '../../../core/services/urlparam.service';
 
 export interface FetchOptions {
   /** initial offset of the query, this is where it will continue to load */
@@ -68,7 +68,7 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
   // order by ascending property key (as number)
   keyAscOrder = (a: KeyValue<number, Page>, b: KeyValue<number, Page>): number => {
     return +a.key < +b.key ? -1 : (+b.key < +a.key ? 1 : 0);
-  };
+  }
 
   constructor(private dataService: DataService,
               private route: ActivatedRoute,

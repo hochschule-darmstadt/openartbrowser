@@ -131,7 +131,7 @@ export class SearchResultComponent implements OnInit, OnDestroy {
     return await this.dataService.searchArtworks(search, terms);
   }
 
-  private async getSearchResultsCounts(results: SearchObject[], terms: string[], type = null): Promise<number> {
+  private async getSearchResultsCounts(results: SearchObject[], terms: string[], type: EntityType): Promise<number> {
     const search: ArtSearch = {};
     results.forEach(typeArray => (search[usePlural(typeArray.key)] = typeArray.items.map((e: Entity) => e.id)));
     return await this.dataService.countSearchResultItems(search, terms, type);
@@ -142,16 +142,19 @@ export class SearchResultComponent implements OnInit, OnDestroy {
       /** load related data for each tab  */
       this.entityTabs.map(async (tab: EntityTab) => {
         if (tab.type === EntityType.ALL) {
-          return;
+          tab.fetchOptions.queryCount = this.getSearchResultsCounts(this.searchObjects, this.searchTerms, null);
+        } else {
+          this.getSearchResultsCounts(this.searchObjects, this.searchTerms, tab.type).then(items => {
+            if (items === 0) {
+              this.entityTabs = this.entityTabs.filter(t => t.type !== tab.type);
+            } else {
+              // TODO: fetchoptions und query erst hier setzen
+              // TODO: queryCount set right?
+              // tab.fetchOptions.queryCount = items;
+              tab.fetchOptions.queryCount = this.getSearchResultsCounts(this.searchObjects, this.searchTerms, tab.type);
+            }
+          });
         }
-
-        this.getSearchResultsCounts(this.searchObjects, this.searchTerms, tab.type).then(items => {
-          if (items === 0) {
-            // TODO: queryCount set right?
-            tab.fetchOptions.queryCount = items;
-            this.entityTabs = this.entityTabs.filter(t => t.type !== tab.type);
-          }
-        });
       })
     );
   }
@@ -172,10 +175,9 @@ export class SearchResultComponent implements OnInit, OnDestroy {
       entityType: type
     } as FetchOptions;
 
-    // TODO: query festlegen
     /** load fetching list items */
     const query = async (offset) => {
-      return await this.dataService.searchResultsByType(search, this.searchTerms, fetchOptions.fetchSize, offset, type);
+      return await this.dataService.searchResultsByType(search, this.searchTerms, fetchOptions.fetchSize, offset, (type === EntityType.ALL) ? null : type);
     };
 
     this.entityTabs.push({
@@ -188,7 +190,6 @@ export class SearchResultComponent implements OnInit, OnDestroy {
   }
 
   tabClicked(tabClicked: EntityTab) {
-
   }
 
   ngOnDestroy() {

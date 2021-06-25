@@ -34,6 +34,9 @@ interface EntityTab {
   styleUrls: ['./search-result.component.scss']
 })
 export class SearchResultComponent implements OnInit, OnDestroy {
+  /** Count for search results */
+  countResults: number;
+
   /** Related artworks */
   searchResults: Artwork[] = [];
 
@@ -143,6 +146,7 @@ export class SearchResultComponent implements OnInit, OnDestroy {
       this.entityTabs.map(async (tab: EntityTab) => {
         if (tab.type === EntityType.ALL) {
           tab.fetchOptions.queryCount = this.getSearchResultsCounts(this.searchObjects, this.searchTerms, null);
+          this.countResults = await tab.fetchOptions.queryCount;
         } else {
           this.getSearchResultsCounts(this.searchObjects, this.searchTerms, tab.type).then(items => {
             if (items === 0) {

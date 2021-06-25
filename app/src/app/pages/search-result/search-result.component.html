@@ -31,12 +31,12 @@
         </div>
 
         <div class='col-md-3 pr-0'>
-          <p class='mb-1 text-muted colon-suffix' i18n='Results label@@results'>Results</p>
+          <p class='mb-1 text-muted colon-suffix' i18n='Results label@@results'>All results</p>
         </div>
 
         <div class='col-md-9 pl-0 info'>
           <p class='mb-1 ml-2'>
-            <span class='first-letter'> {{ searchResults.length }} </span>
+            <span *ngIf='countResults' class='first-letter'> {{ countResults }} </span>
           </p>
         </div>
       </div>

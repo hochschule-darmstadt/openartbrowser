@@ -28,7 +28,7 @@
             </ng-container>
           </div>
 
-          <div class="overlay" *ngIf="templateContainer.children.length == 0">
+          <div class="overlay" *ngIf="templateContainer.children.length == 0 || enableHover">
             <!-- TODO: possible place for entity.icon -->
             <span class="img_description">{{ entity.label }}</span>
           </div>

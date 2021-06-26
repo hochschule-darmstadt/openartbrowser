@@ -50,6 +50,8 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
 
   @Input() options: FetchOptions;
 
+  @Input() enableHover = false;
+
   @ContentChild(TemplateRef, {static: false}) templateRef;
   @ContentChild('templateContainer', {static: false}) templateContainer: ElementRef;
 

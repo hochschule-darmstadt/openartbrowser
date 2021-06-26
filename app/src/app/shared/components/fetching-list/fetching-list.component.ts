@@ -110,8 +110,9 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
     this.route.queryParams.pipe(takeUntil(this.ngUnsubscribe)).subscribe(params => {
       this.queryParams = params;
     });
-
-    this.options.queryCount.then(value => {
+    Promise.resolve(this.options.queryCount).then(value => {
+      return value
+    }).then(value => {
       this.options.queryCount = value;
       // TODO: If the queryCount exceeds the elasticSearch safeguard (default 10000), maxPage is limited.
       //  Find a way to prevent exceeding this limit (eg. use scroll api or search after)

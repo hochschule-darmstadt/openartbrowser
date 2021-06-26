@@ -6,7 +6,6 @@ import { Subject } from 'rxjs';
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 import { Angulartics2 } from 'angulartics2';
 import { usePlural } from 'src/app/shared/models/entity.interface';
-import { shuffle } from '../../core/services/utils.service';
 import { FetchOptions } from '../../shared/components/fetching-list/fetching-list.component';
 
 /**
@@ -148,14 +147,14 @@ export class SearchResultComponent implements OnInit, OnDestroy {
           tab.fetchOptions.queryCount = this.getSearchResultsCounts(this.searchObjects, this.searchTerms, null);
           this.countResults = await tab.fetchOptions.queryCount;
         } else {
-          this.getSearchResultsCounts(this.searchObjects, this.searchTerms, tab.type).then(items => {
-            if (items === 0) {
+          this.getSearchResultsCounts(this.searchObjects, this.searchTerms, tab.type).then(itemCount => {
+            if (itemCount === 0) {
               this.entityTabs = this.entityTabs.filter(t => t.type !== tab.type);
             } else {
               // TODO: fetchoptions und query erst hier setzen
               // TODO: queryCount set right?
               // tab.fetchOptions.queryCount = items;
-              tab.fetchOptions.queryCount = this.getSearchResultsCounts(this.searchObjects, this.searchTerms, tab.type);
+              tab.fetchOptions.queryCount = itemCount;
             }
           });
         }
@@ -165,8 +164,8 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 
   /**
    * Add tab to entity tab array
+   * @param search Object with search parameters
    * @param type Tab title
-   * @param itemsFound If Items where found in elastic search
    * @param active Is active tab
    */
   private addTab(search: ArtSearch, type: EntityType, active: boolean = false) {

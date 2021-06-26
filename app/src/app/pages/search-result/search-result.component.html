@@ -13,7 +13,7 @@
             <p class='mb-1'>
               <span *ngFor='let item of result?.items' class='badge badge-pill badge-secondary first-letter chip'
                     [routerLink]="['/' + result?.key, item?.id]">
-                <i class='fas fa-{{ result?.icon }}'></i>
+                <i class='fas {{ result?.icon }}'></i>
                 {{ item?.label }}
               </span>
             </p>
@@ -65,7 +65,7 @@
         <app-fetching-list *ngIf='tab.fetchOptions.queryCount && tab.initialized' id='{{ tab.type }}_list' [query]='tab.query'
                            [options]='tab.fetchOptions' [enableHover]='true'>
           <ng-template let-entity="entity" let-type="entityType">
-            <div class="typebadge"><i class="mr-1 fas" [ngClass]="entity.icon"></i></div>
+            <div class="typebadge"><i class="fas" [ngClass]="entity.icon"></i></div>
           </ng-template>
         </app-fetching-list>
       </div>

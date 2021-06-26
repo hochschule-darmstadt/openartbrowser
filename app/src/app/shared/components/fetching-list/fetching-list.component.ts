@@ -67,16 +67,43 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
   private ngUnsubscribe = new Subject();
   queryParams: Params;
 
-  // order by ascending property key (as number)
-  keyAscOrder = (a: KeyValue<number, Page>, b: KeyValue<number, Page>): number => {
-    return +a.key < +b.key ? -1 : (+b.key < +a.key ? 1 : 0);
-  }
-
   constructor(private dataService: DataService,
               private route: ActivatedRoute,
               private changeDetectionRef: ChangeDetectorRef,
               private urlParamService: UrlParamService) {
   }
+
+  /**
+   * returns the current vertical position at the page
+   * @private
+   */
+  private static getContainerScrollHeight(): number {
+    return (
+      Math.max(
+        document.body.scrollHeight,
+        document.body.offsetHeight,
+        document.body.clientHeight,
+        document.documentElement.scrollHeight,
+        document.documentElement.offsetHeight,
+        document.documentElement.clientHeight
+      )
+    );
+
+  }
+
+  private static getContainerScrollTop(): number {
+    return (window.pageYOffset);
+  }
+
+  private static setScrollTop(currentScrollTop: number, delta: number): void {
+    window.scrollBy(0, delta);
+  }
+
+  // order by ascending property key (as number)
+  keyAscOrder = (a: KeyValue<number, Page>, b: KeyValue<number, Page>): number => {
+    return +a.key < +b.key ? -1 : (+b.key < +a.key ? 1 : 0);
+  }
+
 
   ngOnInit() {
     if (!this.options) {
@@ -343,36 +370,10 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
    * @private
    */
   private setURLPageParam(page: number) {
-    this.urlParamService.changeQueryParams({page: page}).resolve();
+    this.urlParamService.changeQueryParams({page}).resolve();
   }
 
   range(start, end): Array<number> {
     return Array.from({length: end - start + 1}, (v, k) => k + start);
-  }
-
-  /**
-   * returns the current vertical position at the page
-   * @private
-   */
-  private static getContainerScrollHeight(): number {
-    return (
-      Math.max(
-        document.body.scrollHeight,
-        document.body.offsetHeight,
-        document.body.clientHeight,
-        document.documentElement.scrollHeight,
-        document.documentElement.offsetHeight,
-        document.documentElement.clientHeight
-      )
-    );
-
-  }
-
-  private static getContainerScrollTop(): number {
-    return (window.pageYOffset);
-  }
-
-  private static setScrollTop(currentScrollTop: number, delta: number): void {
-    window.scrollBy(0, delta);
   }
 }

@@ -890,7 +890,7 @@
       </trans-unit>
       <trans-unit id="results" datatype="html">
         <source>Results</source>
-        <target state="final">Résultats</target>
+        <target state="final">Tous les résultats</target>
       </trans-unit>
       <trans-unit id="d92b19d3d60f5e8db9974b16602fe83c00d05b7c" datatype="html">
         <source>{VAR_SELECT, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre

@@ -52,7 +52,7 @@ export enum EntityIcon {
   ARTWORK = 'fa-image',
   MOVEMENT = 'fa-wind',
   LOCATION = 'fa-archway',
-  MOTIF = 'fa-shapes',
+  MOTIF = 'fa-eye',
   GENRE = 'fa-tag',
   MATERIAL = 'fa-scroll',
   CLASS = 'fa-shapes'

@@ -5,6 +5,7 @@ export interface TagItem {
   label: string;
   type?: string;
   id?: string;
+  icon?: string;
 }
 
 @Injectable()
@@ -27,7 +28,8 @@ export class SearchService {
       this.searchItems.push({
         label: tag.label,
         type: tag.type,
-        id: tag.id
+        id: tag.id,
+        icon: tag.icon
       });
       this.$searchItems.next(this.searchItems);
     }

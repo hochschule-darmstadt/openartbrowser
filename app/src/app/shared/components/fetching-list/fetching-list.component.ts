@@ -111,7 +111,7 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
       this.queryParams = params;
     });
     Promise.resolve(this.options.queryCount).then(value => {
-      return value
+      return value;
     }).then(value => {
       this.options.queryCount = value;
       // TODO: If the queryCount exceeds the elasticSearch safeguard (default 10000), maxPage is limited.

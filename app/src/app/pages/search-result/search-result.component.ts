@@ -25,7 +25,10 @@ interface EntityTab {
   active: boolean;
   query: (offset: number) => Promise<Entity[]>;
   fetchOptions: FetchOptions;
+  initialized: boolean;
+  loaded: boolean;
 }
+
 
 @Component({
   selector: 'app-search-result',
@@ -142,22 +145,19 @@ export class SearchResultComponent implements OnInit, OnDestroy {
   private loadTabs() {
     Promise.all(
       /** load related data for each tab  */
-      this.entityTabs.map(async (tab: EntityTab) => {
-        if (tab.type === EntityType.ALL) {
-          tab.fetchOptions.queryCount = this.getSearchResultsCounts(this.searchObjects, this.searchTerms, null);
-          this.countResults = await tab.fetchOptions.queryCount;
-        } else {
-          this.getSearchResultsCounts(this.searchObjects, this.searchTerms, tab.type).then(itemCount => {
-            if (itemCount === 0) {
-              this.entityTabs = this.entityTabs.filter(t => t.type !== tab.type);
-            } else {
-              // TODO: fetchoptions und query erst hier setzen
-              // TODO: queryCount set right?
-              // tab.fetchOptions.queryCount = items;
-              tab.fetchOptions.queryCount = itemCount;
+      this.entityTabs.map((tab: EntityTab) => {
+        this.getSearchResultsCounts(this.searchObjects, this.searchTerms,
+          (tab.type === EntityType.ALL) ? null : tab.type).then(itemCount => {
+          if (itemCount === 0) {
+            this.entityTabs = this.entityTabs.filter(t => t.type !== tab.type);
+          } else {
+            tab.fetchOptions.queryCount = itemCount;
+            if (tab.type === EntityType.ALL) {
+              this.countResults = itemCount;
             }
-          });
-        }
+            tab.loaded = true;
+          }
+        });
       })
     );
   }
@@ -188,11 +188,14 @@ export class SearchResultComponent implements OnInit, OnDestroy {
       icon: EntityIcon[type.toUpperCase()],
       type,
       fetchOptions,
-      query
+      query,
+      initialized: active,
+      loaded: false
     });
   }
 
   tabClicked(tabClicked: EntityTab) {
+    tabClicked.initialized = true;
   }
 
   ngOnDestroy() {

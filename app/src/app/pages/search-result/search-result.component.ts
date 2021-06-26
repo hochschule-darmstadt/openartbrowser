@@ -148,13 +148,14 @@ export class SearchResultComponent implements OnInit, OnDestroy {
       this.entityTabs.map((tab: EntityTab) => {
         this.getSearchResultsCounts(this.searchObjects, this.searchTerms,
           (tab.type === EntityType.ALL) ? null : tab.type).then(itemCount => {
+          if (tab.type === EntityType.ALL) {
+            this.countResults = itemCount;
+          }
+
           if (itemCount === 0) {
             this.entityTabs = this.entityTabs.filter(t => t.type !== tab.type);
           } else {
             tab.fetchOptions.queryCount = itemCount;
-            if (tab.type === EntityType.ALL) {
-              this.countResults = itemCount;
-            }
             tab.loaded = true;
           }
         });

@@ -1,6 +1,8 @@
-import { Component, Input, SimpleChanges, OnChanges, EventEmitter, Output } from '@angular/core';
+import { NgbCarousel } from '@ng-bootstrap/ng-bootstrap';
+import { Component, Input, SimpleChanges, OnChanges, EventEmitter, Output, ViewChild } from '@angular/core';
 import { Entity } from '../../models/models';
 import { HostListener } from '@angular/core';
+
 
 export interface Slide {
   /** artworks displayed on this slide */
@@ -43,6 +45,8 @@ export function makeDefaultSlide(id: number = 0, items: Array<Entity> = []): Sli
   styleUrls: ['./carousel.component.scss']
 })
 export class CarouselComponent implements OnChanges {
+  @ViewChild("carousel", {static:false}) caurosel:NgbCarousel;
+
   /** title of this slider */
   @Input() heading: string;
 

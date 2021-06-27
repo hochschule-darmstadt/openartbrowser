@@ -8,6 +8,8 @@ import { TimelineComponent } from './timeline.component';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EntityType, EntityIcon } from '../../models/models';
+import { HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
+import { HammerConfig } from 'src/config/hammer.config';
 
 describe('SliderComponent', () => {
   let component: TimelineComponent;
@@ -17,7 +19,10 @@ describe('SliderComponent', () => {
     TestBed.configureTestingModule({
       imports: [NgbModule, NgxSliderModule, HttpClientModule, RouterModule.forRoot([], { relativeLinkResolution: 'legacy' }), BrowserAnimationsModule],
       declarations: [TimelineComponent],
-      providers: [DataService]
+      providers: [DataService, {
+        provide: HAMMER_GESTURE_CONFIG,
+        useClass: HammerConfig
+      }]
     }).compileComponents();
   }));
 

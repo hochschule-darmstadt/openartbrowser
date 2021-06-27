@@ -18,7 +18,9 @@
         <div class="overlay_view">
           <span class="img_description">{{ item?.label }}</span>
         </div>
+        <div *ngIf="item?.label" [textContent]="item?.type === 'artist' ? item?.description : item?.label" class="center item-caption mobile"></div>
       </div>
     </a>
   </div>
+  
 </div>

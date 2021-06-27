@@ -286,4 +286,20 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       return event;
     }).sort((left, right) => left.start_time - right.start_time);
   }
+
+  
+  onChange(event){
+    const value = event.target.value
+    
+    for(let tab of this.artworkTabs){
+
+      if(tab.type==value){
+        tab.active=true
+      }
+      else{
+        tab.active=false
+      }
+
+    }
+  }
 }

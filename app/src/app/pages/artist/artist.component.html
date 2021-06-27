@@ -77,7 +77,7 @@
   </div>
 
   <div *ngIf="sliderItems?.length">
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-tabs tabs">
       <li class="nav-item">
         <a class="nav-link" (click)="setActiveTab(Tab.Timeline)"
            [ngClass]="{ active:  activeTab === Tab.Timeline }"
@@ -96,6 +96,16 @@
         </a>
       </li>
     </ul>
+
+    <select class="tabs-select form-select" (change)="onChange($event)">
+        <option [value]="Tab.Timeline" [selected]="activeTab === Tab.Timeline">
+          <ng-container i18n="Timeline toggle label@@toggletimeline">Timeline</ng-container>
+        </option>
+        <option [value]="Tab.Artworks" [selected]="activeTab === Tab.Artworks">
+          <ng-container i18n="Timeline toggle label@@toggleartworks">Artworks</ng-container>
+        </option>
+    </select>
+
     <div class="tab-content">
       <div class="tab-pane fade" [ngClass]="{ 'show active': activeTab === Tab.Timeline }" id="timeline_tab">
         <app-timeline [artworks]="sliderItems"></app-timeline>

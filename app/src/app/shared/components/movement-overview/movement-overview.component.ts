@@ -98,6 +98,8 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
       this.boxes = [[]];
       this.movements = changes.inputMovements.currentValue as MovementItem[];
       this.initializeMovements();
+      // sort movements by start_time ascending for mobile movement overview
+      this.inputMovements.sort((a, b) => a.start_time < b.start_time ? -1 : 1); 
     }
   }
 
@@ -310,6 +312,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   onThumbnailLoaded() {
+    this.showThumbnail = true;
     this.thumbnailLoaded = true;
   }
 

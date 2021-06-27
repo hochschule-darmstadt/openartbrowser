@@ -4,15 +4,16 @@ WORKDIR /app
 # The pythonpath is needed for package/module imports
 ENV PYTHONPATH "${PYTHONPATH}:/app"
 
-RUN pip install pywikibot
+RUN pip install pywikibot ijson wikitextparser
 
 #copy necessary files
 COPY ["./data_extraction/", "/app/data_extraction"]
 COPY ["./user-config.py", "/app"]
 COPY ["./shared/", "/app/shared"]
+RUN mkdir "/app/logs"
 # run get_wikidata_items in development mode
 RUN pip install SPARQLWrapper
-RUN ["python", "/app/data_extraction/get_wikidata_items.py", "-d"]
+RUN ["python", "/app/data_extraction/get_wikidata_items.py", "-d", "5"]
 RUN ["python", "/app/data_extraction/get_wikipedia_extracts.py"]
 
 
@@ -29,6 +30,7 @@ COPY --from=Wikicrawler /app/crawler_output/ /app/crawler_output/
 RUN mkdir data_enhancement
 COPY ["./data_enhancement/", "/app/data_enhancement"]
 COPY ["./shared/", "/app/shared"]
+RUN mkdir "/app/logs"
 
 RUN pip install ijson requests
 RUN ["python", "./data_enhancement/estimate_movement_period.py"]
@@ -36,7 +38,6 @@ RUN ["python", "./data_enhancement/has_part_part_of_enhancement.py"]
 RUN ["python", "./data_enhancement/add_youtube_videos.py"]
 
 RUN ["python", "./data_enhancement/ranking.py"]
-
 # ------------------------------------------------
 
 FROM stedolan/jq:latest as merge_files
@@ -46,7 +47,7 @@ WORKDIR /app
 # get files from previous stage
 COPY --from=data_enhancement /app/crawler_output/intermediate_files/json/ /app/
 
-RUN jq -s "[.[][]]" artworks.json genres.json artists.json locations.json materials.json movements.json motifs.json > art_ontology.json
+RUN jq -s "[.[][]]" artworks.json genres.json artists.json locations.json materials.json movements.json motifs.json classes.json > art_ontology.json
 
 # ------------------------------------------------
 
@@ -61,11 +62,12 @@ COPY --from=merge_files /app/art_ontology.json/ /app/crawler_output/
 COPY ["./data_enhancement/split_languages.py", "/app/data_enhancement/split_languages.py"]
 COPY --from=Wikicrawler /app/shared/ /app/shared/
 
+RUN pip install ijson
 RUN ["python", "data_enhancement/split_languages.py"]
 
 # art_ontology.json is moved to /root because elasticsearch_helper.py
 # expects the json file in the home directory
-COPY ["./crawler_output/", "/root/crawler_output/"]
+RUN ["cp", "-r", "/app/crawler_output", "/root/crawler_output/"]
 
 # ------------------------------------------------
 

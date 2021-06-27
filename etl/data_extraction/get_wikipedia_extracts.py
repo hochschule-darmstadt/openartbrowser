@@ -11,13 +11,16 @@ Returns:
 """
 import datetime
 import json
+import sys
 from pathlib import Path
 from typing import Dict, List, Optional
 
 from data_extraction.constants import *
 from data_extraction.request_utils import send_http_request
 from shared.constants import JSON
-from shared.utils import chunks, create_new_path, language_config_to_list, setup_logger
+from shared.utils import chunks, create_new_path, language_config_to_list, setup_logger, check_state, write_state
+
+RECOVER_MODE = False
 
 logger = setup_logger(
     "data_extraction.get_wikipedia_extracts",
@@ -30,12 +33,12 @@ lang_keys = [item[0] for item in language_config_to_list()]
 
 
 def get_wikipedia_page_ids(
-    items: List[Dict],
-    indices: List[int],
-    langkey: str,
-    timeout: Optional[int] = TIMEOUT,
-    sleep_time: Optional[int] = SLEEP_TIME,
-    maxlag: Optional[int] = MAX_LAG,
+        items: List[Dict],
+        indices: List[int],
+        langkey: str,
+        timeout: Optional[int] = TIMEOUT,
+        sleep_time: Optional[int] = SLEEP_TIME,
+        maxlag: Optional[int] = MAX_LAG,
 ) -> Dict:
     """Function to get the wikipedia page ids from their label referenced in the sitelinks
 
@@ -107,12 +110,12 @@ def get_wikipedia_page_ids(
 
 
 def get_wikipedia_extracts(
-    items: List[Dict],
-    page_id_index_dictionary: Dict,
-    langkey: str,
-    timeout: Optional[int] = TIMEOUT,
-    sleep_time: Optional[int] = SLEEP_TIME,
-    maxlag: Optional[int] = MAX_LAG,
+        items: List[Dict],
+        page_id_index_dictionary: Dict,
+        langkey: str,
+        timeout: Optional[int] = TIMEOUT,
+        sleep_time: Optional[int] = SLEEP_TIME,
+        maxlag: Optional[int] = MAX_LAG,
 ):
     """Get the wikipedia extracts (in our data model they're called abstracts)
 
@@ -173,7 +176,7 @@ def get_wikipedia_extracts(
     return index_extract_dictionary
 
 
-def add_wikipedia_extracts(language_keys: Optional[List[str]] = lang_keys,) -> None:
+def add_wikipedia_extracts(language_keys: Optional[List[str]] = lang_keys, ) -> None:
     """Add the wikipedia extracts to the already existing files
 
     Args:
@@ -187,6 +190,7 @@ def add_wikipedia_extracts(language_keys: Optional[List[str]] = lang_keys,) -> N
         MOVEMENT[PLURAL],
         ARTIST[PLURAL],
         LOCATION[PLURAL],
+        CLASS[PLURAL],
     ]:
         print(
             datetime.datetime.now(),
@@ -195,8 +199,10 @@ def add_wikipedia_extracts(language_keys: Optional[List[str]] = lang_keys,) -> N
         )
         try:
             with open(
-                (create_new_path(filename)).with_suffix(f".{JSON}"), encoding="utf-8"
+                    (create_new_path(filename)).with_suffix(f".{JSON}"), encoding="utf-8"
             ) as file:
+                if RECOVER_MODE and check_state(ETL_STATES.GET_WIKIPEDIA_EXTRACTS.EXTRACT_ABSTRACTS + filename):
+                    continue
                 items = json.load(file)
                 for key in language_keys:
                     item_indices_with_wiki_link_for_lang = [
@@ -243,12 +249,14 @@ def add_wikipedia_extracts(language_keys: Optional[List[str]] = lang_keys,) -> N
 
             # overwrite file
             with open(
-                (create_new_path(filename)).with_suffix(f".{JSON}"),
-                "w",
-                newline="",
-                encoding="utf-8",
+                    (create_new_path(filename)).with_suffix(f".{JSON}"),
+                    "w",
+                    newline="",
+                    encoding="utf-8",
             ) as file:
-                file.write(json.dumps(items, ensure_ascii=False))
+                json.dump(items, file, ensure_ascii=False)
+            write_state(ETL_STATES.GET_WIKIPEDIA_EXTRACTS.EXTRACT_ABSTRACTS + filename)
+
         except Exception as error:
             print(
                 f"Error when opening following file: {filename}. Error: {error}. Skipping file now."
@@ -262,4 +270,11 @@ def add_wikipedia_extracts(language_keys: Optional[List[str]] = lang_keys,) -> N
 
 
 if __name__ == "__main__":
+    if len(sys.argv) > 1 and "-r" in sys.argv:
+        RECOVER_MODE = True
+
+    if RECOVER_MODE and check_state(ETL_STATES.GET_WIKIPEDIA_EXTRACTS.STATE):
+        exit(0)
+    logger.info("Extracting Wikipedia Abstracts")
     add_wikipedia_extracts()
+    write_state(ETL_STATES.GET_WIKIPEDIA_EXTRACTS.STATE)

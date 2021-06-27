@@ -1,4 +1,6 @@
-import {Component, Input, HostListener, OnChanges} from '@angular/core';
+import {Component, Input, HostListener} from '@angular/core';
+import {Subject, timer} from 'rxjs';
+import {switchMap} from 'rxjs/operators';
 import {Artist, Artwork, Entity, EntityType} from 'src/app/shared/models/models';
 import {CustomStepDefinition, Options} from '@angular-slider/ngx-slider';
 import {animate, state, style, transition, trigger} from '@angular/animations';
@@ -27,14 +29,18 @@ interface TimelineItem extends Entity {
     ])
   ]
 })
-export class TimelineComponent implements OnChanges {
+export class TimelineComponent{
   /** Artworks that should be displayed in this slider */
   @Input() artworks: Artwork[] = [];
   /** Decide whether artists should be displayed */
   @Input() displayArtists = false;
 
+  /** title of this slider */
+  @Input() heading: string;
+
   /** TimelineItems that should be displayed in this slider */
   items: TimelineItem[] = [];
+  
   private periodSpan = 1;
 
   private maxSliderSteps = 1000;
@@ -63,6 +69,11 @@ export class TimelineComponent implements OnChanges {
    *  It is only 0 if only one item is displayed per period
    */
   private referenceItem: number;
+
+  /** variables to control automatic rotation of the timeline  */
+  private nextRotationTime = 10; // number in seconds, set to '0' to disable
+  private rotationTimer$ = new Subject();
+  private timerSubscription;
 
   /** The current value of the slider */
   value: number;
@@ -130,6 +141,24 @@ export class TimelineComponent implements OnChanges {
       this.value = this.items[Math.floor(this.items.length / 2)].date;
       this.previousValue = this.value;
       this.refreshComponent();
+    }
+  }
+
+  ngOnInit() {
+    // setup timer for automatic timeline rotation
+    // This will run the function 'nextClicked' every 'nextRotationTime' seconds
+    if (this.nextRotationTime > 0) {
+      this.timerSubscription = this.rotationTimer$.pipe(
+        switchMap(() => timer(this.nextRotationTime * 1000, this.nextRotationTime * 1000))
+      ).subscribe(() => this.nextClicked());
+      // start timer
+      this.rotationTimer$.next();
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.timerSubscription) {
+      this.timerSubscription.unsubscribe();
     }
   }
 
@@ -265,6 +294,9 @@ export class TimelineComponent implements OnChanges {
       this.sliderAllowEvent = true;
       return;
     }
+    // this resets the 'rotationTimer$'
+    this.rotationTimer$.next();
+
     this.calcSlideStart();
     this.updateSliderItems();
 
@@ -281,30 +313,37 @@ export class TimelineComponent implements OnChanges {
 
   /** Handler for click event from left control button. Updates startSlide, value and animation. */
   prevClicked() {
-    if (this.slideStart <= 0) {
-      // Return if first slide
-      return;
-    }
-    this.slideOutLeft = true;
-    this.slideStart = Math.max(this.slideStart - this.itemCountPerPeriod, 0);
-    this.value = +this.items[this.slideStart + this.referenceItem].date;
+    // this resets the 'rotationTimer$'
+    this.rotationTimer$.next();
+
     // decide if sliderMoved-Event should be suppressed
     this.sliderAllowEvent = false;
+    this.slideOutLeft = true;
+    if(this.slideStart <= 0) {
+      this.slideStart = this.items.length - this.itemCountPerPeriod;
+      this.value = this.items[this.items.length - 1].date;
+    } else {
+      this.slideStart = Math.max(this.slideStart - this.itemCountPerPeriod, 0);
+      this.value = +this.items[this.slideStart + this.referenceItem].date;
+    }
     this.updateSliderItems();
   }
 
   /** Handler for click event from right control button. Updates startSlide, value and animation. */
   nextClicked() {
-    if (this.slideEnd >= this.items.length) {
-      // Return if last slide
-      return;
-    }
-    this.slideOutRight = true;
-    this.slideStart = Math.min(this.slideStart + 2 * this.itemCountPerPeriod, this.items.length) - this.itemCountPerPeriod;
-    this.value = +this.items[this.slideStart + this.referenceItem].date;
+    // this resets the 'rotationTimer$'
+    this.rotationTimer$.next();
+
     // decide if sliderMoved-Event should be suppressed
     this.sliderAllowEvent = false;
-
+    this.slideOutRight = true;
+    if(this.slideEnd >= this.items.length) {
+      this.slideStart = 0;
+      this.value = this.items[0].date;
+    } else {
+      this.slideStart = Math.min(this.slideStart + 2 * this.itemCountPerPeriod, this.items.length) - this.itemCountPerPeriod;
+      this.value = +this.items[this.slideStart + this.referenceItem].date;
+    }
     this.updateSliderItems();
   }
 

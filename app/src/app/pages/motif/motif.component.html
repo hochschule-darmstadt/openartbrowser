@@ -1,22 +1,22 @@
 <div *ngIf="idDoesNotExist" class="container entity motif">
-  <div class="row mb-5 border-bottom pb-5">
+  <div class="row pb-4 pb-sm-5 mb-sm-5">
     <app-error-message  [id]="motifId"></app-error-message>
   </div>
 </div>
 
 <div *ngIf="!idDoesNotExist" class="container entity motif">
-  <div class="row mb-5 border-bottom pb-5">
+  <div class="row mb-4 pb-4 border-bottom">
     <div class="col-sm-7" *ngIf="motif">
       <app-title [entity]="motif"></app-title>
       <app-sticky-title [entity]="motif"></app-sticky-title>
 
-      <div class="mb-3 mt-5 pl-2">
+      <div class="mb-3 mt-3">
         <p *ngIf="motif?.description" class="mb-1 first-letter">
           {{ motif?.description }}
         </p>
       </div>
 
-      <div *ngIf="motif.abstract">
+      <div class="mt-2" *ngIf="motif.abstract">
         <app-collapse>
           <app-abstract [entity]="motif"></app-abstract>
         </app-collapse>

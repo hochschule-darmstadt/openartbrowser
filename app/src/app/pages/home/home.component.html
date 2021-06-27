@@ -5,7 +5,7 @@
   }"
 ></div>
 <div class="container">
-  <div class="container-search">
+  <div class="container-search mobile-hidden">
     <div class="d-flex justify-content-center row logo">
       <span>open</span>
       <h1>ArtBrowser</h1>
@@ -13,10 +13,11 @@
   </div>
 
   <div class="categories-box">
-    <div class="row pt-4 mb-4">
-      <app-category-container class="col-lg-4" [category]="artworkCategory"></app-category-container>
-      <app-category-container class="col-lg-4" [category]="artistCategory"></app-category-container>
-      <app-category-container class="col-lg-4" [category]="movementCategory"></app-category-container>
+    <div class="row pt-0 pt-sm-4 mb-0 mb-sm-4">
+      <app-category-container class="col-lg-3" [category]="artworkCategory"></app-category-container>
+      <app-category-container class="col-lg-3" [category]="artistCategory"></app-category-container>
+      <app-category-container class="col-lg-3" [category]="movementCategory"></app-category-container>
+      <app-category-container class="col-lg-3" [category]="classCategory"></app-category-container>
       <app-category-container class="col-lg-3" [category]="locationCategory"></app-category-container>
       <app-category-container class="col-lg-3" [category]="materialCategory"></app-category-container>
       <app-category-container class="col-lg-3" [category]="genreCategory"></app-category-container>

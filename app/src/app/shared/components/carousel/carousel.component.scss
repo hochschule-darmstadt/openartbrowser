@@ -35,6 +35,9 @@
     .carousel-control-prev,
     .carousel-control-next {
       width: 2% !important;
+      // place buttons on a fixed height due to images having different amount of common tags badges
+      align-items: initial !important;
+      margin-top: 10em;
     }
   }
 

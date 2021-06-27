@@ -21,7 +21,18 @@
       </div>
     </a>
   </div>
-  <div id="common-tags-mobile">
+  <div class="common-tags-mobile">
+    <h4 class="common-tags-title">
+      <ng-container i18n="Related Artworks headline text before tab name @@related_artworks_headline_prev">
+        Common
+      </ng-container>
+      <span class="spacer"></span>
+      <ng-container i18n="Related Artworks headline text after tab name @@related_artworks_headline_after">
+        tags with artwork
+      </ng-container>
+      <span> "{{artwork?.label}}"</span>
+    </h4>
+
     <span *ngIf="artwork?.main_subjects?.length && tab_type == 'main_motif' || tab_type == 'all'">
       <span *ngFor="let main_subject of artwork?.main_subjects">
         <app-badge [entity]="main_subject" *ngIf="slide.items[0]?.main_subjects?.includes(main_subject.id)"> </app-badge>

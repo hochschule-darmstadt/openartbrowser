@@ -101,8 +101,4 @@ export class SlideComponent implements AfterViewInit {
     }
     return returnedItem;
   }
-  print() {
-    console.log(this.artwork)
-    console.log(this.slide.items)
-  }
 }

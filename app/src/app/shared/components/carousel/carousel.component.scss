@@ -14,6 +14,10 @@
   .carousel-control-next {
     width: 4%;
   }
+
+  .carousel {
+    border-bottom: none !important;
+  }
 }
 ::ng-deep {
   .custom-carousel {

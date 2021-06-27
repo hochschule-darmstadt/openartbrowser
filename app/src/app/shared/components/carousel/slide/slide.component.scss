@@ -86,15 +86,15 @@ a {
 
 @media (max-width: 575px) {
   .slide {
-    min-height: 20em;
-    height: 20em;
+    min-height: initial;
+    height: initial;
   }
   .item-container {
-    max-height: 100%;
+    max-height: 20rem;
+    height: 20rem;
   }
   #common-tags-mobile {
-    position: absolute;
     display: block;
-    top: calc(100% + 1rem);
+    position: relative;
   }
 }

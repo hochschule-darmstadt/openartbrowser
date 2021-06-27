@@ -39,6 +39,21 @@
       align-items: initial !important;
       margin-top: 10em;
     }
+
+    @media (max-width: 575px) {
+      .carousel-control-prev-icon,
+      .carousel-control-next-icon {
+        width: 100%;
+      }
+      .carousel-control-prev,
+      .carousel-control-next {
+        width: 8% !important;
+    }
+    }
+
+    .main-content {
+      height: 100vh;
+    }
   }
 
  .carousel-inner {

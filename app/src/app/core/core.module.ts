@@ -11,12 +11,17 @@ import { SearchService } from './services/search.service';
 import { AnalyticsComponent } from './components/analytics/analytics.component';
 import { Angulartics2Module } from 'angulartics2';
 import { AnalyticsOptions } from './components/analytics/analyticsOptions';
+import { BrowserModule, HAMMER_GESTURE_CONFIG, HammerModule } from '@angular/platform-browser';
+import { HammerConfig } from 'src/config/hammer.config';
 
 /** Everything that should be loaded globally and only once goes here */
 @NgModule({
   declarations: [HeaderComponent, FooterComponent, AnalyticsComponent],
-  imports: [CommonModule, NgbModule, FormsModule, SharedModule, RouterModule, Angulartics2Module.forRoot(AnalyticsOptions)],
+  imports: [CommonModule, NgbModule, FormsModule, SharedModule, RouterModule, Angulartics2Module.forRoot(AnalyticsOptions), BrowserModule,HammerModule],
   exports: [HeaderComponent, FooterComponent, AnalyticsComponent],
-  providers: [DataService, SearchService]
+  providers: [DataService, SearchService, {
+    provide: HAMMER_GESTURE_CONFIG,
+    useClass: HammerConfig
+  }]
 })
 export class CoreModule {}

@@ -106,3 +106,20 @@ a {
     margin-left: 5px;
   }
 }
+
+.item-caption{
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  text-align: center;
+  margin-top: 1rem;
+}
+  
+
+@media (min-width: 768px) {
+  .mobile{
+    display: none;      
+  }
+  
+}

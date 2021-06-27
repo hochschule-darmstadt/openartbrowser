@@ -64,7 +64,7 @@
       <option *ngIf="timelineItems?.length>0" [value]="Tab.Timeline" [selected]="activeTab === Tab.Timeline">
         <ng-container i18n="Timeline toggle label@@toggletimeline">Timeline</ng-container>
       </option>
-      <option *ngIf="fetchOptions?.queryCount" [value]="Tab.Artworks" [selected]="activeTab === Tab.Artwork">
+      <option *ngIf="fetchOptions?.queryCount" [value]="Tab.Artworks" [selected]="activeTab === Tab.Artworks">
         <ng-container i18n="Timeline toggle label@@toggleartworks">Artworks</ng-container>
       </option>
       <option *ngIf="movement && relatedMovements.length > 0"  [value]="Tab.MovementOverview" [selected]="activeTab === Tab.MovementOverview">

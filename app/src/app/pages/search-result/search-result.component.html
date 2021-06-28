@@ -44,7 +44,7 @@
   </div>
 
   <div *ngIf='!allTabLoaded' class='loading-placeholder'>
-    <div class='spinner-border text-success' style="width: 5rem; height: 5rem;" role='status'>
+    <div class='spinner-border text-success' style='width: 5rem; height: 5rem;' role='status'>
       <span class='sr-only'>Loading...</span>
     </div>
   </div>
@@ -54,11 +54,13 @@
         <li class='nav-item' *ngIf='tab.loaded'>
           <a class='nav-link' [ngClass]='{ active: tab.active }' data-toggle='tab' href='#{{ tab.type }}_tab'
              (click)='tabClicked(tab)'>
-            <i class='mr-1 fa fa-{{ tab.icon }}'></i>
+            <span>
+            <i class='mr-1 fas' [ngClass]='tab.icon'></i>
             <ng-container i18n='Entity Type Labels@@entity_labels' *ngIf='tab.type; let type'>
               {type, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material
-                {Material} main_motif {Main Motif} }
+                {Material} main_motif {Main Motif} class {Class} }
             </ng-container>
+            </span>
           </a>
         </li>
       </ng-container>

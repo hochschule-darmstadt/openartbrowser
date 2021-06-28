@@ -192,15 +192,13 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
       this.setError(entity, pageNumber);
     }
     /** load missing movement images */
-    this.getEntityArtworks(this.options.entityType, entity.id).then(artworks => {
-      let randThumbIndex = -1;
+    this.getEntityArtworks(entity.type, entity.id).then(artworks => {
       // search for random artwork which is no .tif
       artworks = artworks.filter(artwork => !artwork.image.endsWith('.tif') && !artwork.image.endsWith('.tiff'));
       if (artworks.length) {
-        randThumbIndex = Math.floor(Math.random() * artworks.length);
-        entity.image = artworks[randThumbIndex].image;
-        entity.imageMedium = artworks[randThumbIndex].imageMedium;
-        entity.imageSmall = artworks[randThumbIndex].imageSmall;
+        entity.image = artworks[0].image;
+        entity.imageMedium = artworks[0].imageMedium;
+        entity.imageSmall = artworks[0].imageSmall;
       } else {
         this.setError(entity, pageNumber);
       }

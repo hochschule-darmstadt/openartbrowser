@@ -43,34 +43,41 @@
     </div>
   </div>
 
-  <ul class='nav nav-tabs' *ngIf='entityTabs.length != 0'>
-    <ng-container *ngFor='let tab of entityTabs'>
-      <li class='nav-item' *ngIf='tab.loaded'>
-        <a class='nav-link' [ngClass]='{ active: tab.active }' data-toggle='tab' href='#{{ tab.type }}_tab'
-           (click)='tabClicked(tab)'>
-          <i class='mr-1 fa fa-{{ tab.icon }}'></i>
-          <ng-container i18n='Entity Type Labels@@entity_labels' *ngIf='tab.type; let type'>
-            {type, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material
-              {Material} main_motif {Main Motif} }
-          </ng-container>
-        </a>
-      </li>
-    </ng-container>
-  </ul>
-
-  <div class='tab-content'>
-    <ng-container *ngFor='let tab of entityTabs'>
-      <div class='tab-pane fade'
-           [ngClass]="{ 'show active': tab.active }" id='{{ tab.type }}_tab'>
-        <app-fetching-list *ngIf='tab.fetchOptions.queryCount && tab.initialized' id='{{ tab.type }}_list' [query]='tab.query'
-                           [options]='tab.fetchOptions' [enableHover]='true'>
-          <ng-template let-entity="entity" let-type="entityType">
-            <div class="typebadge"><i class="fas" [ngClass]="entity.icon"></i></div>
-          </ng-template>
-        </app-fetching-list>
-      </div>
-  </ng-container>
+  <div *ngIf='!allTabLoaded' class='loading-placeholder'>
+    <div class='spinner-border text-success' style="width: 5rem; height: 5rem;" role='status'>
+      <span class='sr-only'>Loading...</span>
+    </div>
   </div>
+  <div *ngIf='allTabLoaded'>
+    <ul class='nav nav-tabs' *ngIf='entityTabs.length != 0'>
+      <ng-container *ngFor='let tab of entityTabs'>
+        <li class='nav-item' *ngIf='tab.loaded'>
+          <a class='nav-link' [ngClass]='{ active: tab.active }' data-toggle='tab' href='#{{ tab.type }}_tab'
+             (click)='tabClicked(tab)'>
+            <i class='mr-1 fa fa-{{ tab.icon }}'></i>
+            <ng-container i18n='Entity Type Labels@@entity_labels' *ngIf='tab.type; let type'>
+              {type, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material
+                {Material} main_motif {Main Motif} }
+            </ng-container>
+          </a>
+        </li>
+      </ng-container>
+    </ul>
 
+    <div class='tab-content'>
+      <ng-container *ngFor='let tab of entityTabs'>
+        <div class='tab-pane fade'
+             [ngClass]="{ 'show active': tab.active }" id='{{ tab.type }}_tab'>
+          <app-fetching-list *ngIf='tab.fetchOptions.queryCount && tab.initialized' id='{{ tab.type }}_list'
+                             [query]='tab.query'
+                             [options]='tab.fetchOptions' [enableHover]='true'>
+            <ng-template let-entity='entity' let-type='entityType'>
+              <div class='typebadge'><i class='fas' [ngClass]='entity.icon'></i></div>
+            </ng-template>
+          </app-fetching-list>
+        </div>
+      </ng-container>
+    </div>
+  </div>
 </div>
 

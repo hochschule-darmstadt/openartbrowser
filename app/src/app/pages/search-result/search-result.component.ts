@@ -39,6 +39,9 @@ export class SearchResultComponent implements OnInit, OnDestroy {
   /** Count for search results */
   countResults: number;
 
+  /** Boolean for spinner */
+  allTabLoaded = false;
+
   /** Related artworks */
   searchResults: Artwork[] = [];
 
@@ -150,6 +153,7 @@ export class SearchResultComponent implements OnInit, OnDestroy {
           (tab.type === EntityType.ALL) ? null : tab.type).then(itemCount => {
           if (tab.type === EntityType.ALL) {
             this.countResults = itemCount;
+            this.allTabLoaded = true;
           }
 
           if (itemCount === 0) {
@@ -161,6 +165,8 @@ export class SearchResultComponent implements OnInit, OnDestroy {
         });
       })
     );
+
+    console.log('Test');
   }
 
   /**

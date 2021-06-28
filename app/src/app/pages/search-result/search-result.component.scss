@@ -2,6 +2,13 @@
   content: ":";
 }
 
+.loading-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  // height: 20rem;
+}
+
 .typebadge {
   position: absolute;
   top: 0;

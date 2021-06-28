@@ -124,30 +124,13 @@ export class DataService {
   }
 
   /**
-   * Returns the artworks that contain all the given arguments.
+   * Returns found entities by search arguments and given type.
    * @param searchObj the arguments to search for.
    * @param keywords the list of words to search for.
-   * @param count the number of items returned
+   * @param count the number of items returned.
+   * @param from the offset from where the result set should start.
+   * @param type type of the results.
    */
-  public searchArtworks<T>(searchObj: ArtSearch, keywords: string[] = [], count = 400): Promise<T[]> {
-    const body = bodyBuilder()
-      .size(count)
-      .sort(defaultSortField, 'desc');
-    _.each(searchObj, (arr, key) => {
-      if (Array.isArray(arr)) {
-        _.each(arr, val => body.query('match', key, val));
-      }
-    });
-    _.each(keywords, keyword =>
-      body.query('bool', (q) => {
-        return q.orQuery('match', 'label', keyword)
-          .orQuery('match', 'description', keyword)
-          .orQuery('match', 'abstract', keyword);
-      })
-    );
-    return this.performQuery<T>(body);
-  }
-
   public searchResultsByType(searchObj: ArtSearch, keywords: string[] = [], count = 200, from = 0, type: EntityType): Promise<Entity[]> {
     const body = bodyBuilder()
       .size(count)
@@ -171,6 +154,12 @@ export class DataService {
     return this.performQuery<Entity>(body);
   }
 
+  /**
+   * Returns the count of entities found with given search arguments.
+   * @param searchObj the arguments to search for.
+   * @param keywords the list of words to search for.
+   * @param type type of the results.
+   */
   public async countSearchResultItems<T>(searchObj: ArtSearch, keywords: string[] = [], type: EntityType): Promise<number> {
     const body = bodyBuilder();
     if (type) {

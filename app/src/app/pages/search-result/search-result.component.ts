@@ -91,8 +91,6 @@ export class SearchResultComponent implements OnInit, OnDestroy {
       if (params.material) {
         this.searchObjects.push(await this.getSearchObjects(params.material, EntityType.MATERIAL, EntityIcon.MATERIAL));
       }
-      // TODO: unnecessary afterwads?
-      this.searchResults = await this.getSearchResults(this.searchObjects, this.searchTerms);
 
       /** construct artSearch-Object and pass to every tab */
       const search: ArtSearch = {};
@@ -132,13 +130,6 @@ export class SearchResultComponent implements OnInit, OnDestroy {
    * @param results search result array
    * @param terms terms array
    */
-  // TODO: unnecessary afterwards
-  private async getSearchResults<T>(results: SearchObject[], terms: string[]): Promise<T[]> {
-    const search: ArtSearch = {};
-    results.forEach(typeArray => (search[usePlural(typeArray.key)] = typeArray.items.map((e: Entity) => e.id)));
-    return await this.dataService.searchArtworks(search, terms);
-  }
-
   private async getSearchResultsCounts(results: SearchObject[], terms: string[], type: EntityType): Promise<number> {
     const search: ArtSearch = {};
     results.forEach(typeArray => (search[usePlural(typeArray.key)] = typeArray.items.map((e: Entity) => e.id)));
@@ -165,8 +156,6 @@ export class SearchResultComponent implements OnInit, OnDestroy {
         });
       })
     );
-
-    console.log('Test');
   }
 
   /**

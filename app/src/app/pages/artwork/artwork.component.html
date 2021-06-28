@@ -121,89 +121,91 @@
           <!--
             Listen for an event and assign the attribute "hoveredArtwork" to the hovered artwork.
           -->
-          <app-slider (itemHover)="this.hoveredArtwork = $event" [items]="tab.items"></app-slider>
+          <app-slider (itemHover)="this.hoveredArtwork = $event" [items]="tab.items" [artwork]="artwork" [tab_type]="tab.type"></app-slider>
 
           <!-- Collapse element for common tags -->
-          <h3
-            class="mt-2 mb-0 more"
-            aria-controls="commonTagsDiv"
-            [attr.aria-expanded]="!commonTagsCollapsed"
-            (click)="commonTagsCollapsed = !commonTagsCollapsed"
-          >
-            <ng-container i18n="Related Artworks headline text before tab name @@related_artworks_headline_prev">
-              Common
-            </ng-container>
-            <span *ngIf="tab != 'all'">
-              <ng-container i18n="Related Artworks headline text tab name@@related_artworks_headline_tab_name">
-                {tab, select, all {all} motif {motif} artist {artist} location {location} genre {genre} movement {movement} material {material} class {class}}
+          <div id="common-tags">
+            <h3
+              class="mt-2 mb-0 more"
+              aria-controls="commonTagsDiv"
+              [attr.aria-expanded]="!commonTagsCollapsed"
+              (click)="commonTagsCollapsed = !commonTagsCollapsed"
+            >
+              <ng-container i18n="Related Artworks headline text before tab name @@related_artworks_headline_prev">
+                Common
               </ng-container>
-            </span>
-            <ng-container i18n="Related Artworks headline text after tab name @@related_artworks_headline_after">
-              tags with artwork
-            </ng-container>
-            <span>"{{ artwork?.label?.length > 35 ? (artwork?.label | slice: 0:35) + '...' : artwork?.label }}"</span>
-            <i *ngIf="commonTagsCollapsed" class="ml-2 fas fa-chevron-down"></i>
-            <i *ngIf="!commonTagsCollapsed" class="ml-2 fas fa-chevron-up"></i>
-          </h3>
-
-          <div class="collapse" [ngbCollapse]="commonTagsCollapsed" id="commonTagsDiv">
-            <p class="mb-4 mt-0">
-              <em>
-                (
-                <ng-container i18n="Related Artworks hint text@@related_artworks_hint">
-                  move the mouse over an artwork to display common tags
+              <span *ngIf="tab != 'all'">
+                <ng-container i18n="Related Artworks headline text tab name@@related_artworks_headline_tab_name">
+                  {tab, select, all {all} motif {motif} artist {artist} location {location} genre {genre} movement {movement} material {material} class {class}}
                 </ng-container>
-                )
-              </em>
-            </p>
+              </span>
+              <ng-container i18n="Related Artworks headline text after tab name @@related_artworks_headline_after">
+                tags with artwork
+              </ng-container>
+              <span>"{{ artwork?.label?.length > 35 ? (artwork?.label | slice: 0:35) + '...' : artwork?.label }}"</span>
+              <i *ngIf="commonTagsCollapsed" class="ml-2 fas fa-chevron-down"></i>
+              <i *ngIf="!commonTagsCollapsed" class="ml-2 fas fa-chevron-up"></i>
+            </h3>
 
-            <!--
-              For all attributes of the artwork check if length the attribute is not empty and
-              the current tab in loop is "all" or the associated tab. If true then create
-              the chips for each items of the attribute. If the current item is part of the
-              associated attribute of hoveredArtwork, add the class badge-light to highlight
-              the chip.
-            -->
-            <span *ngIf="artwork?.main_subjects?.length && (tab.type == 'main_motif' || tab.type == 'all')"
-                  class="mb-1">
-              <app-badge *ngFor="let main_subject of artwork?.main_subjects" [entity]="main_subject"
-                         [isHoverBadge]="true" [hoveredArtwork]="hoveredArtwork"> </app-badge>
-            </span>
+            <div class="collapse" [ngbCollapse]="commonTagsCollapsed" id="commonTagsDiv">
+              <p class="mb-4 mt-0">
+                <em>
+                  (
+                  <ng-container i18n="Related Artworks hint text@@related_artworks_hint">
+                    move the mouse over an artwork to display common tags
+                  </ng-container>
+                  )
+                </em>
+              </p>
 
-            <span *ngIf="artwork?.motifs?.length && (tab.type == 'motif' || tab.type == 'all')" class="mb-1">
-              <app-badge *ngFor="let motif of artwork?.motifs" [entity]="motif" [isHoverBadge]="true"
-                         [hoveredArtwork]="hoveredArtwork"> </app-badge>
-            </span>
+              <!--
+                For all attributes of the artwork check if length the attribute is not empty and
+                the current tab in loop is "all" or the associated tab. If true then create
+                the chips for each items of the attribute. If the current item is part of the
+                associated attribute of hoveredArtwork, add the class badge-light to highlight
+                the chip.
+              -->
+              <span *ngIf="artwork?.main_subjects?.length && (tab.type == 'main_motif' || tab.type == 'all')"
+                    class="mb-1">
+                <app-badge *ngFor="let main_subject of artwork?.main_subjects" [entity]="main_subject"
+                          [isHoverBadge]="true" [hoveredArtwork]="hoveredArtwork"> </app-badge>
+              </span>
 
-            <span *ngIf="artwork?.artists?.length && (tab.type == 'artist' || tab.type == 'all')" class="mb-1">
-              <app-badge *ngFor="let artist of artwork?.artists" [entity]="artist" [isHoverBadge]="true"
-                         [hoveredArtwork]="hoveredArtwork"> </app-badge>
-            </span>
+              <span *ngIf="artwork?.motifs?.length && (tab.type == 'motif' || tab.type == 'all')" class="mb-1">
+                <app-badge *ngFor="let motif of artwork?.motifs" [entity]="motif" [isHoverBadge]="true"
+                          [hoveredArtwork]="hoveredArtwork"> </app-badge>
+              </span>
 
-            <span *ngIf="artwork?.genres?.length && (tab.type == 'genre' || tab.type == 'all')" class="mb-1">
-              <app-badge *ngFor="let genre of artwork?.genres" [entity]="genre" [isHoverBadge]="true"
-                         [hoveredArtwork]="hoveredArtwork"> </app-badge>
-            </span>
+              <span *ngIf="artwork?.artists?.length && (tab.type == 'artist' || tab.type == 'all')" class="mb-1">
+                <app-badge *ngFor="let artist of artwork?.artists" [entity]="artist" [isHoverBadge]="true"
+                          [hoveredArtwork]="hoveredArtwork"> </app-badge>
+              </span>
 
-            <span *ngIf="artwork?.movements?.length && (tab.type == 'movement' || tab.type == 'all')" class="mb-1">
-              <app-badge *ngFor="let movement of artwork?.movements" [entity]="movement" [isHoverBadge]="true"
-                         [hoveredArtwork]="hoveredArtwork"> </app-badge>
-            </span>
+              <span *ngIf="artwork?.genres?.length && (tab.type == 'genre' || tab.type == 'all')" class="mb-1">
+                <app-badge *ngFor="let genre of artwork?.genres" [entity]="genre" [isHoverBadge]="true"
+                          [hoveredArtwork]="hoveredArtwork"> </app-badge>
+              </span>
 
-            <span *ngIf="artwork?.materials?.length && (tab.type == 'material' || tab.type == 'all')" class="mb-1">
-              <app-badge *ngFor="let material of artwork?.materials" [entity]="material" [isHoverBadge]="true"
-                         [hoveredArtwork]="hoveredArtwork"> </app-badge>
-            </span>
+              <span *ngIf="artwork?.movements?.length && (tab.type == 'movement' || tab.type == 'all')" class="mb-1">
+                <app-badge *ngFor="let movement of artwork?.movements" [entity]="movement" [isHoverBadge]="true"
+                          [hoveredArtwork]="hoveredArtwork"> </app-badge>
+              </span>
 
-            <span *ngIf="artwork?.locations?.length && (tab.type == 'location' || tab.type == 'all')" class="mb-1">
-              <app-badge *ngFor="let location of artwork?.locations" [entity]="location" [isHoverBadge]="true"
-                         [hoveredArtwork]="hoveredArtwork"> </app-badge>
-            </span>
+              <span *ngIf="artwork?.materials?.length && (tab.type == 'material' || tab.type == 'all')" class="mb-1">
+                <app-badge *ngFor="let material of artwork?.materials" [entity]="material" [isHoverBadge]="true"
+                          [hoveredArtwork]="hoveredArtwork"> </app-badge>
+              </span>
 
-            <span *ngIf="artwork?.classes?.length && (tab.type == 'class' || tab.type == 'all')" class="mb-1">
-              <app-badge *ngFor="let class of artwork?.classes" [entity]="class" [isHoverBadge]="true"
-                         [hoveredArtwork]="hoveredArtwork"> </app-badge>
-            </span>
+              <span *ngIf="artwork?.locations?.length && (tab.type == 'location' || tab.type == 'all')" class="mb-1">
+                <app-badge *ngFor="let location of artwork?.locations" [entity]="location" [isHoverBadge]="true"
+                          [hoveredArtwork]="hoveredArtwork"> </app-badge>
+              </span>
+
+              <span *ngIf="artwork?.classes?.length && (tab.type == 'class' || tab.type == 'all')" class="mb-1">
+                <app-badge *ngFor="let class of artwork?.classes" [entity]="class" [isHoverBadge]="true"
+                          [hoveredArtwork]="hoveredArtwork"> </app-badge>
+              </span>
+            </div>
           </div>
         </div>
       </div>

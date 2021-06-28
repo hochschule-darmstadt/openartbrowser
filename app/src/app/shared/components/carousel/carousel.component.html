@@ -5,7 +5,7 @@
          (swiperight)="carousel.prev()"
          >
       <app-slide [slide]="slide" (itemHover)="itemHover.emit($event)"
-                (deleteUnusedSlides)="deleteUnusedSlides()"></app-slide>
+                (deleteUnusedSlides)="deleteUnusedSlides()" [artwork]="artwork" [tab_type]="tab_type"></app-slide>
     </div>
   </ng-template>
 </ngb-carousel>

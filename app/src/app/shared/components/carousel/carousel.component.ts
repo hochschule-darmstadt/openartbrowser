@@ -1,6 +1,6 @@
 import { NgbCarousel } from '@ng-bootstrap/ng-bootstrap';
 import { Component, Input, SimpleChanges, OnChanges, EventEmitter, Output, ViewChild } from '@angular/core';
-import { Entity } from '../../models/models';
+import { Entity, Artwork } from '../../models/models';
 import { HostListener } from '@angular/core';
 
 
@@ -52,6 +52,10 @@ export class CarouselComponent implements OnChanges {
 
   /**  entities that should be displayed in this slider */
   @Input() items: Entity[] = [];
+
+  @Input() artwork: Artwork;
+
+  @Input() tab_type: string;
 
   // slides of the slider, max 8 items each.
   slides: Slide[];

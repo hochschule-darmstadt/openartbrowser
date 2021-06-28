@@ -203,7 +203,10 @@ export class ArtworkComponent implements OnInit, OnDestroy {
           return;
         }
         const types = usePlural(tab.type);
-
+        if (!this.artwork[types] || this.artwork[types].length === 0) {
+          this.artworkTabs = this.artworkTabs.filter(t => t.type !== tab.type);
+          return
+        }
         // load entities
         this.dataService.findMultipleById(this.artwork[types] as any, tab.type).then(items => {
           this.artwork[types] = items;

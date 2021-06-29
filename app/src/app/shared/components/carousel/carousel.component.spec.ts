@@ -5,6 +5,7 @@ import { SlideComponent } from './slide/slide.component';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 
 describe('SliderComponent', () => {
   let component: CarouselComponent;
@@ -14,7 +15,10 @@ describe('SliderComponent', () => {
     TestBed.configureTestingModule({
       imports: [NgbModule, HttpClientModule, RouterModule.forRoot([], { relativeLinkResolution: 'legacy' })],
       declarations: [CarouselComponent, SlideComponent],
-      providers: []
+      providers: [{
+        provide: HAMMER_GESTURE_CONFIG,
+        useClass: CarouselComponent
+      }]
     }).compileComponents();
   }));
 

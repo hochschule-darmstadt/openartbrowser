@@ -122,6 +122,12 @@
   }
 
   .label {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    width: 70%;
+    text-shadow: 0 0 5px black;
     border-radius: 15px;
     color: white;
     font-size: 20px;

@@ -175,4 +175,20 @@ export class ArtistComponent implements OnInit, OnDestroy {
   videoFound(event) {
     this.videoExists = this.videoExists ? true : event;
   }
+
+  onChange(event){
+    const value = event.target.value
+    if(value=="timeline"){
+      this.setActiveTab(Tab.Timeline)
+    }
+    else{
+      this.setActiveTab(Tab.Artworks)
+    }
+  }
 }
+
+
+
+  
+
+

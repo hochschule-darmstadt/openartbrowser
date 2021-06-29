@@ -1,16 +1,16 @@
 <div *ngIf="idDoesNotExist" class="container entity class">
-  <div class="row mb-5 border-bottom pb-5">
+  <div class="row pb-4 pb-sm-5 border-bottom mobile-no-border">
     <app-error-message  [id]="classId"></app-error-message>
   </div>
 </div>
 
 <div *ngIf="!idDoesNotExist" class="container entity class">
-  <div class="row mb-5 border-bottom pb-5">
+  <div class="row pb-4 pb-sm-5 border-bottom">
     <div class="col-sm-7" *ngIf="class">
       <app-title [entity]="class"></app-title>
       <app-sticky-title [entity]="class"></app-sticky-title>
 
-      <div class="mb-3 mt-5">
+      <div class="mb-3 mt-3 mt-sm-5">
         <p *ngIf="class?.description" class="mb-1 first-letter">
           {{ class?.description }}
         </p>

@@ -38,6 +38,10 @@ HAS_PART = "has_part"
 VIDEOS = "videos"
 YOUTUBE_VIDEOS_FILE = "youtube_videos.csv"
 
+# Logging Filenames for data enhancement & upload to elasticsearch
+ADD_YOUTUBE_VIDEOS_LOG_FILENAME = "add_youtube_videos.log"
+RANKING_LOG_FILENAME = "ranking.log"
+ELASTICSEARCH_HELPER_LOG_FILENAME = "elasticsearch_helper.log"
 
 # ETL states
 class ETL_STATES:

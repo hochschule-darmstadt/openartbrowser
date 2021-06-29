@@ -38,7 +38,7 @@
     </div>
   </div>
 </app-infinite-scroll>
-<div class="flex-column">
+<div class="fetching-list-paginator flex-column">
   <app-paginator class="paginator" [ngClass]="maxPage >= 1? 'visible':'invisible'"
                  (pageClick)="scrollToPage($event)"
                  [pageNumber]="currentPage"

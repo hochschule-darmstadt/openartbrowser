@@ -1,4 +1,5 @@
 $container-row-height: 15em;
+$mobile-container-height: 20em;
 
 .slide {
   min-height: $container-row-height * 2;
@@ -78,4 +79,47 @@ a {
   &:hover {
     text-decoration: none;
   }
+}
+
+.common-tags-mobile {
+  display: none;
+}
+
+@media (max-width: 575px) {
+  .slide {
+    min-height: initial;
+    height: initial;
+  }
+  .item-container {
+    max-height: $mobile-container-height;
+    height: $mobile-container-height;
+  }
+  .common-tags-title {
+    margin-top: 3em;
+    margin-bottom: 1em;
+  }
+  .common-tags-mobile {
+    display: block;
+    position: relative;
+  }
+  .spacer {
+    margin-left: 5px;
+  }
+}
+
+.item-caption{
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  text-align: center;
+  margin-top: 1rem;
+}
+  
+
+@media (min-width: 768px) {
+  .mobile{
+    display: none;      
+  }
+  
 }

@@ -253,6 +253,10 @@ def add_wikipedia_extracts(language_keys: Optional[List[str]] = lang_keys, ) -> 
                                     flush=True,
                                 )
 
+                                # If a chunk is finished and the chunk size is < 20 (e.g. the previous chunk failed but the current one succeeded): increase the chunk size
+                                chunk_size = chunk_size + 5 if chunk_size < 20 else chunk_size
+
+
                             # set done to true after all items have been processed
                             done = True
                         except Exception as error:

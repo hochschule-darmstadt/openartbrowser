@@ -211,3 +211,18 @@ a {
     margin: 0 0;
   }
 }
+
+.badge-timeline {
+  display: none;
+}
+
+@media (max-width: 575px) {
+  .badge-timeline {
+    display: block;
+    margin-top: 1rem;
+  }
+
+  .normal-timeline {
+    display: none;
+  }
+}

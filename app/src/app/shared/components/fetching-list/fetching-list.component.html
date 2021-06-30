@@ -6,7 +6,7 @@
     <div *ngFor="let entity of page.value.items; let i = index" class="item">
       <a *ngIf="entity"
          class="item-link"
-         [routerLink]="['/'+options.entityType, entity?.id]">
+         [routerLink]="['/'+entity?.type, entity?.id]">
         <div class="overlay-container">
           <div class="img-wrapper">
             <img
@@ -28,7 +28,8 @@
             </ng-container>
           </div>
 
-          <div class="overlay" *ngIf="templateContainer.children.length == 0">
+          <div class="overlay" *ngIf="templateContainer.children.length == 0 || enableHover">
+            <!-- TODO: possible place for entity.icon -->
             <span class="img_description">{{ entity.label }}</span>
           </div>
         </div>
@@ -37,7 +38,7 @@
     </div>
   </div>
 </app-infinite-scroll>
-<div class="flex-column">
+<div class="fetching-list-paginator flex-column">
   <app-paginator class="paginator" [ngClass]="maxPage >= 1? 'visible':'invisible'"
                  (pageClick)="scrollToPage($event)"
                  [pageNumber]="currentPage"

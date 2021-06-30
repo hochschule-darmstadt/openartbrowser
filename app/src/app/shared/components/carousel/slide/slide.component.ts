@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, AfterViewInit, ElementRef } from '@angular/core';
-import { Entity } from 'src/app/shared/models/models';
+import { Entity, Artwork, EntityType } from 'src/app/shared/models/models';
 import { Slide, makeDefaultSlide } from '../carousel.component';
 
 /**
@@ -15,6 +15,10 @@ import { Slide, makeDefaultSlide } from '../carousel.component';
 export class SlideComponent implements AfterViewInit {
   /** the slide that should be displayed */
   @Input() slide: Slide = makeDefaultSlide();
+
+  @Input() artwork: Artwork;
+
+  @Input() tab_type: string;
 
   /** emits hovered artwork on item hover event */
   @Output()

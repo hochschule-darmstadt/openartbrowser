@@ -6,8 +6,8 @@ import {takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';
 import * as _ from 'lodash';
 import {shuffle} from 'src/app/core/services/utils.service';
-import {FetchOptions} from "../../shared/components/fetching-list/fetching-list.component";
-import {UrlParamService} from "../../core/services/urlparam.service";
+import {FetchOptions} from '../../shared/components/fetching-list/fetching-list.component';
+import {UrlParamService} from '../../core/services/urlparam.service';
 
 enum Tab {
   Artworks = 'artworks',
@@ -85,15 +85,15 @@ export class ArtistComponent implements OnInit, OnDestroy {
       /** load fetching list items */
       this.query = async (offset) => {
         return await this.dataService.findArtworksByType(
-          EntityType.ARTIST, [this.artistId], this.fetchOptions.fetchSize, offset)
-      }
+          EntityType.ARTIST, [this.artistId], this.fetchOptions.fetchSize, offset);
+      };
 
       /** Use data service to fetch entity from database */
       this.artist = await this.dataService.findById<Artist>(this.artistId, EntityType.ARTIST);
-      
-      if (!this.artist) { 
+
+      if (!this.artist) {
         this.idDoesNotExist = true;
-        return; 
+        return;
       }
 
       if (this.artist.videos && this.artist.videos.length > 0) {
@@ -163,7 +163,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
     if (!Object.values(Tab).includes(tab)) {
       tab = Tab.Timeline;
     }
-    const queryParams: Params = {'tab': tab};
+    const queryParams: Params = {tab: tab};
 
     if (tab != Tab.Artworks) {
       queryParams.page = null;
@@ -175,4 +175,20 @@ export class ArtistComponent implements OnInit, OnDestroy {
   videoFound(event) {
     this.videoExists = this.videoExists ? true : event;
   }
+
+  onChange(event){
+    const value = event.target.value
+    if(value=="timeline"){
+      this.setActiveTab(Tab.Timeline)
+    }
+    else{
+      this.setActiveTab(Tab.Artworks)
+    }
+  }
 }
+
+
+
+  
+
+

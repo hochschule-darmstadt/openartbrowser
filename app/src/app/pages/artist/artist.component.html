@@ -1,11 +1,11 @@
 <div *ngIf="idDoesNotExist" class="container entity artist">
-  <div class="row mb-5 border-bottom pb-5">
+  <div class="row pb-4 pb-sm-5 mb-sm-5">
     <app-error-message  [id]="artistId"></app-error-message>
   </div>
 </div>
 
 <div *ngIf="!idDoesNotExist" class="container entity artist">
-  <div class="row mb-5 border-bottom pb-5">
+  <div class="row mb-4 mb-sm-5 pb-4 border-bottom">
     <div class="col-sm-7" *ngIf="artist">
       <app-title [entity]="artist"></app-title>
       <app-sticky-title [entity]="artist"></app-sticky-title>
@@ -26,7 +26,9 @@
       </table>
 
       <div
-        *ngIf="artist?.gender || artist?.citizenship || artist?.movements?.length || artist?.influenced_by?.length || artist?.abstract">
+        class="mt-2"
+        *ngIf="artist?.gender || artist?.citizenship || artist?.movements?.length || artist?.influenced_by?.length || artist?.abstract"
+      >
         <app-collapse [showVideo]="videoExists">
           <app-abstract [entity]="artist"></app-abstract>
 
@@ -75,7 +77,7 @@
   </div>
 
   <div *ngIf="sliderItems?.length">
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-tabs tabs">
       <li class="nav-item">
         <a class="nav-link" (click)="setActiveTab(Tab.Timeline)"
            [ngClass]="{ active:  activeTab === Tab.Timeline }"
@@ -88,12 +90,22 @@
         <a class="nav-link" (click)="setActiveTab(Tab.Artworks)"
            [ngClass]="{ active:  activeTab === Tab.Artworks }"
            data-toggle="tab" href="#artworks_tab">
-          <i class="mr-1 fa fa-palette"></i>
+          <i class="mr-1 fas fa-image"></i>
           <span class="ml-1 mt-auto mb-auto mr-1 artworks-amount">{{ artist?.absoluteRank }}</span>
           <ng-container i18n="Timeline toggle label@@toggleartworks">Artworks</ng-container>
         </a>
       </li>
     </ul>
+
+    <select class="tabs-select form-select" (change)="onChange($event)">
+        <option [value]="Tab.Timeline" [selected]="activeTab === Tab.Timeline">
+          <ng-container i18n="Timeline toggle label@@toggletimeline">Timeline</ng-container>
+        </option>
+        <option [value]="Tab.Artworks" [selected]="activeTab === Tab.Artworks">
+          <ng-container i18n="Timeline toggle label@@toggleartworks">Artworks</ng-container>
+        </option>
+    </select>
+
     <div class="tab-content">
       <div class="tab-pane fade" [ngClass]="{ 'show active': activeTab === Tab.Timeline }" id="timeline_tab">
         <app-timeline [artworks]="sliderItems"></app-timeline>

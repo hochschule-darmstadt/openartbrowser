@@ -136,7 +136,12 @@ SOURCE_TYPES = [
     {SINGULAR: 'heptaptych', PLURAL: 'heptaptyches', ID: 'wd:Q21915564'},
     {SINGULAR: 'octaptych', PLURAL: 'octaptyches', ID: 'wd:Q21915574'},
     {SINGULAR: 'mixed_media', PLURAL: 'mixed_medias', ID: 'wd:Q1902763'},
-    {SINGULAR: 'illuminated_manuscript', PLURAL: 'illuminated_manuscripts', ID: 'wd:Q48498'}
+    {SINGULAR: 'illuminated_manuscript', PLURAL: 'illuminated_manuscripts', ID: 'wd:Q48498'},
+    {SINGULAR: 'palace', PLURAL: 'palaces', ID: 'wd:Q16560'},
+    {SINGULAR: 'pyramid', PLURAL: 'pyramids', ID: 'wd:Q12516'},
+    {SINGULAR: 'church building', PLURAL: 'church_buildings', ID: 'wd:Q16970'},
+    {SINGULAR: 'temple', PLURAL: 'temples', ID: 'wd:Q44539'},
+    {SINGULAR: 'monastery', PLURAL: 'monasteries', ID: 'wd:Q44613'}
 ]
 LATITUDE = {SINGULAR: "latitude", ABBREVIATION: "lat"}
 LONGITUDE = {SINGULAR: "longitude", ABBREVIATION: "lon"}

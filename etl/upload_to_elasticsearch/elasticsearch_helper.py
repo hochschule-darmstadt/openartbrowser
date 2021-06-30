@@ -1,5 +1,6 @@
 import datetime
 import json
+import logging
 import time
 import uuid
 from pathlib import Path
@@ -106,7 +107,10 @@ def create_index(index_name: str, filename: str) -> None:
             {"_index": index_name, "_id": uuid.uuid4(), "_source": json.dumps(item)}
             for item in items
         ]
-        helpers.bulk(es, bulk_insert)
+        try:
+            helpers.bulk(es, bulk_insert)
+        except Exception as e:
+            logging.exception(e)
 
     end = time.time()
     print(f"{len(items)} documents were created in index {index_name}")

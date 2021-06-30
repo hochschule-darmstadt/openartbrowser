@@ -35,13 +35,13 @@ export const usePlural = (type: EntityType) => {
     return type;
   else if (type === 'class')
     return 'classes';
-  else 
+  else
     return type + 's';
 }
 
 export const useSingular = (entityType: string) => {
   if(entityType === 'classes')
-    return entityType.slice(0, -2); 
+    return entityType.slice(0, -2);
   else
     return entityType.slice(0, -1);
 }
@@ -52,7 +52,7 @@ export enum EntityIcon {
   ARTWORK = 'fa-image',
   MOVEMENT = 'fa-wind',
   LOCATION = 'fa-archway',
-  MOTIF = 'fa-image',
+  MOTIF = 'fa-eye',
   GENRE = 'fa-tag',
   MATERIAL = 'fa-scroll',
   CLASS = 'fa-shapes'

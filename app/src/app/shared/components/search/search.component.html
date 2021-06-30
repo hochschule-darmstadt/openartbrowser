@@ -1,14 +1,8 @@
 <ng-template #rt let-r="result" let-t="term" let-type="result['type']">
   <div class="search__result">
     <span class="search__result-type">
-      <i *ngIf="type == 'motif'" class="fas fa-image"></i>
-      <i *ngIf="type == 'location'" class="fas fa-archway"></i>
-      <i *ngIf="type == 'genre'" class="fas fa-tag"></i>
-      <i *ngIf="type == 'material'" class="fas fa-scroll"></i>
-      <i *ngIf="type == 'movement'" class="fas fa-wind"></i>
-      <i *ngIf="type == 'artist'" class="fas fa-user"></i>
-      <i *ngIf="type == 'class'" class="fas fa-shapes"></i>
-      <img *ngIf="type == 'artwork'" [src]="r?.imageSmall" class="search__result-type-thumbnail" />
+      <i *ngIf="type !== 'artwork'" class="fas {{r.icon}}"></i>
+      <img *ngIf="type == 'artwork'" [src]="r?.imageSmall" class="search__result-type-thumbnail" [alt]="r.label"/>
     </span>
 
     <ngb-highlight class="search__result-label" [result]="r.label" [term]="t"></ngb-highlight>
@@ -24,13 +18,7 @@
 <div class="search">
   <div *ngIf="searchItems.length > 0 && isHeaderSearch" class="search__header-chips">
     <span *ngFor="let i of searchItems" class="badge badge-pill badge-secondary chip search__header-chip">
-      <span *ngIf="i.type === 'artist'" class="fas fa-user"></span>
-      <span *ngIf="i.type === 'movement'" class="fas fa-wind"></span>
-      <span *ngIf="i.type === 'material'" class="fas fa-scroll"></span>
-      <span *ngIf="i.type === 'genre'" class="fas fa-tag"></span>
-      <span *ngIf="i.type === 'location'" class="fas fa-archway"></span>
-      <span *ngIf="i.type === 'motif'" class="fas fa-image"></span>
-      <span *ngIf="i.type == 'class'" class="fas fa-shapes"></span>
+      <span *ngIf="i.type !== 'artwork'" class="fas {{i.icon}}"></span>
       <span *ngIf="i.type" class="search__header-chip-label ml-1">{{ i.label }}</span>
       <span *ngIf="!i.type" class="search__header-chip-label">"{{ i.label }}"</span>
       <span (click)="removeTag(i)" class="fas fa-times-circle search__header-chip-removeButton"></span>

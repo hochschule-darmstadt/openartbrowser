@@ -868,7 +868,7 @@
       </trans-unit>
       <trans-unit id="results" datatype="html">
         <source>Results</source>
-        <target state="final">Ergebnisse</target>
+        <target state="final">Alle Ergebnisse</target>
       </trans-unit>
       <trans-unit id="d92b19d3d60f5e8db9974b16602fe83c00d05b7c" datatype="html">
         <source>{VAR_SELECT, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre
@@ -896,7 +896,7 @@
       </trans-unit>
       <trans-unit id="1341457774524620488" datatype="html">
         <source>{VAR_SELECT, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material} main_motif {Main Motif} class {Type}}</source>
-        <target state="final">{VAR_SELECT, select, all {Alle} artwork {Kunstwerk} motif {Motiv} artist {Künstler} location {Standort} genre {Genre} movement {Stilrichtung} material {Material} class {Typ}}</target>
+        <target state="final">{VAR_SELECT, select, all {Alle} artwork {Kunstwerk} motif {Motiv} artist {Künstler} location {Standort} genre {Genre} movement {Stilrichtung} material {Material} main_motif {Hauptmotiv} class {Typ}}</target>
       </trans-unit>
       <trans-unit id="2015419283931430022" datatype="html">
         <source>{VAR_SELECT, select, all {all} motif {motif} artist {artist} location {location} genre {genre} movement {movement} material {material} class {type}}</source>

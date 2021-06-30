@@ -186,4 +186,17 @@ export class MovementComponent implements OnInit, OnDestroy {
   videoFound(event) {
     this.videoExists = this.videoExists ? true : event;
   }
+
+  onChange(event){
+    const value = event.target.value
+    if(value=="timeline"){
+      this.setActiveTab(Tab.Timeline)
+    }
+    else if(value=="artworks"){
+      this.setActiveTab(Tab.Artworks)
+    }
+    else{
+      this.setActiveTab(Tab.MovementOverview)
+    }
+  }
 }

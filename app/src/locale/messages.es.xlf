@@ -879,7 +879,7 @@
       </trans-unit>
       <trans-unit id="results" datatype="html">
         <source>Results</source>
-        <target state="final">Resultados</target>
+        <target state="final">Todos los resultados</target>
       </trans-unit>
       <trans-unit id="d92b19d3d60f5e8db9974b16602fe83c00d05b7c" datatype="html">
         <source>{VAR_SELECT, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre
@@ -908,7 +908,7 @@
       </trans-unit>
       <trans-unit id="1341457774524620488" datatype="html">
         <source>{VAR_SELECT, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material} main_motif {Main Motif} class {Type}}</source>
-        <target state="final">{VAR_SELECT, select, all {Todos} artwork {Obra de arte} motif {Motivo} artist {Artista} location {Emplazamiento} genre {Género} movement {Movimiento} material {Matériau} class {Tipo}}</target>
+        <target state="final">{VAR_SELECT, select, all {Todos} artwork {Obra de arte} motif {Motivo} artist {Artista} location {Emplazamiento} genre {Género} movement {Movimiento} material {Matériau} main_motif {Motivo Principal} class {Tipo}}</target>
       </trans-unit>
       <trans-unit id="2015419283931430022" datatype="html">
         <source>{VAR_SELECT, select, all {all} motif {motif} artist {artist} location {location} genre {genre} movement {movement} material {material} class {type}}</source>
@@ -920,7 +920,7 @@
       </trans-unit>
       <trans-unit id="6011716873832268948" datatype="html">
         <source>{VAR_SELECT, select, artwork {Artworks} motif {Motifs} artist {Artists} location {Locations} genre {Genres} movement {Movements} material {Materials} class {Types}}</source>
-        <target state="final">{VAR_SELECT, select, all {Todos} artwork {Obras de arte} motif {Motivos} artist {Artistas} location {Localizaciones} genre {Géneros} movement {Movimientos} material {Materiales} main_motif {Motivo Principal} class {Tipos}}</target>
+        <target state="final">{VAR_SELECT, select, all {Todos} artwork {Obras de arte} motif {Motivos} artist {Artistas} location {Localizaciones} genre {Géneros} movement {Movimientos} material {Materiales} main_motif {Motivi Principal} class {Tipos}}</target>
       </trans-unit>
       <trans-unit id="parent_class" datatype="html">
         <source>Parent class</source>

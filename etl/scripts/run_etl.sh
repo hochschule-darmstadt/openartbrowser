@@ -1,12 +1,7 @@
 #!/bin/bash
-if [ $(id -u) -ne 0 ]
-	then echo "The script must be executed with sudo rights"
-	exit 1
-fi
-
 
 # Get parameters
-while getopts "hdrt" opt; do
+while getopts "hldrt" opt; do
   case $opt in
   h)
     echo "
@@ -18,20 +13,33 @@ Usage: run_etl.sh [options]
   -h          this test message
     "
     ;;
+  l)
+    LOCAL_MODE=true
+    ;;
   \?)
     echo "Invalid option -$OPTARG" >&2 && exit 1
     ;;
   esac
 done
 
-LOCKFILE=/tmp/etl.lock
-TOKEN=$(cat tokens/bot_user_oauth_token)
-SERVERNAME=$(uname -n)
+if [ ! $LOCAL_MODE ] && [ $(id -u) -ne 0 ]; then
+  echo "The script must be executed with sudo rights"
+  exit 1
+fi
 
+LOCKFILE=/tmp/etl.lock
+trap "rm -rf $LOCKFILE; echo \"lock file deleted\"" ERR EXIT
 if ! mkdir $LOCKFILE 2>/dev/null; then
-	curl -X POST https://slack.com/api/chat.postMessage -H "Authorization: Bearer ${TOKEN}" -H 'Content-type: application/json' --data '{"channel":"CSY0DLRDG","text":"Error! Could not acquire lock file for the ETL-process on server '${SERVERNAME}'! It seems there is already a process running","as_user":"true"}'
-    exit 1
+  if [ ! $LOCAL_MODE ]; then
+    TOKEN=$(cat tokens/bot_user_oauth_token)
+    SERVERNAME=$(uname -n)
+    curl -X POST https://slack.com/api/chat.postMessage -H "Authorization: Bearer ${TOKEN}" -H 'Content-type: application/json' --data '{"channel":"CSY0DLRDG","text":"Error! Could not acquire lock file for the ETL-process on server '${SERVERNAME}'! It seems there is already a process running","as_user":"true"}'
+  else
+    echo "Error! Could not acquire lock file for the ETL-process"
+  fi
+  exit 1
 fi
 
 mkdir -p logs
-script -q -c "./scripts/etl.sh $1 $2 $3 $4 $5" /dev/null | tee ./logs/etl.log
+echo "run etl"
+script -q -c "./scripts/etl.sh $1 $2 $3 $4 $5 $6" /dev/null | tee ./logs/etl.log

@@ -731,7 +731,7 @@
           <context context-type="sourcefile">app/shared/components/movement-overview/movement-overview.component.html</context>
           <context context-type="linenumber">28</context>
         </context-group>
-        <note priority="1" from="description">Results</note>
+        <note priority="1" from="description">All results</note>
       </trans-unit>
     </body>
   </file>

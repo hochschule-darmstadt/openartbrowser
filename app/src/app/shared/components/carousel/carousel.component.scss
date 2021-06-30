@@ -14,6 +14,10 @@
   .carousel-control-next {
     width: 4%;
   }
+
+  .carousel {
+    border-bottom: none !important;
+  }
 }
 ::ng-deep {
   .custom-carousel {
@@ -31,6 +35,24 @@
     .carousel-control-prev,
     .carousel-control-next {
       width: 2% !important;
+      // place buttons on a fixed height due to images having different amount of common tags badges
+      align-items: initial !important;
+      margin-top: 10em;
+    }
+
+    @media (max-width: 575px) {
+      .carousel-control-prev-icon,
+      .carousel-control-next-icon {
+        width: 100%;
+      }
+      .carousel-control-prev,
+      .carousel-control-next {
+        width: 8% !important;
+    }
+    }
+
+    .main-content {
+      height: 100vh;
     }
   }
 }

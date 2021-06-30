@@ -65,6 +65,12 @@ $container-height: 20em;
   }
 }
 
+@media (max-width: 575px) {
+  .carou-control {
+    width: 8%;
+  }
+}
+
 .carou-content {
   display: flex;
   flex-direction: row;
@@ -157,4 +163,24 @@ a {
   &:hover {
     text-decoration: none;
   }
+}
+
+.item-caption{
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  text-align: center;
+}
+@media (max-width: 768px) {
+  .desktop{
+    display: none;   
+  }
+  
+}
+@media (min-width: 768px) {
+  .mobile{
+    display: none;      
+  }
+  
 }

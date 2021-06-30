@@ -1,16 +1,16 @@
 <div *ngIf="idDoesNotExist" class="container entity location">
-  <div class="row mb-5 border-bottom pb-5">
+  <div class="row pb-4 pb-sm-5 mb-sm-5">
     <app-error-message  [id]="locationId"></app-error-message>
   </div>
 </div>
 
 <div *ngIf="!idDoesNotExist" class="container entity location">
-  <div class="row mb-5 border-bottom pb-5">
+  <div class="row mb-4 pb-4 border-bottom">
     <div class="col-sm-7" *ngIf="location">
       <app-title [entity]="location"></app-title>
       <app-sticky-title [entity]="location"></app-sticky-title>
 
-      <div class="mb-3 mt-5">
+      <div class="mb-3 mt-3">
         <p *ngIf="location.description" class="mb-1 first-letter">
           {{ location.description }}
         </p>
@@ -19,7 +19,7 @@
       <app-information *ngIf="location?.country" i18n-label="Country label@@country" label="Country" [value]="location?.country" [isEntityPage]="true"> </app-information>
       <app-information *ngIf="location?.website" i18n-label="Official page label@@official_page" label="Web" [isHref]="true" [value]="location?.website" [isEntityPage]="true"> </app-information>
 
-      <div *ngIf="location?.abstract">
+      <div class="mt-2" *ngIf="location?.abstract">
         <app-collapse>
           <app-abstract [entity]="location"></app-abstract>
         </app-collapse>

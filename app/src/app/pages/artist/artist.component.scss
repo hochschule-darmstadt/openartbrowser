@@ -6,7 +6,35 @@
   display: inline-block;
   margin-right: 16px;
 }
-
 .video:last-child {
   margin: 0;
+}
+.video:empty {
+  display: none;
+}
+.tabs-select{
+  margin: auto;
+  display: block;
+  background: #222;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  font-size: 20px;
+  padding: .5rem;
+  border-radius: .25rem;
+  color: #fff;
+  background-color: #444;
+  border-color: #767676;
+}
+
+@media (max-width: 768px) {
+  .tabs{
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .tabs-select{
+    display: none;
+  }
 }

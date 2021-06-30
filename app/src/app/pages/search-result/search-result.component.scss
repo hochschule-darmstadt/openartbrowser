@@ -1,3 +1,56 @@
 .colon-suffix:after {
   content: ":";
 }
+
+.loading-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  // height: 20rem;
+}
+
+.typebadge {
+  position: absolute;
+  top: 0;
+  height: 1.5rem;
+  width: 1.5rem;
+  z-index: 80;
+
+  border-radius: 50%;
+  background: #444444;
+  color: #ffffff;
+
+  display: flex;
+  align-items: center;
+
+  i {
+    display: block;
+    margin-left: auto;
+    margin-right: auto
+  }
+}
+
+::ng-deep .item-template_container {
+  // remove unnecessary border for empty template
+  border-top: none !important;
+}
+
+::ng-deep .img-self {
+  border-radius: 0.3rem !important;
+}
+
+::ng-deep .nav-link {
+  padding: 0.5rem 1.5rem;
+}
+
+
+
+@media (max-width: 575px) {
+  .container,
+  .container > .row {
+    margin: 0;
+  }
+  .container > .row > [class^="col-"] {
+    padding: 0;
+  }
+}

@@ -1,11 +1,11 @@
-import {Component, OnInit, OnDestroy, HostListener} from '@angular/core';
-import {Artwork, EntityType, EntityIcon} from 'src/app/shared/models/models';
-import {takeUntil} from 'rxjs/operators';
-import {ActivatedRoute} from '@angular/router';
-import {Subject} from 'rxjs';
-import {DataService} from 'src/app/core/services/elasticsearch/data.service';
-import {shuffle} from 'src/app/core/services/utils.service';
-import {usePlural} from 'src/app/shared/models/entity.interface';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Artwork, EntityType, EntityIcon } from 'src/app/shared/models/models';
+import { takeUntil } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
+import { Subject } from 'rxjs';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
+import { shuffle } from 'src/app/core/services/utils.service';
+import { usePlural } from 'src/app/shared/models/entity.interface';
 
 /** interface for the tabs */
 interface ArtworkTab {
@@ -205,7 +205,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
         const types = usePlural(tab.type);
         if (!this.artwork[types] || this.artwork[types].length === 0) {
           this.artworkTabs = this.artworkTabs.filter(t => t.type !== tab.type);
-          return
+          return;
         }
         // load entities
         this.dataService.findMultipleById(this.artwork[types] as any, tab.type).then(items => {
@@ -290,17 +290,16 @@ export class ArtworkComponent implements OnInit, OnDestroy {
     }).sort((left, right) => left.start_time - right.start_time);
   }
 
-  
-  onChange(event){
-    const value = event.target.value
-    
-    for(let tab of this.artworkTabs){
 
-      if(tab.type==value){
-        tab.active=true
-      }
-      else{
-        tab.active=false
+  onChange(event) {
+    const value = event.target.value;
+
+    for (const tab of this.artworkTabs) {
+
+      if (tab.type === value) {
+        tab.active = true;
+      } else {
+        tab.active = false;
       }
 
     }

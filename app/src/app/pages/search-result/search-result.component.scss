@@ -30,6 +30,19 @@
   }
 }
 
+.tabs-select{
+  margin: auto;
+  display: block;
+  font-weight: bold;
+  text-align: center;
+  font-size: 20px;
+  padding: .5rem;
+  border-radius: .25rem;
+  color: #fff;
+  background-color: #444;
+  border-color: #767676;
+}
+
 ::ng-deep .item-template_container {
   // remove unnecessary border for empty template
   border-top: none !important;
@@ -50,5 +63,17 @@
   }
   .container > .row > [class^="col-"] {
     padding: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .tabs {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .tabs-select {
+    display: none;
   }
 }

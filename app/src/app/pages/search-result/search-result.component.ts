@@ -194,6 +194,21 @@ export class SearchResultComponent implements OnInit, OnDestroy {
     tabClicked.initialized = true;
   }
 
+  onChange(event) {
+    const value = event.target.value;
+
+    for (const tab of this.entityTabs){
+
+      if (tab.type === value){
+        tab.active = true;
+        tab.initialized = true;
+      }
+      else{
+        tab.active = false;
+      }
+    }
+  }
+
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

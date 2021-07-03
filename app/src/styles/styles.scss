@@ -4,7 +4,8 @@
 
 html,
 body {
-  height: 100%;
+  height: auto;
+  min-height: 100%;
   scrollbar-color: #888 transparent; //custom colors only for firefox
 }
 

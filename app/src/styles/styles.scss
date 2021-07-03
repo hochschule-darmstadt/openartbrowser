@@ -5,13 +5,14 @@
 html,
 body {
   height: 100%;
+  scrollbar-color: #888 transparent; //custom colors only for firefox
 }
 
 *:focus {
   outline: transparent;
 }
 
-@media (max-width: 576px) {
+@media (max-width: 575px) {
   html, body {
     display: block;
     width: 100vw;
@@ -148,7 +149,7 @@ hr {
   100% {opacity: 1;}
 }
 
-@media only screen and (max-width: 576px) {
+@media only screen and (max-width: 575px) {
   .h1, h1 { font-size: 2rem; }
   .h2, h2 { font-size: 1.75rem; }
   .h3, h3, .slider-heading { font-size: 1.5rem; }
@@ -175,4 +176,22 @@ hr {
 .title-label {
   word-wrap: break-word;
   hyphens: auto;
+}
+
+/* Custom scrollbar styles for webkit browsers Edge, Chrome etc.*/
+::-webkit-scrollbar {
+    width: 13px
+}
+
+::-webkit-scrollbar-track {
+    background: transparent
+}
+  
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+  
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }

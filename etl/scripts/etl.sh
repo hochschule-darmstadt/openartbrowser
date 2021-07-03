@@ -3,19 +3,22 @@ set -eE
 set -x
 
 # Get parameters d, r and t (dev counter, recovery mode and test mode)
-while getopts "drt" opt; do
+while getopts "dlrt" opt; do
   case $opt in
   d)
     DEV_MODE=true
     # Check next positional parameter
     eval nextopt=\${$OPTIND}
     # existing or starting with dash?
-    if [[ -n $nextopt && $nextopt != -* ]] ; then
+    if [[ -n $nextopt && $nextopt != -* ]]; then
       OPTIND=$((OPTIND + 1))
       DEV_COUNT=$nextopt
     else
       DEV_COUNT=5
     fi
+    ;;
+  l)
+    LOCAL_MODE=true
     ;;
   r)
     REC_MODE=true
@@ -25,7 +28,7 @@ while getopts "drt" opt; do
     # Check next positional parameter
     eval nextopt=\${$OPTIND}
     # existing or starting with dash?
-    if [[ -n $nextopt && $nextopt != -* ]] ; then
+    if [[ -n $nextopt && $nextopt != -* ]]; then
       OPTIND=$((OPTIND + 1))
       CLASS_LIM=$nextopt
     else
@@ -39,15 +42,16 @@ while getopts "drt" opt; do
 done
 
 LOCKFILE=/tmp/etl.lock
-TOKEN=$(cat tokens/bot_user_oauth_token)
 WD=$(pwd)
 DATE=$(date +%T_%d-%m-%Y) # German format
 SERVERNAME=$(uname -n)
 
 export PYTHONPATH="${PYTHONPATH}:${WD}"
 export PYWIKIBOT_DIR="${WD}"
-
-trap "curl -F file=@${WD}/logs/etl.log -F \"initial_comment=Oops! Something went wrong while executing the ETL-process on server ${SERVERNAME}. Here is the log file: \" -F channels=CSY0DLRDG -H \"Authorization: Bearer ${TOKEN}\" https://slack.com/api/files.upload" ERR
+if [ ! $LOCAL_MODE ]; then
+  TOKEN=$(cat tokens/bot_user_oauth_token)
+  trap "curl -F file=@${WD}/logs/etl.log -F \"initial_comment=Oops! Something went wrong while executing the ETL-process on server ${SERVERNAME}. Here is the log file: \" -F channels=CSY0DLRDG -H \"Authorization: Bearer ${TOKEN}\" https://slack.com/api/files.upload" ERR
+fi
 
 curl -X POST https://slack.com/api/chat.postMessage -H "Authorization: Bearer ${TOKEN}" -H 'Content-type: application/json' --data '{"channel":"CSY0DLRDG","text":"The ETL-process is starting on server '${SERVERNAME}' at '${DATE}'","as_user":"true"}'
 ETL_STATES_FILE=$WD/logs/etl_states.log
@@ -75,13 +79,16 @@ python3 data_enhancement/ranking.py "${params[@]}"
 cd crawler_output/intermediate_files/json/
 
 # Merges all *.json files in the json dir into art_ontology.json
-jq -s "[.[][]]" artworks.json genres.json artists.json locations.json materials.json movements.json motifs.json classes.json >art_ontology.json
+onto_state=merge_art_ontology
+if [[ ! ($REC_MODE == true) ]] || ([[ ($REC_MODE == true) ]] && ! grep -q "$onto_state" "$ETL_STATES_FILE"); then
+  jq -s "[.[][]]" artworks.json genres.json artists.json locations.json materials.json movements.json motifs.json classes.json >art_ontology.json
+  echo -e "\n$onto_state" >>$ETL_STATES_FILE
 
-rm -f ../../../crawler_output/art_ontology.json
+  rm -f ../../../crawler_output/art_ontology.json
 
-# Move the generated art_ontology.json to the directory crawler_output
-mv art_ontology.json ../../../crawler_output/art_ontology.json
-
+  # Move the generated art_ontology.json to the directory crawler_output
+  mv art_ontology.json ../../../crawler_output/art_ontology.json
+fi
 python3 ../../../data_enhancement/split_languages.py "${params[@]}"
 
 python3 ../../../upload_to_elasticsearch/elasticsearch_helper.py

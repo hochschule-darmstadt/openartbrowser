@@ -14,9 +14,9 @@ import {ActivatedRoute, Params} from '@angular/router';
 import {KeyValue} from '@angular/common';
 import {environment} from '../../../../environments/environment';
 import {Artwork} from '../../models/models';
-import {takeUntil} from "rxjs/operators";
-import {Subject} from "rxjs";
-import {UrlParamService} from "../../../core/services/urlparam.service";
+import {takeUntil} from 'rxjs/operators';
+import {Subject} from 'rxjs';
+import {UrlParamService} from '../../../core/services/urlparam.service';
 
 export interface FetchOptions {
   /** initial offset of the query, this is where it will continue to load */
@@ -50,6 +50,8 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
 
   @Input() options: FetchOptions;
 
+  @Input() enableHover = false;
+
   @ContentChild(TemplateRef, {static: false}) templateRef;
   @ContentChild('templateContainer', {static: false}) templateContainer: ElementRef;
 
@@ -65,16 +67,43 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
   private ngUnsubscribe = new Subject();
   queryParams: Params;
 
-  // order by ascending property key (as number)
-  keyAscOrder = (a: KeyValue<number, Page>, b: KeyValue<number, Page>): number => {
-    return +a.key < +b.key ? -1 : (+b.key < +a.key ? 1 : 0);
-  };
-
   constructor(private dataService: DataService,
               private route: ActivatedRoute,
               private changeDetectionRef: ChangeDetectorRef,
               private urlParamService: UrlParamService) {
   }
+
+  /**
+   * returns the current vertical position at the page
+   * @private
+   */
+  private static getContainerScrollHeight(): number {
+    return (
+      Math.max(
+        document.body.scrollHeight,
+        document.body.offsetHeight,
+        document.body.clientHeight,
+        document.documentElement.scrollHeight,
+        document.documentElement.offsetHeight,
+        document.documentElement.clientHeight
+      )
+    );
+
+  }
+
+  private static getContainerScrollTop(): number {
+    return (window.pageYOffset);
+  }
+
+  private static setScrollTop(currentScrollTop: number, delta: number): void {
+    window.scrollBy(0, delta);
+  }
+
+  // order by ascending property key (as number)
+  keyAscOrder = (a: KeyValue<number, Page>, b: KeyValue<number, Page>): number => {
+    return +a.key < +b.key ? -1 : (+b.key < +a.key ? 1 : 0);
+  }
+
 
   ngOnInit() {
     if (!this.options) {
@@ -110,8 +139,9 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
     this.route.queryParams.pipe(takeUntil(this.ngUnsubscribe)).subscribe(params => {
       this.queryParams = params;
     });
-
-    this.options.queryCount.then(value => {
+    Promise.resolve(this.options.queryCount).then(value => {
+      return value;
+    }).then(value => {
       this.options.queryCount = value;
       // TODO: If the queryCount exceeds the elasticSearch safeguard (default 10000), maxPage is limited.
       //  Find a way to prevent exceeding this limit (eg. use scroll api or search after)
@@ -162,15 +192,13 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
       this.setError(entity, pageNumber);
     }
     /** load missing movement images */
-    this.getEntityArtworks(this.options.entityType, entity.id).then(artworks => {
-      let randThumbIndex = -1;
+    this.getEntityArtworks(entity.type, entity.id).then(artworks => {
       // search for random artwork which is no .tif
       artworks = artworks.filter(artwork => !artwork.image.endsWith('.tif') && !artwork.image.endsWith('.tiff'));
       if (artworks.length) {
-        randThumbIndex = Math.floor(Math.random() * artworks.length);
-        entity.image = artworks[randThumbIndex].image;
-        entity.imageMedium = artworks[randThumbIndex].imageMedium;
-        entity.imageSmall = artworks[randThumbIndex].imageSmall;
+        entity.image = artworks[0].image;
+        entity.imageMedium = artworks[0].imageMedium;
+        entity.imageSmall = artworks[0].imageSmall;
       } else {
         this.setError(entity, pageNumber);
       }
@@ -340,36 +368,10 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
    * @private
    */
   private setURLPageParam(page: number) {
-    this.urlParamService.changeQueryParams({page: page}).resolve();
+    this.urlParamService.changeQueryParams({page}).resolve();
   }
 
   range(start, end): Array<number> {
     return Array.from({length: end - start + 1}, (v, k) => k + start);
-  }
-
-  /**
-   * returns the current vertical position at the page
-   * @private
-   */
-  private static getContainerScrollHeight(): number {
-    return (
-      Math.max(
-        document.body.scrollHeight,
-        document.body.offsetHeight,
-        document.body.clientHeight,
-        document.documentElement.scrollHeight,
-        document.documentElement.offsetHeight,
-        document.documentElement.clientHeight
-      )
-    );
-
-  }
-
-  private static getContainerScrollTop(): number {
-    return (window.pageYOffset);
-  }
-
-  private static setScrollTop(currentScrollTop: number, delta: number): void {
-    window.scrollBy(0, delta);
   }
 }

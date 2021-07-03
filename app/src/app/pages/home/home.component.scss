@@ -27,14 +27,14 @@ $color1: #00bc8c;
   margin-bottom: 2rem;
   position: relative;
 
-  @media (min-width: 377px) and (max-width: 576px) {
+  @media (min-width: 377px) and (max-width: 575px) {
     display: none;
   }
 
   @media (min-width: 577px) and (max-width: 767px) {
     display: none;
   }
-  @media (min-width: 0px) and (max-width: 576px) {
+  @media (min-width: 0px) and (max-width: 575px) {
     display: none;
   }
 
@@ -66,7 +66,7 @@ $color1: #00bc8c;
       @media (min-width: 577px) and (max-width: 767px) {
         font-size: 5vh;
       }
-      @media (min-width: 377px) and (max-width: 576px) {
+      @media (min-width: 377px) and (max-width: 575px) {
         font-size: 3.5vh;
       }
       @media (min-width: 0px) and (max-width: 376px) {
@@ -96,7 +96,7 @@ $color1: #00bc8c;
     height: 2.5rem;
     font-size: 1.1rem;
   }
-  @media (min-width: 377px) and (max-width: 576px) {
+  @media (min-width: 377px) and (max-width: 575px) {
     height: 2rem;
     font-size: 1rem;
   }

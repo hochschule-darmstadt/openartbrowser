@@ -112,17 +112,44 @@
   }
 }
 
+.tabs-select{
+  margin: auto;
+  display: block;
+  background: #222;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  font-size: 20px;
+  padding: .5rem;
+  border-radius: .25rem;
+  color: #fff;
+  background-color: #444;
+  border-color: #767676;
+}
+
 @media (max-width: 768px) {
   #image-main {
     max-width: 100%;
     max-height: 45vh;
   }
+  .tabs{
+    display: none;
+  }
 }
 
-@media (max-width: 576px) {
+@media (min-width: 768px) {
+  .tabs-select{
+    display: none;
+  }
+}
+
+@media (max-width: 575px) {
   #image-main {
     max-width: 100%;
     max-height: 50vh;
+  }
+  #common-tags {
+    display: none;
   }
 }
 

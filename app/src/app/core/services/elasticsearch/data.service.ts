@@ -1,11 +1,11 @@
 import * as _ from 'lodash';
-import {HttpClient} from '@angular/common/http';
-import {Inject, Injectable, LOCALE_ID} from '@angular/core';
-import {ArtSearch, Artwork, Entity, EntityIcon, EntityType, Iconclass, Movement} from 'src/app/shared/models/models';
-import {environment} from 'src/environments/environment';
-import {usePlural} from 'src/app/shared/models/entity.interface';
+import { HttpClient } from '@angular/common/http';
+import { Inject, Injectable, LOCALE_ID } from '@angular/core';
+import { ArtSearch, Artwork, Entity, EntityIcon, EntityType, Iconclass, Movement } from 'src/app/shared/models/models';
+import { environment } from 'src/environments/environment';
+import { usePlural } from 'src/app/shared/models/entity.interface';
 import * as bodyBuilder from 'bodybuilder';
-import {Bodybuilder} from 'bodybuilder';
+import { Bodybuilder } from 'bodybuilder';
 
 const defaultSortField = 'relativeRank';
 
@@ -77,12 +77,12 @@ export class DataService {
   }
 
   public async countArtworksByType(type: EntityType, ids: string[]) {
-    let body = bodyBuilder()
+    const body = bodyBuilder()
       .queryMinimumShouldMatch(1, true)
-      .query('match', 'type', EntityType.ARTWORK)
+      .query('match', 'type', EntityType.ARTWORK);
     _.each(ids, id => body.orQuery('match', usePlural(type), id));
-    const response: any = await this.http.post(this.countEndPoint, body.build()).toPromise()
-    return response && response.count ? response.count : undefined
+    const response: any = await this.http.post(this.countEndPoint, body.build()).toPromise();
+    return (response && response.count) ? response.count : undefined;
   }
 
   /**
@@ -124,15 +124,21 @@ export class DataService {
   }
 
   /**
-   * Returns the artworks that contain all the given arguments.
+   * Returns found entities by search arguments and given type.
    * @param searchObj the arguments to search for.
    * @param keywords the list of words to search for.
-   * @param count the number of items returned
+   * @param count the number of items returned.
+   * @param from the offset from where the result set should start.
+   * @param type type of the results.
    */
-  public searchArtworks(searchObj: ArtSearch, keywords: string[] = [], count = 400): Promise<Artwork[]> {
+  public searchResultsByType(searchObj: ArtSearch, keywords: string[] = [], count = 200, from = 0, type: EntityType): Promise<Entity[]> {
     const body = bodyBuilder()
       .size(count)
-      .sort(defaultSortField, 'desc');
+      // .sort(defaultSortField, 'desc')
+      .from(from);
+    if (type) {
+      body.query('match', 'type', type);
+    }
     _.each(searchObj, (arr, key) => {
       if (Array.isArray(arr)) {
         _.each(arr, val => body.query('match', key, val));
@@ -142,9 +148,37 @@ export class DataService {
       body.query('bool', (q) => {
         return q.orQuery('match', 'label', keyword)
           .orQuery('match', 'description', keyword)
+          .orQuery('match', 'abstract', keyword);
       })
     );
-    return this.performQuery(body);
+    return this.performQuery<Entity>(body);
+  }
+
+  /**
+   * Returns the count of entities found with given search arguments.
+   * @param searchObj the arguments to search for.
+   * @param keywords the list of words to search for.
+   * @param type type of the results.
+   */
+  public async countSearchResultItems<T>(searchObj: ArtSearch, keywords: string[] = [], type: EntityType): Promise<number> {
+    const body = bodyBuilder();
+    if (type) {
+      body.query('match', 'type', type);
+    }
+    _.each(searchObj, (arr, key) => {
+      if (Array.isArray(arr)) {
+        _.each(arr, val => body.query('match', key, val));
+      }
+    });
+    _.each(keywords, keyword =>
+      body.query('bool', (q) => {
+        return q.orQuery('match', 'label', keyword)
+          .orQuery('match', 'description', keyword)
+          .orQuery('match', 'abstract', keyword);
+      })
+    );
+    const response: any = await this.http.post(this.countEndPoint, body.build()).toPromise();
+    return (response && response.count) ? response.count : 0;
   }
 
   /**
@@ -166,7 +200,7 @@ export class DataService {
    * Get item count of type
    * @param type the type which should be counted
    */
-  public async countEntityItems<T>(type: EntityType){
+  public async countEntityItems<T>(type: EntityType) {
     const body = bodyBuilder()
       .query('match', 'type', type);
     const response: any = await this.http.post(this.countEndPoint, body.build()).toPromise();
@@ -248,7 +282,7 @@ export class DataService {
     const entities: T[] = [];
     _.each(
       data.hits.hits,
-      function (val) {
+      function(val) {
         if (!filterBy || (filterBy && val._source.type === filterBy)) {
           entities.push(this.addThumbnails(val._source));
         }

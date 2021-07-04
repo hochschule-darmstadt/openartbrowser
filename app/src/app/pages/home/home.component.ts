@@ -15,7 +15,7 @@ import {
 } from 'src/app/shared/models/models';
 import {DataService} from 'src/app/core/services/elasticsearch/data.service';
 import {shuffle} from 'src/app/core/services/utils.service';
-import * as ConfigJson from '../../../config/home_content.json';
+import {default as ConfigJson} from '../../../config/home_content.json';
 
 /**
  * @description Interface for the category sliders.
@@ -71,7 +71,7 @@ export class HomeComponent implements OnInit {
     this.setBackground();
     this.getSlides();
   }
-  
+
   /**
    * @description Fetch items for each category using the service. Retrun an array of slider category items.
    */

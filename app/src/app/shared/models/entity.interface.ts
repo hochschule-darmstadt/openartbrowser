@@ -31,20 +31,25 @@ export enum EntityType {
 }
 
 export const usePlural = (type: EntityType) => {
-  if(type === 'all')
+  if (type === 'all') {
     return type;
-  else if (type === 'class')
+  }
+  else if (type === 'class') {
     return 'classes';
-  else
+ }
+  else {
     return type + 's';
-}
+ }
+};
 
 export const useSingular = (entityType: string) => {
-  if(entityType === 'classes')
+  if (entityType === 'classes') {
     return entityType.slice(0, -2);
-  else
+  }
+  else {
     return entityType.slice(0, -1);
-}
+  }
+};
 
 export enum EntityIcon {
   ALL = 'fa-list-ul',

@@ -24,7 +24,7 @@ import { InViewportModule } from 'ng-in-viewport';
 import { PaginatorComponent } from './components/fetching-list/paginator/paginator.component';
 import { StickyTitleComponent } from './components/sticky-title/sticky-title.component';
 import { ErrorMessageComponent } from './components/error-message/error-message.component';
-import {NgxSliderModule} from "@angular-slider/ngx-slider";
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { CategoryContainerComponent } from './components/category-container/category-container.component';
 
 /** Everything that should be used within multiple feature modules but isn't always required goes here */
@@ -51,15 +51,15 @@ import { CategoryContainerComponent } from './components/category-container/cate
     CategoryContainerComponent,
     ErrorMessageComponent
   ],
-    imports: [
-        CommonModule,
-        NgbModule,
-        RouterModule,
-        FormsModule,
-        Angulartics2Module,
-        InViewportModule,
-        NgxSliderModule
-    ],
+  imports: [
+    CommonModule,
+    NgbModule,
+    RouterModule,
+    FormsModule,
+    Angulartics2Module,
+    InViewportModule,
+    NgxSliderModule
+  ],
   exports: [
     CarouselComponent,
     SearchComponent,

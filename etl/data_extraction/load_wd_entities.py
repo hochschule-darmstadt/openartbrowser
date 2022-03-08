@@ -208,8 +208,8 @@ def extract_artworks(
                 )
             except Exception as error:
                 logger.error(
-                    "Error on qid or image, skipping item. Qid: {0}, Image: {1}, Error: {2}".format(
-                        qid, image, error
+                    "Error on qid or image, skipping item. Result set: {0}, Error: {1}".format(
+                        result, error
                     )
                 )
                 continue

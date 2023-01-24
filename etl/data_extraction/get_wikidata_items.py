@@ -431,7 +431,6 @@ if __name__ == "__main__":
                 with open(QID_LIST_FILE, 'r') as f:
                     START_QIDS = [id.rstrip('\n') for id in f]
 
-    print(QID_LIST_FILE, qid_list_file_set, START_QIDS)
     if RECOVER_MODE and check_state(ETL_STATES.GET_WIKIDATA_ITEMS.STATE):
         exit(0)
     logger.info("Extracting Art Ontology")

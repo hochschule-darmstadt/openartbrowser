@@ -51,6 +51,8 @@ DEV_CHUNK_LIMIT = 2  # Not entry but chunks of 50
 RECOVER_MODE = False
 TEST_MODE = False
 CLASS_LIM = 2
+START_QIDS = [] # List of qids to start with, mainly for testing purposes
+START_QIDS_CRAWLED = False
 
 logger = setup_logger(
     "data_extraction.get_wikidata_items",
@@ -282,14 +284,16 @@ def extract_art_ontology() -> None:
 
     # Array of already crawled wikidata items
     already_crawled_wikidata_items = set(BLOCKLIST)
+    global START_QIDS_CRAWLED, START_QIDS
 
     for source in SOURCE_TYPES if not TEST_MODE else SOURCE_TYPES[:CLASS_LIM]:
         if RECOVER_MODE and check_state(ETL_STATES.GET_WIKIDATA_ITEMS.EXTRACT_SOURCE + source[PLURAL]):
             continue
         extracted_artwork = load_wd_entities.extract_artworks(
-            source[PLURAL], source[ID], already_crawled_wikidata_items, DEV, DEV_CHUNK_LIMIT
+            source[PLURAL], source[ID], already_crawled_wikidata_items, DEV, DEV_CHUNK_LIMIT,
+            starting_qids=START_QIDS if not START_QIDS_CRAWLED else []
         )
-
+        START_QIDS_CRAWLED = True  # don't clear START_QIDS for later use
         path_name = create_new_path(ARTWORK[PLURAL], source[PLURAL], CSV)
         generate_csv(extracted_artwork, get_fields(source[PLURAL]), path_name)
 
@@ -420,6 +424,14 @@ if __name__ == "__main__":
             DEV = True
             if not dev_count_set:
                 DEV_CHUNK_LIMIT = 3
+        if "-q" in sys.argv:
+            if len(sys.argv) > sys.argv.index('-q') + 1:
+                QID_LIST_FILE = sys.argv[sys.argv.index('-q') + 1]
+                qid_list_file_set = True
+                with open(QID_LIST_FILE, 'r') as f:
+                    START_QIDS = [id.rstrip('\n') for id in f]
+
+    print(QID_LIST_FILE, qid_list_file_set, START_QIDS)
     if RECOVER_MODE and check_state(ETL_STATES.GET_WIKIDATA_ITEMS.STATE):
         exit(0)
     logger.info("Extracting Art Ontology")

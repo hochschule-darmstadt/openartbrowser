@@ -1,7 +1,6 @@
 #!/bin/bash
-
 # Get parameters
-while getopts "hldrt" opt; do
+while getopts "hldrtq" opt; do
   case $opt in
   h)
     echo "
@@ -11,6 +10,7 @@ Usage: run_etl.sh [options]
   -r          runs etl process in recovery mode, skipping steps that were already successful in the previous run
   -t [number] runs etl process in test mode, limiting the amount of crawled classes, default 3
   -h          this test message
+  -q          list of artwork qids to start with
     "
     ;;
   l)
@@ -42,4 +42,4 @@ fi
 
 mkdir -p logs
 echo "run etl"
-script -q -c "./scripts/etl.sh $1 $2 $3 $4 $5 $6" /dev/null | tee ./logs/etl.log
+script -q -c "./scripts/etl.sh $1 $2 $3 $4 $5 $6 $7" /dev/null | tee ./logs/etl.log

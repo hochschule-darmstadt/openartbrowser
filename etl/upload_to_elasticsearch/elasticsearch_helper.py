@@ -45,7 +45,7 @@ def create_empty_index(
     Returns:
         True if index didn't exist and could be created else False
     """
-    es = Elasticsearch()
+    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT)
 
     if es.indices.exists(index=index_name):
         print("Index with the name " + index_name + " already exists")
@@ -64,7 +64,7 @@ def delete_index(index_name: str) -> bool:
     Returns:
         True if index extists and could be deleted else False
     """
-    es = Elasticsearch()
+    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT)
     if es.indices.exists(index=index_name):
         print("Deleting index: " + index_name + " now")
         es.indices.delete(index_name)
@@ -81,7 +81,7 @@ def create_index(index_name: str, filename: str) -> None:
         filename: Name of the filename which contains the documents to be created e. g. art_ontology_<language_code>.json
     """
     # Uses localhost:9200 (elasticsearch default) to create the index with it's documents
-    es = Elasticsearch()
+    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT)
     print(
         'Start creating the index "'
         + index_name
@@ -133,7 +133,7 @@ def swap_index(
     Returns:
         True when the index swap worked else False
     """
-    es = Elasticsearch()
+    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT)
     print("Checking if current index exists")
     # Check for newly setup ElasticSearch-Server
     if not es.indices.exists(index=index_name_current):
@@ -388,7 +388,7 @@ def swap_to_backup_for_each_language(
         delete_non_working_indices: If this is set to True the non working indices will be deleted
                                     For debugging purposes set to this False
     """
-    es = Elasticsearch()
+    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT)
     for key in language_keys:
         not_working_index_name = key + time.strftime("%Y%m%d-%H%M%S")
         es.indices.open(key + "_old")  # open old index for reapplying
@@ -429,7 +429,7 @@ def count_check_for_each_language(
         lang_leys: Languagekeys for which the check has to be satisfied.
         filepath: Location of the art_ontology_*.json language files.
     """
-    es = Elasticsearch()
+    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT)
     for key in lang_keys:
         # Refresh is needed because the indice stats aren't always up-to-date
         es.indices.refresh(key)

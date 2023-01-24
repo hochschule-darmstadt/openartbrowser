@@ -3,7 +3,7 @@ set -eE
 set -x
 
 # Get parameters d, r and t (dev counter, recovery mode and test mode)
-while getopts "dlrt" opt; do
+while getopts "dlrtq" opt; do
   case $opt in
   d)
     DEV_MODE=true
@@ -35,6 +35,17 @@ while getopts "dlrt" opt; do
       CLASS_LIM=5
     fi
     ;;
+  q)
+    # Check next positional parameter
+    eval nextopt=\${$OPTIND}
+
+    if [[ $nextopt && $nextopt != -* ]]; then
+      OPTIND=$((OPTIND + 1))
+      QID_LIST_FILE=$nextopt
+    else
+      QID_LIST_FILE="./scripts/qid_list.txt"
+    fi
+    ;;
   \?)
     echo "Invalid option -$OPTARG" >&2 && exit 1
     ;;
@@ -61,6 +72,7 @@ ETL_STATES_FILE=$WD/logs/etl_states.log
 params=() && [[ $DEV_MODE == true ]] && params+=('-d' "$DEV_COUNT")
 [[ $REC_MODE == true ]] && params+=('-r')
 [[ $TEST_MODE == true ]] && params+=('-t' "$CLASS_LIM")
+[[ $QID_LIST_FILE > "" ]] && params+=('-q' "$QID_LIST_FILE")
 python3 data_extraction/get_wikidata_items.py "${params[@]}"
 
 params=() && [[ $REC_MODE == true ]] && params+=(-r)

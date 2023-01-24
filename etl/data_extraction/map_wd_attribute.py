@@ -243,7 +243,7 @@ def try_get_value_list(entity_dict: Dict, property_id: str, oab_type: str) -> Li
     )
 
 
-@return_on_failure("")
+@return_on_failure(None)
 def try_get_year_from_property_timestamp(
     entity_dict: Dict, property_id: str, oab_type: str
 ) -> int:

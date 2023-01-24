@@ -151,6 +151,7 @@ def extract_artworks(
         dev_mode: bool,
         dev_chunk_limit: int,
         language_keys: Optional[List[str]] = lang_keys,
+        starting_qids: List[str] = []
 ) -> List[Dict]:
     """Extracts artworks metadata from Wikidata and stores them in a dictionary.
 
@@ -174,7 +175,7 @@ def extract_artworks(
     extract_dicts = []
     chunk_count = 0
     item_count = 0
-    artwork_ids = query_artwork_qids(type_name, wikidata_id)
+    artwork_ids = starting_qids + query_artwork_qids(type_name, wikidata_id)
 
     # Don't load items again, if they were loaded in another artwork category
     for artwork_id in artwork_ids:

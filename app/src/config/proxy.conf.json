@@ -1,6 +1,6 @@
 {
   "/api": {
-    "target": "https://cai-artbrowserstaging.fbi.h-da.de/",
+    "target": "https://openartbrowser.org/",
     "secure": false
   }
 }

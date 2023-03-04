@@ -1,0 +1,17 @@
+# supplementary docker-compose file
+version: "3.3"
+services:
+  elasticsearch:
+    image: elasticsearch:7.3.2
+    volumes:
+      - /home/oab/openartbrowser/etl/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - /media/drive2/openartbrowser/elasticsearch-volumes/data:/var/lib/elasticsearch    
+      - /media/drive2/openartbrowser/elasticsearch-volumes/log:/var/log/elasticsearch
+      # - /media/drive2/openartbrowser/elasticsearch-volumes/data/backup:/var/lib/elasticsearch/backup
+    environment:
+      ES_JAVA_OPTS: "-Xmx8g -Xms8g"
+    ports:
+      - 9200:9200
+    expose:
+      - "9200"
+    restart: always

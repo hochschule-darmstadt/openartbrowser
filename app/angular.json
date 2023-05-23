@@ -25,6 +25,10 @@
           "it": {
             "translation": "src/locale/messages.it.xlf",
             "baseHref": ""
+          },
+          "sv": {
+            "translation": "src/locale/messages.sv.xlf",
+            "baseHref": ""
           }
         }
       },
@@ -154,6 +158,20 @@
               ],
             "localize": [
               "it"
+            ],
+              "outputPath": "dist/browser",
+              "i18nMissingTranslation": "error"
+            },
+            "sv": {
+              "aot": true,
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
+            "localize": [
+              "sv"
             ],
               "outputPath": "dist/browser",
               "i18nMissingTranslation": "error"
@@ -295,6 +313,38 @@
               ],
               "localize": [
                 "it"
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
+              "aot": true,
+              "outputPath": "dist/browser",
+              "i18nMissingTranslation": "error"
+            },
+            "sv-production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "localize": [
+                "sv"
               ],
               "optimization": true,
               "outputHashing": "all",

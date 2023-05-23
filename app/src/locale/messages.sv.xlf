@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<file datatype="plaintext" original="ng2.template" source-language="en" target-language="sv">
+<body>
+<trans-unit datatype="html" id="2894531d7a06d45b9e13ff93785def69b5963e57">
+<source xml:space="preserve">{VAR_SELECT, select, all {all} motif {motif} artist {artist} location {location} genre {genre} movement {movement} material {material} }</source>
+<target xml:space="preserve">{VAR_SELECT, select, all {alla} motif {motiv} artist {konstnär} location {plats} genre {stil} movement {rörelse} material {material} }</target>
+</trans-unit>
+<trans-unit datatype="html" id="480d33207a8003c4e3d38902d7769ac338138974">
+<source xml:space="preserve">{VAR_SELECT, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material} }</source>
+<target xml:space="preserve">{VAR_SELECT, select, all {Alla} artwork {Konstverk} motif {Motiv} artist {Konstnär} location {Plats} genre {Stil} movement {Rörelse} material {Material} }</target>
+</trans-unit>
+<trans-unit datatype="html" id="all">
+<source xml:space="preserve">
+          <x equiv-text="all" id="ICU"/>
+        </source>
+<target xml:space="preserve">
+          <x equiv-text="all" id="ICU"/>
+        </target>
+</trans-unit>
+<trans-unit datatype="html" id="artist">
+<source xml:space="preserve">Artist</source>
+<target xml:space="preserve">Konstnär</target>
+</trans-unit>
+<trans-unit datatype="html" id="artworks">
+<source xml:space="preserve">Artworks</source>
+<target xml:space="preserve">Konstverk</target>
+</trans-unit>
+<trans-unit datatype="html" id="born">
+<source xml:space="preserve">Born</source>
+<target xml:space="preserve">Född</target>
+</trans-unit>
+<trans-unit datatype="html" id="citizenship">
+<source xml:space="preserve">Citizenship</source>
+<target xml:space="preserve">Medborgarskap</target>
+</trans-unit>
+<trans-unit datatype="html" id="country">
+<source xml:space="preserve">Country</source>
+<target xml:space="preserve">Land</target>
+</trans-unit>
+<trans-unit datatype="html" id="diameter">
+<source xml:space="preserve">Diameter</source>
+<target xml:space="preserve">Diameter</target>
+</trans-unit>
+<trans-unit datatype="html" id="died">
+<source xml:space="preserve">Died</source>
+<target xml:space="preserve">Avliden</target>
+</trans-unit>
+<trans-unit datatype="html" id="dimension">
+<source xml:space="preserve">Dimension</source>
+<target xml:space="preserve">Mått</target>
+</trans-unit>
+<trans-unit datatype="html" id="entities_labels">
+<source xml:space="preserve">
+          <x equiv-text="{type, select, all {...} artworks {...} motifs {...} artists {...} locations {...} genres {...} movements {...} materials {...}}" id="ICU"/>
+        </source>
+<target xml:space="preserve">
+          <x equiv-text="{type, select, all {...} artworks {...} motifs {...} artists {...} locations {...} genres {...} movements {...} materials {...}}" id="ICU"/>
+        </target>
+</trans-unit>
+<trans-unit datatype="html" id="entity_labels">
+<source xml:space="preserve">
+        <x equiv-text="{type, select, all {...} artwork {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}" id="ICU"/>
+      </source>
+<target xml:space="preserve">
+        <x equiv-text="{type, select, all {...} artwork {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}" id="ICU"/>
+      </target>
+</trans-unit>
+<trans-unit datatype="html" id="fetching_list_error">
+<source xml:space="preserve">Painting in progress</source>
+<target xml:space="preserve">Målning pågår</target>
+</trans-unit>
+<trans-unit datatype="html" id="gender">
+<source xml:space="preserve">Gender</source>
+<target xml:space="preserve">Kön</target>
+</trans-unit>
+<trans-unit datatype="html" id="genre">
+<source xml:space="preserve">Genre</source>
+<target xml:space="preserve">Stil</target>
+</trans-unit>
+<trans-unit datatype="html" id="height">
+<source xml:space="preserve">Height</source>
+<target xml:space="preserve">Höjd</target>
+</trans-unit>
+<trans-unit datatype="html" id="iconography">
+<source xml:space="preserve">Iconography</source>
+<target xml:space="preserve">Ikonografi</target>
+</trans-unit>
+<trans-unit datatype="html" id="inception">
+<source xml:space="preserve">Inception</source>
+<target xml:space="preserve">Invigning</target>
+</trans-unit>
+<trans-unit datatype="html" id="influenced_by">
+<source xml:space="preserve">Influenced by</source>
+<target xml:space="preserve">Influerad av</target>
+</trans-unit>
+<trans-unit datatype="html" id="length">
+<source xml:space="preserve">Length</source>
+<target xml:space="preserve">Längd</target>
+</trans-unit>
+<trans-unit datatype="html" id="location">
+<source xml:space="preserve">Location</source>
+<target xml:space="preserve">Plats</target>
+</trans-unit>
+<trans-unit datatype="html" id="material">
+<source xml:space="preserve">Material</source>
+<target xml:space="preserve">Material</target>
+</trans-unit>
+<trans-unit datatype="html" id="menuAbout">
+<source xml:space="preserve">About</source>
+<target xml:space="preserve">Om</target>
+</trans-unit>
+<trans-unit datatype="html" id="menuDataProtection">
+<source xml:space="preserve">Data Protection Declaration</source>
+<target xml:space="preserve">Deklaration om dataskydd</target>
+</trans-unit>
+<trans-unit datatype="html" id="menuHome">
+<source xml:space="preserve">Home</source>
+<target xml:space="preserve">Hem</target>
+</trans-unit>
+<trans-unit datatype="html" id="menuLegalNotice">
+<source xml:space="preserve">Legal Notice</source>
+<target xml:space="preserve">Juridisk information</target>
+</trans-unit>
+<trans-unit datatype="html" id="more">
+<source xml:space="preserve">More</source>
+<target xml:space="preserve">Mer</target>
+</trans-unit>
+<trans-unit datatype="html" id="motif">
+<source xml:space="preserve">Motifs</source>
+<target xml:space="preserve">Motiv</target>
+</trans-unit>
+<trans-unit datatype="html" id="movement">
+<source xml:space="preserve">Movement</source>
+<target xml:space="preserve">Rörelse</target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.alert.close">
+<source xml:space="preserve">Close</source>
+<target xml:space="preserve">Stäng</target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.carousel.next">
+<source xml:space="preserve">Next</source>
+<target xml:space="preserve">Nästa</target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.carousel.previous">
+<source xml:space="preserve">Previous</source>
+<target xml:space="preserve">Föregående</target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.carousel.slide-number">
+<source xml:space="preserve"> Slide {$INTERPOLATION} of {$INTERPOLATION_1} </source>
+<target xml:space="preserve"> Bild {$INTERPOLATION} av {$INTERPOLATION_1} </target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.datepicker.next-month">
+<source xml:space="preserve">Next month</source>
+<target xml:space="preserve">Nästa månad</target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.datepicker.previous-month">
+<source xml:space="preserve">Previous month</source>
+<target xml:space="preserve">Föregående månad</target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.datepicker.select-month">
+<source xml:space="preserve">Select month</source>
+<target xml:space="preserve">Välj månad</target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.datepicker.select-year">
+<source xml:space="preserve">Select year</source>
+<target xml:space="preserve">Välj år</target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.pagination.first">
+<source xml:space="preserve">««</source>
+<target xml:space="preserve">««</target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.pagination.first-aria">
+<source xml:space="preserve">First</source>
+<target xml:space="preserve">Första</target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.pagination.last">
+<source xml:space="preserve">»»</source>
+<target xml:space="preserve">»»</target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.pagination.last-aria">
+<source xml:space="preserve">Last</source>
+<target xml:space="preserve">Sista</target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.pagination.next">
+<source xml:space="preserve">»</source>
+<target xml:space="preserve">»</target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.pagination.next-aria">
+<source xml:space="preserve">Next</source>
+<target xml:space="preserve">Nästa</target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.pagination.previous">
+<source xml:space="preserve">«</source>
+<target xml:space="preserve">«</target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.pagination.previous-aria">
+<source xml:space="preserve">Previous</source>
+<target xml:space="preserve">Föregående</target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.progressbar.value">
+<source xml:space="preserve">
+<x equiv-text="{{getPercentValue()}}" id="INTERPOLATION"/>%</source>
+<target xml:space="preserve">
+<x equiv-text="{{getPercentValue()}}" id="INTERPOLATION"/>&nbsp;%</target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.timepicker.AM">
+<source xml:space="preserve">
+<x equiv-text="{{ i18n.getMorningPeriod() }}" id="INTERPOLATION"/></source>
+<target xml:space="preserve">
+<x equiv-text="{{ i18n.getMorningPeriod() }}" id="INTERPOLATION"/></target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.timepicker.HH">
+<source xml:space="preserve">HH</source>
+<target xml:space="preserve">TT</target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.timepicker.MM">
+<source xml:space="preserve">MM</source>
+<target xml:space="preserve">MM</target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.timepicker.PM">
+<source xml:space="preserve">
+<x equiv-text="{{ i18n.getAfternoonPeriod() }}" id="INTERPOLATION"/></source>
+<target xml:space="preserve">
+<x equiv-text="{{ i18n.getAfternoonPeriod() }}" id="INTERPOLATION"/></target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.timepicker.SS">
+<source xml:space="preserve">SS</source>
+<target xml:space="preserve">SS</target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.timepicker.decrement-hours">
+<source xml:space="preserve">Decrement hours</source>
+<target xml:space="preserve">Dra från timmar</target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.timepicker.decrement-minutes">
+<source xml:space="preserve">Decrement minutes</source>
+<target xml:space="preserve">Dra från minuter</target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.timepicker.decrement-seconds">
+<source xml:space="preserve">Decrement seconds</source>
+<target xml:space="preserve">Dra från sekunder</target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.timepicker.hours">
+<source xml:space="preserve">Hours</source>
+<target xml:space="preserve">Timmar</target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.timepicker.increment-hours">
+<source xml:space="preserve">Increment hours</source>
+<target xml:space="preserve">Lägg till timmar</target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.timepicker.increment-minutes">
+<source xml:space="preserve">Increment minutes</source>
+<target xml:space="preserve">Lägg till minuter</target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.timepicker.increment-seconds">
+<source xml:space="preserve">Increment seconds</source>
+<target xml:space="preserve">Lägg till sekunder</target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.timepicker.minutes">
+<source xml:space="preserve">Minutes</source>
+<target xml:space="preserve">Minuter</target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.timepicker.seconds">
+<source xml:space="preserve">Seconds</source>
+<target xml:space="preserve">Sekunder</target>
+</trans-unit>
+<trans-unit datatype="html" id="ngb.toast.close-aria">
+<source xml:space="preserve">Close</source>
+<target xml:space="preserve">Stäng</target>
+</trans-unit>
+<trans-unit datatype="html" id="official_page">
+<source xml:space="preserve">Web</source>
+<target xml:space="preserve">Webb</target>
+</trans-unit>
+<trans-unit datatype="html" id="period">
+<source xml:space="preserve">Period</source>
+<target xml:space="preserve">Period</target>
+</trans-unit>
+<trans-unit datatype="html" id="related_artworks">
+<source xml:space="preserve">Related Artworks</source>
+<target xml:space="preserve">Konstverk med anknytning</target>
+</trans-unit>
+<trans-unit datatype="html" id="related_artworks_headline_after">
+<source xml:space="preserve">
+              tags with artwork
+            </source>
+<target xml:space="preserve">
+              etiketter med konstverk
+            </target>
+</trans-unit>
+<trans-unit datatype="html" id="related_artworks_headline_prev">
+<source xml:space="preserve">
+              Common
+            </source>
+<target xml:space="preserve">
+              Gemensamma
+            </target>
+</trans-unit>
+<trans-unit datatype="html" id="related_artworks_headline_tab_name">
+<source xml:space="preserve">
+                <x equiv-text="{tab, select, all {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}" id="ICU"/>
+              </source>
+<target xml:space="preserve">
+                <x equiv-text="{tab, select, all {...} motif {...} artist {...} location {...} genre {...} movement {...} material {...}}" id="ICU"/>
+              </target>
+</trans-unit>
+<trans-unit datatype="html" id="related_artworks_hint">
+<source xml:space="preserve">
+                  move the mouse over an artwork to display common tags
+                </source>
+<target xml:space="preserve">
+                  håll musen över ett konstverk för att se gemensamma etiketter
+                </target>
+</trans-unit>
+<trans-unit datatype="html" id="results">
+<source xml:space="preserve">Results</source>
+<target xml:space="preserve">Resultat</target>
+</trans-unit>
+<trans-unit datatype="html" id="searchResults">
+<source xml:space="preserve">Search results</source>
+<target xml:space="preserve">Sökresultat</target>
+</trans-unit>
+<trans-unit datatype="html" id="search_placeholder">
+<source xml:space="preserve">Search for something...</source>
+<target xml:space="preserve">Sök efter någonting …</target>
+</trans-unit>
+<trans-unit datatype="html" id="terms">
+<source xml:space="preserve">Terms</source>
+<target xml:space="preserve">Termer</target>
+</trans-unit>
+<trans-unit datatype="html" id="toggleartworks">
+<source xml:space="preserve">Artworks
+        </source>
+<target xml:space="preserve">Konstverk
+        </target>
+</trans-unit>
+<trans-unit datatype="html" id="togglerelatedmovements">
+<source xml:space="preserve">Artworks
+        </source>
+<target xml:space="preserve">Konstverk
+        </target>
+</trans-unit>
+<trans-unit datatype="html" id="toggletimeline">
+<source xml:space="preserve">Timeline
+        </source>
+<target xml:space="preserve">Tidslinje
+        </target>
+</trans-unit>
+<trans-unit datatype="html" id="width">
+<source xml:space="preserve">Width</source>
+<target xml:space="preserve">Bredd</target>
+</trans-unit>
+</body>
+</file>
+</xliff>

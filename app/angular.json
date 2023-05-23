@@ -10,16 +10,16 @@
             "translation": "src/locale/messages.en.xlf",
             "baseHref": ""
           },
-          "fr": {
-            "translation": "src/locale/messages.fr.xlf",
-            "baseHref": ""
-          },
           "de": {
             "translation": "src/locale/messages.de.xlf",
             "baseHref": ""
           },
           "es": {
             "translation": "src/locale/messages.es.xlf",
+            "baseHref": ""
+          },
+          "fr": {
+            "translation": "src/locale/messages.fr.xlf",
             "baseHref": ""
           },
           "it": {
@@ -46,7 +46,11 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "allowedCommonJsDependencies": [
-              "lodash", "bodybuilder", "element-resize-detector", "rxjs/operators", "rxjs"
+              "lodash",
+              "bodybuilder",
+              "element-resize-detector",
+              "rxjs/operators",
+              "rxjs"
             ],
             "aot": true,
             "outputPath": "dist/art-browser",
@@ -100,23 +104,9 @@
                   "maximumWarning": "6kb"
                 }
               ],
-            "localize": [
-              "en"
-            ],
-              "outputPath": "dist/browser",
-              "i18nMissingTranslation": "error"
-            },
-            "fr": {
-              "aot": true,
-              "budgets": [
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb"
-                }
+              "localize": [
+                "en"
               ],
-            "localize": [
-              "fr"
-            ],
               "outputPath": "dist/browser",
               "i18nMissingTranslation": "error"
             },
@@ -128,9 +118,9 @@
                   "maximumWarning": "6kb"
                 }
               ],
-            "localize": [
-              "de"
-            ],
+              "localize": [
+                "de"
+              ],
               "outputPath": "dist/browser",
               "i18nMissingTranslation": "error"
             },
@@ -142,9 +132,23 @@
                   "maximumWarning": "6kb"
                 }
               ],
-            "localize": [
-              "es"
-            ],
+              "localize": [
+                "es"
+              ],
+              "outputPath": "dist/browser",
+              "i18nMissingTranslation": "error"
+            },
+            "fr": {
+              "aot": true,
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
+              "localize": [
+                "fr"
+              ],
               "outputPath": "dist/browser",
               "i18nMissingTranslation": "error"
             },
@@ -156,9 +160,9 @@
                   "maximumWarning": "6kb"
                 }
               ],
-            "localize": [
-              "it"
-            ],
+              "localize": [
+                "it"
+              ],
               "outputPath": "dist/browser",
               "i18nMissingTranslation": "error"
             },
@@ -170,9 +174,9 @@
                   "maximumWarning": "6kb"
                 }
               ],
-            "localize": [
-              "sv"
-            ],
+              "localize": [
+                "sv"
+              ],
               "outputPath": "dist/browser",
               "i18nMissingTranslation": "error"
             },
@@ -185,38 +189,6 @@
               ],
               "localize": [
                 "en"
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb"
-                }
-              ],
-              "aot": true,
-              "outputPath": "dist/browser",
-              "i18nMissingTranslation": "error"
-            },
-            "fr-production": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ],
-              "localize": [
-                "fr"
               ],
               "optimization": true,
               "outputHashing": "all",
@@ -281,6 +253,38 @@
               ],
               "localize": [
                 "es"
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
+              "aot": true,
+              "outputPath": "dist/browser",
+              "i18nMissingTranslation": "error"
+            },
+            "fr-production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "localize": [
+                "fr"
               ],
               "optimization": true,
               "outputHashing": "all",
@@ -409,16 +413,19 @@
             "en": {
               "browserTarget": "art-browser:build:en"
             },
-            "fr": {
-              "browserTarget": "art-browser:build:fr"
-            },
             "de": {
               "browserTarget": "art-browser:build:de"
             },
             "es": {
               "browserTarget": "art-browser:build:es"
             },
+            "fr": {
+              "browserTarget": "art-browser:build:fr"
+            },
             "it": {
+              "browserTarget": "art-browser:build:it"
+            },
+            "sv": {
               "browserTarget": "art-browser:build:it"
             },
             "docker": {
@@ -439,16 +446,26 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
             "karmaConfig": "src/karma.conf.js",
-            "styles": ["src/styles/main.scss"],
+            "styles": [
+              "src/styles/main.scss"
+            ],
             "scripts": [],
-            "assets": ["src/favicon.ico", "src/assets"]
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ]
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": ["src/tsconfig.app.json", "src/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**"]
+            "tsConfig": [
+              "src/tsconfig.app.json",
+              "src/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
           }
         }
       }
@@ -477,7 +494,9 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": "e2e/tsconfig.e2e.json",
-            "exclude": ["**/node_modules/**"]
+            "exclude": [
+              "**/node_modules/**"
+            ]
           }
         }
       }

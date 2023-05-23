@@ -13,7 +13,6 @@ import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 import { Angulartics2RouterlessModule } from 'angulartics2/routerlessmodule';
 import { MovementOverviewComponent } from '../../shared/components/movement-overview/movement-overview.component';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
-import { NgxFitTextModule } from 'ngx-fit-text';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('HomeComponent', () => {
@@ -29,7 +28,6 @@ describe('HomeComponent', () => {
         RouterModule.forRoot([], { relativeLinkResolution: 'legacy' }),
         Angulartics2RouterlessModule.forRoot(),
         NgxSliderModule,
-        NgxFitTextModule,
         BrowserAnimationsModule
       ],
       declarations: [

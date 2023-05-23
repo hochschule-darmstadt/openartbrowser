@@ -65,6 +65,7 @@
 
 .fit-text-container {
   pointer-events: none;
+  font-size: clamp(.6rem, 10cqw, 1.5rem);
 }
 
 .box-container {
@@ -77,6 +78,7 @@
   justify-content: center;
   align-items: center;
   margin-bottom: 0.3rem;
+  container-type: size;
 }
 
 .row {

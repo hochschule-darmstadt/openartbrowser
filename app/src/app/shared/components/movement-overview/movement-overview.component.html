@@ -10,8 +10,7 @@
            [ngClass]="movement?.label ? 'box' : ''"
            [style.width]="movement.width+'%'"
            (click)="movement.label && onClickMovementBox($event)">
-        <div class="fit-text-container" [ngxFitText] [ngxFitTextMin]="10"
-             [ngxFitTextMax]="20">{{ movement.label | titlecase }}</div>
+        <div class="fit-text-container">{{ movement.label | titlecase }}</div>
       </div>
     </div>
   </div>

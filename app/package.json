@@ -1,6 +1,6 @@
 {
   "name": "art-browser",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -46,7 +46,6 @@
     "hammerjs": "^2.0.8",
     "lodash": "^4.17.21",
     "ng-in-viewport": "^6.1.0",
-    "ngx-fit-text": "0.0.10",
     "ngx-image-viewer": "https://github.com/hochschule-darmstadt/ngx-image-viewer#build",
     "rxjs": "^6.6.7",
     "tslib": "^2.0.0",

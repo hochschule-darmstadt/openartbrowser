@@ -426,7 +426,7 @@
               "browserTarget": "art-browser:build:it"
             },
             "sv": {
-              "browserTarget": "art-browser:build:it"
+              "browserTarget": "art-browser:build:sv"
             },
             "docker": {
               "browserTarget": "art-browser:build:docker"

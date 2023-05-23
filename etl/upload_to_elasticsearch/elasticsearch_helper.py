@@ -16,7 +16,6 @@ logger = setup_logger(
     Path(__file__).parent.parent.absolute() / "logs" / ELASTICSEARCH_HELPER_LOG_FILENAME,
 )
 
-
 # Increase timeout because snapshot-operations have exceeded the default timeout of 10 seconds
 # This depends on the size of the indices on the elasticsearch server.
 # It's easier to set an estimated value here than calculate it. The value varies within seconds.
@@ -35,7 +34,7 @@ lang_keys = [item[0] for item in language_config_to_list()]
 
 
 def create_empty_index(
-    index_name: str, body: Optional[Dict] = index_creation_body
+        index_name: str, body: Optional[Dict] = index_creation_body
 ) -> bool:
     """Creates an empty index (meaning no documents inside)
 
@@ -81,7 +80,6 @@ def create_index(index_name: str, filename: str) -> None:
         filename: Name of the filename which contains the documents to be created e. g. art_ontology_<language_code>.json
     """
     # Uses localhost:9200 (elasticsearch default) to create the index with it's documents
-    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT)
     print(
         'Start creating the index "'
         + index_name
@@ -108,7 +106,10 @@ def create_index(index_name: str, filename: str) -> None:
             for item in items
         ]
         try:
+            es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT,
+                               max_retries=MAX_RETRIES_ON_TIMEOUT)
             helpers.bulk(es, bulk_insert)
+            es.close()
         except Exception as e:
             logging.exception(e)
 
@@ -120,7 +121,7 @@ def create_index(index_name: str, filename: str) -> None:
 
 
 def swap_index(
-    index_name_new: str, index_name_current: str, index_name_old: str
+        index_name_new: str, index_name_current: str, index_name_old: str
 ) -> bool:
     """Swaps the new index with the current one the current will be backed up in index_name_old
     This is possible because the backup and restore feature of elasticsearch allows renaming when restoring a snapshot
@@ -197,10 +198,10 @@ def swap_index(
 
 
 def create_snapshot_for_index(
-    index_name: str,
-    snapshot_name: str,
-    repository_name: Optional[str] = "openartbrowser_index_backup",
-    backup_directory: Optional[str] = "/var/lib/elasticsearch/backup",
+        index_name: str,
+        snapshot_name: str,
+        repository_name: Optional[str] = "openartbrowser_index_backup",
+        backup_directory: Optional[str] = "/var/lib/elasticsearch/backup",
 ) -> None:
     """Creates a snapshot for an given index
 
@@ -246,10 +247,10 @@ def create_snapshot_for_index(
 
 
 def apply_snapshot_from_repository(
-    snapshot_name: str,
-    index_name: str,
-    new_index_name: str,
-    repository_name: Optional[str] = "openartbrowser_index_backup",
+        snapshot_name: str,
+        index_name: str,
+        new_index_name: str,
+        repository_name: Optional[str] = "openartbrowser_index_backup",
 ) -> None:
     """Applies a snapshot created in an earlier creation from a repository
 
@@ -278,9 +279,9 @@ def apply_snapshot_from_repository(
 
 
 def delete_snapshot_from_repository(
-    snapshot_name: str,
-    repository_name: Optional[str] = "openartbrowser_index_backup",
-    backup_directory: Optional[str] = "/var/lib/elasticsearch/backup",
+        snapshot_name: str,
+        repository_name: Optional[str] = "openartbrowser_index_backup",
+        backup_directory: Optional[str] = "/var/lib/elasticsearch/backup",
 ) -> None:
     """Delete a snapshot from the repository
 
@@ -308,8 +309,8 @@ def delete_snapshot_from_repository(
 
 
 def list_all_snapshots_from_repository(
-    elastic_search_url: Optional[str] = "localhost:9200",
-    repository_name: Optional[str] = "openartbrowser_index_backup",
+        elastic_search_url: Optional[str] = "localhost:9200",
+        repository_name: Optional[str] = "openartbrowser_index_backup",
 ) -> None:
     """Lists all created snapshots in a repository
 
@@ -340,8 +341,8 @@ def list_all_indices(elastic_search_url: Optional[str] = "localhost:9200") -> No
 
 
 def create_index_for_each_language(
-    language_keys: Optional[List[str]] = lang_keys,
-    filepath: Optional[str] = Path(__file__).resolve().parent.parent / "crawler_output",
+        language_keys: Optional[List[str]] = lang_keys,
+        filepath: Optional[str] = Path(__file__).resolve().parent.parent / "crawler_output",
 ) -> None:
     """Creates a new index for each language in the languageconfig.csv
     The new indice name convention is <indexname>_new
@@ -358,7 +359,7 @@ def create_index_for_each_language(
 
 
 def swap_index_for_each_language(
-    language_keys: Optional[List[str]] = lang_keys,
+        language_keys: Optional[List[str]] = lang_keys,
 ) -> None:
     """Swaps a newly created index (identified by it's name *_new) with the current one
     The current index is saved to *_old
@@ -375,8 +376,8 @@ def swap_index_for_each_language(
 
 
 def swap_to_backup_for_each_language(
-    language_keys: Optional[List[str]] = lang_keys,
-    delete_non_working_indices: Optional[bool] = True,
+        language_keys: Optional[List[str]] = lang_keys,
+        delete_non_working_indices: Optional[bool] = True,
 ) -> None:
     """Can be used if the current indices aren't working
     This resets the indices to the <languagecode>_old indices
@@ -388,14 +389,15 @@ def swap_to_backup_for_each_language(
         delete_non_working_indices: If this is set to True the non working indices will be deleted
                                     For debugging purposes set to this False
     """
-    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT)
     for key in language_keys:
+        es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT,
+                           max_retries=MAX_RETRIES_ON_TIMEOUT)
         not_working_index_name = key + time.strftime("%Y%m%d-%H%M%S")
         es.indices.open(key + "_old")  # open old index for reapplying
         if swap_index(
-            index_name_new=key + "_old",
-            index_name_current=key,
-            index_name_old=not_working_index_name,
+                index_name_new=key + "_old",
+                index_name_current=key,
+                index_name_old=not_working_index_name,
         ):
             if delete_non_working_indices:
                 print(
@@ -415,11 +417,12 @@ def swap_to_backup_for_each_language(
                 print(
                     "After debugging deletion is possible with the delete_index function"
                 )
+        es.close()
 
 
 def count_check_for_each_language(
-    language_keys: Optional[List[str]] = lang_keys,
-    filepath: Optional[str] = Path(__file__).resolve().parent.parent / "crawler_output",
+        language_keys: Optional[List[str]] = lang_keys,
+        filepath: Optional[str] = Path(__file__).resolve().parent.parent / "crawler_output",
 ) -> bool:
     """After the indices were created check that the indice document count
     equals the JSON object count of the corresponding JSON file

@@ -11,3 +11,4 @@ apicache-py3
 /.idea/
 /scripts/logs
 .vscode
+/app/.angular

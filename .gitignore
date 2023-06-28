@@ -12,3 +12,4 @@ apicache-py3
 /scripts/logs
 .vscode
 /app/.angular
+etl/.venv

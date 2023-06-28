@@ -31,7 +31,7 @@ MAX_RETRIES_ON_TIMEOUT = 10
 index_creation_body = {"mappings": {"properties": {"relativeRank": {"type": "float"}}}}
 
 lang_keys = [item[0] for item in language_config_to_list()]
-
+elasticsearch_hosts = "http://localhost:9200"
 
 def create_empty_index(
         index_name: str, body: Optional[Dict] = index_creation_body
@@ -44,7 +44,7 @@ def create_empty_index(
     Returns:
         True if index didn't exist and could be created else False
     """
-    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT)
+    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT, hosts=elasticsearch_hosts)
 
     if es.indices.exists(index=index_name):
         print("Index with the name " + index_name + " already exists")
@@ -63,7 +63,7 @@ def delete_index(index_name: str) -> bool:
     Returns:
         True if index extists and could be deleted else False
     """
-    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT)
+    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT, hosts=elasticsearch_hosts)
     if es.indices.exists(index=index_name):
         print("Deleting index: " + index_name + " now")
         es.indices.delete(index_name)
@@ -80,6 +80,7 @@ def create_index(index_name: str, filename: str) -> None:
         filename: Name of the filename which contains the documents to be created e. g. art_ontology_<language_code>.json
     """
     # Uses localhost:9200 (elasticsearch default) to create the index with it's documents
+    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT, hosts=elasticsearch_hosts)
     print(
         'Start creating the index "'
         + index_name
@@ -134,7 +135,7 @@ def swap_index(
     Returns:
         True when the index swap worked else False
     """
-    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT)
+    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT, hosts=elasticsearch_hosts)
     print("Checking if current index exists")
     # Check for newly setup ElasticSearch-Server
     if not es.indices.exists(index=index_name_current):
@@ -218,7 +219,7 @@ def create_snapshot_for_index(
                                 - Following entry in elasticsearch.yml required:
                                 path.repo: ["path_to_folder"]
     """
-    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT)
+    es = Elasticsearch(hosts=elasticsearch_hosts, timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT)
 
     try:
         # Check if repository already was created
@@ -259,7 +260,7 @@ def apply_snapshot_from_repository(
         repository_name: Name of the repository the snapshot is in
         snapshot_name: Name of the snapshot
     """
-    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT)
+    es = Elasticsearch(hosts=elasticsearch_hosts, timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT)
 
     try:
         es.indices.close(index=index_name)
@@ -291,7 +292,7 @@ def delete_snapshot_from_repository(
         backup_directory: Directory in which the repository is located
                            See create_snapshot_for_index for more information on that
     """
-    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT)
+    es = Elasticsearch(hosts=elasticsearch_hosts, timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT)
 
     try:
         # Check if repository already was created
@@ -389,6 +390,7 @@ def swap_to_backup_for_each_language(
         delete_non_working_indices: If this is set to True the non working indices will be deleted
                                     For debugging purposes set to this False
     """
+    es = Elasticsearch(hosts=elasticsearch_hosts)
     for key in language_keys:
         es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT,
                            max_retries=MAX_RETRIES_ON_TIMEOUT)
@@ -432,7 +434,7 @@ def count_check_for_each_language(
         lang_leys: Languagekeys for which the check has to be satisfied.
         filepath: Location of the art_ontology_*.json language files.
     """
-    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT)
+    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT, hosts=elasticsearch_hosts)
     for key in lang_keys:
         # Refresh is needed because the indice stats aren't always up-to-date
         es.indices.refresh(key)

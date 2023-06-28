@@ -20,7 +20,7 @@ cluster.name: my-cluster1
 #
 # Use a descriptive name for the node:
 #
-node.name: node-claster-1-1
+node.name: node-cluster-1-1
 #
 # Add custom attributes to the node:
 #
@@ -30,11 +30,11 @@ node.name: node-claster-1-1
 #
 # Path to directory where to store the data (separate multiple locations by comma):
 #
-path.data: /var/lib/elasticsearch
+#path.data: /var/lib/elasticsearch
 #
 # Path to log files:
 #
-path.logs: /var/log/elasticsearch
+#path.logs: /var/log/elasticsearch
 #
 # ----------------------------------- Memory -----------------------------------
 #
@@ -66,7 +66,7 @@ http.cors.allow-origin: '*'
 #
 # Pass an initial list of hosts to perform discovery when new node is started:
 # The default list of hosts is ["127.0.0.1", "[::1]"]
-#
+discovery.seed_hosts: ["127.0.0.1"]
 #discovery.zen.ping.unicast.hosts: ["host1", "host2"]
 #
 # Prevent the "split brain" by configuring the majority of nodes (total number of master-eligible nodes / 2 + 1):
@@ -88,7 +88,6 @@ http.cors.allow-origin: '*'
 # Require explicit names when deleting indices:
 #
 #action.destructive_requires_name: true
-#cluster.initial_master_nodes: node-claster-1-1
-
+cluster.initial_master_nodes: node-cluster-1-1
 # Repository path for index snapshots
 path.repo: ['/var/lib/elasticsearch/backup']

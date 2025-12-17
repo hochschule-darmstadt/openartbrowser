@@ -8,8 +8,8 @@
     "module": "es2020",
     "moduleResolution": "node",
     "experimentalDecorators": true,
-    "resolveJsonModule": true, //  importing home JSON files
-    "allowSyntheticDefaultImports": true, // importing home JSON files
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
     "importHelpers": true,
     "target": "es5",
     "typeRoots": ["node_modules/@types"],

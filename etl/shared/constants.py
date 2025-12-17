@@ -1,5 +1,4 @@
-"""Shared constants for all python scripts
-"""
+"""Shared constants for all python scripts"""
 
 JSON = "json"
 CSV = "csv"
@@ -42,6 +41,7 @@ YOUTUBE_VIDEOS_FILE = "youtube_videos.csv"
 ADD_YOUTUBE_VIDEOS_LOG_FILENAME = "add_youtube_videos.log"
 RANKING_LOG_FILENAME = "ranking.log"
 ELASTICSEARCH_HELPER_LOG_FILENAME = "elasticsearch_helper.log"
+
 
 # ETL states
 class ETL_STATES:

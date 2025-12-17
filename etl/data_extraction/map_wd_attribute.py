@@ -1,5 +1,8 @@
-"""Mapping functions to extract information from wikidata JSON responses (especially entity attribtues) to the openArtBrowser data model
+"""Mapping functions to extract information from wikidata JSON responses (especially entity attribtues)
+to the openArtBrowser data model
 """
+
+# ruff: noqa: F403 F405
 import hashlib
 import inspect
 import re
@@ -14,9 +17,7 @@ from shared.utils import setup_logger
 
 logger = setup_logger(
     "data_extraction.map_wd_attribute",
-    Path(__file__).parent.parent.absolute()
-    / "logs"
-    / WIKIDATA_MAP_ATTRIBUTE_LOG_FILENAME,
+    Path(__file__).parent.parent.absolute() / "logs" / WIKIDATA_MAP_ATTRIBUTE_LOG_FILENAME,
 )
 
 
@@ -81,9 +82,7 @@ def return_on_failure(return_value) -> Any:
             try:
                 return func(*args, **kwargs)
             except Exception as error:
-                error_message = "Missing attribute in function {0} on item {1}".format(
-                    func.__name__, args[0][ID]
-                )
+                error_message = "Missing attribute in function {0} on item {1}".format(func.__name__, args[0][ID])
                 # iterate over argument names
                 # splice the array to skip the first argument and start at index 1
                 for index, param in enumerate(inspect.getfullargspec(func)[0][1:], 1):
@@ -102,9 +101,7 @@ def return_on_failure(return_value) -> Any:
 
 
 @return_on_failure("")
-def try_get_label_or_description(
-    entity_dict: Dict, fieldname: str, langkey: str, oab_type: str
-) -> str:
+def try_get_label_or_description(entity_dict: Dict, fieldname: str, langkey: str, oab_type: str) -> str:
     """Function for extracting the label or description from a wikidata response
 
     Args:
@@ -132,14 +129,13 @@ def try_get_wikipedia_link(entity_dict: Dict, langkey: str, oab_type: str) -> st
         Wikipedia URL from wikidata response
     """
     return "https://{0}.wikipedia.org/wiki/{1}".format(
-        langkey, entity_dict[SITELINKS][f"{langkey}wiki"]["title"].replace(" ", "_"),
+        langkey,
+        entity_dict[SITELINKS][f"{langkey}wiki"]["title"].replace(" ", "_"),
     )
 
 
 @return_on_failure("")
-def try_get_dimension_value(
-    entity_dict: Dict, property_id: str, oab_type: str
-) -> float:
+def try_get_dimension_value(entity_dict: Dict, property_id: str, oab_type: str) -> float:
     """Function for extracting the unit value from a wikidata response
 
     Args:
@@ -150,9 +146,7 @@ def try_get_dimension_value(
     Returns:
         Value for a dimension e. g. 1.4
     """
-    return float(
-        entity_dict[CLAIMS][property_id][0][MAINSNAK][DATAVALUE][VALUE][AMOUNT]
-    )
+    return float(entity_dict[CLAIMS][property_id][0][MAINSNAK][DATAVALUE][VALUE][AMOUNT])
 
 
 @return_on_failure("")
@@ -167,12 +161,8 @@ def try_get_dimension_unit(entity_dict: Dict, property_id: str, oab_type: str) -
     Returns:
         Qid of one unit
     """
-    unit_qid = entity_dict[CLAIMS][property_id][0][MAINSNAK][DATAVALUE][VALUE][
-        UNIT
-    ].replace(WIKIDATA_ENTITY_URL, "")
-    is_qid = re.match(
-        QID_PATTERN, unit_qid
-    )  # This regex check is necessary, we had references with wrong format
+    unit_qid = entity_dict[CLAIMS][property_id][0][MAINSNAK][DATAVALUE][VALUE][UNIT].replace(WIKIDATA_ENTITY_URL, "")
+    is_qid = re.match(QID_PATTERN, unit_qid)  # This regex check is necessary, we had references with wrong format
     if is_qid:
         return unit_qid
     else:
@@ -185,9 +175,7 @@ def try_get_dimension_unit(entity_dict: Dict, property_id: str, oab_type: str) -
 
 
 @return_on_failure([])
-def try_get_qid_reference_list(
-    entity_dict: Dict, property_id: str, oab_type: str
-) -> List[str]:
+def try_get_qid_reference_list(entity_dict: Dict, property_id: str, oab_type: str) -> List[str]:
     """Function for extracting the references (qids) as a list
 
     Args:
@@ -244,9 +232,7 @@ def try_get_value_list(entity_dict: Dict, property_id: str, oab_type: str) -> Li
 
 
 @return_on_failure("")
-def try_get_year_from_property_timestamp(
-    entity_dict: Dict, property_id: str, oab_type: str
-) -> int:
+def try_get_year_from_property_timestamp(entity_dict: Dict, property_id: str, oab_type: str) -> int:
     """Function for extracting the year from an inception timestamp
 
     Args:
@@ -295,9 +281,7 @@ def try_get_unit_symbol(entity_dict: Dict, property_id: str, oab_type: str) -> s
 
 
 @return_on_failure([])
-def try_get_significant_events(
-    result: Dict, oab_type: Optional[str] = SIGNIFICANT_EVENT
-) -> List[Dict]:
+def try_get_significant_events(result: Dict, oab_type: Optional[str] = SIGNIFICANT_EVENT) -> List[Dict]:
     """Maps the wikidata response for significant events to a list of dicts which is appended to an object
 
     Args:
@@ -317,13 +301,7 @@ def try_get_significant_events(
             # Get property name from dict, if the name is not in the dict ignore it and take the id
             property = PROPERTY_ID_TO_PROPERTY_NAME.get(property_id, property_id)
             if datatype == TIME:
-                event_dict.update(
-                    {
-                        property: WbTime.fromTimestr(
-                            qualifiers[0][DATAVALUE][VALUE][TIME]
-                        ).year
-                    }
-                )
+                event_dict.update({property: WbTime.fromTimestr(qualifiers[0][DATAVALUE][VALUE][TIME]).year})
             elif datatype == WIKIBASE_ITEM:
                 event_dict.update(
                     {
@@ -336,9 +314,7 @@ def try_get_significant_events(
                     }
                 )
             elif datatype == QUANTITY:
-                event_dict.update(
-                    {property: float(qualifiers[0][DATAVALUE][VALUE][AMOUNT])}
-                )
+                event_dict.update({property: float(qualifiers[0][DATAVALUE][VALUE][AMOUNT])})
                 event_dict.update(
                     {
                         f"{property}_{UNIT}": qualifiers[0][DATAVALUE][VALUE]
@@ -351,9 +327,7 @@ def try_get_significant_events(
             elif datatype == MONOLINGUALTEXT:
                 event_dict.update({property: qualifiers[0][DATAVALUE][VALUE][TEXT]})
             elif datatype == COMMONS_MEDIA:
-                logger.error(
-                    f"commonsMedia type not supported in significant events on item {qid}"
-                )
+                logger.error(f"commonsMedia type not supported in significant events on item {qid}")
             else:
                 logger.error(f"Unknown datatype: {datatype} on item {qid}")
         event_dict.update({TYPE: SIGNIFICANT_EVENT})

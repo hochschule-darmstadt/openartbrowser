@@ -26,6 +26,7 @@ import { ErrorMessageComponent } from './components/error-message/error-message.
 import { InViewportModule } from 'ng-in-viewport';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { CategoryContainerComponent } from './components/category-container/category-container.component';
+import { CommonsInfoComponent } from './components/commons-info-component/commons-info-component';
 
 /** Everything that should be used within multiple feature modules but isn't always required goes here */
 @NgModule({
@@ -51,6 +52,7 @@ import { CategoryContainerComponent } from './components/category-container/cate
     StickyTitleComponent,
     CategoryContainerComponent,
     ErrorMessageComponent,
+    CommonsInfoComponent,
   ],
   imports: [CommonModule, NgbModule, RouterModule, FormsModule, NgxSliderModule, InViewportModule, Angulartics2Module],
   exports: [
@@ -62,6 +64,7 @@ import { CategoryContainerComponent } from './components/category-container/cate
     NgbModule,
     TitleComponent,
     InformationComponent,
+    CommonsInfoComponent,
     AbstractComponent,
     IconclassComponent,
     CollapseComponent,

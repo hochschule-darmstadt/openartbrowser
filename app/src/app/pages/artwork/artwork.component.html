@@ -19,7 +19,7 @@
       <app-title [entity]="artwork"></app-title>
 
       <app-information i18n-label="Artist label@@artist" label="Artist" [values]="artwork?.artists"></app-information>
-
+      <app-commons-info-component [fileUrl]="artwork?.image"></app-commons-info-component>
       <app-information i18n-label="Location label@@location" label="Location" [values]="artwork?.locations"></app-information>
 
       <app-information i18n-label="Inception label@@inception" label="Inception" [value]="artwork?.inception + ''"></app-information>

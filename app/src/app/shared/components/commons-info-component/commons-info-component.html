@@ -1,0 +1,22 @@
+@if (meta$ | async ; as meta ) {
+      <div>
+        <h3>Licensing Information</h3>
+        <p><strong>Author:</strong> <span [innerHTML]="meta.author"></span></p>
+        <p><strong>License:</strong> {{ meta.licenseShortName }}</p>
+
+
+
+    @if (meta.licenseUrl){
+    <p>
+      <strong>License URL:</strong>
+      <a [href]="meta.licenseUrl" target="_blank" rel="noopener">
+        {{ meta.licenseUrl }}
+      </a>
+    </p>
+      <p>
+        <strong><a [href]="'https://commons.wikimedia.org/wiki/File:' + this.imageName" target="_blank" rel="noopener">More Details</a></strong>
+      </p>
+  }
+  </div>
+}
+

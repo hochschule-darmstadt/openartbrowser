@@ -12,6 +12,7 @@ Examples:
 Returns:
     Modified version of the art_ontology.json with youtube video links
 """
+
 import csv
 import datetime
 import json
@@ -48,6 +49,7 @@ except FileNotFoundError:
 
 RECOVER_MODE = False
 
+
 def check_yt_id_valid(id: str) -> bool:
     """Connects to the YT API and checks if the is valid
 
@@ -73,9 +75,7 @@ def check_yt_id_valid(id: str) -> bool:
         return True
 
 
-def get_qid_video_url_dict(
-        check_ids: bool, videofile_location: Optional[str]
-) -> Dict[str, str]:
+def get_qid_video_url_dict(check_ids: bool, videofile_location: Optional[str]) -> Dict[str, str]:
     """Loads the file 'youtube_videos.csv' and creates a dict of it
 
     Args:
@@ -104,9 +104,7 @@ def get_qid_video_url_dict(
             if broken_ids:
                 write_broken_links_to_file(broken_ids)
     except Exception as error:
-        logger.error(
-            f"Error when opening following file: {csv_file}. Skipping file now.\nError:"
-        )
+        logger.error(f"Error when opening following file: {csv_file}. Skipping file now.\nError:")
         logger.exception(error)
         return None
 
@@ -114,27 +112,24 @@ def get_qid_video_url_dict(
 
 
 def write_broken_links_to_file(
-        broken_ids: List[str],
-        broken_ids_logging_location: Optional[str] = Path(__file__).resolve().parent.parent
-                                                     / "logs"
-                                                     / "broken_links.json",
+    broken_ids: List[str],
+    broken_ids_logging_location: Optional[str] = Path(__file__).resolve().parent.parent / "logs" / "broken_links.json",
 ) -> None:
     """Writes broken video links to file
 
-        Args:
-            broken_ids: List of broken video urls.
-            broken_ids_logging_location: Broken ids logging location. Defaults to "logs/broken_links.json".
-        """
+    Args:
+        broken_ids: List of broken video urls.
+        broken_ids_logging_location: Broken ids logging location. Defaults to "logs/broken_links.json".
+    """
     broken_ids_out = json.dumps(broken_ids)
     with open(broken_ids_logging_location, "w") as json_file:
         json_file.write(broken_ids_out)
 
 
 def add_youtube_videos(
-        entities: Dict,
-        videofile_location: Optional[str] = Path(__file__).resolve().parent
-                                            / YOUTUBE_VIDEOS_FILE,
-        check_ids: bool = True,
+    entities: Dict,
+    videofile_location: Optional[str] = Path(__file__).resolve().parent / YOUTUBE_VIDEOS_FILE,
+    check_ids: bool = True,
 ) -> Dict:
     """Load the video csv file and add the links to the ontology file
 
@@ -173,25 +168,21 @@ if __name__ == "__main__":
         )
         try:
             # Open file
-            with open(
-                    (create_new_path(entity_type)).with_suffix(f".{JSON}"), encoding="utf-8"
-            ) as file:
+            with open((create_new_path(entity_type)).with_suffix(f".{JSON}"), encoding="utf-8") as file:
                 items = json.load(file)
 
             entities = add_youtube_videos(items, check_ids=check)
 
             # Overwrite file
             with open(
-                    (create_new_path(entity_type)).with_suffix(f".{JSON}"),
-                    "w",
-                    newline="",
-                    encoding="utf-8",
+                (create_new_path(entity_type)).with_suffix(f".{JSON}"),
+                "w",
+                newline="",
+                encoding="utf-8",
             ) as file:
                 json.dump(entities, file, ensure_ascii=False)
         except Exception as error:
-            logger.error(
-                f"Error when opening following file: {entity_type}. Skipping file now.\nError:"
-            )
+            logger.error(f"Error when opening following file: {entity_type}. Skipping file now.\nError:")
             logger.exception(error)
             continue
         print(

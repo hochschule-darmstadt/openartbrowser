@@ -10,6 +10,7 @@ Returns:
     An art_ontology.json file for each language in languageconfig.csv
     The format for these files is art_ontology_{language_key}.json
 """
+
 import copy
 import datetime
 import sys
@@ -41,6 +42,7 @@ language_values = language_config_to_list()
 language_keys = [item[0] for item in language_values]
 
 RECOVER_MODE = False
+
 
 def get_language_attributes() -> List[str]:
     """Returns all attributes in crawler .csv/.json files that need language handling
@@ -111,6 +113,7 @@ def fill_language_gaps(element: str, jsonobject: Dict) -> Dict:
     return jsonobject
 
 
+# ruff: noqa: C901
 def modify_langdict(jsonobject: Dict, langkey: str) -> List[List[Any]]:
     """Modifies lang dictionary data by manipulating key values or deleting keys
     mostly used to get rid of additional language keys
@@ -137,15 +140,10 @@ def modify_langdict(jsonobject: Dict, langkey: str) -> List[List[Any]]:
                 for exhibition in tempjson[EXHIBITION_HISTORY]:
                     try:
                         for attribute in [LABEL[SINGULAR], DESCRIPTION[SINGULAR]]:
-                            if (
-                                    not exhibition[f"{attribute}_{langkey}"]
-                                    and attribute not in ignored_attributes
-                            ):
+                            if not exhibition[f"{attribute}_{langkey}"] and attribute not in ignored_attributes:
                                 exhibition = fill_language_gaps(attribute, exhibition)
                             else:
-                                exhibition[attribute] = exhibition[
-                                    f"{attribute}_{langkey}"
-                                ]
+                                exhibition[attribute] = exhibition[f"{attribute}_{langkey}"]
                     except KeyError as key_error:
                         print(f"Error with attribute: {key_error}")
 
@@ -159,18 +157,13 @@ def modify_langdict(jsonobject: Dict, langkey: str) -> List[List[Any]]:
                         elif type(value) is list:
                             list_of_labels = []
                             for item in value:
-                                list_of_labels.append(
-                                    item[LABEL[SINGULAR] + "_" + langkey]
-                                )
+                                list_of_labels.append(item[LABEL[SINGULAR] + "_" + langkey])
                             event[key] = list_of_labels
 
                 continue
 
             # Check if element has language data and if attribute needs to be ignored by gap filling
-            elif (
-                    not tempjson[element + "_" + langkey]
-                    and element not in ignored_attributes
-            ):
+            elif not tempjson[element + "_" + langkey] and element not in ignored_attributes:
                 tempjson = fill_language_gaps(element, tempjson)
             else:
                 tempjson[element] = tempjson[element + "_" + langkey]
@@ -193,7 +186,7 @@ def modify_langdict(jsonobject: Dict, langkey: str) -> List[List[Any]]:
 
 
 def remove_language_key_attributes_in_exhibitions(
-        language_file: List[Dict], lang_keys: List[str] = language_keys
+    language_file: List[Dict], lang_keys: List[str] = language_keys
 ) -> List[Dict]:
     """Removes the language dependent attributes from the exhibitions objects
 
@@ -218,12 +211,9 @@ def remove_language_key_attributes_in_exhibitions(
 if __name__ == "__main__":
     if len(sys.argv) > 1 and "-r" in sys.argv:
         RECOVER_MODE = True
-    if RECOVER_MODE and check_state(ETL_STATES.DATA_TRANSFORMATION.SPLIT_LANGUAGES,
-                                    Path(__file__).parent.parent):
+    if RECOVER_MODE and check_state(ETL_STATES.DATA_TRANSFORMATION.SPLIT_LANGUAGES, Path(__file__).parent.parent):
         exit(0)
-    art_ontology_file = (
-            Path(__file__).resolve().parent.parent / CRAWLER_OUTPUT / "art_ontology.json"
-    )
+    art_ontology_file = Path(__file__).resolve().parent.parent / CRAWLER_OUTPUT / "art_ontology.json"
     print(
         datetime.datetime.now(),
         "Starting with splitting art_ontology.json to its language files",
@@ -231,22 +221,18 @@ if __name__ == "__main__":
 
     for lang_key in language_keys:
         with open(art_ontology_file, encoding="utf-8") as json_file:
-            art_ontology = ijson.items(json_file, 'item')
+            art_ontology = ijson.items(json_file, "item")
             art_ontology_for_lang = []
             print(f"Start generating art_ontology_{lang_key}.{JSON}")
             for item in art_ontology:
                 if is_jsonable(item):
                     art_ontology_for_lang.append(modify_langdict(item, lang_key))
 
-            art_ontology_for_lang = remove_language_key_attributes_in_exhibitions(
-                art_ontology_for_lang
-            )
+            art_ontology_for_lang = remove_language_key_attributes_in_exhibitions(art_ontology_for_lang)
 
             generate_json(
                 art_ontology_for_lang,
-                Path(__file__).resolve().parent.parent
-                / CRAWLER_OUTPUT
-                / f"art_ontology_{lang_key}",
+                Path(__file__).resolve().parent.parent / CRAWLER_OUTPUT / f"art_ontology_{lang_key}",
             )
             json_file.close()
             print(f"Finished generating art_ontology_{lang_key}.{JSON}")

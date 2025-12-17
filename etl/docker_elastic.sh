@@ -8,9 +8,10 @@ docker rm -f elastic-dev
 docker build -t elastic-dev .
 
 # run container
-docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" --name "elastic-dev" \
+docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" -m 4GB --name "elastic-dev" \
  -v ./docker-log:/var/log/elasticsearch \
- --entrypoint "sleep infinity" \
+ -v ./docker-lib:/var/lib/elasticsearch \
+ -v ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml \
  elastic-dev &
 
 # wait until elasticsearch started

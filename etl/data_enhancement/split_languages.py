@@ -18,6 +18,8 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 import ijson
+import json
+from decimal import Decimal
 
 from shared.constants import (
     ABSTRACT,
@@ -29,14 +31,24 @@ from shared.constants import (
     EXHIBITION_HISTORY,
     GENDER,
     JSON,
+    INTERMEDIATE_FILES,
     LABEL,
     PLACE_OF_BIRTH,
     PLACE_OF_DEATH,
     SIGNIFICANT_EVENT,
     SINGULAR,
     WIKIPEDIA_LINK,
+    ARTWORK,
+    MOTIF,
+    GENRE,
+    MATERIAL,
+    MOVEMENT,
+    ARTIST,
+    LOCATION,
+    CLASS,
+    PLURAL,
 )
-from shared.utils import check_state, generate_json, is_jsonable, language_config_to_list, write_state
+from shared.utils import check_state, create_new_path, is_jsonable, language_config_to_list, write_state
 
 language_values = language_config_to_list()
 language_keys = [item[0] for item in language_values]
@@ -208,37 +220,131 @@ def remove_language_key_attributes_in_exhibitions(
     return language_file
 
 
+def _open_new_batch_file(lang_key: str, part_idx: int, output_dir: Path):
+    filename = output_dir / f"art_ontology_{lang_key}_part_{part_idx:05d}.ndjson"
+    f = open(filename, "w", encoding="utf-8")
+    return f, filename
+
+
+def _write_batches_for_languages(item_iterator, batch_size: int = 1000, output_dir: Path = None):
+    """Stream items from `item_iterator` and write per-language NDJSON batch files.
+
+    Args:
+        item_iterator: iterator that yields JSON objects (artwork dicts)
+        batch_size: number of items per output file
+        output_dir: directory where to write files (crawler_output)
+    """
+    if output_dir is None:
+        output_dir = Path(__file__).resolve().parent.parent / CRAWLER_OUTPUT
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    # track file handles and counts per language
+    handles = {}
+    part_idx = {}
+    counts = {}
+
+    for lang in language_keys:
+        part_idx[lang] = 1
+        counts[lang] = 0
+        handles[lang], _ = _open_new_batch_file(lang, part_idx[lang], output_dir)
+
+    total = 0
+    for item in item_iterator:
+        total += 1
+        if not is_jsonable(item):
+            continue
+        for lang in language_keys:
+            modified = modify_langdict(item, lang)
+            modified = remove_language_key_attributes_in_exhibitions([modified], [lang])[0]
+
+            # sanitize non-serializable types (e.g., Decimal) before writing
+            def _sanitize(obj):
+                # recursively convert Decimal to float and sanitize nested structures
+                if isinstance(obj, Decimal):
+                    return float(obj)
+                if isinstance(obj, dict):
+                    return {k: _sanitize(v) for k, v in obj.items()}
+                if isinstance(obj, list):
+                    return [_sanitize(v) for v in obj]
+                return obj
+
+            sanitized = _sanitize(modified)
+            # write to current file for lang
+            handles[lang].write(json.dumps(sanitized, ensure_ascii=False) + "\n")
+            counts[lang] += 1
+            if counts[lang] >= batch_size:
+                handles[lang].close()
+                part_idx[lang] += 1
+                handles[lang], _ = _open_new_batch_file(lang, part_idx[lang], output_dir)
+                counts[lang] = 0
+
+    # close remaining handles
+    for lang in language_keys:
+        try:
+            handles[lang].close()
+        except Exception:
+            pass
+
+
 if __name__ == "__main__":
-    if len(sys.argv) > 1 and "-r" in sys.argv:
-        RECOVER_MODE = True
-    if RECOVER_MODE and check_state(ETL_STATES.DATA_TRANSFORMATION.SPLIT_LANGUAGES, Path(__file__).parent.parent):
+    # CLI args: optional -r (recover), -b batch size
+    import argparse
+    import os
+
+    parser = argparse.ArgumentParser(description="Split merged art_ontology stream into per-language NDJSON batches")
+    parser.add_argument("-r", dest="recover", action="store_true", help="recover mode")
+    parser.add_argument("-b", dest="batch", type=int, default=None, help="batch size per output file")
+    args = parser.parse_args()
+    # Batch size preference order:
+    # 1. CLI `-b` argument (if provided)
+    # 2. Environment variable `ART_ONTOLOGY_BATCH_SIZE` (if set)
+    # 3. Default 1000
+    env_batch = os.getenv("ART_ONTOLOGY_BATCH_SIZE")
+    if args.batch is None:
+        try:
+            batch_size = int(env_batch) if env_batch is not None else 1000
+        except ValueError:
+            print(f"Invalid ART_ONTOLOGY_BATCH_SIZE='{env_batch}', falling back to 1000")
+            batch_size = 1000
+    else:
+        batch_size = args.batch
+
+    if args.recover and check_state(ETL_STATES.DATA_TRANSFORMATION.SPLIT_LANGUAGES, Path(__file__).parent.parent):
         exit(0)
-    art_ontology_file = Path(__file__).resolve().parent.parent / CRAWLER_OUTPUT / "art_ontology.json"
-    print(
-        datetime.datetime.now(),
-        "Starting with splitting art_ontology.json to its language files",
-    )
 
-    for lang_key in language_keys:
-        with open(art_ontology_file, encoding="utf-8") as json_file:
-            art_ontology = ijson.items(json_file, "item")
-            art_ontology_for_lang = []
-            print(f"Start generating art_ontology_{lang_key}.{JSON}")
-            for item in art_ontology:
-                if is_jsonable(item):
-                    art_ontology_for_lang.append(modify_langdict(item, lang_key))
+    print(datetime.datetime.now(), "Starting merge+split into per-language batches")
 
-            art_ontology_for_lang = remove_language_key_attributes_in_exhibitions(art_ontology_for_lang)
+    # If an aggregated art_ontology.json exists, stream from it. Otherwise stream the per-type intermediate files.
+    crawler_dir = Path(__file__).resolve().parent.parent / CRAWLER_OUTPUT
+    aggregated = crawler_dir / "art_ontology.json"
+    item_iter = None
+    if aggregated.exists():
+        f = open(aggregated, encoding="utf-8")
+        item_iter = ijson.items(f, "item")
+    else:
+        # look for intermediate files under intermediate_files/json
+        inter_dir = Path(__file__).resolve().parent.parent / CRAWLER_OUTPUT / INTERMEDIATE_FILES / JSON
+        filenames = [
+            ARTWORK[PLURAL],
+            MOTIF[PLURAL],
+            GENRE[PLURAL],
+            MATERIAL[PLURAL],
+            MOVEMENT[PLURAL],
+            ARTIST[PLURAL],
+            LOCATION[PLURAL],
+            CLASS[PLURAL],
+        ]
 
-            generate_json(
-                art_ontology_for_lang,
-                Path(__file__).resolve().parent.parent / CRAWLER_OUTPUT / f"art_ontology_{lang_key}",
-            )
-            json_file.close()
-            print(f"Finished generating art_ontology_{lang_key}.{JSON}")
+        def gen():
+            for filename in filenames:
+                if not (filepath:=create_new_path(filename).with_suffix(f".{JSON}")).exists():
+                    continue
+                with open(filepath, encoding="utf-8") as file:
+                    for item in ijson.items(file, "item"):
+                        yield item
 
-    print(
-        datetime.datetime.now(),
-        "Finished with splitting art_ontology.json to its language files",
-    )
+        item_iter = gen()
+
+    _write_batches_for_languages(item_iter, batch_size=batch_size, output_dir=crawler_dir)
+    print(datetime.datetime.now(), "Finished merge+split into per-language batches")
     write_state(ETL_STATES.DATA_TRANSFORMATION.SPLIT_LANGUAGES, Path(__file__).parent.parent)

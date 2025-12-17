@@ -59,6 +59,8 @@ network.host: 0.0.0.0
 http.port: 9200
 http.cors.enabled: true
 http.cors.allow-origin: '*'
+xpack.security.http.ssl.enabled: false
+xpack.security.enabled: false
 #
 # For more information, consult the network module documentation.
 #

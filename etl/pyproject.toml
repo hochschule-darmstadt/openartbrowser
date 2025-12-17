@@ -5,7 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
-    "elasticsearch==7.0.0",
+    "elasticsearch==9.2.0",
     "ijson==2.3",
     "loguru>=0.7.3",
     "pywikibot>=10.7.2",
@@ -22,5 +22,3 @@ dev = [
 [tool.ruff]
 line-length = 120
 select = ["E", "F", "W", "C90", "B", "I"]
-
-[uv.settings]

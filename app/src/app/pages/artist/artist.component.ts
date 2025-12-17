@@ -1,13 +1,13 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Artist, Artwork, Entity, EntityType, Movement} from 'src/app/shared/models/models';
-import {DataService} from 'src/app/core/services/elasticsearch/data.service';
-import {ActivatedRoute, Params} from '@angular/router';
-import {takeUntil} from 'rxjs/operators';
-import {Subject} from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Artist, Artwork, Entity, EntityType, Movement } from 'src/app/shared/models/models';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
+import { ActivatedRoute, Params } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import * as _ from 'lodash';
-import {shuffle} from 'src/app/core/services/utils.service';
-import {FetchOptions} from '../../shared/components/fetching-list/fetching-list.component';
-import {UrlParamService} from '../../core/services/urlparam.service';
+import { shuffle } from 'src/app/core/services/utils.service';
+import { FetchOptions } from '../../shared/components/fetching-list/fetching-list.component';
+import { UrlParamService } from '../../core/services/urlparam.service';
 
 enum Tab {
   Artworks = 'artworks',
@@ -17,7 +17,7 @@ enum Tab {
 @Component({
   selector: 'app-artist',
   templateUrl: './artist.component.html',
-  styleUrls: ['./artist.component.scss']
+  styleUrls: ['./artist.component.scss'],
 })
 export class ArtistComponent implements OnInit, OnDestroy {
   /* TODO:REVIEW
@@ -42,10 +42,9 @@ export class ArtistComponent implements OnInit, OnDestroy {
     initOffset: 0,
     fetchSize: 30,
     queryCount: undefined,
-    entityType: EntityType.ARTWORK
+    entityType: EntityType.ARTWORK,
   } as FetchOptions;
   query: (offset: number) => Promise<Entity[]>;
-
 
   /** use this to end subscription to url parameter in ngOnDestroy */
   private ngUnsubscribe = new Subject<void>();
@@ -59,8 +58,7 @@ export class ArtistComponent implements OnInit, OnDestroy {
   /* List of unique Videos */
   uniqueEntityVideos: string[] = [];
 
-  constructor(private dataService: DataService, private route: ActivatedRoute, private urlParamService: UrlParamService) {
-  }
+  constructor(private dataService: DataService, private route: ActivatedRoute, private urlParamService: UrlParamService) {}
 
   /** hook that is executed at component initialization */
   ngOnInit() {
@@ -75,17 +73,15 @@ export class ArtistComponent implements OnInit, OnDestroy {
       this.setActiveTab(Tab[queryParamMap.get('tab')]);
     }
 
-
     /** Extract the id of entity from URL params. */
-    this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
+    this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
       this.artistId = params.get('artistId');
 
       this.fetchOptions.queryCount = this.dataService.countArtworksByType(EntityType.ARTIST, [this.artistId]);
 
       /** load fetching list items */
       this.query = async (offset) => {
-        return await this.dataService.findArtworksByType(
-          EntityType.ARTIST, [this.artistId], this.fetchOptions.fetchSize, offset);
+        return await this.dataService.findArtworksByType(EntityType.ARTIST, [this.artistId], this.fetchOptions.fetchSize, offset);
       };
 
       /** Use data service to fetch entity from database */
@@ -100,14 +96,11 @@ export class ArtistComponent implements OnInit, OnDestroy {
         this.uniqueEntityVideos.unshift(this.artist.videos[0]);
       }
 
-      this.dataService.findArtworksByType(EntityType.ARTIST, [this.artist.id])
-        .then(artworks => (this.sliderItems = shuffle(artworks)));
+      this.dataService.findArtworksByType(EntityType.ARTIST, [this.artist.id]).then((artworks) => (this.sliderItems = shuffle(artworks)));
       /** dereference movements  */
-      this.dataService.findMultipleById(this.artist.movements as any, EntityType.MOVEMENT)
-        .then(movements => (this.artist.movements = movements));
+      this.dataService.findMultipleById(this.artist.movements as any, EntityType.MOVEMENT).then((movements) => (this.artist.movements = movements));
       /** dereference influenced_bys */
-      this.dataService.findMultipleById(this.artist.influenced_by as any, EntityType.ARTIST)
-        .then(influences => (this.artist.influenced_by = influences));
+      this.dataService.findMultipleById(this.artist.influenced_by as any, EntityType.ARTIST).then((influences) => (this.artist.influenced_by = influences));
 
       /* Count meta data to show more on load */
       this.aggregatePictureMovementsToArtist();
@@ -134,17 +127,17 @@ export class ArtistComponent implements OnInit, OnDestroy {
    */
   private async aggregatePictureMovementsToArtist() {
     const allMovements: Partial<Movement>[] = [];
-    this.dataService.findArtworksByType(EntityType.ARTIST, [this.artist.id]).then(artworks => {
-      artworks.forEach(artwork => {
-          artwork.movements.forEach(movement => {
+    this.dataService.findArtworksByType(EntityType.ARTIST, [this.artist.id]).then((artworks) => {
+      artworks.forEach((artwork) => {
+        artwork.movements.forEach((movement) => {
           if (movement && (movement as any) !== '') {
             allMovements.push(movement);
             this.addMovementVideos();
           }
         });
       });
-      this.dataService.findMultipleById(allMovements as any, EntityType.MOVEMENT).then(movements => {
-        movements.forEach(movement => {
+      this.dataService.findMultipleById(allMovements as any, EntityType.MOVEMENT).then((movements) => {
+        movements.forEach((movement) => {
           this.artist.movements.push(movement);
         });
         this.artist.movements = _.uniqWith(this.artist.movements, _.isEqual);
@@ -156,14 +149,14 @@ export class ArtistComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.ngUnsubscribe.next(undefined);
     this.ngUnsubscribe.complete();
-    this.urlParamService.changeQueryParams({tab: null}).resolve();
+    this.urlParamService.changeQueryParams({ tab: null }).resolve();
   }
 
   setActiveTab(tab: Tab) {
     if (!Object.values(Tab).includes(tab)) {
       tab = Tab.Timeline;
     }
-    const queryParams: Params = {tab: tab};
+    const queryParams: Params = { tab: tab };
 
     if (tab != Tab.Artworks) {
       queryParams.page = null;
@@ -176,19 +169,12 @@ export class ArtistComponent implements OnInit, OnDestroy {
     this.videoExists = this.videoExists ? true : event;
   }
 
-  onChange(event){
-    const value = event.target.value
-    if(value=="timeline"){
-      this.setActiveTab(Tab.Timeline)
-    }
-    else{
-      this.setActiveTab(Tab.Artworks)
+  onChange(event) {
+    const value = event.target.value;
+    if (value == 'timeline') {
+      this.setActiveTab(Tab.Timeline);
+    } else {
+      this.setActiveTab(Tab.Artworks);
     }
   }
 }
-
-
-
-  
-
-

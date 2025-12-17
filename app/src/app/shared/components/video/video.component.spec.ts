@@ -15,7 +15,7 @@ describe('VideoComponent', () => {
     TestBed.configureTestingModule({
       imports: [NgbModule, FormsModule, HttpClientModule, RouterModule.forRoot([], {})],
       declarations: [VideoComponent],
-      providers: [DataService]
+      providers: [DataService],
     }).compileComponents();
   }));
 

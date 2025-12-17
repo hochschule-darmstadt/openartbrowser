@@ -11,7 +11,7 @@ import { Angulartics2 } from 'angulartics2';
   selector: 'app-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
-  providers: [SearchService]
+  providers: [SearchService],
 })
 export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('input')
@@ -51,7 +51,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   ) {}
 
   ngOnInit() {
-    this.searchService.$searchItems.pipe(takeUntil(this.ngUnsubscribe)).subscribe(items => {
+    this.searchService.$searchItems.pipe(takeUntil(this.ngUnsubscribe)).subscribe((items) => {
       this.searchItems = items;
     });
   }
@@ -59,7 +59,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   ngAfterViewInit() {
     this.placeholderArray.unshift(this.inputRef.nativeElement.placeholder);
     const inv = interval(8000);
-    inv.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val => this.changePlaceholdertext());
+    inv.pipe(takeUntil(this.ngUnsubscribe)).subscribe((val) => this.changePlaceholdertext());
     this.cdRef.detectChanges();
   }
 
@@ -91,12 +91,12 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   public search = (text$: Observable<string>) =>
     text$.pipe(
       debounceTime(200),
-      switchMap(async term => {
+      switchMap(async (term) => {
         if (term === '') {
           return [];
         }
         let entities = await this.dataService.findByLabel(term.toLowerCase());
-        entities = entities.filter(v => v.label.toLowerCase().indexOf(term.toLowerCase()) > -1);
+        entities = entities.filter((v) => v.label.toLowerCase().indexOf(term.toLowerCase()) > -1);
 
         // sort results by rank and modify rank by whether it starts with search term
         entities = this.sortSearchResultsByRank(entities, term);
@@ -114,8 +114,8 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
             properties: {
               category: 'Auto suggest',
               keyword: term,
-              searchCount: 0
-            }
+              searchCount: 0,
+            },
           });
         }
 
@@ -214,15 +214,15 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   groupSearchResultsByType(entities: Entity[]): Entity[] {
     let types = [];
-    entities.forEach(function(entity) {
+    entities.forEach(function (entity) {
       if (!types.includes(entity.type)) {
         types.push(entity.type);
       }
     });
 
     let entitiesResorted = [];
-    types.forEach(function(type) {
-      entities.forEach(function(entity) {
+    types.forEach(function (type) {
+      entities.forEach(function (entity) {
         if (entity.type == type) {
           entitiesResorted.push(entity);
         }
@@ -241,7 +241,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
       genre: [],
       material: [],
       location: [],
-      class: []
+      class: [],
     };
     for (const item of this.searchItems) {
       switch (item.type) {
@@ -310,19 +310,19 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
       // Track search keyword
       this.angulartics2.eventTrack.next({
         action: 'trackSiteSearch',
-        properties: { category: 'Auto suggest', keyword: term }
+        properties: { category: 'Auto suggest', keyword: term },
       });
       // Track navigation
       this.angulartics2.eventTrack.next({
         action: 'Search suggestion',
-        properties: { category: 'Navigation' }
+        properties: { category: 'Navigation' },
       });
       return;
     } else {
       this.searchService.addSearchTag({
         label: $event.item.label,
         type: $event.item.type,
-        id: $event.item.id
+        id: $event.item.id,
       });
       $event.preventDefault();
     }
@@ -361,7 +361,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
       this.searchService.addSearchTag({
         label: this.searchInput,
         type: null,
-        id: null
+        id: null,
       });
     }
     this.performSearch();

@@ -2,9 +2,7 @@
   <div class="custom-slider">
     <ngx-slider id="ngxSlider" [(value)]="value" [options]="options" (valueChange)="onSliderMoved()"></ngx-slider>
   </div>
-  <div class="carou" (swipeleft)="nextClicked()"
-                     (swiperight)="prevClicked()"
-                     >
+  <div class="carou" (swipeleft)="nextClicked()" (swiperight)="prevClicked()">
     <div class="carou-control" (click)="prevClicked()">
       <div class="carousel-control-prev-icon carou-control-icon" aria-hidden="true"></div>
     </div>
@@ -16,7 +14,7 @@
         (@slideNext.start)="resetSlideAnimation()"
         [@slidePrev]="slideOutLeft ? 'out' : 'in'"
         (@slidePrev.start)="resetSlideAnimation()"
-        *ngFor="let item of items | slice: slideStart:slideEnd"
+        *ngFor="let item of items | slice : slideStart : slideEnd"
         class="item-container"
       >
         <a
@@ -31,7 +29,7 @@
           <!-- container for image and hover description -->
           <div class="overlay-container" [ngClass]="item?.date ? 'overlay-container-caption' : ''">
             <img
-              class=" img_self"
+              class="img_self"
               src="{{ item?.imageSmall }}"
               alt="{{ item?.label }}"
               (error)="onLoadingError(item)"

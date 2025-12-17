@@ -12,7 +12,7 @@ describe('InformationComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [NgbModule, RouterModule.forRoot([], {})],
-      declarations: [InformationComponent, BadgeComponent]
+      declarations: [InformationComponent, BadgeComponent],
     }).compileComponents();
   }));
 

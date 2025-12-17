@@ -3,7 +3,6 @@ import { Component, Input, SimpleChanges, OnChanges, EventEmitter, Output, ViewC
 import { Entity, Artwork } from '../../models/models';
 import { HostListener } from '@angular/core';
 
-
 export interface Slide {
   /** artworks displayed on this slide */
   items: any[];
@@ -35,17 +34,17 @@ export function makeDefaultSlide(id: number = 0, items: Array<Entity> = []): Sli
     isLastSlide: false,
     nextSlide: null,
     prevSlide: null,
-    loadContent: null
+    loadContent: null,
   };
 }
 
 @Component({
   selector: 'app-slider',
   templateUrl: './carousel.component.html',
-  styleUrls: ['./carousel.component.scss']
+  styleUrls: ['./carousel.component.scss'],
 })
 export class CarouselComponent implements OnChanges {
-  @ViewChild("carousel", {static:false}) caurosel:NgbCarousel;
+  @ViewChild('carousel', { static: false }) caurosel: NgbCarousel;
 
   /** title of this slider */
   @Input() heading: string;

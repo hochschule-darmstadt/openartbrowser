@@ -28,17 +28,10 @@ describe('HomeComponent', () => {
         RouterModule.forRoot([], {}),
         Angulartics2RouterlessModule.forRoot(),
         NgxSliderModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
       ],
-      declarations: [
-        HomeComponent,
-        SearchComponent,
-        SearchResultComponent,
-        CarouselComponent,
-        SlideComponent,
-        MovementOverviewComponent
-      ],
-      providers: [DataService]
+      declarations: [HomeComponent, SearchComponent, SearchResultComponent, CarouselComponent, SlideComponent, MovementOverviewComponent],
+      providers: [DataService],
     }).compileComponents();
   }));
 

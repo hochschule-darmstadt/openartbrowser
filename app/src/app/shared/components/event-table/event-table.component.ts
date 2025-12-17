@@ -4,7 +4,7 @@ import { SignificantEvent } from '../../models/artwork.interface';
 @Component({
   selector: 'app-event-table',
   templateUrl: './event-table.component.html',
-  styleUrls: ['./event-table.component.scss']
+  styleUrls: ['./event-table.component.scss'],
 })
 export class EventTableComponent implements OnChanges {
   @Input()

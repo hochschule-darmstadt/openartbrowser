@@ -17,7 +17,7 @@ describe('SearchResultComponent', () => {
     TestBed.configureTestingModule({
       imports: [NgbModule, HttpClientModule, RouterModule.forRoot([], {}), Angulartics2RouterlessModule.forRoot()],
       declarations: [SearchResultComponent, SlideComponent, CarouselComponent],
-      providers: [DataService]
+      providers: [DataService],
     }).compileComponents();
   }));
 

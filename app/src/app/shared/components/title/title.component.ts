@@ -5,11 +5,11 @@ import { usePlural } from '../../models/entity.interface';
 @Component({
   selector: 'app-title',
   templateUrl: './title.component.html',
-  styleUrls: ['./title.component.scss']
+  styleUrls: ['./title.component.scss'],
 })
 export class TitleComponent implements OnInit, OnChanges {
   @Input() entity: Entity;
-  
+
   usePlural = usePlural;
 
   constructor() {}

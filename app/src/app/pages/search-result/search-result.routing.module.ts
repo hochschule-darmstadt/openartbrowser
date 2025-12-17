@@ -8,13 +8,13 @@ import { SearchResultComponent } from './search-result.component';
 const searchResultRoutes: Routes = [
   {
     path: '',
-    component: SearchResultComponent
-  }
+    component: SearchResultComponent,
+  },
 ];
 
 @NgModule({
   declarations: [SearchResultComponent],
   imports: [CommonModule, SharedModule, RouterModule.forChild(searchResultRoutes), NgbModule],
-  exports: [SearchResultComponent]
+  exports: [SearchResultComponent],
 })
 export class SearchResultRoutingModule {}

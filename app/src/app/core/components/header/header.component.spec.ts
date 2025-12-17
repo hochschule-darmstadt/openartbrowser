@@ -17,7 +17,7 @@ describe('HeaderComponent', () => {
     TestBed.configureTestingModule({
       imports: [NgbModule, FormsModule, HttpClientModule, RouterModule.forRoot([], {}), Angulartics2RouterlessModule.forRoot()],
       declarations: [HeaderComponent, SearchComponent],
-      providers: [DataService]
+      providers: [DataService],
     }).compileComponents();
   }));
 

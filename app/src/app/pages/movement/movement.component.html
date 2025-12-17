@@ -55,12 +55,7 @@
       </li>
 
       <li *ngIf="movement && relatedMovements.length > 0" class="nav-item">
-        <button
-          type="button"
-          class="nav-link"
-          (click)="setActiveTab(Tab.MovementOverview)"
-          [ngClass]="{ active: activeTab === Tab.MovementOverview }"
-        >
+        <button type="button" class="nav-link" (click)="setActiveTab(Tab.MovementOverview)" [ngClass]="{ active: activeTab === Tab.MovementOverview }">
           <i class="me-1 fa fa-wind"></i>
           <ng-container i18n="Timeline toggle label@@togglerelatedmovements">Related Movements</ng-container>
         </button>

@@ -12,13 +12,8 @@ describe('DimensionsComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [NgbModule, RouterModule.forRoot([], {})],
-      declarations: [
-        DimensionsComponent,
-        InformationComponent,
-        BadgeComponent
-      ]
-    })
-    .compileComponents();
+      declarations: [DimensionsComponent, InformationComponent, BadgeComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

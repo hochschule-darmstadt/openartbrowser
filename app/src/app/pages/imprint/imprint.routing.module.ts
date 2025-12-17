@@ -7,13 +7,13 @@ import { ImprintComponent } from './imprint.component';
 const imprintRoutes: Routes = [
   {
     path: '',
-    component: ImprintComponent
-  }
+    component: ImprintComponent,
+  },
 ];
 
 @NgModule({
   declarations: [ImprintComponent],
   imports: [CommonModule, SharedModule, RouterModule.forChild(imprintRoutes)],
-  exports: [ImprintComponent]
+  exports: [ImprintComponent],
 })
 export class ImprintRoutingModule {}

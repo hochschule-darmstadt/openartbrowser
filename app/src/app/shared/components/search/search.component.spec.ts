@@ -20,7 +20,7 @@ describe('SearchComponent', () => {
     TestBed.configureTestingModule({
       imports: [NgbModule, FormsModule, HttpClientModule, RouterModule.forRoot([], {}), Angulartics2RouterlessModule.forRoot()],
       declarations: [SearchComponent, SlideComponent, CarouselComponent],
-      providers: [DataService, SearchService]
+      providers: [DataService, SearchService],
     }).compileComponents();
   }));
 

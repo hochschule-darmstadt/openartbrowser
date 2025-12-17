@@ -6,14 +6,14 @@ export const environment = {
   production: false,
   elastic: {
     base: '/api',
-    nonScrollingMaxQuerySize: 10000
+    nonScrollingMaxQuerySize: 10000,
   },
   imagesBase: '/api/images',
   analytics: {
     enabled: false,
     url: 'https://openartbrowser.org/api/analytics/',
-    propertyId: '2'
-  }
+    propertyId: '2',
+  },
 };
 
 /*

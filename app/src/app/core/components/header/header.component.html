@@ -11,14 +11,7 @@
         <app-search class="form-group has-feedback" [isHeaderSearch]="true"></app-search>
       </li>
       <li class="nav-item dropdown flex-shrink-0" ngbDropdown>
-        <button
-          class="nav-link dropdown-toggle"
-          id="dropdownLanguage"
-          ngbDropdownToggle
-          type="button"
-          aria-haspopup="true"
-          aria-label="Language"
-        >
+        <button class="nav-link dropdown-toggle" id="dropdownLanguage" ngbDropdownToggle type="button" aria-haspopup="true" aria-label="Language">
           <h3><i class="fas fa-globe-americas"></i></h3>
         </button>
         <div class="dropdown-menu dropdown-menu-end" ngbDropdownMenu aria-labelledby="dropdownLanguage">
@@ -34,14 +27,7 @@
         </div>
       </li>
       <li class="nav-item dropdown flex-shrink-0" ngbDropdown>
-        <button
-          class="nav-link dropdown-toggle"
-          id="navbarDropdown"
-          ngbDropdownToggle
-          type="button"
-          aria-haspopup="true"
-          aria-label="Menu"
-        >
+        <button class="nav-link dropdown-toggle" id="navbarDropdown" ngbDropdownToggle type="button" aria-haspopup="true" aria-label="Menu">
           <h3><i class="fas fa-bars"></i></h3>
         </button>
         <div class="dropdown-menu dropdown-menu-end" ngbDropdownMenu aria-labelledby="navbarDropdown">
@@ -51,11 +37,7 @@
           <div class="dropdown-divider"></div>
           <a ngbDropdownItem class="dropdown-item" [routerLink]="['/imprint']" i18n="Menu Legal Notice item label@@menuLegalNotice">Legal Notice</a>
           <div class="dropdown-divider"></div>
-          <a
-            ngbDropdownItem
-            class="dropdown-item"
-            [routerLink]="['/data-protection']"
-            i18n="Menu Data Protection Declaration item label@@menuDataProtection"
+          <a ngbDropdownItem class="dropdown-item" [routerLink]="['/data-protection']" i18n="Menu Data Protection Declaration item label@@menuDataProtection"
             >Data Protection Declaration</a
           >
         </div>

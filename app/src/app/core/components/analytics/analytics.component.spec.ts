@@ -10,7 +10,7 @@ describe('AnalyticsComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [AnalyticsComponent],
-      imports: [Angulartics2RouterlessModule.forRoot()]
+      imports: [Angulartics2RouterlessModule.forRoot()],
     }).compileComponents();
   }));
 

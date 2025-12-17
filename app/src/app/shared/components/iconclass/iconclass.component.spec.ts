@@ -12,7 +12,7 @@ describe('IconclassComponent', () => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule],
       declarations: [IconclassComponent],
-      providers: [DataService]
+      providers: [DataService],
     }).compileComponents();
   }));
 

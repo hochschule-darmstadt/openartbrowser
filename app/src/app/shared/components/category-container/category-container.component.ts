@@ -4,19 +4,19 @@ import { usePlural } from '../../models/entity.interface';
 @Component({
   selector: 'app-category-container',
   templateUrl: './category-container.component.html',
-  styleUrls: ['./category-container.component.scss']
+  styleUrls: ['./category-container.component.scss'],
 })
 export class CategoryContainerComponent {
   @Input() category: any;
 
   isLoaded: boolean = false;
-  
+
   usePlural = usePlural;
 
-  constructor() { }
+  constructor() {}
 
   onImgPreloaded() {
-    if(this.category !== undefined && !this.isLoaded) this.isLoaded = true;
+    if (this.category !== undefined && !this.isLoaded) this.isLoaded = true;
   }
 
   /**
@@ -25,7 +25,6 @@ export class CategoryContainerComponent {
    * @param item item that should be removed
    */
   onLoadingError(category, item) {
-    if(category) category.items = category.items.filter(i => item.id !== i.id);
+    if (category) category.items = category.items.filter((i) => item.id !== i.id);
   }
-
 }

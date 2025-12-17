@@ -12,7 +12,7 @@ describe('SlideComponent', () => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule, RouterModule.forRoot([], {})],
       declarations: [SlideComponent],
-      providers: [DataService]
+      providers: [DataService],
     }).compileComponents();
   }));
 

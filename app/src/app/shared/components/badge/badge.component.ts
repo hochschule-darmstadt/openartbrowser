@@ -6,7 +6,7 @@ import { usePlural, EntityIcon } from '../../models/entity.interface';
   selector: 'app-badge',
   templateUrl: './badge.component.html',
   encapsulation: ViewEncapsulation.None,
-  styleUrls: ['./badge.component.scss']
+  styleUrls: ['./badge.component.scss'],
 })
 export class BadgeComponent implements OnInit, OnChanges {
   @Input() entity: any;
@@ -40,7 +40,6 @@ export class BadgeComponent implements OnInit, OnChanges {
       }
     }
 
-
     /*
       Generate an abstract to show as tooltip.
       The Tooltip should not exceed the tooltipBreakLimit.
@@ -54,12 +53,14 @@ export class BadgeComponent implements OnInit, OnChanges {
       let substrTo = this.tooltip.indexOf('.', this.tooltipBreakLimit);
       if (substrTo < this.tooltipBreakLimit) substrTo = this.tooltip.indexOf(' ', this.tooltipBreakLimit);
       if (substrTo < this.tooltipBreakLimit) substrTo = this.tooltipBreakLimit;
-      this.tooltip = this.tooltip.substr(0, substrTo).replace(/ *\([^)]*\) */g, '')+ ' [...]';
-    }
-    else if(this.tooltip && this.tooltip.length < this.tooltipBreakLimit){
-
-      this.tooltip = this.tooltip.substr(0).replace(/ *\([^)]*\) */g, '').charAt(0).toUpperCase() + this.tooltip.slice(1);
-
+      this.tooltip = this.tooltip.substr(0, substrTo).replace(/ *\([^)]*\) */g, '') + ' [...]';
+    } else if (this.tooltip && this.tooltip.length < this.tooltipBreakLimit) {
+      this.tooltip =
+        this.tooltip
+          .substr(0)
+          .replace(/ *\([^)]*\) */g, '')
+          .charAt(0)
+          .toUpperCase() + this.tooltip.slice(1);
     }
   }
 

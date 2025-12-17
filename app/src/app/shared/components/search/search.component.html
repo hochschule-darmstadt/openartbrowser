@@ -1,15 +1,16 @@
 <ng-template #rt let-r="result" let-t="term" let-type="result['type']">
   <div class="search__result">
     <span class="search__result-type">
-      <i *ngIf="type !== 'artwork'" class="fas {{r.icon}}"></i>
-      <img *ngIf="type === 'artwork'" [src]="r?.imageSmall" class="search__result-type-thumbnail" [alt]="r.label"/>
+      <i *ngIf="type !== 'artwork'" class="fas {{ r.icon }}"></i>
+      <img *ngIf="type === 'artwork'" [src]="r?.imageSmall" class="search__result-type-thumbnail" [alt]="r.label" />
     </span>
 
     <ngb-highlight class="search__result-label" [result]="r.label" [term]="t"></ngb-highlight>
 
     <p class="badge bg-secondary search__result-chip">
       <ng-container i18n="Entity Type Labels@@entity_labels">
-        {type, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material} class {Class} }
+        {type, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material} class
+        {Class} }
       </ng-container>
     </p>
   </div>
@@ -18,7 +19,7 @@
 <div class="search">
   <div *ngIf="searchItems.length > 0 && isHeaderSearch" class="search__header-chips">
     <span *ngFor="let i of searchItems" class="badge rounded-pill bg-secondary chip search__header-chip">
-      <span *ngIf="i.type !== 'artwork'" class="fas {{i.icon}}"></span>
+      <span *ngIf="i.type !== 'artwork'" class="fas {{ i.icon }}"></span>
       <span *ngIf="i.type" class="search__header-chip-label ms-1">{{ i.label }}</span>
       <span *ngIf="!i.type" class="search__header-chip-label">"{{ i.label }}"</span>
       <span (click)="removeTag(i)" class="fas fa-times-circle search__header-chip-removeButton"></span>
@@ -43,7 +44,7 @@
     (keydown.backspace)="removeNewestTag()"
     [(ngModel)]="searchInput"
   />
-  
+
   <button class="btn btn-link search__header-input-searchButton" (click)="searchTriggered()">
     <i class="fas fa-search"></i>
   </button>

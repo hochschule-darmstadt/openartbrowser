@@ -1,19 +1,9 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-  ViewChild
-} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-infinite-scroll',
   templateUrl: './infinite-scroll.component.html',
-  styleUrls: ['./infinite-scroll.component.scss']
+  styleUrls: ['./infinite-scroll.component.scss'],
 })
 export class InfiniteScrollComponent implements OnDestroy, AfterViewInit {
   @Input() options = {};
@@ -22,13 +12,12 @@ export class InfiniteScrollComponent implements OnDestroy, AfterViewInit {
 
   private observer: IntersectionObserver;
 
-  constructor(private host: ElementRef) {
-  }
+  constructor(private host: ElementRef) {}
 
   ngAfterViewInit() {
     const options = {
       root: this.isHostScrollable() ? this.host.nativeElement : null,
-      ...this.options
+      ...this.options,
     };
 
     this.observer = new IntersectionObserver(() => {}, options);
@@ -46,7 +35,6 @@ export class InfiniteScrollComponent implements OnDestroy, AfterViewInit {
   private isHostScrollable() {
     const style = window.getComputedStyle(this.element);
 
-    return style.getPropertyValue('overflow') === 'auto' ||
-      style.getPropertyValue('overflow-y') === 'scroll';
+    return style.getPropertyValue('overflow') === 'auto' || style.getPropertyValue('overflow-y') === 'scroll';
   }
 }

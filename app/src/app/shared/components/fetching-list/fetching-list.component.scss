@@ -14,13 +14,13 @@
 .paginator {
   position: fixed;
   top: 200px;
-  right: .1rem;
+  right: 0.1rem;
   z-index: 70;
 }
 
 .item {
-  width: calc(16.6667% - .6rem);
-  margin: .3rem;
+  width: calc(16.6667% - 0.6rem);
+  margin: 0.3rem;
 
   &:hover {
     .item-link {
@@ -85,7 +85,6 @@
     -ms-transform: translate(5%, -50%);
     transform: translate(5%, -50%);
     text-align: center;
-
   }
 
   &-link {
@@ -101,7 +100,6 @@
     }
   }
 }
-
 
 .img {
   &-wrapper {
@@ -143,17 +141,16 @@
 
 @media (max-width: 1000px) {
   .item {
-    margin: .5rem;
+    margin: 0.5rem;
     width: calc(16.6667% - 1rem);
   }
 }
 @media (max-width: 765px) {
   .item {
-    margin: .2rem;
-    width: calc(16.6667% - .4rem);
+    margin: 0.2rem;
+    width: calc(16.6667% - 0.4rem);
   }
 }
-
 
 @media (max-width: 575px) {
   .item-caption {
@@ -161,8 +158,8 @@
   }
 
   .item {
-    width: calc(50% - .4rem);
-    margin: .2rem;
+    width: calc(50% - 0.4rem);
+    margin: 0.2rem;
   }
   .img {
     &-wrapper {
@@ -196,8 +193,8 @@
 
 @media (max-width: 502px) {
   .item {
-    width: calc(50% - .6rem);
-    margin: .3rem;
+    width: calc(50% - 0.6rem);
+    margin: 0.3rem;
   }
   .img {
     &-wrapper {
@@ -212,8 +209,8 @@
   }
 
   .item {
-    width: calc(50% - .4rem);
-    margin: .2rem;
+    width: calc(50% - 0.4rem);
+    margin: 0.2rem;
   }
   .img {
     &-wrapper {

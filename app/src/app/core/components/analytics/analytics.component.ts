@@ -10,7 +10,7 @@ declare global {
 
 @Component({
   selector: 'app-analytics',
-  template: ''
+  template: '',
 })
 export class AnalyticsComponent {
   constructor(public analytics: Angulartics2Matomo) {
@@ -22,5 +22,4 @@ export class AnalyticsComponent {
       analytics.startTracking();
     }
   }
-
 }

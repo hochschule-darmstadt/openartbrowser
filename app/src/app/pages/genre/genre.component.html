@@ -1,6 +1,6 @@
 <div *ngIf="idDoesNotExist" class="container entity genre">
   <div class="row pb-4 pb-sm-5 mb-sm-5">
-    <app-error-message  [id]="genreId"></app-error-message>
+    <app-error-message [id]="genreId"></app-error-message>
   </div>
 </div>
 
@@ -18,7 +18,7 @@
     </div>
 
     <div class="col-sm-5 img" *ngIf="genre?.imageSmall">
-      <img class="img-fluid rounded-circle" src="{{ genre?.imageSmall }}" alt=""/>
+      <img class="img-fluid rounded-circle" src="{{ genre?.imageSmall }}" alt="" />
     </div>
   </div>
   <span class="artworks-amount">{{ genre?.absoluteRank }}</span>

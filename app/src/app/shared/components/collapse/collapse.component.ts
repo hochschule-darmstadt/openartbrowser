@@ -4,7 +4,7 @@ import { Angulartics2 } from 'angulartics2';
 @Component({
   selector: 'app-collapse',
   templateUrl: './collapse.component.html',
-  styleUrls: ['./collapse.component.scss']
+  styleUrls: ['./collapse.component.scss'],
 })
 export class CollapseComponent {
   /** Change collapse icon; true if more infos are folded in */
@@ -20,7 +20,7 @@ export class CollapseComponent {
     // Track event in usage analytics
     this.angulartics2.eventTrack.next({
       action: this.collapse ? 'closed' : 'opened',
-      properties: { category: 'More section' }
+      properties: { category: 'More section' },
     });
   }
 }

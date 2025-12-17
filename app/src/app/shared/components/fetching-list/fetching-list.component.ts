@@ -1,22 +1,26 @@
 import {
   ChangeDetectorRef,
   Component,
-  ContentChild, ElementRef,
+  ContentChild,
+  ElementRef,
   EventEmitter,
-  Input, OnChanges, OnDestroy,
+  Input,
+  OnChanges,
+  OnDestroy,
   OnInit,
-  Output, SimpleChanges,
-  TemplateRef
+  Output,
+  SimpleChanges,
+  TemplateRef,
 } from '@angular/core';
-import {Entity, EntityType} from '../../models/entity.interface';
-import {DataService} from '../../../core/services/elasticsearch/data.service';
-import {ActivatedRoute, Params} from '@angular/router';
-import {KeyValue} from '@angular/common';
-import {environment} from '../../../../environments/environment';
-import {Artwork} from '../../models/models';
-import {takeUntil} from 'rxjs/operators';
-import {Subject} from 'rxjs';
-import {UrlParamService} from '../../../core/services/urlparam.service';
+import { Entity, EntityType } from '../../models/entity.interface';
+import { DataService } from '../../../core/services/elasticsearch/data.service';
+import { ActivatedRoute, Params } from '@angular/router';
+import { KeyValue } from '@angular/common';
+import { environment } from '../../../../environments/environment';
+import { Artwork } from '../../models/models';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { UrlParamService } from '../../../core/services/urlparam.service';
 
 export interface FetchOptions {
   /** initial offset of the query, this is where it will continue to load */
@@ -37,12 +41,11 @@ export interface Page {
 @Component({
   selector: 'app-fetching-list',
   templateUrl: './fetching-list.component.html',
-  styleUrls: ['./fetching-list.component.scss']
+  styleUrls: ['./fetching-list.component.scss'],
 })
 export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
-
   /** all pages to display, pageNumber starts at 0 */
-  pages: { [pageNumber: number]: Page; } = {};
+  pages: { [pageNumber: number]: Page } = {};
   @Output() fetchData = new EventEmitter();
 
   /** the query which shall be fetched */
@@ -53,8 +56,8 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
 
   @Input() enableHover = false;
 
-  @ContentChild(TemplateRef, {static: false}) templateRef;
-  @ContentChild('templateContainer', {static: false}) templateContainer: ElementRef;
+  @ContentChild(TemplateRef, { static: false }) templateRef;
+  @ContentChild('templateContainer', { static: false }) templateContainer: ElementRef;
 
   maxPage: number;
   currentPage: number;
@@ -68,32 +71,30 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
   private ngUnsubscribe = new Subject<void>();
   queryParams: Params;
 
-  constructor(private dataService: DataService,
-              private route: ActivatedRoute,
-              private changeDetectionRef: ChangeDetectorRef,
-              private urlParamService: UrlParamService) {
-  }
+  constructor(
+    private dataService: DataService,
+    private route: ActivatedRoute,
+    private changeDetectionRef: ChangeDetectorRef,
+    private urlParamService: UrlParamService
+  ) {}
 
   /**
    * returns the current vertical position at the page
    * @private
    */
   private static getContainerScrollHeight(): number {
-    return (
-      Math.max(
-        document.body.scrollHeight,
-        document.body.offsetHeight,
-        document.body.clientHeight,
-        document.documentElement.scrollHeight,
-        document.documentElement.offsetHeight,
-        document.documentElement.clientHeight
-      )
+    return Math.max(
+      document.body.scrollHeight,
+      document.body.offsetHeight,
+      document.body.clientHeight,
+      document.documentElement.scrollHeight,
+      document.documentElement.offsetHeight,
+      document.documentElement.clientHeight
     );
-
   }
 
   private static getContainerScrollTop(): number {
-    return (window.pageYOffset);
+    return window.pageYOffset;
   }
 
   private static setScrollTop(currentScrollTop: number, delta: number): void {
@@ -104,9 +105,8 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
   keyAscOrder = (a: KeyValue<string, Page>, b: KeyValue<string, Page>): number => {
     const ak = Number(a.key);
     const bk = Number(b.key);
-    return ak < bk ? -1 : (bk < ak ? 1 : 0);
-  }
-
+    return ak < bk ? -1 : bk < ak ? 1 : 0;
+  };
 
   ngOnInit() {
     if (!this.options) {
@@ -139,41 +139,42 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
    * Initializes the page to the given page parameter or initOffset if no page given
    */
   init() {
-    this.route.queryParams.pipe(takeUntil(this.ngUnsubscribe)).subscribe(params => {
+    this.route.queryParams.pipe(takeUntil(this.ngUnsubscribe)).subscribe((params) => {
       this.queryParams = params;
     });
-    Promise.resolve(this.options.queryCount).then(value => {
-      return value;
-    }).then(value => {
-      this.options.queryCount = value;
-      // TODO: If the queryCount exceeds the elasticSearch safeguard (default 10000), maxPage is limited.
-      //  Find a way to prevent exceeding this limit (eg. use scroll api or search after)
-      if (!this.options.queryCount) {
-        this.maxPage = Object.keys(this.pages).length - 1;
-      } else if (this.options.queryCount <= environment.elastic.nonScrollingMaxQuerySize) {
-        this.maxPage = Math.ceil(this.options.queryCount / this.options.fetchSize) - 1;
-      } else {
-        this.maxPage = Math.floor(environment.elastic.nonScrollingMaxQuerySize / this.options.fetchSize) - 1;
-      }
-      if (this.queryParams.hasOwnProperty('page')) {
-        if (this.queryParams.page > this.maxPage || this.queryParams.page < 0) {
-          // make sure pageParam is between 0 and maxPage
-          this.queryParams.page = Math.max(0, Math.min(this.maxPage, this.queryParams.page));
+    Promise.resolve(this.options.queryCount)
+      .then((value) => {
+        return value;
+      })
+      .then((value) => {
+        this.options.queryCount = value;
+        // TODO: If the queryCount exceeds the elasticSearch safeguard (default 10000), maxPage is limited.
+        //  Find a way to prevent exceeding this limit (eg. use scroll api or search after)
+        if (!this.options.queryCount) {
+          this.maxPage = Object.keys(this.pages).length - 1;
+        } else if (this.options.queryCount <= environment.elastic.nonScrollingMaxQuerySize) {
+          this.maxPage = Math.ceil(this.options.queryCount / this.options.fetchSize) - 1;
+        } else {
+          this.maxPage = Math.floor(environment.elastic.nonScrollingMaxQuerySize / this.options.fetchSize) - 1;
         }
-        this.setCurrentPage(this.queryParams.page);
-      } else {
-        this.currentPage = Math.floor(this.options.initOffset / this.options.fetchSize);
-      }
-      this.initializePage(this.currentPage).then();
-    });
-
+        if (this.queryParams.hasOwnProperty('page')) {
+          if (this.queryParams.page > this.maxPage || this.queryParams.page < 0) {
+            // make sure pageParam is between 0 and maxPage
+            this.queryParams.page = Math.max(0, Math.min(this.maxPage, this.queryParams.page));
+          }
+          this.setCurrentPage(this.queryParams.page);
+        } else {
+          this.currentPage = Math.floor(this.options.initOffset / this.options.fetchSize);
+        }
+        this.initializePage(this.currentPage).then();
+      });
   }
 
   ngOnDestroy() {
     this.ngUnsubscribe.next(undefined);
     this.ngUnsubscribe.complete();
     // Remove query params
-    this.urlParamService.changeQueryParams({page: null}).resolve();
+    this.urlParamService.changeQueryParams({ page: null }).resolve();
   }
 
   /** this gets called by the app-infinite-scroll component and fetches new data */
@@ -195,9 +196,9 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
       this.setError(entity, pageNumber);
     }
     /** load missing movement images */
-    this.getEntityArtworks(entity.type, entity.id).then(artworks => {
+    this.getEntityArtworks(entity.type, entity.id).then((artworks) => {
       // search for random artwork which is no .tif
-      artworks = artworks.filter(artwork => !artwork.image.endsWith('.tif') && !artwork.image.endsWith('.tiff'));
+      artworks = artworks.filter((artwork) => !artwork.image.endsWith('.tif') && !artwork.image.endsWith('.tiff'));
       if (artworks.length) {
         entity.image = artworks[0].image;
         entity.imageMedium = artworks[0].imageMedium;
@@ -226,7 +227,7 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
   setError(item: Entity, pageNumber, index?) {
     // instead of removing items, we replace them with error items
     if (!index) {
-      index = this.pages[pageNumber].items.findIndex(i => {
+      index = this.pages[pageNumber].items.findIndex((i) => {
         return i ? i.id === item.id : true;
       });
     }
@@ -234,7 +235,7 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
       image: undefined,
       imageMedium: undefined,
       imageSmall: undefined,
-      error: true
+      error: true,
     });
   }
 
@@ -246,7 +247,7 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
     if (!(pageNumber in this.pages)) {
       // Fill page with empty items
       this.pages[pageNumber] = {
-        items: Array(this.options.fetchSize).fill({error: false})
+        items: Array(this.options.fetchSize).fill({ error: false }),
       } as Page;
       return this.loadPage(pageNumber);
     } else {
@@ -265,11 +266,10 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
     if (offset > this.options.queryCount) {
       return Promise.resolve();
     }
-    const capitalize = (str, lower = false) =>
-      (lower ? str.toLowerCase() : str).replace(/(?:^|\s|["'([{])+\S/g, match => match.toUpperCase());
+    const capitalize = (str, lower = false) => (lower ? str.toLowerCase() : str).replace(/(?:^|\s|["'([{])+\S/g, (match) => match.toUpperCase());
 
-    return this.query(offset).then(entities => {
-      entities.forEach(entity => {
+    return this.query(offset).then((entities) => {
+      entities.forEach((entity) => {
         entity.label = capitalize(entity.label);
         /** if image link is missing, query for random image */
         if (!entity.image) {
@@ -306,7 +306,7 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
     const el = document.getElementById(this.pageAnchorElementId + +pageNumber);
     this.scrollingPageNum = pageNumber;
 
-    await window.scrollTo({top: el.offsetTop, behavior: 'smooth'});
+    await window.scrollTo({ top: el.offsetTop, behavior: 'smooth' });
   }
 
   /**
@@ -315,7 +315,7 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
    */
   onPageVisible($event: any) {
     if ($event.visible) {
-      const anchorId = +($event.target.id.split('-').pop());
+      const anchorId = +$event.target.id.split('-').pop();
       this.setCurrentPage(anchorId);
       if (this.scrollingPageNum !== -1) {
         if (+this.currentPage === +this.scrollingPageNum) {
@@ -325,8 +325,10 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
         }
       } else {
         // pages +-2 of currentPage should be checked
-        const pagesToCheck = this.range(Math.max(+this.currentPage - this.loadingDistance, 0),
-          Math.min(+this.currentPage + this.loadingDistance, this.maxPage));
+        const pagesToCheck = this.range(
+          Math.max(+this.currentPage - this.loadingDistance, 0),
+          Math.min(+this.currentPage + this.loadingDistance, this.maxPage)
+        );
         for (const i of pagesToCheck) {
           const preScrollHeight = FetchingListComponent.getContainerScrollHeight();
           const preScrollOffset = FetchingListComponent.getContainerScrollTop();
@@ -341,11 +343,9 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
             // loaded page was inserted above the currentPage => scroll to the currentPage
             this.changeDetectionRef.detectChanges();
             const postScrollOffset = FetchingListComponent.getContainerScrollTop();
-            if ((preScrollOffset || preScrollOffset === 0) &&
-              (postScrollOffset || postScrollOffset === 0) &&
-              (preScrollOffset === postScrollOffset)) {
+            if ((preScrollOffset || preScrollOffset === 0) && (postScrollOffset || postScrollOffset === 0) && preScrollOffset === postScrollOffset) {
               const postScrollHeight = FetchingListComponent.getContainerScrollHeight();
-              const deltaHeight = (postScrollHeight - preScrollHeight);
+              const deltaHeight = postScrollHeight - preScrollHeight;
               FetchingListComponent.setScrollTop(postScrollOffset, deltaHeight);
             }
           }
@@ -371,10 +371,10 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
    * @private
    */
   private setURLPageParam(page: number) {
-    this.urlParamService.changeQueryParams({page}).resolve();
+    this.urlParamService.changeQueryParams({ page }).resolve();
   }
 
   range(start, end): Array<number> {
-    return Array.from({length: end - start + 1}, (v, k) => k + start);
+    return Array.from({ length: end - start + 1 }, (v, k) => k + start);
   }
 }

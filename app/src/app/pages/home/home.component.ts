@@ -1,18 +1,6 @@
 import { Component, OnInit, ViewChildren, QueryList } from '@angular/core';
 import { NgbCarouselConfig, NgbCarousel } from '@ng-bootstrap/ng-bootstrap';
-import {
-  Entity,
-  Artist,
-  Artwork,
-  Movement,
-  Material,
-  Location,
-  Genre,
-  Motif,
-  Class,
-  EntityIcon,
-  EntityType
-} from 'src/app/shared/models/models';
+import { Entity, Artist, Artwork, Movement, Material, Location, Genre, Motif, Class, EntityIcon, EntityType } from 'src/app/shared/models/models';
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 import { shuffle } from 'src/app/core/services/utils.service';
 import homeContent from 'src/config/home_content.json';
@@ -30,7 +18,7 @@ export interface SliderCategory {
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
   /**
@@ -76,14 +64,14 @@ export class HomeComponent implements OnInit {
    * @description Fetch items for each category using the service. Retrun an array of slider category items.
    */
   private getSlides() {
-    this.getSliderCategory<Artwork>(EntityType.ARTWORK).then(slide => this.artworkCategory = slide);
-    this.getSliderCategory<Artist>(EntityType.ARTIST).then(slide => this.artistCategory = slide);
-    this.getSliderCategory<Movement>(EntityType.MOVEMENT).then(slide => this.movementCategory = slide);
-    this.getSliderCategory<Location>(EntityType.LOCATION).then(slide => this.locationCategory = slide);
-    this.getSliderCategory<Material>(EntityType.MATERIAL).then(slide => this.materialCategory = slide);
-    this.getSliderCategory<Genre>(EntityType.GENRE).then(slide => this.genreCategory = slide);
-    this.getSliderCategory<Motif>(EntityType.MOTIF).then(slide => this.motifCategory = slide);
-    this.getSliderCategory<Class>(EntityType.CLASS).then(slide => this.classCategory = slide);
+    this.getSliderCategory<Artwork>(EntityType.ARTWORK).then((slide) => (this.artworkCategory = slide));
+    this.getSliderCategory<Artist>(EntityType.ARTIST).then((slide) => (this.artistCategory = slide));
+    this.getSliderCategory<Movement>(EntityType.MOVEMENT).then((slide) => (this.movementCategory = slide));
+    this.getSliderCategory<Location>(EntityType.LOCATION).then((slide) => (this.locationCategory = slide));
+    this.getSliderCategory<Material>(EntityType.MATERIAL).then((slide) => (this.materialCategory = slide));
+    this.getSliderCategory<Genre>(EntityType.GENRE).then((slide) => (this.genreCategory = slide));
+    this.getSliderCategory<Motif>(EntityType.MOTIF).then((slide) => (this.motifCategory = slide));
+    this.getSliderCategory<Class>(EntityType.CLASS).then((slide) => (this.classCategory = slide));
   }
 
   /**
@@ -104,6 +92,6 @@ export class HomeComponent implements OnInit {
    * @description make auto next carousel works after fetching categories.
    */
   private refreshCarousel(): void {
-    this.carousel.forEach(item => item.cycle());
+    this.carousel.forEach((item) => item.cycle());
   }
 }

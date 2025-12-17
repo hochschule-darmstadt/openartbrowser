@@ -23,9 +23,9 @@ interface MovementItem extends Movement {
       state('hide', style({ opacity: '0' })), // transform: 'scale(0)'})),
       state('show', style({ opacity: '1' })), // transform: 'scale(1)'})),
       transition('show => hide', [animate(0)]),
-      transition('hide => show', [animate(500)])
-    ])
-  ]
+      transition('hide => show', [animate(500)]),
+    ]),
+  ],
 })
 export class MovementOverviewComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
   dataService: DataService;
@@ -68,7 +68,7 @@ export class MovementOverviewComponent implements OnInit, OnChanges, AfterViewIn
   options: Options = {
     hidePointerLabels: true,
     showTicksValues: true,
-    showTicks: true
+    showTicks: true,
   };
 
   /** variables to control automatic periodical selection of a random movement  */
@@ -84,16 +84,15 @@ export class MovementOverviewComponent implements OnInit, OnChanges, AfterViewIn
 
   ngOnInit() {
     // handle case if this component is not part of a movement.component page - show default
-    if ((this.inputMovements === undefined)) {
-      this.dataService.findMultipleById<Movement>(this.defaultMovementIds, EntityType.MOVEMENT)
-        .then(movements => {
-          this.movements = movements.filter(m => {
-            if ((m.start_time || m.start_time_est) && (m.end_time || m.end_time_est)) {
-              return true;
-            }
-          }) as MovementItem[];
-          this.initializeMovements();
-        });
+    if (this.inputMovements === undefined) {
+      this.dataService.findMultipleById<Movement>(this.defaultMovementIds, EntityType.MOVEMENT).then((movements) => {
+        this.movements = movements.filter((m) => {
+          if ((m.start_time || m.start_time_est) && (m.end_time || m.end_time_est)) {
+            return true;
+          }
+        }) as MovementItem[];
+        this.initializeMovements();
+      });
     }
   }
 
@@ -104,7 +103,7 @@ export class MovementOverviewComponent implements OnInit, OnChanges, AfterViewIn
       this.movements = changes.inputMovements.currentValue as MovementItem[];
       this.initializeMovements();
       // sort movements by start_time ascending for mobile movement overview
-      this.inputMovements.sort((a, b) => a.start_time < b.start_time ? -1 : 1);
+      this.inputMovements.sort((a, b) => (a.start_time < b.start_time ? -1 : 1));
     }
   }
 
@@ -129,7 +128,7 @@ export class MovementOverviewComponent implements OnInit, OnChanges, AfterViewIn
     this.currentMovementId = this.movements[0].id;
 
     // get all movementIds except currentMovementId
-    const movementIds = this.movements.filter(value => value.id !== this.currentMovementId).map(A => A.id);
+    const movementIds = this.movements.filter((value) => value.id !== this.currentMovementId).map((A) => A.id);
     // get all images if current movement first.
     this.getMovementImages([this.currentMovementId]).then(() => {
       this.setRandomThumbnail(this.currentMovementId);
@@ -137,9 +136,9 @@ export class MovementOverviewComponent implements OnInit, OnChanges, AfterViewIn
       // setup timer for period random movement selection
       // This will run the function 'selectRandomMovement' every 'nextRandomMovementTime' seconds
       if (this.nextRandomMovementTime > 0) {
-        this.timerSubscription = this.randomMovementTimer$.pipe(
-          switchMap(() => timer(this.nextRandomMovementTime * 1000, this.nextRandomMovementTime * 1000))
-        ).subscribe(() => this.selectRandomMovement());
+        this.timerSubscription = this.randomMovementTimer$
+          .pipe(switchMap(() => timer(this.nextRandomMovementTime * 1000, this.nextRandomMovementTime * 1000)))
+          .subscribe(() => this.selectRandomMovement());
         // start timer
         this.randomMovementTimer$.next(undefined);
       }
@@ -169,9 +168,14 @@ export class MovementOverviewComponent implements OnInit, OnChanges, AfterViewIn
 
   /** finds start and end of displayed period */
   private setTimeline() {
-    const firstStart = Math.min.apply(Math, this.movements.map((m) => MovementOverviewComponent.getStartTime(m)));
-    const lastEnd = Math.max.apply(Math, this.movements.map((m) => MovementOverviewComponent.getEndTime(m)));
-
+    const firstStart = Math.min.apply(
+      Math,
+      this.movements.map((m) => MovementOverviewComponent.getStartTime(m))
+    );
+    const lastEnd = Math.max.apply(
+      Math,
+      this.movements.map((m) => MovementOverviewComponent.getEndTime(m))
+    );
 
     const dateSpan = lastEnd - firstStart;
     /** The period span must be either a multiple of reasonablePeriodDistance or minimumPeriodDistance */
@@ -181,12 +185,10 @@ export class MovementOverviewComponent implements OnInit, OnChanges, AfterViewIn
     }
     const minimumPeriodDistance = 1;
     /** Example:  30/7 = 4,28 ; 4,28 / 5 = 0,85 ; Math.max( Math.round(0.85)*5, 1) = 5 */
-    this.periodSpan = Math.max(Math.round(dateSpan / this.averagePeriodCount / reasonablePeriodDistance)
-      * reasonablePeriodDistance, minimumPeriodDistance);
+    this.periodSpan = Math.max(Math.round(dateSpan / this.averagePeriodCount / reasonablePeriodDistance) * reasonablePeriodDistance, minimumPeriodDistance);
     /** get the biggest multiple of firstStart that is less than firstDate / same for lastDate */
     this.timelineStart = firstStart - (firstStart % this.periodSpan);
     this.timelineEnd = lastEnd - (lastEnd % this.periodSpan) + this.periodSpan;
-
 
     /** Set slider options */
     const newOptions: Options = Object.assign({}, this.options);
@@ -247,7 +249,7 @@ export class MovementOverviewComponent implements OnInit, OnChanges, AfterViewIn
     for (row of this.boxes) {
       // fill in first space
       row.splice(0, 0, {
-        width: (MovementOverviewComponent.getStartTime(row[0]) - this.timelineStart) / (timelineLen / 100)
+        width: (MovementOverviewComponent.getStartTime(row[0]) - this.timelineStart) / (timelineLen / 100),
       } as MovementItem);
       // fill in spaces between all movements in one row
       for (let j = 1; j < row.length; j++) {
@@ -256,13 +258,13 @@ export class MovementOverviewComponent implements OnInit, OnChanges, AfterViewIn
         // fill in space between predecessor and current item
         if (MovementOverviewComponent.getStartTime(row[j]) > MovementOverviewComponent.getEndTime(row[j - 1])) {
           row.splice(j, 0, {
-            width: (MovementOverviewComponent.getStartTime(row[j]) - MovementOverviewComponent.getEndTime(row[j - 1])) / (timelineLen / 100)
+            width: (MovementOverviewComponent.getStartTime(row[j]) - MovementOverviewComponent.getEndTime(row[j - 1])) / (timelineLen / 100),
           } as MovementItem);
         }
       }
       // fill space between last movement and end of period
       row.push({
-        width: (this.timelineEnd - MovementOverviewComponent.getEndTime(row.slice(-1)[0])) / (timelineLen / 100)
+        width: (this.timelineEnd - MovementOverviewComponent.getEndTime(row.slice(-1)[0])) / (timelineLen / 100),
       } as MovementItem);
     }
   }
@@ -277,12 +279,12 @@ export class MovementOverviewComponent implements OnInit, OnChanges, AfterViewIn
       return;
     }
 
-    const x1 = clickedMovement.offsetLeft + (clickedMovement.offsetWidth / 2);
+    const x1 = clickedMovement.offsetLeft + clickedMovement.offsetWidth / 2;
     const y1 = clickedMovement.offsetTop + clickedMovement.offsetHeight;
 
     const thumbnail = document.getElementById('thumbnail');
 
-    const offset = (x1 - (thumbnail.scrollWidth / 2));
+    const offset = x1 - thumbnail.scrollWidth / 2;
     // move thumbnail
     thumbnail.setAttribute('style', 'margin-left: ' + offset.toString() + 'px;');
     const y2 = thumbnail.offsetTop;
@@ -325,7 +327,7 @@ export class MovementOverviewComponent implements OnInit, OnChanges, AfterViewIn
   private async getMovementImages(movementIds: string[]) {
     for (const id of movementIds) {
       const artworks = await this.dataService.findArtworksByMovement(id);
-      const mvmntIndex = this.movements.findIndex(mvmnt => mvmnt.id === id);
+      const mvmntIndex = this.movements.findIndex((mvmnt) => mvmnt.id === id);
       this.movements[mvmntIndex].artworks = this.movements[mvmntIndex].artworks.concat(artworks);
     }
   }
@@ -335,13 +337,13 @@ export class MovementOverviewComponent implements OnInit, OnChanges, AfterViewIn
     this.showThumbnail = false;
     this.thumbnailLoaded = false;
 
-    const currMovementIndex = this.movements.findIndex(move => move.id === movementId);
+    const currMovementIndex = this.movements.findIndex((move) => move.id === movementId);
     const currMovement = this.movements[currMovementIndex];
     if (!currMovement.artworks || !currMovement.artworks.length) {
       return;
     }
     // choose random new thumb out of first n-1
-    const thumbIndex = (currMovement.artworks.length > 1) ? Math.floor(Math.random() * currMovement.artworks.length - 1) : 0;
+    const thumbIndex = currMovement.artworks.length > 1 ? Math.floor(Math.random() * currMovement.artworks.length - 1) : 0;
 
     const oldThumbnail = this.thumbnail;
     const newThumbnail = currMovement.artworks.splice(thumbIndex, 1)[0];
@@ -369,9 +371,9 @@ export class MovementOverviewComponent implements OnInit, OnChanges, AfterViewIn
 
   /** Removes items from the component which cannot be displayed */
   onLoadingError(item: Artwork) {
-    const currMovementIndex = this.movements.findIndex(move => move.id === this.currentMovementId);
+    const currMovementIndex = this.movements.findIndex((move) => move.id === this.currentMovementId);
     this.movements[currMovementIndex].artworks.splice(
-      this.movements[currMovementIndex].artworks.findIndex(i => i.id === item.id),
+      this.movements[currMovementIndex].artworks.findIndex((i) => i.id === item.id),
       1
     );
     this.setRandomThumbnail(this.currentMovementId);
@@ -388,6 +390,4 @@ export class MovementOverviewComponent implements OnInit, OnChanges, AfterViewIn
   private static getEndTime(movement: Movement): number {
     return movement.end_time || movement.end_time_est;
   }
-
 }
-

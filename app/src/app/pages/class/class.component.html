@@ -1,6 +1,6 @@
 <div *ngIf="idDoesNotExist" class="container entity class">
   <div class="row pb-4 pb-sm-5 border-bottom mobile-no-border">
-    <app-error-message  [id]="classId"></app-error-message>
+    <app-error-message [id]="classId"></app-error-message>
   </div>
 </div>
 
@@ -16,15 +16,19 @@
         </p>
       </div>
 
-      <app-information *ngIf="parentClasses" i18n-label="Parent Class label@@parent_class" label="Parent Class" [values]="parentClasses" [isEntityPage]="true"></app-information>
+      <app-information
+        *ngIf="parentClasses"
+        i18n-label="Parent Class label@@parent_class"
+        label="Parent Class"
+        [values]="parentClasses"
+        [isEntityPage]="true"
+      ></app-information>
 
       <div *ngIf="class.abstract">
         <app-collapse>
           <app-abstract [entity]="class"></app-abstract>
         </app-collapse>
       </div>
-
-
     </div>
 
     <div class="col-sm-5 img" *ngIf="class?.image">

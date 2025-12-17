@@ -10,7 +10,7 @@ describe('TitleComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [RouterModule.forRoot([], {})],
-      declarations: [TitleComponent]
+      declarations: [TitleComponent],
     }).compileComponents();
   }));
 

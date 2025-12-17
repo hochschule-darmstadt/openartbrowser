@@ -1,6 +1,6 @@
 <div *ngIf="idDoesNotExist" class="container entity motif">
   <div class="row pb-4 pb-sm-5 mb-sm-5">
-    <app-error-message  [id]="motifId"></app-error-message>
+    <app-error-message [id]="motifId"></app-error-message>
   </div>
 </div>
 
@@ -21,8 +21,6 @@
           <app-abstract [entity]="motif"></app-abstract>
         </app-collapse>
       </div>
-
-
     </div>
 
     <div class="col-sm-5 img" *ngIf="motif?.image">

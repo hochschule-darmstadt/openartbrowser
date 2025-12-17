@@ -10,7 +10,7 @@ describe('CollapseComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [CollapseComponent],
-      imports: [Angulartics2RouterlessModule.forRoot()]
+      imports: [Angulartics2RouterlessModule.forRoot()],
     }).compileComponents();
   }));
 

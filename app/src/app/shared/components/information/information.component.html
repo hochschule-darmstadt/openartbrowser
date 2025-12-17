@@ -9,7 +9,7 @@
       <a *ngIf="isHref" href="{{ value }}" target="_blank">{{ value }}</a>
     </p>
 
-    <p *ngIf="values?.length" class="mb-1 add-padding ">
+    <p *ngIf="values?.length" class="mb-1 add-padding">
       <app-badge *ngFor="let entity of values" [entity]="entity"></app-badge>
     </p>
   </div>

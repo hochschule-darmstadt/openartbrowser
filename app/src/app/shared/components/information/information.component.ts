@@ -1,10 +1,9 @@
 import { Component, Input, OnChanges } from '@angular/core';
 
-
 @Component({
   selector: 'app-information',
   templateUrl: './information.component.html',
-  styleUrls: ['./information.component.scss']
+  styleUrls: ['./information.component.scss'],
 })
 export class InformationComponent implements OnChanges {
   @Input()

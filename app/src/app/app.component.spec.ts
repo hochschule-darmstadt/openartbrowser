@@ -12,7 +12,7 @@ describe('AppComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule, HttpClientModule, CoreModule, SharedModule, NgbModule, RouterModule.forRoot([], {})],
-      declarations: [AppComponent, SearchResultComponent]
+      declarations: [AppComponent, SearchResultComponent],
     }).compileComponents();
   }));
 

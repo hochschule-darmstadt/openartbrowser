@@ -1,18 +1,20 @@
 <div class="container">
   <h2>
     <span i18n="All@@all">All</span>
-    <span>{{fetchOptions.queryCount.constructor.name === 'Number' ? ' ' + fetchOptions.queryCount : ''}}</span>
+    <span>{{ fetchOptions.queryCount.constructor.name === 'Number' ? ' ' + fetchOptions.queryCount : '' }}</span>
     <span i18n="Entities Type Labels@@entities_labels" *ngIf="fetchOptions.entityType; let type">
-    {type, select, artwork {Artworks} motif {Motifs} artist {Artists} location {Locations} genre {Genres} movement {Movements} material {Materials} class {Classes}}
-  </span>
+      {type, select, artwork {Artworks} motif {Motifs} artist {Artists} location {Locations} genre {Genres} movement {Movements} material {Materials} class
+      {Classes}}
+    </span>
   </h2>
   <app-sticky-title>
     <ng-template>
       <h5>
         <span i18n="All@@all">All</span>
-        <span>{{fetchOptions.queryCount.constructor.name === 'Number' ? ' ' + fetchOptions.queryCount : ''}}</span>
+        <span>{{ fetchOptions.queryCount.constructor.name === 'Number' ? ' ' + fetchOptions.queryCount : '' }}</span>
         <span i18n="Entities Type Labels@@entities_labels" *ngIf="fetchOptions.entityType; let type">
-          {type, select, artwork {Artworks} motif {Motifs} artist {Artists} location {Locations} genre {Genres} movement {Movements} material {Materials} class {Classes}}
+          {type, select, artwork {Artworks} motif {Motifs} artist {Artists} location {Locations} genre {Genres} movement {Movements} material {Materials} class
+          {Classes}}
         </span>
       </h5>
     </ng-template>
@@ -32,24 +34,23 @@
         </ng-template>
         <div class="ms-1">
           <i class="me-1 fas" [ngClass]="entity.icon"></i>
-          <span>{{entity?.label?.length > 60 ? (entity.label | slice : 0 : 60) + '...' : entity.label }}</span>
+          <span>{{ entity?.label?.length > 60 ? (entity.label | slice : 0 : 60) + '...' : entity.label }}</span>
         </div>
-        <div *ngIf="type!=='artwork'" class="ms-1">
+        <div *ngIf="type !== 'artwork'" class="ms-1">
           <i class="me-1 fas fa-images"></i>
-          <span>{{entity.absoluteRank}}</span>
+          <span>{{ entity.absoluteRank }}</span>
         </div>
-        <div *ngIf="type==='movement' && entity.start_time && entity.end_time" class="ms-1">
+        <div *ngIf="type === 'movement' && entity.start_time && entity.end_time" class="ms-1">
           <i class="me-1 fa fa-ruler-horizontal"></i>
-          <span>{{entity.start_time}} - {{entity.end_time}}</span>
+          <span>{{ entity.start_time }} - {{ entity.end_time }}</span>
         </div>
-        <div *ngIf="type==='artist' && entity.date_of_birth && entity.date_of_death" class="ms-1">
+        <div *ngIf="type === 'artist' && entity.date_of_birth && entity.date_of_death" class="ms-1">
           <i class="me-1 fa fa-star-of-life"></i>
-          <span>{{entity.date_of_birth}}</span>
+          <span>{{ entity.date_of_birth }}</span>
           <i class="ms-1 me-1 fa fa-cross"></i>
-          <span>{{entity.date_of_death}}</span>
+          <span>{{ entity.date_of_death }}</span>
         </div>
       </div>
     </ng-template>
   </app-fetching-list>
 </div>
-

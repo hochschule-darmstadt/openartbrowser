@@ -7,13 +7,13 @@ import { AboutComponent } from './about.component';
 const aboutnRoutes: Routes = [
   {
     path: '',
-    component: AboutComponent
-  }
+    component: AboutComponent,
+  },
 ];
 
 @NgModule({
   declarations: [AboutComponent],
   imports: [CommonModule, SharedModule, RouterModule.forChild(aboutnRoutes)],
-  exports: [AboutComponent]
+  exports: [AboutComponent],
 })
 export class AboutRoutingModule {}

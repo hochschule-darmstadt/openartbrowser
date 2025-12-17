@@ -5,7 +5,7 @@ import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 @Component({
   selector: 'app-iconclass',
   templateUrl: './iconclass.component.html',
-  styleUrls: ['./iconclass.component.scss']
+  styleUrls: ['./iconclass.component.scss'],
 })
 export class IconclassComponent implements OnChanges {
   @Input()
@@ -26,7 +26,7 @@ export class IconclassComponent implements OnChanges {
     this.checkRequiredFields();
     this.loadData()
       .then(() => {})
-      .catch(error => {
+      .catch((error) => {
         console.warn(error);
       });
   }

@@ -7,8 +7,9 @@
     "declaration": false,
     "module": "es2020",
     "moduleResolution": "node",
-    "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "resolveJsonModule": true, //  importing home JSON files
+    "allowSyntheticDefaultImports": true, // importing home JSON files
     "importHelpers": true,
     "target": "es5",
     "typeRoots": ["node_modules/@types"],

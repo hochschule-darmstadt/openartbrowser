@@ -16,7 +16,6 @@ import { TimelineComponent } from './components/timeline/timeline.component';
 import { CollapseComponent } from './components/collapse/collapse.component';
 import { Angulartics2Module } from 'angulartics2';
 import { MovementOverviewComponent } from './components/movement-overview/movement-overview.component';
-import { NgxFitTextModule } from 'ngx-fit-text';
 import { DimensionsComponent } from './components/dimensions/dimensions.component';
 import { InfiniteScrollComponent } from './components/infinite-scroll/infinite-scroll.component';
 import { FetchingListComponent } from './components/fetching-list/fetching-list.component';
@@ -31,6 +30,7 @@ import { CategoryContainerComponent } from './components/category-container/cate
 /** Everything that should be used within multiple feature modules but isn't always required goes here */
 @NgModule({
   declarations: [
+    CarouselComponent,
     CarouselComponent,
     SlideComponent,
     SearchComponent,
@@ -58,7 +58,6 @@ import { CategoryContainerComponent } from './components/category-container/cate
         RouterModule,
         FormsModule,
         Angulartics2Module,
-        NgxFitTextModule,
         InViewportModule,
         NgxSliderModule
     ],

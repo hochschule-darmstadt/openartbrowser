@@ -16,7 +16,6 @@ import {TitleComponent} from 'src/app/shared/components/title/title.component';
 import {AbstractComponent} from 'src/app/shared/components/abstract/abstract.component';
 import {Angulartics2RouterlessModule} from 'angulartics2/routerlessmodule';
 import {MovementOverviewComponent} from '../../shared/components/movement-overview/movement-overview.component';
-import {NgxFitTextModule} from 'ngx-fit-text';
 import {StickyTitleComponent} from "../../shared/components/sticky-title/sticky-title.component";
 import {FetchingListComponent} from "../../shared/components/fetching-list/fetching-list.component";
 import {PaginatorComponent} from "../../shared/components/fetching-list/paginator/paginator.component";
@@ -34,8 +33,7 @@ describe('MovementComponent', () => {
         HttpClientModule,
         NgxSliderModule,
         RouterModule.forRoot([], { relativeLinkResolution: 'legacy' }),
-        Angulartics2RouterlessModule.forRoot(),
-        NgxFitTextModule
+        Angulartics2RouterlessModule.forRoot()
       ],
       declarations: [
         MovementComponent, MovementOverviewComponent, SlideComponent, TimelineComponent, BadgeComponent,

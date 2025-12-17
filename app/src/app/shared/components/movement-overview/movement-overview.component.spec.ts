@@ -1,7 +1,6 @@
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
 import {MovementOverviewComponent} from './movement-overview.component';
-import {NgxFitTextModule} from 'ngx-fit-text';
 import {RouterModule} from '@angular/router';
 import {DataService} from '../../../core/services/elasticsearch/data.service';
 import {HttpClientModule} from '@angular/common/http';
@@ -14,7 +13,7 @@ describe('MovementOverviewComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NgxSliderModule, NgxFitTextModule, RouterModule.forRoot([], {relativeLinkResolution: 'legacy'}), BrowserAnimationsModule, HttpClientModule],
+      imports: [NgxSliderModule, RouterModule.forRoot([], {relativeLinkResolution: 'legacy'}), BrowserAnimationsModule, HttpClientModule],
       declarations: [MovementOverviewComponent],
       providers: [DataService]
     })

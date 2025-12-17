@@ -44,7 +44,6 @@
             "allowedCommonJsDependencies": [
               "lodash", "bodybuilder", "element-resize-detector", "rxjs/operators", "rxjs"
             ],
-            "aot": true,
             "outputPath": "dist/art-browser",
             "deleteOutputPath": false,
             "index": "src/index.html",
@@ -58,7 +57,13 @@
             "styles": [
               "src/styles/main.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -72,7 +77,6 @@
               "outputHashing": "all",
               "sourceMap": false,
               "namedChunks": false,
-              "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
@@ -89,7 +93,6 @@
               ]
             },
             "en": {
-              "aot": true,
               "budgets": [
                 {
                   "type": "anyComponentStyle",
@@ -103,7 +106,6 @@
               "i18nMissingTranslation": "error"
             },
             "fr": {
-              "aot": true,
               "budgets": [
                 {
                   "type": "anyComponentStyle",
@@ -117,7 +119,6 @@
               "i18nMissingTranslation": "error"
             },
             "de": {
-              "aot": true,
               "budgets": [
                 {
                   "type": "anyComponentStyle",
@@ -131,7 +132,6 @@
               "i18nMissingTranslation": "error"
             },
             "es": {
-              "aot": true,
               "budgets": [
                 {
                   "type": "anyComponentStyle",
@@ -145,7 +145,6 @@
               "i18nMissingTranslation": "error"
             },
             "it": {
-              "aot": true,
               "budgets": [
                 {
                   "type": "anyComponentStyle",
@@ -186,7 +185,6 @@
                   "maximumWarning": "6kb"
                 }
               ],
-              "aot": true,
               "outputPath": "dist/browser",
               "i18nMissingTranslation": "error"
             },
@@ -218,7 +216,6 @@
                   "maximumWarning": "6kb"
                 }
               ],
-              "aot": true,
               "outputPath": "dist/browser",
               "i18nMissingTranslation": "error"
             },
@@ -250,7 +247,6 @@
                   "maximumWarning": "6kb"
                 }
               ],
-              "aot": true,
               "outputPath": "dist/browser",
               "i18nMissingTranslation": "error"
             },
@@ -282,7 +278,6 @@
                   "maximumWarning": "6kb"
                 }
               ],
-              "aot": true,
               "outputPath": "dist/browser",
               "i18nMissingTranslation": "error"
             },
@@ -314,7 +309,6 @@
                   "maximumWarning": "6kb"
                 }
               ],
-              "aot": true,
               "outputPath": "dist/browser",
               "i18nMissingTranslation": "error"
             },
@@ -328,7 +322,6 @@
               "optimization": true,
               "outputHashing": "all",
               "namedChunks": false,
-              "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
@@ -344,7 +337,8 @@
                 }
               ]
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",

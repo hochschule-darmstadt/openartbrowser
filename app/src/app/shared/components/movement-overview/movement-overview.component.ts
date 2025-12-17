@@ -7,7 +7,7 @@ import {DataService} from '../../../core/services/elasticsearch/data.service';
 import {EntityType} from '../../models/entity.interface';
 import {Artwork} from '../../models/artwork.interface';
 import {Movement} from '../../models/movement.interface';
-import * as ConfigJson from 'src/config/home_movements.json';
+import homeMovements from 'src/config/home_movements.json';
 
 interface MovementItem extends Movement {
   artworks: Artwork[]; // holds url to thumbnail images
@@ -32,7 +32,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
 
   /** initial movements to be displayed by the component */
   movements: MovementItem[] = [];
-  defaultMovementIds: string[] = Object.keys(ConfigJson.movementIds);
+  defaultMovementIds: string[] = Object.keys(homeMovements.movementIds);
   @Input() inputMovements: Movement[];
 
   /** 2d array holding items to be displayed */

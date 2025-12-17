@@ -1,5 +1,5 @@
-import {Component, OnInit, ViewChildren, QueryList} from '@angular/core';
-import {NgbCarouselConfig, NgbCarousel} from '@ng-bootstrap/ng-bootstrap';
+import { Component, OnInit, ViewChildren, QueryList } from '@angular/core';
+import { NgbCarouselConfig, NgbCarousel } from '@ng-bootstrap/ng-bootstrap';
 import {
   Entity,
   Artist,
@@ -13,9 +13,9 @@ import {
   EntityIcon,
   EntityType
 } from 'src/app/shared/models/models';
-import {DataService} from 'src/app/core/services/elasticsearch/data.service';
-import {shuffle} from 'src/app/core/services/utils.service';
-import * as ConfigJson from '../../../config/home_content.json';
+import { DataService } from 'src/app/core/services/elasticsearch/data.service';
+import { shuffle } from 'src/app/core/services/utils.service';
+import homeContent from 'src/config/home_content.json';
 
 /**
  * @description Interface for the category sliders.
@@ -71,7 +71,7 @@ export class HomeComponent implements OnInit {
     this.setBackground();
     this.getSlides();
   }
-  
+
   /**
    * @description Fetch items for each category using the service. Retrun an array of slider category items.
    */
@@ -91,12 +91,12 @@ export class HomeComponent implements OnInit {
    */
   private async getSliderCategory<T>(category: EntityType): Promise<SliderCategory> {
     const items = shuffle(await this.dataService.getCategoryItems<T>(category));
-    return {items, type: category, icon: EntityIcon[category.toUpperCase()]};
+    return { items, type: category, icon: EntityIcon[category.toUpperCase()] };
   }
 
   private setBackground() {
     // assign backgroundImageUrl with a random image specified in the config folder.
-    const backgroundArtworksUrls = ConfigJson.images;
+    const backgroundArtworksUrls = homeContent.images;
     this.backgroundImageUrl = backgroundArtworksUrls[Math.floor(Math.random() * backgroundArtworksUrls.length)];
   }
 

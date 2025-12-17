@@ -12,7 +12,7 @@
             <img
               *ngIf="entity?.imageSmall"
               class="bd-highlight img-self"
-              [ngClass]="templateContainer.children.length == 0 ? 'img-self-rounded':''"
+              [ngClass]="templateContainer.children.length === 0 ? 'img-self-rounded':''"
               src="{{ entity?.imageSmall }}"
               alt="{{ entity?.label }}"
               (error)="onLoadingError(entity, page.key)"
@@ -28,7 +28,7 @@
             </ng-container>
           </div>
 
-          <div class="overlay" *ngIf="templateContainer.children.length == 0 || enableHover">
+          <div class="overlay" *ngIf="templateContainer.children.length === 0 || enableHover">
             <!-- TODO: possible place for entity.icon -->
             <span class="img_description">{{ entity.label }}</span>
           </div>

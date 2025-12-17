@@ -34,7 +34,7 @@ export class MovementComponent implements OnInit, OnDestroy {
   activeTab: string = Tab.Timeline;
 
   /** use this to end subscription to url parameter in ngOnDestroy */
-  private ngUnsubscribe = new Subject();
+  private ngUnsubscribe = new Subject<void>();
 
   /** The entity this page is about */
   movement: Movement = null;
@@ -177,7 +177,7 @@ export class MovementComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.next(undefined);
     this.ngUnsubscribe.complete();
     this.urlParamService.changeQueryParams({tab: null}).resolve();
   }

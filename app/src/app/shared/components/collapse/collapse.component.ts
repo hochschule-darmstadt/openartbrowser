@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Angulartics2 } from 'angulartics2';
 
 @Component({
@@ -6,15 +6,13 @@ import { Angulartics2 } from 'angulartics2';
   templateUrl: './collapse.component.html',
   styleUrls: ['./collapse.component.scss']
 })
-export class CollapseComponent implements OnInit {
+export class CollapseComponent {
   /** Change collapse icon; true if more infos are folded in */
   @Input() collapse = true;
 
   @Input() showVideo = false;
 
   constructor(private angulartics2: Angulartics2) {}
-
-  ngOnInit() {}
 
   toggle() {
     this.collapse = !this.collapse;

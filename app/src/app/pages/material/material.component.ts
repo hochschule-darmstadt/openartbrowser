@@ -13,7 +13,7 @@ import {FetchOptions} from "../../shared/components/fetching-list/fetching-list.
 })
 export class MaterialComponent implements OnInit, OnDestroy {
   /** use this to end subscription to url parameter in ngOnDestroy */
-  private ngUnsubscribe = new Subject();
+  private ngUnsubscribe = new Subject<void>();
 
   /** The entity this page is about */
   material: Material = null;
@@ -53,7 +53,7 @@ export class MaterialComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.next(undefined);
     this.ngUnsubscribe.complete();
   }
 }

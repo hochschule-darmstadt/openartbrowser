@@ -23,11 +23,11 @@ describe('MaterialComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([], {})],
+      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([], {}), InViewportDirective],
       declarations: [
         MaterialComponent, SlideComponent, CarouselComponent, AbstractComponent,
         BadgeComponent, TitleComponent, InformationComponent, StickyTitleComponent,
-        FetchingListComponent, InViewportDirective, InfiniteScrollComponent, PaginatorComponent
+        FetchingListComponent, InfiniteScrollComponent, PaginatorComponent
       ],
       providers: [DataService]
     }).compileComponents();

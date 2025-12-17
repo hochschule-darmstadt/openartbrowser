@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, HostListener, Input, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { AfterViewInit, Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Options } from '@angular-slider/ngx-slider';
 import { Subject, timer } from 'rxjs';
@@ -27,8 +27,13 @@ interface MovementItem extends Movement {
     ])
   ]
 })
-export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
+export class MovementOverviewComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
   dataService: DataService;
+  // expose enum to template
+  EntityTypeEnum = EntityType;
+  isType(type: any, check: EntityType): boolean {
+    return type === check;
+  }
 
   /** initial movements to be displayed by the component */
   movements: MovementItem[] = [];
@@ -68,7 +73,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
 
   /** variables to control automatic periodical selection of a random movement  */
   private nextRandomMovementTime = 15; // number in seconds, set to '0' to disable
-  private randomMovementTimer$ = new Subject();
+  private randomMovementTimer$ = new Subject<void>();
   private timerSubscription;
 
   constructor(data: DataService) {
@@ -136,7 +141,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
           switchMap(() => timer(this.nextRandomMovementTime * 1000, this.nextRandomMovementTime * 1000))
         ).subscribe(() => this.selectRandomMovement());
         // start timer
-        this.randomMovementTimer$.next();
+        this.randomMovementTimer$.next(undefined);
       }
 
       if (this.currentMovementId !== undefined) {
@@ -153,7 +158,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
 
   /** Determine values based on screen width (responsivity) */
   @HostListener('window:resize', ['$event'])
-  onResize() {
+  onResize(event?: any) {
     const screenWidth = window.innerWidth;
     /** Determine the amount of marked steps in the slider, depending on screen width */
     this.averagePeriodCount = Math.min(7, Math.floor(screenWidth / 125));
@@ -296,7 +301,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
   /** This method gets called when movement box gets clicked and calls drawThumbnail() */
   onClickMovementBox(event) {
     // this resets the 'randomMovementTimer$'
-    this.randomMovementTimer$.next();
+    this.randomMovementTimer$.next(undefined);
 
     const boxId = event.target.attributes.id.nodeValue;
     if (boxId && boxId !== this.currentMovementId) {

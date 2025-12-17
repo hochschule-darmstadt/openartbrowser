@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ContentChild, Input, OnDestroy, OnInit, TemplateRef} from '@angular/core';
+import {AfterViewInit, Component, ContentChild, Input, OnDestroy, TemplateRef} from '@angular/core';
 import {Entity} from "../../models/entity.interface";
 import { usePlural } from '../../models/entity.interface';
 
@@ -7,16 +7,13 @@ import { usePlural } from '../../models/entity.interface';
   templateUrl: './sticky-title.component.html',
   styleUrls: ['./sticky-title.component.scss']
 })
-export class StickyTitleComponent implements OnInit, OnDestroy, AfterViewInit {
+export class StickyTitleComponent implements OnDestroy, AfterViewInit {
   @Input() entity: Entity;
   @ContentChild(TemplateRef, {static: false}) templateRef;
 
   usePlural = usePlural;
 
   constructor() {
-  }
-
-  ngOnInit() {
   }
 
   ngAfterViewInit() {

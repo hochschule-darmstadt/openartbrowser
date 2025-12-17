@@ -16,7 +16,7 @@ export class SlideComponent implements AfterViewInit {
   /** the slide that should be displayed */
   @Input() slide: Slide = makeDefaultSlide();
 
-  @Input() artwork: Artwork;
+  @Input() artwork: any;
 
   @Input() tab_type: string;
 

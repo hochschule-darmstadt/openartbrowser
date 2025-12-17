@@ -34,15 +34,15 @@
           <i class="me-1 fas" [ngClass]="entity.icon"></i>
           <span>{{entity?.label?.length > 60 ? (entity.label | slice : 0 : 60) + '...' : entity.label }}</span>
         </div>
-        <div *ngIf="type!='artwork'" class="ms-1">
+        <div *ngIf="type!=='artwork'" class="ms-1">
           <i class="me-1 fas fa-images"></i>
           <span>{{entity.absoluteRank}}</span>
         </div>
-        <div *ngIf="type=='movement' && entity.start_time && entity.end_time" class="ms-1">
+        <div *ngIf="type==='movement' && entity.start_time && entity.end_time" class="ms-1">
           <i class="me-1 fa fa-ruler-horizontal"></i>
           <span>{{entity.start_time}} - {{entity.end_time}}</span>
         </div>
-        <div *ngIf="type=='artist' && entity.date_of_birth && entity.date_of_death" class="ms-1">
+        <div *ngIf="type==='artist' && entity.date_of_birth && entity.date_of_death" class="ms-1">
           <i class="me-1 fa fa-star-of-life"></i>
           <span>{{entity.date_of_birth}}</span>
           <i class="ms-1 me-1 fa fa-cross"></i>

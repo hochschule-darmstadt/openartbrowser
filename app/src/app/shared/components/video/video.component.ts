@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Entity } from '../../models/models';
 
@@ -7,7 +7,7 @@ import { Entity } from '../../models/models';
   templateUrl: './video.component.html',
   styleUrls: ['./video.component.scss']
 })
-export class VideoComponent implements OnInit, OnChanges {
+export class VideoComponent implements OnChanges {
   @Input() videoUrl: string;
 
   /**
@@ -19,8 +19,6 @@ export class VideoComponent implements OnInit, OnChanges {
   videoExists = false;
 
   constructor(private sanitizer: DomSanitizer) {}
-
-  ngOnInit(): void {}
 
   initVideo(): void {
     if (this.videoUrl) {

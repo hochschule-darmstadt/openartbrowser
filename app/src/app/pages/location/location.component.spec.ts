@@ -24,11 +24,11 @@ describe('LocationComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([], {})],
+      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([], {}), InViewportDirective],
       declarations: [
         LocationComponent, SlideComponent, CarouselComponent, CollapseComponent, BadgeComponent,
         AbstractComponent, TitleComponent, InformationComponent, StickyTitleComponent,
-        FetchingListComponent, InViewportDirective, InfiniteScrollComponent, PaginatorComponent
+        FetchingListComponent, InfiniteScrollComponent, PaginatorComponent
       ],
       providers: [DataService]
     }).compileComponents();

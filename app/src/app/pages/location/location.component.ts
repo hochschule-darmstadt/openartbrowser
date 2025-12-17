@@ -22,7 +22,7 @@ export class LocationComponent implements OnInit, OnDestroy {
  */
 
   /** use this to end subscription to url parameter in ngOnDestroy */
-  private ngUnsubscribe = new Subject();
+  private ngUnsubscribe = new Subject<void>();
 
   /** The entity this page is about */
   location: Location = null;
@@ -64,7 +64,7 @@ export class LocationComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.next(undefined);
     this.ngUnsubscribe.complete();
   }
 }

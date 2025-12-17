@@ -35,9 +35,9 @@
               src="{{ item?.imageSmall }}"
               alt="{{ item?.label }}"
               (error)="onLoadingError(item)"
-              [ngClass]="item?.type == 'artist' ? 'rounded-circle' : ''"
+              [ngClass]="item?.type === 'artist' ? 'rounded-circle' : ''"
             />
-            <div class="overlay_view" [ngClass]="item?.type == 'artist' ? 'rounded-circle' : ''">
+            <div class="overlay_view" [ngClass]="item?.type === 'artist' ? 'rounded-circle' : ''">
               <span class="img_description">{{ item?.label }}</span>
             </div>
           </div>

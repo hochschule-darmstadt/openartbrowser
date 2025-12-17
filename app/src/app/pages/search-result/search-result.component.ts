@@ -61,7 +61,7 @@ export class SearchResultComponent implements OnInit, OnDestroy {
   searchTerms: string[] = [];
 
   /** use this to end subscription to url parameter in ngOnDestroy */
-  private ngUnsubscribe = new Subject();
+  private ngUnsubscribe = new Subject<void>();
 
   constructor(private dataService: DataService, private route: ActivatedRoute, private angulartics2: Angulartics2) {
   }
@@ -210,7 +210,7 @@ export class SearchResultComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.next(undefined);
     this.ngUnsubscribe.complete();
   }
 }

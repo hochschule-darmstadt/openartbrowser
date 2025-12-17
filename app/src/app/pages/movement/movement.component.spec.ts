@@ -14,7 +14,7 @@ import {CollapseComponent} from 'src/app/shared/components/collapse/collapse.com
 import {InformationComponent} from 'src/app/shared/components/information/information.component';
 import {TitleComponent} from 'src/app/shared/components/title/title.component';
 import {AbstractComponent} from 'src/app/shared/components/abstract/abstract.component';
-import {Angulartics2RouterlessModule} from 'angulartics2/routerlessmodule';
+import {Angulartics2RouterlessModule} from 'angulartics2';
 import {MovementOverviewComponent} from '../../shared/components/movement-overview/movement-overview.component';
 import {StickyTitleComponent} from "../../shared/components/sticky-title/sticky-title.component";
 import {FetchingListComponent} from "../../shared/components/fetching-list/fetching-list.component";
@@ -33,13 +33,14 @@ describe('MovementComponent', () => {
         HttpClientModule,
         NgxSliderModule,
         RouterModule.forRoot([], {}),
-        Angulartics2RouterlessModule.forRoot()
+        Angulartics2RouterlessModule.forRoot(),
+        InViewportDirective
       ],
       declarations: [
         MovementComponent, MovementOverviewComponent, SlideComponent, TimelineComponent, BadgeComponent,
         CarouselComponent, AbstractComponent, TitleComponent, InformationComponent, VideoComponent,
         CollapseComponent, StickyTitleComponent,
-        FetchingListComponent, InViewportDirective, InfiniteScrollComponent, PaginatorComponent
+        FetchingListComponent, InfiniteScrollComponent, PaginatorComponent
       ],
       providers: [DataService]
     }).compileComponents();

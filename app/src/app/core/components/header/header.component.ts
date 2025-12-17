@@ -1,5 +1,5 @@
 import {
-  Component, OnInit, LOCALE_ID, Inject, ElementRef,
+  Component, LOCALE_ID, Inject, ElementRef,
   ViewChild, OnDestroy, AfterViewInit
 } from '@angular/core';
 import {Router} from '@angular/router';
@@ -11,7 +11,7 @@ import {interval} from 'rxjs';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
+export class HeaderComponent implements AfterViewInit, OnDestroy {
   public path: string = '';
   public locale: string = '';
 
@@ -32,7 +32,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
     this.locale = localeId;
   }
 
-  ngOnInit() {}
+ 
 
   ngAfterViewInit() {
     // Listen to resize of navbarElem

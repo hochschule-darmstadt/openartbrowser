@@ -24,11 +24,11 @@ describe('GenreComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([], {})],
+      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([], {}), InViewportDirective],
       declarations: [
         GenreComponent, SlideComponent, AbstractComponent, TitleComponent, BadgeComponent,
         InformationComponent, CarouselComponent, CollapseComponent, StickyTitleComponent,
-        FetchingListComponent, InViewportDirective, InfiniteScrollComponent, PaginatorComponent
+        FetchingListComponent, InfiniteScrollComponent, PaginatorComponent
       ],
       providers: [DataService]
     }).compileComponents();

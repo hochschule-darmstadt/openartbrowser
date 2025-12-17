@@ -1,12 +1,12 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Entity } from '../../models/models';
+import { Component, Input, OnChanges } from '@angular/core';
+
 
 @Component({
   selector: 'app-information',
   templateUrl: './information.component.html',
   styleUrls: ['./information.component.scss']
 })
-export class InformationComponent {
+export class InformationComponent implements OnChanges {
   @Input()
   label: string;
 
@@ -17,7 +17,7 @@ export class InformationComponent {
   isHref: boolean;
 
   @Input()
-  values: Entity[];
+  values: any[];
 
   @Input()
   isEntityPage: boolean;

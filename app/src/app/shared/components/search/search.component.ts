@@ -40,7 +40,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   preventSearch = false;
 
   /** use this to end subscription to url parameter in ngOnDestroy */
-  private ngUnsubscribe = new Subject();
+  private ngUnsubscribe = new Subject<void>();
 
   constructor(
     private dataService: DataService,
@@ -64,7 +64,7 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy() {
-    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.next(undefined);
     this.ngUnsubscribe.complete();
   }
 

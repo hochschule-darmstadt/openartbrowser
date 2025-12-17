@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { usePlural } from '../../models/entity.interface';
 
 @Component({
@@ -6,7 +6,7 @@ import { usePlural } from '../../models/entity.interface';
   templateUrl: './category-container.component.html',
   styleUrls: ['./category-container.component.scss']
 })
-export class CategoryContainerComponent implements OnInit {
+export class CategoryContainerComponent {
   @Input() category: any;
 
   isLoaded: boolean = false;
@@ -14,9 +14,6 @@ export class CategoryContainerComponent implements OnInit {
   usePlural = usePlural;
 
   constructor() { }
-
-  ngOnInit(): void {
-  }
 
   onImgPreloaded() {
     if(this.category !== undefined && !this.isLoaded) this.isLoaded = true;

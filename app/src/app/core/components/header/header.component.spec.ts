@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { DataService } from '../../services/elasticsearch/data.service';
-import { Angulartics2RouterlessModule } from 'angulartics2/routerlessmodule';
+import { Angulartics2RouterlessModule } from 'angulartics2';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;

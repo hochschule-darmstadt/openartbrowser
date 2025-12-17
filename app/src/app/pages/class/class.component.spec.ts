@@ -24,12 +24,12 @@ describe('ClassComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([], {})],
-      declarations: [
-        ClassComponent, SlideComponent, CarouselComponent, AbstractComponent, BadgeComponent,
-        CollapseComponent, TitleComponent, InformationComponent, StickyTitleComponent,
-        FetchingListComponent, InViewportDirective, InfiniteScrollComponent, PaginatorComponent
-      ],
+        imports: [NgbModule, HttpClientModule, RouterModule.forRoot([], {}), InViewportDirective],
+        declarations: [
+          ClassComponent, SlideComponent, CarouselComponent, AbstractComponent, BadgeComponent,
+          CollapseComponent, TitleComponent, InformationComponent, StickyTitleComponent,
+          FetchingListComponent, InfiniteScrollComponent, PaginatorComponent
+        ],
       providers: [DataService]
     }).compileComponents();
   }));

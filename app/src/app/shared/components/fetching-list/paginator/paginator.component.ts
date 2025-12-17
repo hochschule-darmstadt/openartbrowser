@@ -1,23 +1,18 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 
 @Component({
   selector: 'app-paginator',
   templateUrl: './paginator.component.html',
   styleUrls: ['./paginator.component.scss']
 })
-export class PaginatorComponent implements OnInit, OnChanges {
+export class PaginatorComponent implements OnChanges {
   @Output() pageClick = new EventEmitter();
   @Input() pageNumber: number;
   @Input() maxPage: number;
 
   pages: number[] = [];
 
-  constructor() {
-  }
-
-  ngOnInit() {
-
-  }
+  constructor() {}
 
   ngOnChanges() {
     this.buildPages();

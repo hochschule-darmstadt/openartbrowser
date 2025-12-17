@@ -19,6 +19,10 @@
       "es2018",
       "dom"
     ],
-    "useDefineForClassFields": false
+    "useDefineForClassFields": false,
+    "skipLibCheck": true
+  },
+  "angularCompilerOptions": {
+    "strictTemplates": true
   }
 }

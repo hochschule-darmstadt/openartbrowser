@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { Entity } from '../../models/models';
 
 @Component({
@@ -6,7 +6,7 @@ import { Entity } from '../../models/models';
   templateUrl: './abstract.component.html',
   styleUrls: ['./abstract.component.scss']
 })
-export class AbstractComponent implements OnInit {
+export class AbstractComponent implements OnInit, OnChanges {
   @Input()
   entity: Entity;
 

@@ -25,11 +25,11 @@ describe('ArtistComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([], {}), NgxSliderModule],
+      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([], {}), NgxSliderModule, InViewportDirective],
       declarations: [
         ArtistComponent, TimelineComponent, AbstractComponent, TitleComponent,
         InformationComponent, BadgeComponent, VideoComponent, CollapseComponent, StickyTitleComponent,
-        FetchingListComponent, InViewportDirective, InfiniteScrollComponent, PaginatorComponent
+        FetchingListComponent, InfiniteScrollComponent, PaginatorComponent
       ],
       providers: [DataService]
     }).compileComponents();

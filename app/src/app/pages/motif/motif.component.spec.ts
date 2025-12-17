@@ -24,11 +24,11 @@ describe('MotifComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([], {})],
+      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([], {}), InViewportDirective],
       declarations: [
         MotifComponent, SlideComponent, CarouselComponent, AbstractComponent, BadgeComponent,
         CollapseComponent, TitleComponent, InformationComponent, StickyTitleComponent,
-        FetchingListComponent, InViewportDirective, InfiniteScrollComponent, PaginatorComponent
+        FetchingListComponent, InfiniteScrollComponent, PaginatorComponent
       ],
       providers: [DataService]
     }).compileComponents();

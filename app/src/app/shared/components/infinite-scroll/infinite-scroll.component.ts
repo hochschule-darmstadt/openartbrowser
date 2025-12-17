@@ -15,7 +15,7 @@ import {
   templateUrl: './infinite-scroll.component.html',
   styleUrls: ['./infinite-scroll.component.scss']
 })
-export class InfiniteScrollComponent implements OnInit, OnDestroy, AfterViewInit {
+export class InfiniteScrollComponent implements OnDestroy, AfterViewInit {
   @Input() options = {};
   @Output() scrolled = new EventEmitter();
   @ViewChild('anchor') anchor: ElementRef<HTMLElement>;
@@ -23,9 +23,6 @@ export class InfiniteScrollComponent implements OnInit, OnDestroy, AfterViewInit
   private observer: IntersectionObserver;
 
   constructor(private host: ElementRef) {
-  }
-
-  ngOnInit() {
   }
 
   ngAfterViewInit() {

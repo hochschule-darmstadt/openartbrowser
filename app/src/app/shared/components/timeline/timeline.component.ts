@@ -1,4 +1,4 @@
-import {Component, Input, HostListener} from '@angular/core';
+import {Component, Input, HostListener, OnInit, OnChanges, OnDestroy} from '@angular/core';
 import {Subject, timer} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import {Artist, Artwork, Entity, EntityType} from 'src/app/shared/models/models';
@@ -29,7 +29,7 @@ interface TimelineItem extends Entity {
     ])
   ]
 })
-export class TimelineComponent{
+export class TimelineComponent implements OnInit, OnChanges, OnDestroy{
   /** Artworks that should be displayed in this slider */
   @Input() artworks: Artwork[] = [];
   /** Decide whether artists should be displayed */
@@ -60,8 +60,8 @@ export class TimelineComponent{
   private sliderAllowEvent = true;
 
   /** Controls carousel animations */
-  private slideOutRight = false;
-  private slideOutLeft = false;
+  slideOutRight = false;
+  slideOutLeft = false;
 
   /** The reference item describes the index of the item referring
    *  to the displayed value in the slider.
@@ -72,7 +72,7 @@ export class TimelineComponent{
 
   /** variables to control automatic rotation of the timeline  */
   private nextRotationTime = 10; // number in seconds, set to '0' to disable
-  private rotationTimer$ = new Subject();
+  private rotationTimer$ = new Subject<void>();
   private timerSubscription;
 
   /** The current value of the slider */
@@ -152,7 +152,7 @@ export class TimelineComponent{
         switchMap(() => timer(this.nextRotationTime * 1000, this.nextRotationTime * 1000))
       ).subscribe(() => this.nextClicked());
       // start timer
-      this.rotationTimer$.next();
+      this.rotationTimer$.next(undefined);
     }
   }
 
@@ -295,7 +295,7 @@ export class TimelineComponent{
       return;
     }
     // this resets the 'rotationTimer$'
-    this.rotationTimer$.next();
+    this.rotationTimer$.next(undefined);
 
     this.calcSlideStart();
     this.updateSliderItems();
@@ -314,7 +314,7 @@ export class TimelineComponent{
   /** Handler for click event from left control button. Updates startSlide, value and animation. */
   prevClicked() {
     // this resets the 'rotationTimer$'
-    this.rotationTimer$.next();
+    this.rotationTimer$.next(undefined);
 
     // decide if sliderMoved-Event should be suppressed
     this.sliderAllowEvent = false;
@@ -332,7 +332,7 @@ export class TimelineComponent{
   /** Handler for click event from right control button. Updates startSlide, value and animation. */
   nextClicked() {
     // this resets the 'rotationTimer$'
-    this.rotationTimer$.next();
+    this.rotationTimer$.next(undefined);
 
     // decide if sliderMoved-Event should be suppressed
     this.sliderAllowEvent = false;

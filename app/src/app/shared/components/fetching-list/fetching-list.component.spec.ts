@@ -14,10 +14,10 @@ describe('FetchingListComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientModule, RouterModule.forRoot([], {})],
-      declarations: [
-        FetchingListComponent, PaginatorComponent, InViewportDirective, InfiniteScrollComponent
-      ],
+          imports: [HttpClientModule, RouterModule.forRoot([], {}), InViewportDirective],
+          declarations: [
+            FetchingListComponent, PaginatorComponent, InfiniteScrollComponent
+          ],
       providers: [DataService]
     })
       .compileComponents();

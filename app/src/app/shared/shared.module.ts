@@ -20,10 +20,10 @@ import { DimensionsComponent } from './components/dimensions/dimensions.componen
 import { InfiniteScrollComponent } from './components/infinite-scroll/infinite-scroll.component';
 import { FetchingListComponent } from './components/fetching-list/fetching-list.component';
 import { EventTableComponent } from './components/event-table/event-table.component';
-import { InViewportModule } from 'ng-in-viewport';
 import { PaginatorComponent } from './components/fetching-list/paginator/paginator.component';
 import { StickyTitleComponent } from './components/sticky-title/sticky-title.component';
 import { ErrorMessageComponent } from './components/error-message/error-message.component';
+import { InViewportModule } from 'ng-in-viewport';
 import {NgxSliderModule} from "@angular-slider/ngx-slider";
 import { CategoryContainerComponent } from './components/category-container/category-container.component';
 
@@ -57,9 +57,9 @@ import { CategoryContainerComponent } from './components/category-container/cate
     NgbModule,
     RouterModule,
     FormsModule,
-    Angulartics2Module,
+    NgxSliderModule,
     InViewportModule,
-    NgxSliderModule
+    Angulartics2Module
   ],
   exports: [
     CarouselComponent,

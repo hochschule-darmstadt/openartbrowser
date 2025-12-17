@@ -4,12 +4,12 @@
       <div class="spinner-border text-success" role="status">
         <span class="visually-hidden">Loading...</span>
       </div>
-      <img
+        <img
         *ngIf="category && category.items && category.items.length > 0"
         src="{{ category.items[0].imageSmall }}"
         alt="Preloading Image..."
         (load)="onImgPreloaded()"
-        (error)="onLoadingError(category, item)"
+        (error)="onLoadingError(category, category.items[0])"
       />
     </div>
     <div *ngIf="isLoaded">

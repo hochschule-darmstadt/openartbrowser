@@ -10,7 +10,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 import { SearchService } from 'src/app/core/services/search.service';
-import { Angulartics2RouterlessModule } from 'angulartics2/routerlessmodule';
+import { Angulartics2RouterlessModule } from 'angulartics2';
 
 describe('SearchComponent', () => {
   let component: SearchComponent;

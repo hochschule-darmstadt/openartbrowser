@@ -49,6 +49,7 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
   @Input() query: (offset: number) => Promise<Entity[]>;
 
   @Input() options: FetchOptions;
+  @Output() optionsChange = new EventEmitter<FetchOptions>();
 
   @Input() enableHover = false;
 
@@ -64,7 +65,7 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
   private scrollingPageNum = -1;
 
   /** use this to end subscription to url parameter in ngOnDestroy */
-  private ngUnsubscribe = new Subject();
+  private ngUnsubscribe = new Subject<void>();
   queryParams: Params;
 
   constructor(private dataService: DataService,
@@ -100,8 +101,10 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   // order by ascending property key (as number)
-  keyAscOrder = (a: KeyValue<number, Page>, b: KeyValue<number, Page>): number => {
-    return +a.key < +b.key ? -1 : (+b.key < +a.key ? 1 : 0);
+  keyAscOrder = (a: KeyValue<string, Page>, b: KeyValue<string, Page>): number => {
+    const ak = Number(a.key);
+    const bk = Number(b.key);
+    return ak < bk ? -1 : (bk < ak ? 1 : 0);
   }
 
 
@@ -167,7 +170,7 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnDestroy() {
-    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.next(undefined);
     this.ngUnsubscribe.complete();
     // Remove query params
     this.urlParamService.changeQueryParams({page: null}).resolve();

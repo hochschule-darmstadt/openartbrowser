@@ -14,7 +14,7 @@ export class SearchService {
   private searchItems: TagItem[] = [];
 
   /** search chips as observable */
-  public $searchItems: Subject<TagItem[]> = new Subject();
+  public $searchItems: Subject<TagItem[]> = new Subject<TagItem[]>();
 
   constructor() {}
 

@@ -1,4 +1,4 @@
-import { Component, LOCALE_ID, Inject, Input, Type } from '@angular/core';
+import { Component, LOCALE_ID, Inject, Input, Type, OnChanges } from '@angular/core';
 import { Iconclass } from '../../models/models';
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 
@@ -7,7 +7,7 @@ import { DataService } from 'src/app/core/services/elasticsearch/data.service';
   templateUrl: './iconclass.component.html',
   styleUrls: ['./iconclass.component.scss']
 })
-export class IconclassComponent {
+export class IconclassComponent implements OnChanges {
   @Input()
   label: string;
 

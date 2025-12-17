@@ -9,7 +9,7 @@ import { usePlural, EntityIcon } from '../../models/entity.interface';
   styleUrls: ['./badge.component.scss']
 })
 export class BadgeComponent implements OnInit, OnChanges {
-  @Input() entity: Entity;
+  @Input() entity: any;
   @Input() isHoverBadge: boolean;
   @Input() hoveredArtwork: Artwork;
 
@@ -72,7 +72,7 @@ export class BadgeComponent implements OnInit, OnChanges {
     }
   }
 
-  handleInvalidImageSource() {
+  handleInvalidImageSource(event?: Event) {
     this.isImageSourceValid = false;
   }
 }

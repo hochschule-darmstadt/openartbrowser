@@ -13,6 +13,11 @@ body {
   outline: transparent;
 }
 
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1140px;
+  }
+}
 @media (max-width: 575px) {
   html,
   body {
@@ -208,6 +213,11 @@ hr {
 
 a {
   text-decoration: none;
+  color: var(--bs-link-color);
+}
+
+a:hover {
+  color: var(--bs-link-hover-color);
 }
 
 icon {

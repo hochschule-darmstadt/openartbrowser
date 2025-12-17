@@ -52,15 +52,15 @@ import { CategoryContainerComponent } from './components/category-container/cate
     CategoryContainerComponent,
     ErrorMessageComponent
   ],
-    imports: [
-        CommonModule,
-        NgbModule,
-        RouterModule,
-        FormsModule,
-        Angulartics2Module,
-        InViewportModule,
-        NgxSliderModule
-    ],
+  imports: [
+    CommonModule,
+    NgbModule,
+    RouterModule,
+    FormsModule,
+    Angulartics2Module,
+    InViewportModule,
+    NgxSliderModule
+  ],
   exports: [
     CarouselComponent,
     SearchComponent,

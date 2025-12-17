@@ -7,7 +7,7 @@ input.form-control {
   box-shadow: none;
   display: block;
   overflow: hidden;
-
+  
   /* Firefox 19+ */
   &::-moz-placeholder,
     /* Firefox 18- */
@@ -67,14 +67,13 @@ input.form-control {
       z-index: 20;
       display: flex;
       align-items: center;
-      font-size: 1.5rem;
+      font-size: 1.3rem;
 
       &-searchButton {
-        position: relative;
-        margin: -37px -7px;
-        margin-top: -34px;
-        float: right;
         z-index: 30;
+        position: absolute;
+        right: 0;
+        bottom: 0;
       }
     }
   }
@@ -120,7 +119,6 @@ input.form-control {
     overflow: hidden;
     text-overflow: ellipsis;
     font-size: 1.7rem;
-    padding: 0em;
     padding-right: 8px;
     min-height: 3rem;
 

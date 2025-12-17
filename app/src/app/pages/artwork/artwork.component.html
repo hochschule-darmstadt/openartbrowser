@@ -6,8 +6,8 @@
 
 <div *ngIf='!idDoesNotExist' class='container entity artwork'>
   <div class='row pb-4 pb-sm-5 border-bottom' *ngIf='!imageHidden && artwork?.imageMedium'>
-    <div class='img-container mx-auto d-block' (click)='showModal()'>
-      <img class='img-fluid d-block' id='image-main' (error)='hideImage()' src='{{ artwork?.imageMedium }}' alt='' />
+    <div class='img-container  d-block' (click)='showModal()'>
+      <img class='img-fluid mx-auto d-block' id='image-main' (error)='hideImage()' src='{{ artwork?.imageMedium }}' alt='' />
       <div class='enlarge'>
         <i class='fas fa-expand' (click)='showModal()'></i>
       </div>

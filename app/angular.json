@@ -55,7 +55,6 @@
               "src/assets"
             ],
             "styles": [
-              "node_modules/bootswatch/dist/darkly/bootstrap.min.css",
               "src/styles/main.scss"
             ],
             "scripts": [],

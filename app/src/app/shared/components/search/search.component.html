@@ -2,7 +2,7 @@
   <div class="search__result">
     <span class="search__result-type">
       <i *ngIf="type !== 'artwork'" class="fas {{r.icon}}"></i>
-      <img *ngIf="type == 'artwork'" [src]="r?.imageSmall" class="search__result-type-thumbnail" [alt]="r.label"/>
+      <img *ngIf="type === 'artwork'" [src]="r?.imageSmall" class="search__result-type-thumbnail" [alt]="r.label"/>
     </span>
 
     <ngb-highlight class="search__result-label" [result]="r.label" [term]="t"></ngb-highlight>
@@ -43,8 +43,8 @@
     (keydown.backspace)="removeNewestTag()"
     [(ngModel)]="searchInput"
   />
+  
+  <button class="btn btn-link search__header-input-searchButton" (click)="searchTriggered()">
+    <i class="fas fa-search"></i>
+  </button>
 </div>
-
-<button class="btn btn-link search__header-input-searchButton" (click)="searchTriggered()">
-  <i class="fas fa-search"></i>
-</button>

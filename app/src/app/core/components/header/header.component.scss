@@ -108,7 +108,7 @@
 
   ::ng-deep .form-control {
     padding: 0 !important;
-    height: 1.4em !important;
+    height: 1.8em !important;
     transition: all 0.35s ease-out;
     opacity: 0 !important;
   }
@@ -125,7 +125,6 @@
 
 #navbar:hover ::ng-deep .form-control,
 .form-group:focus-within ::ng-deep .form-control {
-  height: 1.8em !important;
   padding-left: 0.6em !important;
   padding-right: 0.6em !important;
   transition: all 0.35s ease-in;
@@ -140,7 +139,6 @@
 #navbar:hover ::ng-deep .search-chip,
 .search-form .form-group:focus-within ::ng-deep .search-chip {
   display: inline-block;
-  margin-bottom: 6px;
 }
 
 @media (max-width: 575px) {
@@ -178,9 +176,4 @@
     margin: 0 0.5em !important;
   }
 
-  #navbar:hover ::ng-deep .form-control,
-  .form-group:focus-within ::ng-deep .form-control {
-    // Just keep input height the same size while focused/hovered on mobiel
-    height: 1.4em !important;
-  }
 }

@@ -24,7 +24,7 @@ describe('ClassComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([], { relativeLinkResolution: 'legacy' })],
+      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([], {})],
       declarations: [
         ClassComponent, SlideComponent, CarouselComponent, AbstractComponent, BadgeComponent,
         CollapseComponent, TitleComponent, InformationComponent, StickyTitleComponent,

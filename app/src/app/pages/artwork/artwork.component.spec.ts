@@ -24,7 +24,7 @@ describe('ArtworkComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NgbModule, HttpClientModule, ImageViewerModule.forRoot(), RouterModule.forRoot([], { relativeLinkResolution: 'legacy' })],
+      imports: [NgbModule, HttpClientModule, ImageViewerModule.forRoot(), RouterModule.forRoot([], {})],
       declarations: [
         ArtworkComponent,
         SlideComponent,

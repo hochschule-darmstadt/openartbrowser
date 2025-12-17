@@ -48,7 +48,7 @@ const routes: Routes = [
     SharedModule,
     NgbModule,
     BrowserAnimationsModule,
-    RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled', relativeLinkResolution: 'legacy' })
+    RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' })
   ],
   bootstrap: [AppComponent]
 })

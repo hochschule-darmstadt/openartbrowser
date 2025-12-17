@@ -23,7 +23,7 @@ describe('MaterialComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([], { relativeLinkResolution: 'legacy' })],
+      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([], {})],
       declarations: [
         MaterialComponent, SlideComponent, CarouselComponent, AbstractComponent,
         BadgeComponent, TitleComponent, InformationComponent, StickyTitleComponent,

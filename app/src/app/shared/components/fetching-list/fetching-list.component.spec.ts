@@ -14,7 +14,7 @@ describe('FetchingListComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientModule, RouterModule.forRoot([], { relativeLinkResolution: 'legacy' })],
+      imports: [HttpClientModule, RouterModule.forRoot([], {})],
       declarations: [
         FetchingListComponent, PaginatorComponent, InViewportDirective, InfiniteScrollComponent
       ],

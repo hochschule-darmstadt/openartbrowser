@@ -17,11 +17,10 @@ describe('EntitiesComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientModule, RouterModule.forRoot([], { relativeLinkResolution: 'legacy' }), InViewportModule],
+      imports: [HttpClientModule, RouterModule.forRoot([], {}), InViewportModule, NgbTooltip],
       declarations: [
         EntitiesComponent, FetchingListComponent, PaginatorComponent,
-        InfiniteScrollComponent, StickyTitleComponent,
-        NgbTooltip
+        InfiniteScrollComponent, StickyTitleComponent
       ],
       providers: [
         DataService

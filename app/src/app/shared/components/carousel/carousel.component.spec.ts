@@ -13,7 +13,7 @@ describe('SliderComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([], { relativeLinkResolution: 'legacy' })],
+      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([], {})],
       declarations: [CarouselComponent, SlideComponent],
       providers: [{
         provide: HAMMER_GESTURE_CONFIG,

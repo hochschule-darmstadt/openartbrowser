@@ -11,7 +11,7 @@ import { SearchResultComponent } from './pages/search-result/search-result.compo
 describe('AppComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, HttpClientModule, CoreModule, SharedModule, NgbModule, RouterModule.forRoot([], { relativeLinkResolution: 'legacy' })],
+      imports: [RouterTestingModule, HttpClientModule, CoreModule, SharedModule, NgbModule, RouterModule.forRoot([], {})],
       declarations: [AppComponent, SearchResultComponent]
     }).compileComponents();
   }));

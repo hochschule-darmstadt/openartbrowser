@@ -17,7 +17,7 @@ describe('SliderComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NgbModule, NgxSliderModule, HttpClientModule, RouterModule.forRoot([], { relativeLinkResolution: 'legacy' }), BrowserAnimationsModule],
+      imports: [NgbModule, NgxSliderModule, HttpClientModule, RouterModule.forRoot([], {}), BrowserAnimationsModule],
       declarations: [TimelineComponent],
       providers: [DataService, {
         provide: HAMMER_GESTURE_CONFIG,

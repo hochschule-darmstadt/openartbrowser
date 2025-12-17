@@ -13,7 +13,7 @@ describe('MovementOverviewComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NgxSliderModule, RouterModule.forRoot([], {relativeLinkResolution: 'legacy'}), BrowserAnimationsModule, HttpClientModule],
+      imports: [NgxSliderModule, RouterModule.forRoot([], {}), BrowserAnimationsModule, HttpClientModule],
       declarations: [MovementOverviewComponent],
       providers: [DataService]
     })

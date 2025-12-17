@@ -32,7 +32,7 @@ describe('MovementComponent', () => {
         NgbModule,
         HttpClientModule,
         NgxSliderModule,
-        RouterModule.forRoot([], { relativeLinkResolution: 'legacy' }),
+        RouterModule.forRoot([], {}),
         Angulartics2RouterlessModule.forRoot()
       ],
       declarations: [

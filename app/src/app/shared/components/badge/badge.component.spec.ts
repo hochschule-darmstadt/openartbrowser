@@ -9,7 +9,7 @@ describe('BadgeComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NgbModule, RouterModule.forRoot([], { relativeLinkResolution: 'legacy' })],
+      imports: [NgbModule, RouterModule.forRoot([], {})],
       declarations: [BadgeComponent]
     }).compileComponents();
   }));

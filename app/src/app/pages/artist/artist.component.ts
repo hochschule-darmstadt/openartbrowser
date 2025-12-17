@@ -136,8 +136,8 @@ export class ArtistComponent implements OnInit, OnDestroy {
     const allMovements: Partial<Movement>[] = [];
     this.dataService.findArtworksByType(EntityType.ARTIST, [this.artist.id]).then(artworks => {
       artworks.forEach(artwork => {
-        artwork.movements.forEach(movement => {
-          if (movement !== '') {
+          artwork.movements.forEach(movement => {
+          if (movement && (movement as any) !== '') {
             allMovements.push(movement);
             this.addMovementVideos();
           }

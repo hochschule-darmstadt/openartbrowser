@@ -8,23 +8,23 @@
         "locales": {
           "en": {
             "translation": "src/locale/messages.en.xlf",
-            "baseHref": ""
+            "baseHref": "/en/"
           },
           "fr": {
             "translation": "src/locale/messages.fr.xlf",
-            "baseHref": ""
+            "baseHref": "/fr/"
           },
           "de": {
             "translation": "src/locale/messages.de.xlf",
-            "baseHref": ""
+            "baseHref": "/de/"
           },
           "es": {
             "translation": "src/locale/messages.es.xlf",
-            "baseHref": ""
+            "baseHref": "/es/"
           },
           "it": {
             "translation": "src/locale/messages.it.xlf",
-            "baseHref": ""
+            "baseHref": "/it/"
           }
         }
       },
@@ -55,6 +55,7 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles/main.scss"
             ],
             "scripts": [],
@@ -388,6 +389,18 @@
             "assets": ["src/favicon.ico", "src/assets"]
           }
         }
+        ,
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "eslintConfig": ".eslintrc.json",
+            "tsConfig": [
+              "src/tsconfig.app.json",
+              "src/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        }
       }
     },
     "art-browser-e2e": {
@@ -412,5 +425,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }

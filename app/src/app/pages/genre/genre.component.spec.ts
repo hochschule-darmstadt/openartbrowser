@@ -24,7 +24,7 @@ describe('GenreComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([], { relativeLinkResolution: 'legacy' })],
+      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([], {})],
       declarations: [
         GenreComponent, SlideComponent, AbstractComponent, TitleComponent, BadgeComponent,
         InformationComponent, CarouselComponent, CollapseComponent, StickyTitleComponent,

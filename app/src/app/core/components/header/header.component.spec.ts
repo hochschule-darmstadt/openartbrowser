@@ -15,7 +15,7 @@ describe('HeaderComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NgbModule, FormsModule, HttpClientModule, RouterModule.forRoot([], { relativeLinkResolution: 'legacy' }), Angulartics2RouterlessModule.forRoot()],
+      imports: [NgbModule, FormsModule, HttpClientModule, RouterModule.forRoot([], {}), Angulartics2RouterlessModule.forRoot()],
       declarations: [HeaderComponent, SearchComponent],
       providers: [DataService]
     }).compileComponents();

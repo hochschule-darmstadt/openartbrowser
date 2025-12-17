@@ -25,7 +25,7 @@ describe('ArtistComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([], { relativeLinkResolution: 'legacy' }), NgxSliderModule],
+      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([], {}), NgxSliderModule],
       declarations: [
         ArtistComponent, TimelineComponent, AbstractComponent, TitleComponent,
         InformationComponent, BadgeComponent, VideoComponent, CollapseComponent, StickyTitleComponent,

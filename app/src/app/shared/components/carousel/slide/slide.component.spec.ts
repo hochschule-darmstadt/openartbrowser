@@ -10,7 +10,7 @@ describe('SlideComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientModule, RouterModule.forRoot([], { relativeLinkResolution: 'legacy' })],
+      imports: [HttpClientModule, RouterModule.forRoot([], {})],
       declarations: [SlideComponent],
       providers: [DataService]
     }).compileComponents();

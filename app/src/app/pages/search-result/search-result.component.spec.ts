@@ -15,7 +15,7 @@ describe('SearchResultComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([], { relativeLinkResolution: 'legacy' }), Angulartics2RouterlessModule.forRoot()],
+      imports: [NgbModule, HttpClientModule, RouterModule.forRoot([], {}), Angulartics2RouterlessModule.forRoot()],
       declarations: [SearchResultComponent, SlideComponent, CarouselComponent],
       providers: [DataService]
     }).compileComponents();

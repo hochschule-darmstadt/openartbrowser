@@ -9,7 +9,7 @@ describe('StickyTitleComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [RouterModule.forRoot([], { relativeLinkResolution: 'legacy' })],
+      imports: [RouterModule.forRoot([], {})],
       declarations: [StickyTitleComponent]
     })
       .compileComponents();

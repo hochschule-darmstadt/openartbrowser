@@ -25,7 +25,7 @@ describe('HomeComponent', () => {
         NgbModule,
         FormsModule,
         HttpClientModule,
-        RouterModule.forRoot([], { relativeLinkResolution: 'legacy' }),
+        RouterModule.forRoot([], {}),
         Angulartics2RouterlessModule.forRoot(),
         NgxSliderModule,
         BrowserAnimationsModule

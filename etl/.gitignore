@@ -10,3 +10,5 @@ build
 dist
 openartbrowser_etl.egg-info
 apicache
+docker-log
+docker-lib

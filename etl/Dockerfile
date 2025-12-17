@@ -82,13 +82,13 @@ RUN ["cp", "-r", "/app/crawler_output", "/root/crawler_output/"]
 
 # ------------------------------------------------
 
-FROM docker.elastic.co/elasticsearch/elasticsearch:8.18.8
+FROM docker.elastic.co/elasticsearch/elasticsearch:9.2.2
 
 COPY --from=uv_builder /app /app
 ENV PATH="/app/.venv/bin:$PATH"
-WORKDIR /app
+WORKDIR /usr/share/elasticsearch
 # copy elasticsearch config from repo into docker container
-COPY --chown=elasticsearch:elasticsearch elasticsearch.yml /usr/share/elasticsearch/config/
+COPY --chown=elasticsearch:elasticsearch elasticsearch.yml /usr/share/elasticsearch/config/ 
 
 VOLUME [ "/var/lib/elasticsearch", "/var/log/elasticsearch" ]
 #copy other necessary files

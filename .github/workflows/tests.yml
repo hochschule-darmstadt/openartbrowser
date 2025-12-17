@@ -6,12 +6,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Run ETL using uv container
-        # Use the official uv image to create the virtualenv and run the ETL reproducibly
-        uses: docker://ghcr.io/astral-sh/uv:0.8.21
+      - name: Sync dependencies with uv
+        uses: docker://ghcr.io/astral-sh/uv:0.9.15
+        env:
+          PYTHONPATH: ${{ github.workspace }}/etl
         with:
-          entrypoint: /bin/sh
-          args: -lc "uv sync --frozen --no-dev && uv run python -m data_extraction.get_wikidata_items -t 2 -d 1 && uv run python -m data_extraction.get_wikipedia_extracts"
+          entrypoint: /uv
+          args: sync --frozen --no-dev
+
+      - name: Run get_wikidata_items (uv)
+        uses: docker://ghcr.io/astral-sh/uv:0.9.15
+        env:
+          PYTHONPATH: ${{ github.workspace }}/etl
+        with:
+          entrypoint: /uv
+          args: run python -m data_extraction.get_wikidata_items -t 2 -d 1
+
+      - name: Run get_wikipedia_extracts (uv)
+        uses: docker://ghcr.io/astral-sh/uv:0.9.15
+        env:
+          PYTHONPATH: ${{ github.workspace }}/etl
+        with:
+          entrypoint: /uv
+          args: run python -m data_extraction.get_wikipedia_extracts
 
   frontend_test:
     runs-on: ubuntu-latest

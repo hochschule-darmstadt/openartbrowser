@@ -1,0 +1,23 @@
+[project]
+name = "etl"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "elasticsearch==7.0.0",
+    "ijson==2.3",
+    "pywikibot>=10.7.2",
+    "requests==2.31.0",
+    "sparqlwrapper==1.8.5",
+    "wikitextparser==0.47.0",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.14.8",
+]
+
+[tool.ruff]
+line-length = 120
+select = ["E", "F", "W", "C90", "B", "I"]

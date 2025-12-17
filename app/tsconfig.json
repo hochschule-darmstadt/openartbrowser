@@ -11,7 +11,7 @@
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "importHelpers": true,
-    "target": "ES2022",
+    "target": "esnext",
     "typeRoots": [
       "node_modules/@types"
     ],

@@ -343,37 +343,37 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "art-browser:build",
-            "proxyConfig": "src/config/proxy.conf.json"
+            "proxyConfig": "src/config/proxy.conf.json",
+            "buildTarget": "art-browser:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "art-browser:build:production"
+              "buildTarget": "art-browser:build:production"
             },
             "en": {
-              "browserTarget": "art-browser:build:en"
+              "buildTarget": "art-browser:build:en"
             },
             "fr": {
-              "browserTarget": "art-browser:build:fr"
+              "buildTarget": "art-browser:build:fr"
             },
             "de": {
-              "browserTarget": "art-browser:build:de"
+              "buildTarget": "art-browser:build:de"
             },
             "es": {
-              "browserTarget": "art-browser:build:es"
+              "buildTarget": "art-browser:build:es"
             },
             "it": {
-              "browserTarget": "art-browser:build:it"
+              "buildTarget": "art-browser:build:it"
             },
             "docker": {
-              "browserTarget": "art-browser:build:docker"
+              "buildTarget": "art-browser:build:docker"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "art-browser:build"
+            "buildTarget": "art-browser:build"
           }
         },
         "test": {

@@ -18,13 +18,16 @@ jobs:
         uses: astral-sh/setup-uv@v7
 
       - name: Install the project
+        working-directory: etl
         run: uv sync --locked --all-extras --dev
 
       - name: Run get_wikidata_items (uv)
-        run: uv run python etl/get_wikidata_items.py  -t 2 -d 1
+        working-directory: etl
+        run: uv run python -m data_extraction.get_wikidata_items -t 2 -d 1
       
       - name: Run get_wikipedia_extracts (uv)
-        run: uv run python etl/get_wikipedia_extracts.py
+        working-directory: etl
+        run: uv run python -m data_extraction.get_wikipedia_extracts
 
   frontend_test:
     runs-on: ubuntu-latest

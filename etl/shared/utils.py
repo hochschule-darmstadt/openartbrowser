@@ -49,6 +49,11 @@ def setup_logger(logger_name: str, filename: str):
 
     logger = logging.getLogger(logger_name)
 
+    # ensure directory for log file exists
+    try:
+        Path(filename).parent.mkdir(parents=True, exist_ok=True)
+    except Exception:
+        pass
     file_handler = logging.FileHandler(filename)
     file_handler.setFormatter(file_formatter)
     file_handler.setLevel(logging.DEBUG)

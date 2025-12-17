@@ -20,7 +20,7 @@ cluster.name: my-cluster1
 #
 # Use a descriptive name for the node:
 #
-node.name: node-claster-1-1
+node.name: node-cluster-1-1
 #
 # Add custom attributes to the node:
 #
@@ -88,7 +88,7 @@ http.cors.allow-origin: '*'
 # Require explicit names when deleting indices:
 #
 #action.destructive_requires_name: true
-cluster.initial_master_nodes: node-claster-1-1
+cluster.initial_master_nodes: node-cluster-1-1
 
 # Repository path for index snapshots
 path.repo: ['/var/lib/elasticsearch/backup']

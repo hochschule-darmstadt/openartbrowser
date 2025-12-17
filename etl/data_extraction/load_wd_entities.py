@@ -379,9 +379,9 @@ def load_entities_by_attribute_with_transitive_closure(
     attribute_name: str,
     oab_type: str,
     already_extracted_ids: Set[str],
-    entity_extraction_func: Callable[[str, List[str], Set[str], Optional[List[str]]], List[Dict]],
+    entity_extraction_func: Callable[[str, List[str], Set[str], Optional[List[str]]], tuple[List[Dict], Set[str]]],
     allowed_instances_of: List[str],
-) -> List[Dict]:
+) -> tuple[List[Dict], Set[str]]:
     """Recursive function to load all entities which a attribute contains.
 
     Remarks:
@@ -397,6 +397,7 @@ def load_entities_by_attribute_with_transitive_closure(
 
     Returns:
         Updated list of dicts with recursively loaded entities by an attribute
+        and the updated set of already extracted ids
     """
     qids = get_distinct_attribute_values_from_dict(attribute_name, extract_dicts)
     missing_qids = []
@@ -406,10 +407,10 @@ def load_entities_by_attribute_with_transitive_closure(
             missing_qids.append(id)
 
     if len(missing_qids) == 0:
-        return extract_dicts
+        return extract_dicts, already_extracted_ids
     else:
         [already_extracted_ids.add(id) for id in qids]
-        entities = entity_extraction_func(oab_type, missing_qids, already_extracted_ids)
+        entities, already_extracted_ids = entity_extraction_func(oab_type, missing_qids, already_extracted_ids)
         for entity in entities:
             # Check if an entity with the same qid is in the dict, if not then add
             if not any(e[ID] == entity[ID] for e in extract_dicts):
@@ -421,7 +422,7 @@ def load_entities_by_attribute_with_transitive_closure(
                         extract_dicts.append(entity)
                 else:
                     extract_dicts.append(entity)
-        return extract_dicts
+        return extract_dicts, already_extracted_ids
 
 
 # region subjects
@@ -430,7 +431,7 @@ def get_subject(
     qids: List[str],
     already_extracted_movement_ids: Set[str] = None,
     language_keys: Optional[List[str]] = lang_keys,
-) -> List[Dict]:
+) -> tuple[List[Dict], Set[str]]:
     """Extract subjects (in our definition everything except artworks e. g. movements, motifs, etc.) from wikidata
 
     Args:
@@ -478,7 +479,7 @@ def get_subject(
         print(f"Status of {type_name}: {item_count}/{len(qids)}", end="\r", flush=True)
 
     if type_name == MOVEMENT[PLURAL]:
-        extract_dicts = load_entities_by_attribute_with_transitive_closure(
+        extract_dicts, already_extracted_movement_ids = load_entities_by_attribute_with_transitive_closure(
             extract_dicts,
             PART_OF,
             MOVEMENT[PLURAL],
@@ -486,7 +487,7 @@ def get_subject(
             get_subject,
             [ART_MOVEMENT[ID], ART_STYLE[ID]],
         )
-        extract_dicts = load_entities_by_attribute_with_transitive_closure(
+        extract_dicts, already_extracted_movement_ids = load_entities_by_attribute_with_transitive_closure(
             extract_dicts,
             HAS_PART,
             MOVEMENT[PLURAL],
@@ -494,10 +495,10 @@ def get_subject(
             get_subject,
             [ART_MOVEMENT[ID], ART_STYLE[ID]],
         )
-        return extract_dicts
+        return extract_dicts, already_extracted_movement_ids
 
     print(datetime.datetime.now(), f"Finished with {type_name}")
-    return extract_dicts
+    return extract_dicts, already_extracted_movement_ids
 
 
 def bundle_extract_subjects_calls(oab_type_list: List[str], merged_artworks: List[Dict]) -> Iterator[List[Dict]]:
@@ -511,7 +512,8 @@ def bundle_extract_subjects_calls(oab_type_list: List[str], merged_artworks: Lis
         A list of dicts with from for the given oab type
     """
     for item in oab_type_list:
-        yield get_subject(item, get_distinct_attribute_values_from_dict(item, merged_artworks))
+        extract_dicts, _ids = get_subject(item, get_distinct_attribute_values_from_dict(item, merged_artworks))
+        yield extract_dicts
 
 
 # endregion
@@ -530,7 +532,7 @@ def extract_motifs_and_main_subjects(merged_artworks: List[Dict]) -> List[Dict]:
     main_subjects = get_distinct_attribute_values_from_dict(MAIN_SUBJECT[PLURAL], merged_artworks)
 
     motifs_and_main_subjects = motifs | main_subjects
-    motifs = get_subject(MOTIF[PLURAL], motifs_and_main_subjects)
+    motifs, _ = get_subject(MOTIF[PLURAL], motifs_and_main_subjects)
     return motifs
 
 
@@ -631,7 +633,7 @@ def get_classes(
     qids: List[str],
     already_extracted_superclass_ids: Set[str] = None,
     language_keys: Optional[List[str]] = lang_keys,
-) -> List[Dict]:
+) -> tuple[List[Dict], Set[str]]:
     """Function to extract the classes of the extracted wikidata entities
         (meaning the 'instance of' attribute wikidata entity qids).
     Their subclasses are also extracted recursively (also called transitive closure)
@@ -698,7 +700,7 @@ def get_classes(
         item_count += len(chunk)
         print(f"Status of {type_name}: {item_count}/{len(qids)}", end="\r", flush=True)
 
-    return load_entities_by_attribute_with_transitive_closure(
+    extract_dicts, _ids = load_entities_by_attribute_with_transitive_closure(
         extract_dicts,
         SUBCLASS_OF,
         CLASS[PLURAL],
@@ -706,6 +708,7 @@ def get_classes(
         get_classes,
         [],
     )
+    return extract_dicts, _ids
 
 
 def bundle_class_union_calls(distinct_classes: Set[str], oab_type_list: List[str]) -> Set[str]:
@@ -754,7 +757,8 @@ def get_distinct_extracted_classes(
         distinct_classes,
         [motifs, genres, materials, movements, artists, locations, classes],
     )
-    return get_classes(CLASS[PLURAL], distinct_classes)
+    distinct_classes, _ids = get_classes(CLASS[PLURAL], distinct_classes)
+    return distinct_classes
 
 
 # endregion

@@ -21,7 +21,7 @@ WORKDIR /app
 COPY ["./data_extraction", "/app"]
 COPY ["./user-config.py", "/app"]
 COPY ["./shared/", "/app/shared"]
-RUN mkdir "/app/logs"
+RUN mkdir  "/app/logs" || true
 # run get_wikidata_items in development mode
 RUN ["python", "-m", "data_extraction.get_wikidata_items", "-d", "5", "-r"]
 RUN ["python", "-m", "data_extraction.get_wikipedia_extracts"]
@@ -38,10 +38,10 @@ WORKDIR /app
 # get files from previous stage
 COPY --from=wikicrawler  /app/crawler_output/ /app/crawler_output/
 
-RUN mkdir data_enhancement
+RUN mkdir data_enhancement || true
 COPY ["./data_enhancement/", "/app/data_enhancement"]
 COPY ["./shared/", "/app/shared"]
-RUN mkdir "/app/logs"
+RUN mkdir "/app/logs" || true
 
 RUN ["python", "-m", "data_enhancement.estimate_movement_period"]
 RUN ["python", "-m", "data_enhancement.has_part_part_of_enhancement"]
@@ -87,16 +87,10 @@ FROM docker.elastic.co/elasticsearch/elasticsearch:8.18.8
 COPY --from=uv_builder /app /app
 ENV PATH="/app/.venv/bin:$PATH"
 WORKDIR /app
-USER root
-
-RUN mkdir /var/log/elasticsearch && \
-    mkdir /var/lib/elasticsearch && \
-    chown elasticsearch:elasticsearch /var/log/elasticsearch && \
-    chown elasticsearch:elasticsearch /var/lib/elasticsearch
-
 # copy elasticsearch config from repo into docker container
 COPY --chown=elasticsearch:elasticsearch elasticsearch.yml /usr/share/elasticsearch/config/
 
+VOLUME [ "/var/lib/elasticsearch", "/var/log/elasticsearch" ]
 #copy other necessary files
 COPY --from=post_data_ranking /app/crawler_output/ /app/crawler_output/
 COPY ["./shared/", "/app/shared"]

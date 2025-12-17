@@ -1,51 +1,35 @@
 name: TESTING
-on: [ workflow_dispatch, push, pull_request ]
+on: [workflow_dispatch, push, pull_request]
 
 jobs:
   crawler_test:
-
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python 3.14
-        uses: actions/setup-python@v2
+      - uses: actions/checkout@v4
+      - name: Run ETL using uv container
+        # Use the official uv image to create the virtualenv and run the ETL reproducibly
+        uses: docker://ghcr.io/astral-sh/uv:0.8.21
         with:
-          # Semantic version range syntax or exact version of a Python version
-          python-version: '3.14'
-      - name: Install dependencies
-        run: |
-          cd etl/
-          export PYTHONPATH="${PYTHONPATH}:${pwd}"
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-      - name: Run crawler test
-        run: |
-          cd etl/
-          export PYTHONPATH="${PYTHONPATH}:${pwd}"
-          python data_extraction/get_wikidata_items.py -t 2 -d 1
-          python data_extraction/get_wikipedia_extracts.py
+          entrypoint: /bin/sh
+          args: -lc "uv sync --frozen --no-dev && uv run python -m data_extraction.get_wikidata_items -t 2 -d 1 && uv run python -m data_extraction.get_wikipedia_extracts"
 
   frontend_test:
-
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
       - name: Reconfigure git to use HTTP authentication
         run: >
           git config --global url."https://github.com/".insteadOf
           ssh://git@github.com/
-      - name: Use Node.js 14 (Angular 11 compatible)
-        uses: actions/setup-node@v3
+      - name: Use Node.js 12
+        uses: actions/setup-node@v4
         with:
           node-version: 14
       - name: Cache Node.js modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
-          # npm cache files are stored in `~/.npm` on Linux/macOS
           path: ~/.npm
           key: ${{ runner.OS }}-node-${{ hashFiles('app/package-lock.json') }}
           restore-keys: |

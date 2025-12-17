@@ -8,7 +8,10 @@ docker rm -f elastic-dev
 docker build -t elastic-dev .
 
 # run container
-docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" --name "elastic-dev" elastic-dev &
+docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" --name "elastic-dev" \
+ -v ./docker-log:/var/log/elasticsearch \
+ --entrypoint "sleep infinity" \
+ elastic-dev &
 
 # wait until elasticsearch started
 echo "waiting until elasticsearch is up"
@@ -19,5 +22,6 @@ do
   sleep 2
 done
 
+echo "elasticsearch is up"
 # run elastic.py script inside the container
 docker exec elastic-dev python3 /app/upload_to_elasticsearch/elasticsearch_helper.py /app/crawler_output/art_ontology.json

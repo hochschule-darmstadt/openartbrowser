@@ -2,13 +2,14 @@
 """
 import datetime
 import time
+from typing import Any, Dict, List, Optional, Tuple
 from urllib.error import HTTPError
-from typing import Dict, Any, List, Tuple, Optional
 
 import requests
-from data_extraction.constants import MAX_LAG, SLEEP_TIME, TIMEOUT
 from requests.adapters import HTTPAdapter
 from urllib3.util import Retry
+
+from data_extraction.constants import MAX_LAG, SLEEP_TIME, TIMEOUT
 
 
 def send_http_request(
@@ -17,7 +18,7 @@ def send_http_request(
     url: str,
     logging: Any,
     initial_timeout: Optional[int] = 0,
-    items: Optional[List[str]] = [],
+    items: Optional[List[str]] = None,
     abstracts: Optional[bool] = False,
     timeout: Optional[int] = TIMEOUT,
     sleep_time: Optional[int] = SLEEP_TIME,
@@ -40,6 +41,8 @@ def send_http_request(
     Returns:
         A dict containing the response from the called endpoint
     """
+    if items is None:
+        items = []
     while True:
         try:
             t0 = time.time()

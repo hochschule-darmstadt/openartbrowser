@@ -9,3 +9,4 @@ data_extraction_statistics.txt
 build
 dist
 openartbrowser_etl.egg-info
+apicache

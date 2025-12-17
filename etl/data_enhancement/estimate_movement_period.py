@@ -1,11 +1,13 @@
 """Script to estimate start and end of each movement by finding first and last artwork of the movement."""
 
 import json
-from pathlib import Path
-import ijson
-from shared.utils import write_state, check_state, DecimalEncoder
-from shared.constants import ETL_STATES
 import sys
+from pathlib import Path
+
+import ijson
+
+from shared.constants import ETL_STATES
+from shared.utils import DecimalEncoder, check_state, write_state
 
 inceptions = {}
 RECOVER_MODE = False

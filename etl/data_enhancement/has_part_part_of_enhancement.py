@@ -4,12 +4,13 @@ since they are inverse to each other
 """
 import datetime
 import json
+import sys
 from pathlib import Path
 from typing import Dict, List
-from shared.utils import write_state, check_state
-import sys
 
-from shared.constants import HAS_PART, ID, PART_OF, ETL_STATES
+from shared.constants import ETL_STATES, HAS_PART, ID, PART_OF
+from shared.utils import check_state, write_state
+
 RECOVER_MODE = False
 
 def inverse_attribute_enhancement(

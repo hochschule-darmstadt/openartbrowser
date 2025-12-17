@@ -22,18 +22,18 @@ from typing import Dict, List, Optional
 import requests
 
 from shared.constants import (
-    JSON,
-    ARTWORK,
+    ADD_YOUTUBE_VIDEOS_LOG_FILENAME,
     ARTIST,
+    ARTWORK,
+    ETL_STATES,
+    ID,
+    JSON,
     MOVEMENT,
     PLURAL,
-    ID,
     VIDEOS,
     YOUTUBE_VIDEOS_FILE,
-    ETL_STATES,
-    ADD_YOUTUBE_VIDEOS_LOG_FILENAME
 )
-from shared.utils import create_new_path, write_state, check_state, setup_logger
+from shared.utils import check_state, create_new_path, setup_logger, write_state
 
 # setup logger
 logger = setup_logger(

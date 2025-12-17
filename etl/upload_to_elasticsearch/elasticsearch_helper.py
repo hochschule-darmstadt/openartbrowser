@@ -4,16 +4,19 @@ import logging
 import time
 import uuid
 from pathlib import Path
-from typing import List, Dict, Optional
+from typing import Dict, List, Optional
+
 import requests
 from elasticsearch import Elasticsearch, helpers
-from shared.utils import language_config_to_list, setup_logger
+
 from shared.constants import ELASTICSEARCH_HELPER_LOG_FILENAME
+from shared.utils import language_config_to_list, setup_logger
 
 # setup logger
 logger = setup_logger(
     "upload_to_elasticsearch.elasticsearch_helper",
-    Path(__file__).parent.parent.absolute() / "logs" / ELASTICSEARCH_HELPER_LOG_FILENAME,
+    Path(__file__).parent.parent.absolute()
+    / "logs" / ELASTICSEARCH_HELPER_LOG_FILENAME,
 )
 
 
@@ -29,7 +32,8 @@ MAX_RETRIES_ON_TIMEOUT = 10
 # Some attributes on the elasticsearch have to be explicitly typed
 # Otherwise the sort functionallity doesn't work (e. g. for long datatypes)
 # Each property not mentioned in this Dict will be automatically mapped by elasticsearch
-index_creation_body = {"mappings": {"properties": {"relativeRank": {"type": "float"}}}}
+index_creation_body = {"mappings": {
+    "properties": {"relativeRank": {"type": "float"}}}}
 
 lang_keys = [item[0] for item in language_config_to_list()]
 
@@ -78,7 +82,8 @@ def create_index(index_name: str, filename: str) -> None:
 
     Args:
         index_name: Index name in which documents should be created
-        filename: Name of the filename which contains the documents to be created e. g. art_ontology_<language_code>.json
+        filename: Name of the filename which contains the documents to be created
+        e. g. art_ontology_<language_code>.json
     """
     # Uses localhost:9200 (elasticsearch default) to create the index with it's documents
     es = Elasticsearch()
@@ -90,7 +95,8 @@ def create_index(index_name: str, filename: str) -> None:
     )
     start = time.time()
 
-    print("Checking if index with the name " + index_name + " can be created ...")
+    print("Checking if index with the name "
+          + index_name + " can be created ...")
     if create_empty_index(index_name=index_name):
         print("Index " + index_name + " created successfully")
     else:
@@ -115,7 +121,8 @@ def create_index(index_name: str, filename: str) -> None:
     end = time.time()
     print(f"{len(items)} documents were created in index {index_name}")
     print(
-        f"Finished creating the index current time: {str(datetime.datetime.now())} it took {str((int((end - start) / 60)))} minutes"
+        f"Finished creating the index current time: {str(datetime.datetime.now())}"
+        " it took {str((int((end - start) / 60)))} minutes"
     )
 
 
@@ -217,12 +224,14 @@ def create_snapshot_for_index(
                                 - Following entry in elasticsearch.yml required:
                                 path.repo: ["path_to_folder"]
     """
-    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT)
+    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT,
+                       retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT)
 
     try:
         # Check if repository already was created
         es.snapshot.get_repository(repository_name)
-    except:  # If not create
+    except Exception as e:
+        logger.error(e)  # If not create
         es.snapshot.create_repository(
             repository=repository_name,
             body={"type": "fs", "settings": {"location": backup_directory}},
@@ -232,7 +241,8 @@ def create_snapshot_for_index(
             # Check if this snapshot was deleted if not remove it
             es.snapshot.get(repository=repository_name, snapshot=snapshot_name)
             delete_snapshot_from_repository(snapshot_name)
-        except:
+        except Exception as e:
+            logger.error(e)
             pass
         es.snapshot.create(
             repository=repository_name,
@@ -258,7 +268,8 @@ def apply_snapshot_from_repository(
         repository_name: Name of the repository the snapshot is in
         snapshot_name: Name of the snapshot
     """
-    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT)
+    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT,
+                       retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT)
 
     try:
         es.indices.close(index=index_name)
@@ -290,12 +301,14 @@ def delete_snapshot_from_repository(
         backup_directory: Directory in which the repository is located
                            See create_snapshot_for_index for more information on that
     """
-    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT)
+    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT,
+                       retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT)
 
     try:
         # Check if repository already was created
         es.snapshot.get_repository(repository_name)
-    except:  # If not create
+    except Exception as e:
+        logger.error(e)  # If not create
         es.snapshot.create_repository(
             repository=repository_name,
             body={"type": "fs", "settings": {"location": backup_directory}},
@@ -341,7 +354,8 @@ def list_all_indices(elastic_search_url: Optional[str] = "localhost:9200") -> No
 
 def create_index_for_each_language(
     language_keys: Optional[List[str]] = lang_keys,
-    filepath: Optional[str] = Path(__file__).resolve().parent.parent / "crawler_output",
+    filepath: Optional[str] = Path(
+        __file__).resolve().parent.parent / "crawler_output",
 ) -> None:
     """Creates a new index for each language in the languageconfig.csv
     The new indice name convention is <indexname>_new
@@ -419,7 +433,8 @@ def swap_to_backup_for_each_language(
 
 def count_check_for_each_language(
     language_keys: Optional[List[str]] = lang_keys,
-    filepath: Optional[str] = Path(__file__).resolve().parent.parent / "crawler_output",
+    filepath: Optional[str] = Path(
+        __file__).resolve().parent.parent / "crawler_output",
 ) -> bool:
     """After the indices were created check that the indice document count
     equals the JSON object count of the corresponding JSON file
@@ -433,7 +448,8 @@ def count_check_for_each_language(
     for key in lang_keys:
         # Refresh is needed because the indice stats aren't always up-to-date
         es.indices.refresh(key)
-        es_document_count_dict = es.cat.count(index=key, params={"format": "json"})
+        es_document_count_dict = es.cat.count(
+            index=key, params={"format": "json"})
         es_document_count = int(es_document_count_dict[0]["count"])
         file_name = filepath / str("art_ontology_" + key + ".json")
         with open(file_name, encoding="utf-8") as input:

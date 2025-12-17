@@ -5,14 +5,15 @@ Implemented as specified in https://github.com/hochschule-darmstadt/openartbrows
 Returns:
     The ranked entities which means the attributes absolute rank and relative rank.
 """
-import json
 import datetime
-from numbers import Number
-from typing import List, Dict
-from shared.constants import *
-from shared.utils import create_new_path, write_state, check_state, setup_logger
-from pathlib import Path
+import json
 import sys
+from numbers import Number
+from pathlib import Path
+from typing import Dict, List
+
+from shared.constants import *
+from shared.utils import check_state, create_new_path, setup_logger, write_state
 
 # setup logger
 logger = setup_logger(
@@ -23,7 +24,7 @@ logger = setup_logger(
 RECOVER_MODE = False
 
 def rank_artworks(
-        artworks: List[Dict], ignore_keys: List[str] = [ABSOLUTE_RANK, RELATIVE_RANK]
+        artworks: List[Dict], ignore_keys: List[str] = None
 ) -> List[Dict]:
     """Ranks a list of artwork entities (JSON-Objects)
 
@@ -34,6 +35,8 @@ def rank_artworks(
     Returns:
         Ranked artwork list
     """
+    if ignore_keys is None:
+        ignore_keys = [ABSOLUTE_RANK, RELATIVE_RANK]
     for artwork in artworks:
         absolute_rank = 0
         for key, value in artwork.items():

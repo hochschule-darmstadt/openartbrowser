@@ -1,16 +1,16 @@
 """Mapping functions to extract information from wikidata JSON responses (especially entity attribtues) to the openArtBrowser data model
 """
+import hashlib
 import inspect
 import re
-import hashlib
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
 from pywikibot import WbTime
 
 from data_extraction.constants import *
-from shared.utils import setup_logger
 from shared.constants import *
+from shared.utils import setup_logger
 
 logger = setup_logger(
     "data_extraction.map_wd_attribute",

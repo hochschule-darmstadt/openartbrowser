@@ -11,6 +11,8 @@ import json
 import urllib
 from pathlib import Path
 
+from loguru import logger
+
 
 def uri_validator(uri: str) -> bool:
     """Validates if a string is an URI
@@ -24,7 +26,8 @@ def uri_validator(uri: str) -> bool:
     try:
         result = urllib.parse.urlparse(uri)
         return all([result.scheme, result.netloc, result.path])
-    except:
+    except Exception as e:
+        logger.error(e)
         return False
 
 
@@ -162,7 +165,8 @@ def generate_rdf(
                                 if key == "videos":
                                     count = 0
                                     output.write(
-                                        " ;\n    " + properties[key]["property"] + " "
+                                        " ;\n    "
+                                        + properties[key]["property"] + " "
                                     )
                                     for v in value:
                                         count += 1

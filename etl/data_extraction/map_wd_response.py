@@ -46,7 +46,8 @@ def try_map_response_to_subject(
                 DATAVALUE
             ][VALUE]
         )
-    except:
+    except Exception as e:
+        logger.error(e)
         image = ""
 
     label = map_wd_attribute.try_get_label_or_description(
@@ -120,7 +121,8 @@ def try_map_response_to_artist(response: Dict) -> Dict:
         response, PROPERTY_NAME_TO_PROPERTY_ID[CITIZENSHIP], ARTIST[SINGULAR]
     )
     movements = map_wd_attribute.try_get_qid_reference_list(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[MOVEMENT[SINGULAR]], ARTIST[SINGULAR]
+        response, PROPERTY_NAME_TO_PROPERTY_ID[MOVEMENT[SINGULAR]
+                                               ], ARTIST[SINGULAR]
     )
     return {
         GENDER: gender,

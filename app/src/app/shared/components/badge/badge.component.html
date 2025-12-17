@@ -1,6 +1,6 @@
 <a
   *ngIf="entity"
-  class="badge badge-pill badge-secondary first-letter chip"
+  class="badge rounded-pill bg-secondary first-letter chip"
   [ngClass]="{ 'badge-transparent': isHoverBadge, 'badge-light': highlight }"
   tooltipClass="tooltip"
   [ngbTooltip]="tooltip !== null ? htmlContent : ''"
@@ -9,7 +9,7 @@
   angularticsAction="Badge"
   angularticsCategory="Navigation"
 >
-  <i class="mr-1" class="fas {{ entity?.icon }}"></i>
+  <i class="me-1 fas {{ entity?.icon }}"></i>
   {{ entity?.label }}
 </a>
 

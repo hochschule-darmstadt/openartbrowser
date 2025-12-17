@@ -7,7 +7,7 @@
 
     <ngb-highlight class="search__result-label" [result]="r.label" [term]="t"></ngb-highlight>
 
-    <p class="badge badge-secondary search__result-chip">
+    <p class="badge bg-secondary search__result-chip">
       <ng-container i18n="Entity Type Labels@@entity_labels">
         {type, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material} class {Class} }
       </ng-container>
@@ -17,9 +17,9 @@
 
 <div class="search">
   <div *ngIf="searchItems.length > 0 && isHeaderSearch" class="search__header-chips">
-    <span *ngFor="let i of searchItems" class="badge badge-pill badge-secondary chip search__header-chip">
+    <span *ngFor="let i of searchItems" class="badge rounded-pill bg-secondary chip search__header-chip">
       <span *ngIf="i.type !== 'artwork'" class="fas {{i.icon}}"></span>
-      <span *ngIf="i.type" class="search__header-chip-label ml-1">{{ i.label }}</span>
+      <span *ngIf="i.type" class="search__header-chip-label ms-1">{{ i.label }}</span>
       <span *ngIf="!i.type" class="search__header-chip-label">"{{ i.label }}"</span>
       <span (click)="removeTag(i)" class="fas fa-times-circle search__header-chip-removeButton"></span>
     </span>

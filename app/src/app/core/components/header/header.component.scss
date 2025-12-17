@@ -14,6 +14,18 @@
     align-items: center;
     width: 100%;
     flex-wrap: wrap;
+
+    li {
+      text-align: center;
+      display: flex;
+      h3 {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  i {
+    color: #00bc8c;
   }
 }
 
@@ -36,11 +48,14 @@
 
   h3 {
     font-size: 1.2em;
+    width: unset;
+    padding: unset;
   }
 
   span {
     font-size: 0.7em;
-
+    width: unset;
+    padding: unset;
     @media (min-width: 0px) and (max-width: 575px) {
       font-size: 0.5em;
       margin-left: 2em;
@@ -143,7 +158,8 @@
     &-nav {
       flex-direction: row;
     }
-    li:nth-child(2), li:nth-child(3) { 
+    li:nth-child(2),
+    li:nth-child(3) {
       margin-left: auto;
     }
     li:nth-child(2) {

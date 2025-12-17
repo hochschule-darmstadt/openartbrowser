@@ -1,12 +1,12 @@
-import {AfterViewInit, Component, HostListener, Input, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
-import {animate, state, style, transition, trigger} from '@angular/animations';
-import {Options} from '@angular-slider/ngx-slider';
-import {Subject, timer} from 'rxjs';
-import {switchMap} from 'rxjs/operators';
-import {DataService} from '../../../core/services/elasticsearch/data.service';
-import {EntityType} from '../../models/entity.interface';
-import {Artwork} from '../../models/artwork.interface';
-import {Movement} from '../../models/movement.interface';
+import { AfterViewInit, Component, HostListener, Input, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { Options } from '@angular-slider/ngx-slider';
+import { Subject, timer } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { DataService } from '../../../core/services/elasticsearch/data.service';
+import { EntityType } from '../../models/entity.interface';
+import { Artwork } from '../../models/artwork.interface';
+import { Movement } from '../../models/movement.interface';
 import homeMovements from 'src/config/home_movements.json';
 
 interface MovementItem extends Movement {
@@ -20,8 +20,8 @@ interface MovementItem extends Movement {
   styleUrls: ['./movement-overview.component.scss'],
   animations: [
     trigger('newThumb', [
-      state('hide', style({opacity: '0'})), // transform: 'scale(0)'})),
-      state('show', style({opacity: '1'})), // transform: 'scale(1)'})),
+      state('hide', style({ opacity: '0' })), // transform: 'scale(0)'})),
+      state('show', style({ opacity: '1' })), // transform: 'scale(1)'})),
       transition('show => hide', [animate(0)]),
       transition('hide => show', [animate(500)])
     ])
@@ -94,12 +94,12 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
 
   ngOnChanges(changes: SimpleChanges) {
     // trigger for rerender of movement-overview if there are prop inputs
-    if(changes.inputMovements.currentValue) {
+    if (changes.inputMovements.currentValue) {
       this.boxes = [[]];
       this.movements = changes.inputMovements.currentValue as MovementItem[];
       this.initializeMovements();
       // sort movements by start_time ascending for mobile movement overview
-      this.inputMovements.sort((a, b) => a.start_time < b.start_time ? -1 : 1); 
+      this.inputMovements.sort((a, b) => a.start_time < b.start_time ? -1 : 1);
     }
   }
 
@@ -182,7 +182,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
     this.timelineStart = firstStart - (firstStart % this.periodSpan);
     this.timelineEnd = lastEnd - (lastEnd % this.periodSpan) + this.periodSpan;
 
-    
+
     /** Set slider options */
     const newOptions: Options = Object.assign({}, this.options);
     newOptions.ceil = this.timelineEnd;
@@ -277,7 +277,7 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
 
     const thumbnail = document.getElementById('thumbnail');
 
-    const offset = (x1 - (thumbnail.scrollWidth / 2) - 15);
+    const offset = (x1 - (thumbnail.scrollWidth / 2));
     // move thumbnail
     thumbnail.setAttribute('style', 'margin-left: ' + offset.toString() + 'px;');
     const y2 = thumbnail.offsetTop;
@@ -336,11 +336,11 @@ export class MovementOverviewComponent implements OnInit, AfterViewInit, OnDestr
       return;
     }
     // choose random new thumb out of first n-1
-    const thumbIndex = (currMovement.artworks.length > 1) ? Math.floor(Math.random() * currMovement.artworks.length-1) : 0;
+    const thumbIndex = (currMovement.artworks.length > 1) ? Math.floor(Math.random() * currMovement.artworks.length - 1) : 0;
 
     const oldThumbnail = this.thumbnail;
     const newThumbnail = currMovement.artworks.splice(thumbIndex, 1)[0];
-    if(oldThumbnail === newThumbnail) {
+    if (oldThumbnail === newThumbnail) {
       this.showThumbnail = true;
       this.thumbnailLoaded = true;
     }

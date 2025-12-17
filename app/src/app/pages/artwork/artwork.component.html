@@ -89,13 +89,13 @@
       <ul class='nav nav-tabs tabs'>
         <ng-container *ngFor='let tab of artworkTabs'>
           <li class='nav-item' *ngIf='artwork && tab.items.length > 0'>
-            <a class='nav-link' [ngClass]='{ active: tab.active }' data-toggle='tab' href='#{{ tab.type }}_tab'>
-              <i class='mr-1 fas' [ngClass]='tab.icon'></i>
+            <button type='button' class='nav-link' [ngClass]='{ active: tab.active }' (click)='setActiveTab(tab.type)'>
+              <i class='me-1 fas' [ngClass]='tab.icon'></i>
               <ng-container i18n='Entity Type Labels@@entity_labels' *ngIf='tab.type; let type'>
                 {type, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material
                   {Material} main_motif {Main Motif} class {Class} }
               </ng-container>
-            </a>
+            </button>
           </li>
         </ng-container>
       </ul>
@@ -144,8 +144,8 @@
                 tags with artwork
               </ng-container>
               <span>"{{ artwork?.label?.length > 35 ? (artwork?.label | slice: 0:35) + '...' : artwork?.label }}"</span>
-              <i *ngIf='commonTagsCollapsed' class='ml-2 fas fa-chevron-down'></i>
-              <i *ngIf='!commonTagsCollapsed' class='ml-2 fas fa-chevron-up'></i>
+              <i *ngIf='commonTagsCollapsed' class='ms-2 fas fa-chevron-down'></i>
+              <i *ngIf='!commonTagsCollapsed' class='ms-2 fas fa-chevron-up'></i>
             </h3>
 
             <div class='collapse' [ngbCollapse]='commonTagsCollapsed' id='commonTagsDiv'>
@@ -217,7 +217,7 @@
     Modal for page overlay when enlarging image, shown when "modalIsVisible" is set to true
   -->
   <div class='modal' *ngIf='modalIsVisible' id='img-modal'>
-    <span class='close' (click)='closeModal()'>&times;</span>
+    <button type='button' class='btn-close' (click)='closeModal()' aria-label='Close'></button>
     <!-- Zoom in and out functionality, see package ngx-image-viewer -->
     <div class='modal-content my-auto'>
       <ngx-image-viewer

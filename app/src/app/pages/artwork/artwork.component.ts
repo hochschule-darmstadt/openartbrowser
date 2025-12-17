@@ -291,17 +291,14 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   }
 
 
+  setActiveTab(value: string) {
+    for (const tab of this.artworkTabs) {
+      tab.active = tab.type === value;
+    }
+  }
+
   onChange(event) {
     const value = event.target.value;
-
-    for (const tab of this.artworkTabs) {
-
-      if (tab.type === value) {
-        tab.active = true;
-      } else {
-        tab.active = false;
-      }
-
-    }
+    this.setActiveTab(value);
   }
 }

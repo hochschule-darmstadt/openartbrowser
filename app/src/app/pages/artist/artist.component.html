@@ -79,21 +79,19 @@
   <div *ngIf="sliderItems?.length">
     <ul class="nav nav-tabs tabs">
       <li class="nav-item">
-        <a class="nav-link" (click)="setActiveTab(Tab.Timeline)"
-           [ngClass]="{ active:  activeTab === Tab.Timeline }"
-           data-toggle="tab" href="#timeline_tab">
-          <i class="mr-1 fa fa-ruler-horizontal"></i>
+        <button type="button" class="nav-link" (click)="setActiveTab(Tab.Timeline)"
+           [ngClass]="{ active:  activeTab === Tab.Timeline }">
+          <i class="me-1 fa fa-ruler-horizontal"></i>
           <ng-container i18n="Timeline toggle label@@toggletimeline">Timeline</ng-container>
-        </a>
+        </button>
       </li>
       <li class="nav-item">
-        <a class="nav-link" (click)="setActiveTab(Tab.Artworks)"
-           [ngClass]="{ active:  activeTab === Tab.Artworks }"
-           data-toggle="tab" href="#artworks_tab">
-          <i class="mr-1 fas fa-image"></i>
-          <span class="ml-1 mt-auto mb-auto mr-1 artworks-amount">{{ artist?.absoluteRank }}</span>
+        <button type="button" class="nav-link" (click)="setActiveTab(Tab.Artworks)"
+           [ngClass]="{ active:  activeTab === Tab.Artworks }">
+          <i class="me-1 fas fa-image"></i>
+          <span class="ms-1 mt-auto mb-auto me-1 artworks-amount">{{ artist?.absoluteRank }}</span>
           <ng-container i18n="Timeline toggle label@@toggleartworks">Artworks</ng-container>
-        </a>
+        </button>
       </li>
     </ul>
 

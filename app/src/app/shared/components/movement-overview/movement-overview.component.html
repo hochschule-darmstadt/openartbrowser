@@ -31,7 +31,7 @@
              [ngStyle]="{'display': thumbnailLoaded ? 'block' : 'none'}"
              (load)="onThumbnailLoaded()"
              (error)="onLoadingError(thumbnail)"/>
-        <div class="overlay_view" [ngClass]="thumbnail?.type == 'artist' ? 'rounded-circle' : ''">
+        <div class="overlay_view" [ngClass]="thumbnail?.type === 'artist' ? 'rounded-circle' : ''">
           <span class="img_description">{{ this.currentMovementLabel | titlecase }}</span>
         </div>
       </div>

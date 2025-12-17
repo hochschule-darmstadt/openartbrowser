@@ -3,10 +3,10 @@
 import datetime
 import re
 import time
+from json import JSONDecodeError
 from pathlib import Path
 from typing import Callable, Dict, Iterator, List, Optional, Set
 from urllib.error import HTTPError
-from json import JSONDecodeError
 
 from SPARQLWrapper import SPARQLWrapper
 
@@ -87,12 +87,7 @@ def query_artwork_qids(type_name: str, wikidata_id: str) -> List[str]:
 def wikidata_entity_request(
         qids: List[str],
         language_keys: Optional[List[str]] = lang_keys,
-        props: Optional[List[str]] = [
-            CLAIMS,
-            DESCRIPTION[PLURAL],
-            LABEL[PLURAL],
-            SITELINKS,
-        ],
+        props: Optional[List[str]] = None,
         timeout: Optional[int] = TIMEOUT,
         sleep_time: Optional[int] = SLEEP_TIME,
         maxlag: Optional[int] = MAX_LAG,
@@ -115,6 +110,8 @@ def wikidata_entity_request(
     Examples:
         wikidata_entity_request(["Q12418", "Q45585"])
     """
+    if props is None:
+        props = [CLAIMS, DESCRIPTION[PLURAL], LABEL[PLURAL], SITELINKS]
     initial_timeout = timeout
     langkeyPlusWikiList = [key + "wiki" for key in language_keys]
     parameters = {
@@ -448,7 +445,7 @@ def load_entities_by_attribute_with_transitive_closure(
 def get_subject(
         type_name: str,
         qids: List[str],
-        already_extracted_movement_ids: Set[str] = set(),
+        already_extracted_movement_ids: Set[str] = None,
         language_keys: Optional[List[str]] = lang_keys,
 ) -> List[Dict]:
     """Extract subjects (in our definition everything except artworks e. g. movements, motifs, etc.) from wikidata
@@ -461,6 +458,8 @@ def get_subject(
     Returns:
         A list of dicts with the subjects transformed from wikidata entities to oab entities
     """
+    if already_extracted_movement_ids is None:
+        already_extracted_movement_ids = set()
     print(datetime.datetime.now(), f"Starting with {type_name}")
     print(f"Total {type_name} to extract: {len(qids)}")
     item_count = 0
@@ -594,7 +593,7 @@ def get_unit_symbols(qids: List[str]) -> List[Dict]:
     Returns:
         List of dicts containing the unit id and their unit symbol in english language
     """
-    print(datetime.datetime.now(), f"Starting with unit symbols")
+    print(datetime.datetime.now(), "Starting with unit symbols")
     print(f"Total unit symbols to extract: {len(qids)}")
     item_count = 0
     extract_dicts = []
@@ -624,7 +623,7 @@ def get_unit_symbols(qids: List[str]) -> List[Dict]:
         item_count += len(chunk)
         print(f"Status of unit symbols: {item_count}/{len(qids)}", end="\r", flush=True)
 
-    print(datetime.datetime.now(), f"Finished with unit symbols")
+    print(datetime.datetime.now(), "Finished with unit symbols")
     return extract_dicts
 
 
@@ -665,7 +664,7 @@ def resolve_unit_id_to_unit_symbol(
 def get_classes(
         type_name: str,
         qids: List[str],
-        already_extracted_superclass_ids: Set[str] = set(),
+        already_extracted_superclass_ids: Set[str] = None,
         language_keys: Optional[List[str]] = lang_keys,
 ) -> List[Dict]:
     """Function to extract the classes of the extracted wikidata entities (meaning the 'instance of' attribute wikidata entity qids).
@@ -681,6 +680,8 @@ def get_classes(
     Returns:
         Returns a list of dicts with the classes from the oab entities and their subclasses
     """
+    if already_extracted_superclass_ids is None:
+        already_extracted_superclass_ids = set()
     print(datetime.datetime.now(), f"Starting with {type_name}")
     if type_name == CLASS[PLURAL]:
         print(
@@ -970,7 +971,7 @@ def get_exhibition_entities(
     Returns:
         A dict with the qids as key and the JSON object as value
     """
-    print(datetime.datetime.now(), f"Starting with exhibition entities")
+    print(datetime.datetime.now(), "Starting with exhibition entities")
     print(f"Total exhibition entities to extract: {len(qids)}")
     item_count = 0
     extract_dicts = {}
@@ -1028,7 +1029,7 @@ def get_exhibition_entities(
             flush=True,
         )
 
-    print(datetime.datetime.now(), f"Finished with exhibition entities")
+    print(datetime.datetime.now(), "Finished with exhibition entities")
     return extract_dicts
 
 

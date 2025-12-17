@@ -18,7 +18,7 @@ from typing import Dict, List, Optional
 from data_extraction.constants import *
 from data_extraction.request_utils import send_http_request
 from shared.constants import JSON
-from shared.utils import chunks, create_new_path, language_config_to_list, setup_logger, check_state, write_state
+from shared.utils import check_state, chunks, create_new_path, language_config_to_list, setup_logger, write_state
 
 RECOVER_MODE = False
 

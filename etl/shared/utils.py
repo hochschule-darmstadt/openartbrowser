@@ -9,7 +9,7 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Dict, List
 
-from shared.constants import CRAWLER_OUTPUT, INTERMEDIATE_FILES, LOGS, JSON, ETL_STATES
+from shared.constants import CRAWLER_OUTPUT, ETL_STATES, INTERMEDIATE_FILES, JSON, LOGS
 
 root_logger = logging.getLogger()  # setup root logger
 root_logger.setLevel(
@@ -112,7 +112,7 @@ def is_jsonable(x):
     try:
         json.dumps(x, skipkeys=True, ensure_ascii=False, cls=DecimalEncoder)
         return True
-    except (TypeError, OverflowError) as e:
+    except (TypeError, OverflowError):
         logging.error(f'Object was not json serializable! Object:\n{x}')
         return False
 

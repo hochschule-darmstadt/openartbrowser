@@ -35,15 +35,16 @@ import ijson
 
 from data_extraction import load_wd_entities
 from data_extraction.constants import *
-from shared.constants import *
 from shared.blocklist import BLOCKLIST
+from shared.constants import *
 from shared.utils import (
+    check_state,
     create_new_path,
     generate_json,
+    is_jsonable,
     language_config_to_list,
     setup_logger,
-    is_jsonable,
-    check_state, write_state
+    write_state,
 )
 
 DEV = False
@@ -263,7 +264,7 @@ def merge_artworks() -> List[Dict]:
                 objects = ijson.items(input, 'item')
                 object_array = (o for o in objects)
                 for object in object_array:
-                    if not object[ID] in artworks and is_jsonable(object):  # remove duplicates
+                    if object[ID] not in artworks and is_jsonable(object):  # remove duplicates
                         object[TYPE] = ARTWORK[SINGULAR]
                         extract_dicts.append(object)
                         artworks.add(object[ID])

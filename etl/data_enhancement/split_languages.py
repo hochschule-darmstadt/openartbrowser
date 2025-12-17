@@ -12,14 +12,11 @@ Returns:
 """
 import copy
 import datetime
+import sys
 from pathlib import Path
 from typing import Any, Dict, List
 
 import ijson
-
-from shared.utils import write_state, check_state, is_jsonable
-from shared.constants import ETL_STATES
-import sys
 
 from shared.constants import (
     ABSTRACT,
@@ -27,17 +24,18 @@ from shared.constants import (
     COUNTRY,
     CRAWLER_OUTPUT,
     DESCRIPTION,
+    ETL_STATES,
+    EXHIBITION_HISTORY,
     GENDER,
+    JSON,
     LABEL,
-    SINGULAR,
-    WIKIPEDIA_LINK,
     PLACE_OF_BIRTH,
     PLACE_OF_DEATH,
-    EXHIBITION_HISTORY,
     SIGNIFICANT_EVENT,
-    JSON,
+    SINGULAR,
+    WIKIPEDIA_LINK,
 )
-from shared.utils import generate_json, language_config_to_list
+from shared.utils import check_state, generate_json, is_jsonable, language_config_to_list, write_state
 
 language_values = language_config_to_list()
 language_keys = [item[0] for item in language_values]

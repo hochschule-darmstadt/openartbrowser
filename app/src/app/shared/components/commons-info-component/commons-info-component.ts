@@ -1,16 +1,16 @@
 import { Component, Input, OnInit } from '@angular/core';
 
-import {CommonModule} from '@angular/common';
-import {ActivatedRoute} from '@angular/router';
-import {Observable} from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { Observable } from 'rxjs';
 import { CommonsService, ImageMeta } from '../../../core/services/commons-service';
 
 
 @Component({
-  selector: 'app-commons-info-component',
+  selector: 'app-commons-info',
   imports: [CommonModule],
   templateUrl: './commons-info-component.html',
-  styleUrl: './commons-info-component.css',
+  styleUrl: './commons-info-component.scss',
+  standalone: true,
 })
 export class CommonsInfoComponent implements OnInit {
 
@@ -19,7 +19,7 @@ export class CommonsInfoComponent implements OnInit {
   error?: string;
   imageName?: string;
 
-  constructor(private commonsService: CommonsService) {}
+  constructor(private commonsService: CommonsService) { }
 
   ngOnInit(): void {
     //this.fileUrl = 'https://upload.wikimedia.org/wikipedia/commons/f/f0/Horní_Skrýchov_-_výklenková_kaplička_(2).jpg';
@@ -28,8 +28,6 @@ export class CommonsInfoComponent implements OnInit {
       return;
     }
     this.imageName = decodeURIComponent(this.fileUrl.split('/').pop()!);
-
     this.meta$ = this.commonsService.fetchImageMeta(this.imageName);
-
   }
 }

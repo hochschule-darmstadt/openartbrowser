@@ -88,6 +88,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
       this.videoExists = false;
       this.artwork = this.hoveredArtwork = this.hoveredArtwork = null;
       this.imageHidden = this.modalIsVisible = this.commonTagsCollapsed = false;
+       this.modalIsVisible =true;
       // define tabs
       this.artworkTabs = [];
       Object.values(EntityType).forEach((type) => this.addTab(type, type === EntityType.ALL));

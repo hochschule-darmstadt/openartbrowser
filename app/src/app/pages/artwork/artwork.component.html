@@ -6,20 +6,20 @@
 
 <div *ngIf="!idDoesNotExist" class="container entity artwork">
   <div class="row pb-4 pb-sm-5 border-bottom" *ngIf="!imageHidden && artwork?.imageMedium">
-    <div class="img-container d-block" (click)="showModal()">
-      <img class="img-fluid mx-auto d-block" id="image-main" (error)="hideImage()" src="{{ artwork?.imageMedium }}" alt="" />
+    <div class="img-container d-inline-flex flex-column">
+      <img class="img-fluid" id="image-main" (error)="hideImage()" (click)="showModal()" src="{{ artwork?.imageMedium }}" alt="" />
       <div class="enlarge">
         <i class="fas fa-expand" (click)="showModal()"></i>
       </div>
+      <app-commons-info class="license-info mt-2 mx-auto" [fileUrl]="artwork?.image"></app-commons-info>
     </div>
   </div>
-
+  
   <div class="row pt-3 pb-3 border-bottom" *ngIf="artwork">
     <div class="col-sm-12">
       <app-title [entity]="artwork"></app-title>
-
+      
       <app-information i18n-label="Artist label@@artist" label="Artist" [values]="artwork?.artists"></app-information>
-      <app-commons-info-component [fileUrl]="artwork?.image"></app-commons-info-component>
       <app-information i18n-label="Location label@@location" label="Location" [values]="artwork?.locations"></app-information>
 
       <app-information i18n-label="Inception label@@inception" label="Inception" [value]="artwork?.inception + ''"></app-information>
@@ -213,6 +213,7 @@
         }"
         (closed)="closeModal()"
       ></app-image-viewer>
+      <app-commons-info class="license-info mt-2 mx-auto" [fileUrl]="artwork?.image"></app-commons-info>
     </div>
   </div>
 </div>

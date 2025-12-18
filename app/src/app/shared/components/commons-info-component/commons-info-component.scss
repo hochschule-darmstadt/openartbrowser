@@ -1,0 +1,14 @@
+a {
+  color: var(--text-color);
+  text-decoration: underline dotted;
+}
+
+.author,
+.license,
+.details {
+  white-space: nowrap;
+}
+
+.details a {
+  font-weight: 500;
+}

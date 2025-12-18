@@ -4,7 +4,8 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild }
   selector: 'app-image-viewer',
   template: `
     <div class="image-viewer" [style.background-color]="config?.containerBackgroundColor || 'transparent'">
-      <div class="controls">
+      <div class="controls align-items-center ">
+        <app-commons-info *ngIf="firstSrc"  class="license-info" [fileUrl]="firstSrc"></app-commons-info>
         <button (click)="zoomIn()" title="Zoom in">+</button>
         <button (click)="zoomOut()" title="Zoom out">-</button>
         <button (click)="reset()" title="Reset">⤾</button>

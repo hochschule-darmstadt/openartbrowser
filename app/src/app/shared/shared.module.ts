@@ -52,9 +52,8 @@ import { CommonsInfoComponent } from './components/commons-info-component/common
     StickyTitleComponent,
     CategoryContainerComponent,
     ErrorMessageComponent,
-    CommonsInfoComponent,
   ],
-  imports: [CommonModule, NgbModule, RouterModule, FormsModule, NgxSliderModule, InViewportModule, Angulartics2Module],
+  imports: [CommonModule, NgbModule, RouterModule, FormsModule, NgxSliderModule, InViewportModule, Angulartics2Module, CommonsInfoComponent],
   exports: [
     CarouselComponent,
     SearchComponent,
@@ -80,4 +79,4 @@ import { CommonsInfoComponent } from './components/commons-info-component/common
     ErrorMessageComponent,
   ],
 })
-export class SharedModule {}
+export class SharedModule { }

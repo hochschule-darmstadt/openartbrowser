@@ -1,22 +1,16 @@
-@if (meta$ | async ; as meta ) {
-      <div>
-        <h3>Licensing Information</h3>
-        <p><strong>Author:</strong> <span [innerHTML]="meta.author"></span></p>
-        <p><strong>License:</strong> {{ meta.licenseShortName }}</p>
-
-
-
-    @if (meta.licenseUrl){
-    <p>
-      <strong>License URL:</strong>
-      <a [href]="meta.licenseUrl" target="_blank" rel="noopener">
-        {{ meta.licenseUrl }}
-      </a>
-    </p>
-      <p>
-        <strong><a [href]="'https://commons.wikimedia.org/wiki/File:' + this.imageName" target="_blank" rel="noopener">More Details</a></strong>
-      </p>
-  }
+<div *ngIf="meta$ | async as meta" class="license-info d-inline-flex align-items-center gap-2">
+  <div class="author badge rounded-pill bg-secondary first-letter chip badge-transparent m-0">
+    Source:
+    <span *ngIf="meta.copyrighted" [innerHTML]="meta.author"></span>
+    <a class="ms-1" [href]="'https://commons.wikimedia.org/wiki/File:' + imageName" target="_blank" rel="noopener">Details</a>
+    <i class="ms-1 font-sm fas fa-external-link-alt"></i>
   </div>
-}
 
+  <div class="license badge rounded-pill bg-secondary first-letter chip badge-transparent m-0">
+    <ng-container *ngIf="meta.licenseUrl; else noLicense">
+      <a [href]="meta.licenseUrl" target="_blank" rel="noopener">License: {{ meta.licenseShortName }}</a>
+      <i class="fas fa-external-link"></i>
+    </ng-container>
+    <ng-template #noLicense>License: {{ meta.licenseShortName }}</ng-template>
+  </div>
+</div>

@@ -9,10 +9,25 @@ interface CommonsApiResponse {
       [key: string]: {
         imageinfo: Array<{
           extmetadata: {
-            Artist: { value: string };
-            License: { value: string };
-            LicenseUrl: { value: string };
-            LicenseShortName: {value: string};
+            Artist?: { value: string };                                         
+            License?: { value: string };                                          
+            LicenseUrl?: { value: string };                                         
+            LicenseShortName?: { value: string };                                         
+            Credit?: { value: string };                                         
+            ObjectName?: { value: string };                                         
+            DateTimeOriginal?: { value: string };                                         
+            DateTime?: { value: string };                                         
+            Categories?: { value: string };                                         
+            Assessments?: { value: string };                                          
+            ImageDescription?: { value: string };                                         
+            UsageTerms?: { value: string };                                         
+            Attribution?: { value: string };                                          
+            AttributionRequired?: { value: string };                                          
+            NonFree?: { value: string };                                          
+            Restrictions?: { value: string };                                         
+            Permission?: { value: string };                                         
+            Copyrighted?: { value: string };                                          
+            [key: string]: { value: string; source?: string; hidden?: string } | undefined;
           }
         }>
       }
@@ -25,6 +40,7 @@ export interface ImageMeta {
   license: string;
   licenseUrl: string;
   licenseShortName: string;
+  copyrighted?: boolean;
 }
 
 @Injectable({
@@ -43,26 +59,29 @@ export class CommonsService {
       prop: 'imageinfo',
       iiprop: 'extmetadata',
       format: 'json',
-      origin: '*'  // wichtig für CORS
+      origin: '*'  // for CORS
     };
 
     return this.http.get<CommonsApiResponse>(this.apiUrl, { params })
       .pipe(
         map(res => {
+
+          console.log(res);
           const pages = res.query.pages;
           const page = Object.values(pages)[0];
 
           if (!page?.imageinfo?.length) {
-            throw new Error('Keine Bildinfos gefunden');
+            throw new Error('No image info found');
           }
 
           const meta = page.imageinfo[0].extmetadata;
           console.log(meta);
           return {
-            author: meta.Artist?.value ?? 'unbekannt',
-            license: meta.License?.value ?? 'unbekannt',
+            author: meta.Credit?.value.length > 50 ? meta.Credit?.value.substring(0, 100) + '...' : meta.Credit?.value ?? 'unknown',
+            license: meta.License?.value ?? 'unknown',
             licenseUrl: meta.LicenseUrl?.value ?? '',
             licenseShortName: meta.LicenseShortName?.value ?? '',
+            copyrighted: Boolean(meta.Copyrighted?.value) ?? false
           };
         })
       );

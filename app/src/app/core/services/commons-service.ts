@@ -40,7 +40,6 @@ export interface ImageMeta {
   license: string;
   licenseUrl: string;
   licenseShortName: string;
-  copyrighted?: boolean;
 }
 
 @Injectable({
@@ -77,11 +76,10 @@ export class CommonsService {
           const meta = page.imageinfo[0].extmetadata;
           console.log(meta);
           return {
-            author: meta.Credit?.value.length > 50 ? meta.Credit?.value.substring(0, 100) + '...' : meta.Credit?.value ?? 'unknown',
+            author: meta.Artist?.value ?? 'unknown',
             license: meta.License?.value ?? 'unknown',
             licenseUrl: meta.LicenseUrl?.value ?? '',
             licenseShortName: meta.LicenseShortName?.value ?? '',
-            copyrighted: Boolean(meta.Copyrighted?.value) ?? false
           };
         })
       );

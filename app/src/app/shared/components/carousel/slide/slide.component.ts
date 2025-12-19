@@ -10,13 +10,13 @@ import { Slide, makeDefaultSlide } from '../carousel.component';
 @Component({
   selector: 'app-slide',
   templateUrl: './slide.component.html',
-  styleUrls: ['./slide.component.scss']
+  styleUrls: ['./slide.component.scss'],
 })
 export class SlideComponent implements AfterViewInit {
   /** the slide that should be displayed */
   @Input() slide: Slide = makeDefaultSlide();
 
-  @Input() artwork: Artwork;
+  @Input() artwork: any;
 
   @Input() tab_type: string;
 
@@ -33,7 +33,7 @@ export class SlideComponent implements AfterViewInit {
   ngAfterViewInit() {
     if (window && 'IntersectionObserver' in window) {
       const obs = new IntersectionObserver(
-        entries => {
+        (entries) => {
           /** check whether any element of the slide is currently visible on screen */
           entries.forEach(({ isIntersecting }) => {
             if (isIntersecting) {
@@ -62,7 +62,7 @@ export class SlideComponent implements AfterViewInit {
    * @param item the item whose image could not be loaded
    */
   onLoadingError(item: Entity) {
-    const removeIndex = this.slide.items.findIndex(i => {
+    const removeIndex = this.slide.items.findIndex((i) => {
       return i.id === item.id;
     });
 

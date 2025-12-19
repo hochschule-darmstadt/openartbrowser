@@ -1,13 +1,13 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Entity } from '../../models/models';
 
 @Component({
   selector: 'app-video',
   templateUrl: './video.component.html',
-  styleUrls: ['./video.component.scss']
+  styleUrls: ['./video.component.scss'],
 })
-export class VideoComponent implements OnInit, OnChanges {
+export class VideoComponent implements OnChanges {
   @Input() videoUrl: string;
 
   /**
@@ -20,15 +20,13 @@ export class VideoComponent implements OnInit, OnChanges {
 
   constructor(private sanitizer: DomSanitizer) {}
 
-  ngOnInit(): void {}
-
   initVideo(): void {
     if (this.videoUrl) {
-        this.safeUrl = this.getTrustedUrl(this.videoUrl);
-        this.validateVideoExists(this.videoUrl).then(exists => {
-          this.videoExists = exists;
-          this.videoFound.emit(this.videoExists);
-        });
+      this.safeUrl = this.getTrustedUrl(this.videoUrl);
+      this.validateVideoExists(this.videoUrl).then((exists) => {
+        this.videoExists = exists;
+        this.videoFound.emit(this.videoExists);
+      });
     } else {
       this.videoExists = false;
       this.videoFound.emit(this.videoExists);
@@ -41,7 +39,7 @@ export class VideoComponent implements OnInit, OnChanges {
    * width of 120 pixels.
    */
   private validateVideoExists(youtubeVideoHref: string): Promise<boolean> {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       const regExpMatchArray = youtubeVideoHref.match('https://www.youtube(-nocookie)?.com/embed/([^/]+)');
       if (regExpMatchArray.length === 3) {
         const id = regExpMatchArray[2];

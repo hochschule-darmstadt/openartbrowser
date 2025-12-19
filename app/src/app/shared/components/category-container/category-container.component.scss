@@ -11,7 +11,7 @@
       text-align: center;
 
       &:hover {
-        transform: translateY(25%) ;
+        transform: translateY(25%);
         transition: 0.3s ease;
       }
     }
@@ -34,12 +34,12 @@
     border-radius: 15px;
     text-align: center;
     opacity: 1;
-    transition: .2s opacity ease-in-out, .2s background ease-in-out;
+    transition: 0.2s opacity ease-in-out, 0.2s background ease-in-out;
   }
 
   .carousel-wrapper:not(.is-loaded) {
-    opacity: .75;
-    background-color: rgba(68,68,68,.75);
+    opacity: 0.75;
+    background-color: rgba(68, 68, 68, 0.75);
   }
 
   .loading-placeholder {
@@ -47,7 +47,7 @@
     align-items: center;
     justify-content: center;
     height: 17rem;
-    
+
     img {
       width: 0;
       height: 0;
@@ -69,6 +69,9 @@
     transition: 0.3s ease;
     border-radius: 15px;
 
+    .badge {
+      font-weight: normal;
+    }
     i {
       margin-right: 5px;
     }
@@ -81,10 +84,9 @@
     transition: all 0.5s ease;
     border-radius: 15px;
 
-    ::ng-deep {
-      .carousel-indicators {
-        visibility: hidden !important;
-      }
+    /* hide the aria-live status (e.g. "Slide 3 of 14")  */
+    [aria-live] {
+      display: none;
     }
 
     &:hover {
@@ -102,8 +104,6 @@
       background-color: rgba(0, 0, 0, 0.8);
       border-radius: 15px;
     }
-
-
   }
 
   .container-image {

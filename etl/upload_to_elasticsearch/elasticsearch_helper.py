@@ -1,14 +1,17 @@
+from contextlib import suppress
 import datetime
 import json
 import logging
 import time
 import uuid
 from pathlib import Path
-from typing import List, Dict, Optional
+from typing import Dict, List, Optional
+
 import requests
-from elasticsearch import Elasticsearch, helpers
-from shared.utils import language_config_to_list, setup_logger
+from elasticsearch import Elasticsearch, NotFoundError, helpers
+
 from shared.constants import ELASTICSEARCH_HELPER_LOG_FILENAME
+from shared.utils import language_config_to_list, setup_logger
 
 # setup logger
 logger = setup_logger(
@@ -34,9 +37,7 @@ index_creation_body = {"mappings": {"properties": {"relativeRank": {"type": "flo
 lang_keys = [item[0] for item in language_config_to_list()]
 
 
-def create_empty_index(
-    index_name: str, body: Optional[Dict] = index_creation_body
-) -> bool:
+def create_empty_index(index_name: str, body: Optional[Dict] = index_creation_body) -> bool:
     """Creates an empty index (meaning no documents inside)
 
     Args:
@@ -45,7 +46,7 @@ def create_empty_index(
     Returns:
         True if index didn't exist and could be created else False
     """
-    es = Elasticsearch()
+    es = Elasticsearch(hosts=["http://localhost:9200"])
 
     if es.indices.exists(index=index_name):
         print("Index with the name " + index_name + " already exists")
@@ -64,10 +65,10 @@ def delete_index(index_name: str) -> bool:
     Returns:
         True if index extists and could be deleted else False
     """
-    es = Elasticsearch()
+    es = Elasticsearch(hosts=["http://localhost:9200"])
     if es.indices.exists(index=index_name):
         print("Deleting index: " + index_name + " now")
-        es.indices.delete(index_name)
+        es.indices.delete(index=index_name)
         return True
     print("The index: " + index_name + "to be deleted doesn't exist")
     return False
@@ -78,17 +79,13 @@ def create_index(index_name: str, filename: str) -> None:
 
     Args:
         index_name: Index name in which documents should be created
-        filename: Name of the filename which contains the documents to be created e. g. art_ontology_<language_code>.json
+        filename: Name of the filename which contains the documents to be created
+        e. g. art_ontology_<language_code>.json
     """
     # Uses localhost:9200 (elasticsearch default) to create the index with it's documents
-    es = Elasticsearch()
-    print(
-        'Start creating the index "'
-        + index_name
-        + '" now. Current time: '
-        + str(datetime.datetime.now())
-    )
-    start = time.time()
+    es = Elasticsearch(hosts=["http://localhost:9200"])
+    print('Start creating the index "' + index_name + '" now. Current time: ' + str(datetime.datetime.now()))
+    time.time()
 
     print("Checking if index with the name " + index_name + " can be created ...")
     if create_empty_index(index_name=index_name):
@@ -99,29 +96,46 @@ def create_index(index_name: str, filename: str) -> None:
 
     # load items from filename
     print("Loading " + filename.name)
-    with open(filename, encoding="utf-8") as file:
-        items = json.load(file)
-        print(f"{filename} has {len(items)} items")
-        print("Bulk insert starting now")
-        bulk_insert = [
-            {"_index": index_name, "_id": uuid.uuid4(), "_source": json.dumps(item)}
-            for item in items
-        ]
-        try:
-            helpers.bulk(es, bulk_insert)
-        except Exception as e:
-            logging.exception(e)
+    # Support NDJSON batch files (art_ontology_<lang>_part_*.ndjson)
+    ndjson_files = list(filename.parent.glob(filename.stem + "_part_*.ndjson"))
+    if not ndjson_files:
+        print(f"No NDJSON files found for {filename.name}")
+        return
+    total = 0
+    try:
+        for ndfile in sorted(ndjson_files):
+            print(f"Bulk insert from {ndfile}")
+            with open(ndfile, encoding="utf-8") as fh:
 
-    end = time.time()
-    print(f"{len(items)} documents were created in index {index_name}")
-    print(
-        f"Finished creating the index current time: {str(datetime.datetime.now())} it took {str((int((end - start) / 60)))} minutes"
-    )
+                def actions():
+                    for line in fh:
+                        line = line.strip()
+                        if not line:
+                            continue
+                        try:
+                            obj = json.loads(line)
+                        except Exception:
+                            continue
+                        yield {"_index": index_name, "_id": uuid.uuid4(), "_source": obj}
+
+                # helpers.bulk returns a tuple (success_count, errors) or an int
+                res = helpers.bulk(es, actions())
+                try:
+                    # handle (count, errors)
+                    if isinstance(res, (list, tuple)):
+                        total += int(res[0])
+                    else:
+                        total += int(res)
+                except Exception:
+                    # fallback: ignore counting if unexpected format
+                    pass
+        print(f"Inserted {total} documents from NDJSON files into index {index_name}")
+    except Exception as e:
+        logging.exception(e)
+    return
 
 
-def swap_index(
-    index_name_new: str, index_name_current: str, index_name_old: str
-) -> bool:
+def swap_index(index_name_new: str, index_name_current: str, index_name_old: str) -> bool:
     """Swaps the new index with the current one the current will be backed up in index_name_old
     This is possible because the backup and restore feature of elasticsearch allows renaming when restoring a snapshot
 
@@ -133,22 +147,14 @@ def swap_index(
     Returns:
         True when the index swap worked else False
     """
-    es = Elasticsearch()
+    es = Elasticsearch(hosts=["http://localhost:9200"])
     print("Checking if current index exists")
     # Check for newly setup ElasticSearch-Server
     if not es.indices.exists(index=index_name_current):
-        print(
-            'The current index named: "'
-            + index_name_current
-            + '" does not exist. It will be created now ...'
-        )
+        print('The current index named: "' + index_name_current + '" does not exist. It will be created now ...')
         create_empty_index(index_name=index_name_current)
     if not es.indices.exists(index=index_name_new):
-        print(
-            'The new index named: "'
-            + index_name_new
-            + '" does not exist therefore the swap cannot be executed'
-        )
+        print('The new index named: "' + index_name_new + '" does not exist therefore the swap cannot be executed')
         return False
 
     print("Creating snapshots from given indices to swap")
@@ -156,20 +162,16 @@ def swap_index(
     index_new_snapshot = index_name_new + snapshot_appendix
     index_current_snapshot = index_name_current + snapshot_appendix
     # Snapshot the new index
-    create_snapshot_for_index(
-        index_name=index_name_new, snapshot_name=index_new_snapshot
-    )
+    create_snapshot_for_index(index_name=index_name_new, snapshot_name=index_new_snapshot)
     # Snapshot the current index
-    create_snapshot_for_index(
-        index_name=index_name_current, snapshot_name=index_current_snapshot
-    )
+    create_snapshot_for_index(index_name=index_name_current, snapshot_name=index_current_snapshot)
     list_all_snapshots_from_repository()
 
     # First swap
     # Check if index_name_current_old exists if it does delete index
 
-    if es.indices.exists(index_name_old):
-        es.indices.delete(index_name_old)
+    if es.indices.exists(index=index_name_old):
+        es.indices.delete(index=index_name_old)
     # Apply snapshot to index_name_current and rename it to index_name_current_old
     apply_snapshot_from_repository(
         snapshot_name=index_current_snapshot,
@@ -217,28 +219,33 @@ def create_snapshot_for_index(
                                 - Following entry in elasticsearch.yml required:
                                 path.repo: ["path_to_folder"]
     """
-    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT)
+    es = Elasticsearch(
+        hosts=["http://localhost:9200"],
+        request_timeout=SNAPSHOT_TIMEOUT,
+        retry_on_timeout=RETRY_ON_TIMEOUT,
+        max_retries=MAX_RETRIES_ON_TIMEOUT,
+    )
 
     try:
         # Check if repository already was created
-        es.snapshot.get_repository(repository_name)
-    except:  # If not create
+        es.snapshot.get_repository(name=repository_name)
+    except Exception as e:
+        logger.error(e)  # If not create
         es.snapshot.create_repository(
-            repository=repository_name,
+            name=repository_name,
             body={"type": "fs", "settings": {"location": backup_directory}},
         )
     if es.indices.exists(index=index_name):
-        try:
+        with suppress(NotFoundError):
             # Check if this snapshot was deleted if not remove it
-            es.snapshot.get(repository=repository_name, snapshot=snapshot_name)
-            delete_snapshot_from_repository(snapshot_name)
-        except:
-            pass
+            if res := es.snapshot.status(repository=repository_name, snapshot=snapshot_name):
+                logger.info("Got response: {} Snapshot " + snapshot_name + " already exists. Deleting it now ...", res)
+                delete_snapshot_from_repository(snapshot_name)
         es.snapshot.create(
             repository=repository_name,
             snapshot=snapshot_name,
             body={"indices": index_name},
-            params={"wait_for_completion": "true"},
+            wait_for_completion=True,
         )
         print("Snapshot created: " + snapshot_name)
     else:
@@ -258,7 +265,12 @@ def apply_snapshot_from_repository(
         repository_name: Name of the repository the snapshot is in
         snapshot_name: Name of the snapshot
     """
-    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT)
+    es = Elasticsearch(
+        hosts=["http://localhost:9200"],
+        request_timeout=SNAPSHOT_TIMEOUT,
+        retry_on_timeout=RETRY_ON_TIMEOUT,
+        max_retries=MAX_RETRIES_ON_TIMEOUT,
+    )
 
     try:
         es.indices.close(index=index_name)
@@ -290,14 +302,20 @@ def delete_snapshot_from_repository(
         backup_directory: Directory in which the repository is located
                            See create_snapshot_for_index for more information on that
     """
-    es = Elasticsearch(timeout=SNAPSHOT_TIMEOUT, retry_on_timeout=RETRY_ON_TIMEOUT, max_retries=MAX_RETRIES_ON_TIMEOUT)
+    es = Elasticsearch(
+        hosts=["http://localhost:9200"],
+        request_timeout=SNAPSHOT_TIMEOUT,
+        retry_on_timeout=RETRY_ON_TIMEOUT,
+        max_retries=MAX_RETRIES_ON_TIMEOUT,
+    )
 
     try:
         # Check if repository already was created
-        es.snapshot.get_repository(repository_name)
-    except:  # If not create
+        es.snapshot.get_repository(name=repository_name)
+    except Exception as e:
+        logger.error(e)  # If not create
         es.snapshot.create_repository(
-            repository=repository_name,
+            name=repository_name,
             body={"type": "fs", "settings": {"location": backup_directory}},
         )
     try:
@@ -318,9 +336,7 @@ def list_all_snapshots_from_repository(
         repository_name: Name of the repository which contains the snapshots
     """
     try:
-        req = requests.get(
-            url="http://" + elastic_search_url + "/_cat/snapshots/" + repository_name
-        )
+        req = requests.get(url="http://" + elastic_search_url + "/_cat/snapshots/" + repository_name)
         print(req.text)
     except Exception as e:
         logger.exception(e)
@@ -388,21 +404,17 @@ def swap_to_backup_for_each_language(
         delete_non_working_indices: If this is set to True the non working indices will be deleted
                                     For debugging purposes set to this False
     """
-    es = Elasticsearch()
+    es = Elasticsearch(hosts=["http://localhost:9200"])
     for key in language_keys:
         not_working_index_name = key + time.strftime("%Y%m%d-%H%M%S")
-        es.indices.open(key + "_old")  # open old index for reapplying
+        es.indices.open(index=key + "_old")  # open old index for reapplying
         if swap_index(
             index_name_new=key + "_old",
             index_name_current=key,
             index_name_old=not_working_index_name,
         ):
             if delete_non_working_indices:
-                print(
-                    "The not working index named "
-                    + not_working_index_name
-                    + " will now be deleted"
-                )
+                print("The not working index named " + not_working_index_name + " will now be deleted")
                 delete_index(not_working_index_name)
             else:
                 print(
@@ -412,9 +424,7 @@ def swap_to_backup_for_each_language(
                     + not_working_index_name
                     + " and can now be debugged"
                 )
-                print(
-                    "After debugging deletion is possible with the delete_index function"
-                )
+                print("After debugging deletion is possible with the delete_index function")
 
 
 def count_check_for_each_language(
@@ -426,29 +436,38 @@ def count_check_for_each_language(
     The corresponding JSON file is located within the filepath parameters path
 
     Args:
-        lang_leys: Languagekeys for which the check has to be satisfied.
+        language_keys: Languagekeys for which the check has to be satisfied.
         filepath: Location of the art_ontology_*.json language files.
     """
-    es = Elasticsearch()
-    for key in lang_keys:
+    es = Elasticsearch(hosts=["http://localhost:9200"])
+    for key in language_keys:
         # Refresh is needed because the indice stats aren't always up-to-date
-        es.indices.refresh(key)
-        es_document_count_dict = es.cat.count(index=key, params={"format": "json"})
+        es.indices.refresh(index=key)
+        es_document_count_dict = es.cat.count(index=key, format="json")
         es_document_count = int(es_document_count_dict[0]["count"])
-        file_name = filepath / str("art_ontology_" + key + ".json")
-        with open(file_name, encoding="utf-8") as input:
-            object_array = json.load(input)
-            json_object_count = len(object_array)
-            if es_document_count != json_object_count:
-                print(
-                    'There is a problem with the index "'
-                    + key
-                    + '" the json'
-                    + " object count doesn't equal the document count in the index"
-                    + " which should be the case"
-                )
-            else:
-                print("The index " + key + " seems to be created correctly")
+        file_name = Path(filepath) / str("art_ontology_" + key + ".json")
+        # support NDJSON batch files
+        ndjson_files = list(file_name.parent.glob(file_name.stem + "_part_*.ndjson"))
+        if not ndjson_files:
+            print(f"No NDJSON files found for {file_name.name}, skipping count check.")
+            continue
+        json_object_count = 0
+        for nd in ndjson_files:
+            with open(nd, encoding="utf-8") as fh:
+                for _ in fh:
+                    json_object_count += 1
+        # compare counts and report
+        if es_document_count != json_object_count:
+            print(
+                'There is a problem with the index "'
+                + key
+                + '" the json'
+                + " object count doesn't equal the document count in the index"
+                + " which should be the case"
+            )
+        else:
+            print("The index " + key + " seems to be created correctly")
+    print("All indices have been checked.")
 
 
 if __name__ == "__main__":

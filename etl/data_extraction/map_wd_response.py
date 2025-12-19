@@ -1,25 +1,24 @@
-"""Functions to map a wikidata entity response to an openArtBrowser model
-"""
+"""Functions to map a wikidata entity response to an openArtBrowser model"""
 
 from pathlib import Path
 from typing import Dict, List, Optional
 
 import data_extraction.map_wd_attribute as map_wd_attribute
-from data_extraction.constants import *
+from data_extraction import constants as cnst
 from shared.utils import language_config_to_list, setup_logger
 
 logger = setup_logger(
     "data_extraction.map_wd_response",
-    Path(__file__).parent.parent.absolute()
-    / "logs"
-    / WIKIDATA_MAP_RESPONSE_LOG_FILENAME,
+    Path(__file__).parent.parent.absolute() / "logs" / cnst.WIKIDATA_MAP_RESPONSE_LOG_FILENAME,
 )
 
 lang_keys = [item[0] for item in language_config_to_list()]
 
 
 def try_map_response_to_subject(
-    response: Dict, type_name: str, language_keys: Optional[List[str]] = lang_keys,
+    response: Dict,
+    type_name: str,
+    language_keys: Optional[List[str]] = lang_keys,
 ) -> Dict:
     """Maps the default attributes which every subject has:
     qid, image, label, description, classes, wikipediaLink (including language specific attributes)
@@ -33,7 +32,7 @@ def try_map_response_to_subject(
         A dict of an openArtBrowser entity
     """
     try:
-        qid = response[ID]
+        qid = response[cnst.ID]
     except Exception as error:
         logger.error("Error on qid, skipping item. Error: {0}".format(error))
         return None
@@ -42,47 +41,44 @@ def try_map_response_to_subject(
     # https://stackoverflow.com/questions/34393884/how-to-get-image-url-property-from-wikidata-item-by-api
     try:
         image = map_wd_attribute.get_image_url_by_name(
-            response[CLAIMS][PROPERTY_NAME_TO_PROPERTY_ID[IMAGE]][0][MAINSNAK][
-                DATAVALUE
-            ][VALUE]
+            response[cnst.CLAIMS][cnst.PROPERTY_NAME_TO_PROPERTY_ID[cnst.IMAGE]][0][cnst.MAINSNAK][cnst.DATAVALUE][
+                cnst.VALUE
+            ]
         )
-    except:
+    except Exception as e:
+        logger.error(e)
         image = ""
 
-    label = map_wd_attribute.try_get_label_or_description(
-        response, LABEL[PLURAL], EN, type_name
-    )
+    label = map_wd_attribute.try_get_label_or_description(response, cnst.LABEL[cnst.PLURAL], cnst.EN, type_name)
     description = map_wd_attribute.try_get_label_or_description(
-        response, DESCRIPTION[PLURAL], EN, type_name
+        response, cnst.DESCRIPTION[cnst.PLURAL], cnst.EN, type_name
     )
     classes = map_wd_attribute.try_get_qid_reference_list(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[CLASS[SINGULAR]], type_name
+        response, cnst.PROPERTY_NAME_TO_PROPERTY_ID[cnst.CLASS[cnst.SINGULAR]], type_name
     )
 
     subject_dict = {
-        ID: qid,
-        CLASS[PLURAL]: classes,
-        LABEL[SINGULAR]: label,
-        DESCRIPTION[SINGULAR]: description,
-        IMAGE: image,
-        TYPE: type_name,
+        cnst.ID: qid,
+        cnst.CLASS[cnst.PLURAL]: classes,
+        cnst.LABEL[cnst.SINGULAR]: label,
+        cnst.DESCRIPTION[cnst.SINGULAR]: description,
+        cnst.IMAGE: image,
+        cnst.TYPE: type_name,
     }
 
     for langkey in language_keys:
         label_lang = map_wd_attribute.try_get_label_or_description(
-            response, LABEL[PLURAL], langkey, type_name
+            response, cnst.LABEL[cnst.PLURAL], langkey, type_name
         )
         description_lang = map_wd_attribute.try_get_label_or_description(
-            response, DESCRIPTION[PLURAL], langkey, type_name
+            response, cnst.DESCRIPTION[cnst.PLURAL], langkey, type_name
         )
-        wikipedia_link_lang = map_wd_attribute.try_get_wikipedia_link(
-            response, langkey, type_name
-        )
+        wikipedia_link_lang = map_wd_attribute.try_get_wikipedia_link(response, langkey, type_name)
         subject_dict.update(
             {
-                f"{LABEL[SINGULAR]}_{langkey}": label_lang,
-                f"{DESCRIPTION[SINGULAR]}_{langkey}": description_lang,
-                f"{WIKIPEDIA_LINK}_{langkey}": wikipedia_link_lang,
+                f"{cnst.LABEL[cnst.SINGULAR]}_{langkey}": label_lang,
+                f"{cnst.DESCRIPTION[cnst.SINGULAR]}_{langkey}": description_lang,
+                f"{cnst.WIKIPEDIA_LINK}_{langkey}": wikipedia_link_lang,
             }
         )
 
@@ -99,37 +95,37 @@ def try_map_response_to_artist(response: Dict) -> Dict:
         A dict of an artist entity
     """
     gender = map_wd_attribute.try_get_first_qid(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[GENDER], ARTIST[SINGULAR]
+        response, cnst.PROPERTY_NAME_TO_PROPERTY_ID[cnst.GENDER], cnst.ARTIST[cnst.SINGULAR]
     )
     date_of_birth = map_wd_attribute.try_get_year_from_property_timestamp(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[DATE_OF_BIRTH], ARTIST[SINGULAR]
+        response, cnst.PROPERTY_NAME_TO_PROPERTY_ID[cnst.DATE_OF_BIRTH], cnst.ARTIST[cnst.SINGULAR]
     )
     date_of_death = map_wd_attribute.try_get_year_from_property_timestamp(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[DATE_OF_DEATH], ARTIST[SINGULAR]
+        response, cnst.PROPERTY_NAME_TO_PROPERTY_ID[cnst.DATE_OF_DEATH], cnst.ARTIST[cnst.SINGULAR]
     )
     # labels to be resolved later
     place_of_birth = map_wd_attribute.try_get_first_qid(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[PLACE_OF_BIRTH], ARTIST[SINGULAR]
+        response, cnst.PROPERTY_NAME_TO_PROPERTY_ID[cnst.PLACE_OF_BIRTH], cnst.ARTIST[cnst.SINGULAR]
     )
     # labels to be resolved later
     place_of_death = map_wd_attribute.try_get_first_qid(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[PLACE_OF_DEATH], ARTIST[SINGULAR]
+        response, cnst.PROPERTY_NAME_TO_PROPERTY_ID[cnst.PLACE_OF_DEATH], cnst.ARTIST[cnst.SINGULAR]
     )
     # labels to be resolved later
     citizenship = map_wd_attribute.try_get_first_qid(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[CITIZENSHIP], ARTIST[SINGULAR]
+        response, cnst.PROPERTY_NAME_TO_PROPERTY_ID[cnst.CITIZENSHIP], cnst.ARTIST[cnst.SINGULAR]
     )
     movements = map_wd_attribute.try_get_qid_reference_list(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[MOVEMENT[SINGULAR]], ARTIST[SINGULAR]
+        response, cnst.PROPERTY_NAME_TO_PROPERTY_ID[cnst.MOVEMENT[cnst.SINGULAR]], cnst.ARTIST[cnst.SINGULAR]
     )
     return {
-        GENDER: gender,
-        DATE_OF_BIRTH: date_of_birth,
-        DATE_OF_DEATH: date_of_death,
-        PLACE_OF_BIRTH: place_of_birth,
-        PLACE_OF_DEATH: place_of_death,
-        CITIZENSHIP: citizenship,
-        MOVEMENT[PLURAL]: movements,
+        cnst.GENDER: gender,
+        cnst.DATE_OF_BIRTH: date_of_birth,
+        cnst.DATE_OF_DEATH: date_of_death,
+        cnst.PLACE_OF_BIRTH: place_of_birth,
+        cnst.PLACE_OF_DEATH: place_of_death,
+        cnst.CITIZENSHIP: citizenship,
+        cnst.MOVEMENT[cnst.PLURAL]: movements,
     }
 
 
@@ -143,27 +139,27 @@ def try_map_response_to_movement(response: Dict) -> Dict:
         A dict of an movement entity
     """
     start_time = map_wd_attribute.try_get_year_from_property_timestamp(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[START_TIME], MOVEMENT[SINGULAR]
+        response, cnst.PROPERTY_NAME_TO_PROPERTY_ID[cnst.START_TIME], cnst.MOVEMENT[cnst.SINGULAR]
     )
     end_time = map_wd_attribute.try_get_year_from_property_timestamp(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[END_TIME], MOVEMENT[SINGULAR]
+        response, cnst.PROPERTY_NAME_TO_PROPERTY_ID[cnst.END_TIME], cnst.MOVEMENT[cnst.SINGULAR]
     )
     # labels to be resolved later
     country = map_wd_attribute.try_get_first_qid(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[COUNTRY], MOVEMENT[SINGULAR]
+        response, cnst.PROPERTY_NAME_TO_PROPERTY_ID[cnst.COUNTRY], cnst.MOVEMENT[cnst.SINGULAR]
     )
     has_part = map_wd_attribute.try_get_qid_reference_list(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[HAS_PART], MOVEMENT[SINGULAR]
+        response, cnst.PROPERTY_NAME_TO_PROPERTY_ID[cnst.HAS_PART], cnst.MOVEMENT[cnst.SINGULAR]
     )
     part_of = map_wd_attribute.try_get_qid_reference_list(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[PART_OF], MOVEMENT[SINGULAR]
+        response, cnst.PROPERTY_NAME_TO_PROPERTY_ID[cnst.PART_OF], cnst.MOVEMENT[cnst.SINGULAR]
     )
     return {
-        START_TIME: start_time,
-        END_TIME: end_time,
-        COUNTRY: country,
-        HAS_PART: has_part,
-        PART_OF: part_of,
+        cnst.START_TIME: start_time,
+        cnst.END_TIME: end_time,
+        cnst.COUNTRY: country,
+        cnst.HAS_PART: has_part,
+        cnst.PART_OF: part_of,
     }
 
 
@@ -177,35 +173,35 @@ def try_map_response_to_location(response):
         A dict of an location entity
     """
     country = map_wd_attribute.try_get_first_qid(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[COUNTRY], LOCATION[SINGULAR]
+        response, cnst.PROPERTY_NAME_TO_PROPERTY_ID[cnst.COUNTRY], cnst.LOCATION[cnst.SINGULAR]
     )
     website = map_wd_attribute.try_get_first_value(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[WEBSITE], LOCATION[SINGULAR]
+        response, cnst.PROPERTY_NAME_TO_PROPERTY_ID[cnst.WEBSITE], cnst.LOCATION[cnst.SINGULAR]
     )
     part_of = map_wd_attribute.try_get_qid_reference_list(
-        response, PROPERTY_NAME_TO_PROPERTY_ID[PART_OF], LOCATION[SINGULAR]
+        response, cnst.PROPERTY_NAME_TO_PROPERTY_ID[cnst.PART_OF], cnst.LOCATION[cnst.SINGULAR]
     )
     try:
-        coordinate = response[CLAIMS][PROPERTY_NAME_TO_PROPERTY_ID[COORDINATE]][0][
-            MAINSNAK
-        ][DATAVALUE][VALUE]
-        lat = coordinate[LATITUDE[SINGULAR]]
-        lon = coordinate[LONGITUDE[SINGULAR]]
+        coordinate = response[cnst.CLAIMS][cnst.PROPERTY_NAME_TO_PROPERTY_ID[cnst.COORDINATE]][0][cnst.MAINSNAK][
+            cnst.DATAVALUE
+        ][cnst.VALUE]
+        lat = coordinate[cnst.LATITUDE[cnst.SINGULAR]]
+        lon = coordinate[cnst.LONGITUDE[cnst.SINGULAR]]
     except Exception as error:
         logger.info(
             "Error on item {0}, property {1}, type {2}, error {3}".format(
-                response[ID],
-                PROPERTY_NAME_TO_PROPERTY_ID[COORDINATE],
-                LOCATION[SINGULAR],
+                response[cnst.ID],
+                cnst.PROPERTY_NAME_TO_PROPERTY_ID[cnst.COORDINATE],
+                cnst.LOCATION[cnst.SINGULAR],
                 error,
             )
         )
         lat = ""
         lon = ""
     return {
-        COUNTRY: country,
-        WEBSITE: website,
-        PART_OF: part_of,
-        LATITUDE[ABBREVIATION]: lat,
-        LONGITUDE[ABBREVIATION]: lon,
+        cnst.COUNTRY: country,
+        cnst.WEBSITE: website,
+        cnst.PART_OF: part_of,
+        cnst.LATITUDE[cnst.ABBREVIATION]: lat,
+        cnst.LONGITUDE[cnst.ABBREVIATION]: lon,
     }

@@ -45,6 +45,8 @@ $color1: #00bc8c;
       font-size: 4vh;
       letter-spacing: 0;
       color: $color1;
+      width: unset;
+      padding: unset;
 
       @media (min-width: 768px) and (max-width: 991px) {
         font-size: 4vh;
@@ -59,6 +61,8 @@ $color1: #00bc8c;
       font-size: 7vh;
       letter-spacing: 0;
       color: $color1;
+      width: unset;
+      padding: unset;
 
       @media (min-width: 768px) and (max-width: 991px) {
         font-size: 7vh;
@@ -119,7 +123,6 @@ $color1: #00bc8c;
     border-bottom: none;
   }
 }
-
 
 /** do not display movement overview in mobile version **/
 @media only screen and (max-width: 500px) {

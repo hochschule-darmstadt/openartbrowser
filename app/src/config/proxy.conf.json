@@ -1,6 +1,6 @@
 {
   "/api": {
-    "target": "https://cai-artbrowserstaging.fbi.h-da.de/",
+    "target": "http://141.100.232.249/",
     "secure": false
   }
 }

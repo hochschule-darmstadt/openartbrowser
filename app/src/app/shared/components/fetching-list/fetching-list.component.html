@@ -1,18 +1,20 @@
 <app-infinite-scroll (scrolled)="onScrollDown()" class="fetching-list">
-  <div *ngFor="let page of pages | keyvalue: keyAscOrder" class="d-flex flex-wrap bd-highlight mb-3 m-auto">
-    <div class="anchor" inViewport
-         [inViewportOptions]="{ threshold: [0] }"
-         (inViewportAction)="onPageVisible($event)" id="{{pageAnchorElementId+page.key}}"></div>
+  <div *ngFor="let page of pages | keyvalue : keyAscOrder" class="d-flex flex-wrap bd-highlight mb-3 m-auto">
+    <div
+      class="anchor"
+      inViewport
+      [inViewportOptions]="{ threshold: [0] }"
+      (inViewportAction)="onPageVisible($event)"
+      id="{{ pageAnchorElementId + page.key }}"
+    ></div>
     <div *ngFor="let entity of page.value.items; let i = index" class="item">
-      <a *ngIf="entity"
-         class="item-link"
-         [routerLink]="['/'+entity?.type, entity?.id]">
+      <a *ngIf="entity" class="item-link" [routerLink]="['/' + entity?.type, entity?.id]">
         <div class="overlay-container">
           <div class="img-wrapper">
             <img
               *ngIf="entity?.imageSmall"
               class="bd-highlight img-self"
-              [ngClass]="templateContainer.children.length == 0 ? 'img-self-rounded':''"
+              [ngClass]="templateContainer.children.length === 0 ? 'img-self-rounded' : ''"
               src="{{ entity?.imageSmall }}"
               alt="{{ entity?.label }}"
               (error)="onLoadingError(entity, page.key)"
@@ -23,24 +25,24 @@
             </div>
           </div>
           <div class="item-template_container" #templateContainer>
-            <ng-container [ngTemplateOutlet]="templateRef"
-                          [ngTemplateOutletContext]="{entity: entity, entityType: options.entityType}">
-            </ng-container>
+            <ng-container [ngTemplateOutlet]="templateRef" [ngTemplateOutletContext]="{ entity: entity, entityType: options.entityType }"> </ng-container>
           </div>
 
-          <div class="overlay" *ngIf="templateContainer.children.length == 0 || enableHover">
+          <div class="overlay" *ngIf="templateContainer.children.length === 0 || enableHover">
             <!-- TODO: possible place for entity.icon -->
             <span class="img_description">{{ entity.label }}</span>
           </div>
         </div>
       </a>
-
     </div>
   </div>
 </app-infinite-scroll>
 <div class="fetching-list-paginator flex-column">
-  <app-paginator class="paginator" [ngClass]="maxPage >= 1? 'visible':'invisible'"
-                 (pageClick)="scrollToPage($event)"
-                 [pageNumber]="currentPage"
-                 [maxPage]="maxPage"></app-paginator>
+  <app-paginator
+    class="paginator"
+    [ngClass]="maxPage >= 1 ? 'visible' : 'invisible'"
+    (pageClick)="scrollToPage($event)"
+    [pageNumber]="currentPage"
+    [maxPage]="maxPage"
+  ></app-paginator>
 </div>

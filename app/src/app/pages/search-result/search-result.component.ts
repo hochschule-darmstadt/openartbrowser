@@ -29,11 +29,10 @@ interface EntityTab {
   loaded: boolean;
 }
 
-
 @Component({
   selector: 'app-search-result',
   templateUrl: './search-result.component.html',
-  styleUrls: ['./search-result.component.scss']
+  styleUrls: ['./search-result.component.scss'],
 })
 export class SearchResultComponent implements OnInit, OnDestroy {
   /** Count for search results */
@@ -61,15 +60,14 @@ export class SearchResultComponent implements OnInit, OnDestroy {
   searchTerms: string[] = [];
 
   /** use this to end subscription to url parameter in ngOnDestroy */
-  private ngUnsubscribe = new Subject();
+  private ngUnsubscribe = new Subject<void>();
 
-  constructor(private dataService: DataService, private route: ActivatedRoute, private angulartics2: Angulartics2) {
-  }
+  constructor(private dataService: DataService, private route: ActivatedRoute, private angulartics2: Angulartics2) {}
 
   /** hook that is executed at component initialization */
   ngOnInit() {
     /** Extract the search params from url query params. */
-    this.route.queryParams.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async params => {
+    this.route.queryParams.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async (params) => {
       /** resets search results  */
       this.searchObjects = [];
       this.searchTerms = params.term ? (Array.isArray(params.term) ? params.term : [params.term]) : [];
@@ -94,11 +92,11 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 
       /** construct artSearch-Object and pass to every tab */
       const search: ArtSearch = {};
-      this.searchObjects.forEach(typeArray => (search[usePlural(typeArray.key)] = typeArray.items.map((e: Entity) => e.id)));
+      this.searchObjects.forEach((typeArray) => (search[usePlural(typeArray.key)] = typeArray.items.map((e: Entity) => e.id)));
 
       /** clear tabs for every route parameter change */
       this.entityTabs = [];
-      Object.values(EntityType).forEach(type => this.addTab(search, type, type === EntityType.ALL));
+      Object.values(EntityType).forEach((type) => this.addTab(search, type, type === EntityType.ALL));
 
       this.loadTabs();
 
@@ -107,8 +105,8 @@ export class SearchResultComponent implements OnInit, OnDestroy {
         properties: {
           category: 'Search page',
           keyword: this.searchTerms.toString(),
-          searchCount: this.searchResults.length
-        }
+          searchCount: this.searchResults.length,
+        },
       });
     });
   }
@@ -132,7 +130,7 @@ export class SearchResultComponent implements OnInit, OnDestroy {
    */
   private async getSearchResultsCounts(results: SearchObject[], terms: string[], type: EntityType): Promise<number> {
     const search: ArtSearch = {};
-    results.forEach(typeArray => (search[usePlural(typeArray.key)] = typeArray.items.map((e: Entity) => e.id)));
+    results.forEach((typeArray) => (search[usePlural(typeArray.key)] = typeArray.items.map((e: Entity) => e.id)));
     return await this.dataService.countSearchResultItems(search, terms, type);
   }
 
@@ -140,15 +138,14 @@ export class SearchResultComponent implements OnInit, OnDestroy {
     Promise.all(
       /** load related data for each tab  */
       this.entityTabs.map((tab: EntityTab) => {
-        this.getSearchResultsCounts(this.searchObjects, this.searchTerms,
-          (tab.type === EntityType.ALL) ? null : tab.type).then(itemCount => {
+        this.getSearchResultsCounts(this.searchObjects, this.searchTerms, tab.type === EntityType.ALL ? null : tab.type).then((itemCount) => {
           if (tab.type === EntityType.ALL) {
             this.countResults = itemCount;
             this.allTabLoaded = true;
           }
 
           if (itemCount === 0) {
-            this.entityTabs = this.entityTabs.filter(t => t.type !== tab.type);
+            this.entityTabs = this.entityTabs.filter((t) => t.type !== tab.type);
           } else {
             tab.fetchOptions.queryCount = itemCount;
             tab.loaded = true;
@@ -165,18 +162,17 @@ export class SearchResultComponent implements OnInit, OnDestroy {
    * @param active Is active tab
    */
   private addTab(search: ArtSearch, type: EntityType, active: boolean = false) {
-
     /** set fetchOptions and pass to tab later */
     const fetchOptions = {
       initOffset: 0,
       fetchSize: 30,
       queryCount: undefined,
-      entityType: type
+      entityType: type,
     } as FetchOptions;
 
     /** load fetching list items */
     const query = async (offset) => {
-      return await this.dataService.searchResultsByType(search, this.searchTerms, fetchOptions.fetchSize, offset, (type === EntityType.ALL) ? null : type);
+      return await this.dataService.searchResultsByType(search, this.searchTerms, fetchOptions.fetchSize, offset, type === EntityType.ALL ? null : type);
     };
 
     this.entityTabs.push({
@@ -186,7 +182,7 @@ export class SearchResultComponent implements OnInit, OnDestroy {
       fetchOptions,
       query,
       initialized: active,
-      loaded: false
+      loaded: false,
     });
   }
 
@@ -197,21 +193,18 @@ export class SearchResultComponent implements OnInit, OnDestroy {
   onChange(event) {
     const value = event.target.value;
 
-    for (const tab of this.entityTabs){
-
-      if (tab.type === value){
+    for (const tab of this.entityTabs) {
+      if (tab.type === value) {
         tab.active = true;
         tab.initialized = true;
-      }
-      else{
+      } else {
         tab.active = false;
       }
     }
   }
 
   ngOnDestroy() {
-    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.next(undefined);
     this.ngUnsubscribe.complete();
   }
 }
-

@@ -77,19 +77,12 @@ python3 data_enhancement/add_youtube_videos.py "${params[@]}"
 python3 data_enhancement/ranking.py "${params[@]}"
 
 cd crawler_output/intermediate_files/json/
-
-# Merges all *.json files in the json dir into art_ontology.json
-onto_state=merge_art_ontology
-if [[ ! ($REC_MODE == true) ]] || ([[ ($REC_MODE == true) ]] && ! grep -q "$onto_state" "$ETL_STATES_FILE"); then
-  jq -s "[.[][]]" artworks.json genres.json artists.json locations.json materials.json movements.json motifs.json classes.json >art_ontology.json
-  echo -e "\n$onto_state" >>$ETL_STATES_FILE
-
-  rm -f ../../../crawler_output/art_ontology.json
-
-  # Move the generated art_ontology.json to the directory crawler_output
-  mv art_ontology.json ../../../crawler_output/art_ontology.json
-fi
-python3 ../../../data_enhancement/split_languages.py "${params[@]}"
+# Instead of merging all into one large JSON file, stream-merge and split into
+# per-language NDJSON batch files to avoid large memory/ES indexing issues.
+split_args=()
+[[ $REC_MODE == true ]] && split_args+=(-r)
+BATCH_SIZE=${ART_ONTOLOGY_BATCH_SIZE:-2000}
+python3 ../../../data_enhancement/split_languages.py -b "$BATCH_SIZE" "${split_args[@]}"
 
 python3 ../../../upload_to_elasticsearch/elasticsearch_helper.py
 

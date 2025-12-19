@@ -11,7 +11,8 @@ Examples:
     python3 get_wikidata_items.py -d 2
 
 Returns:
-    Different *.json and *.csv files for the extracted wikidata entities which are mapped to the openArtBrowser entities/models
+    Different *.json and *.csv files for the extracted wikidata entities which are mapped
+    to the openArtBrowser entities/models
     - artworks.json/.csv
         - paintings.json/.csv
         - drawings.json/.csv
@@ -25,6 +26,8 @@ Returns:
     - movements.json/.csv
     - classes.json/.csv
 """
+
+# ruff: noqa: F403 F405
 import csv
 import datetime
 import sys
@@ -35,15 +38,16 @@ import ijson
 
 from data_extraction import load_wd_entities
 from data_extraction.constants import *
-from shared.constants import *
 from shared.blocklist import BLOCKLIST
+from shared.constants import *
 from shared.utils import (
+    check_state,
     create_new_path,
     generate_json,
+    is_jsonable,
     language_config_to_list,
     setup_logger,
-    is_jsonable,
-    check_state, write_state
+    write_state,
 )
 
 DEV = False
@@ -61,15 +65,15 @@ lang_keys = [item[0] for item in language_config_to_list()]
 
 
 def write_data_to_json_and_csv(
-        motifs: List[Dict],
-        genres: List[Dict],
-        extracted_classes: List[Dict],
-        materials: List[Dict],
-        movements: List[Dict],
-        locations: List[Dict],
-        merged_artworks: List[Dict],
-        artists: List[Dict],
-        classes: List[Dict],
+    motifs: List[Dict],
+    genres: List[Dict],
+    extracted_classes: List[Dict],
+    materials: List[Dict],
+    movements: List[Dict],
+    locations: List[Dict],
+    merged_artworks: List[Dict],
+    artists: List[Dict],
+    classes: List[Dict],
 ) -> None:
     """Writes the given lists of dictionaries to json and csv files
 
@@ -142,8 +146,10 @@ def write_data_to_json_and_csv(
 
 
 # region csv file functions
+# ruff: noqa: C901
 def get_fields(
-        type_name: str, language_keys: Optional[List[str]] = lang_keys,
+    type_name: str,
+    language_keys: Optional[List[str]] = lang_keys,
 ) -> List[str]:
     """Returns all columns for a specific type, e. g. 'artworks'
 
@@ -229,9 +235,7 @@ def generate_csv(extract_dicts: List[Dict], fields: List[str], filename: str) ->
         filename: Name of the file to write the data to
     """
     filename.parent.mkdir(parents=True, exist_ok=True)
-    with open(
-            filename.with_suffix(f".{CSV}"), "w", newline="", encoding="utf-8"
-    ) as file:
+    with open(filename.with_suffix(f".{CSV}"), "w", newline="", encoding="utf-8") as file:
         writer = csv.DictWriter(file, fieldnames=fields, delimiter=";", quotechar='"')
         writer.writeheader()
         for extract_dict in extract_dicts:
@@ -252,18 +256,17 @@ def merge_artworks() -> List[Dict]:
     print(datetime.datetime.now(), "Starting with", "merging artworks")
     artworks = set()
     file_names = [f"{source_type[PLURAL]}.{JSON}" for source_type in SOURCE_TYPES]
-    file_names = [
-        create_new_path(ARTWORK[PLURAL], subpath=file_name) for file_name in file_names
-    ]
+    file_names = [create_new_path(ARTWORK[PLURAL], subpath=file_name) for file_name in file_names]
     extract_dicts = []
 
     for file_name in file_names:
         try:
             with open(file_name, encoding="utf-8") as input:
-                objects = ijson.items(input, 'item')
+                objects = ijson.items(input, "item")
                 object_array = (o for o in objects)
                 for object in object_array:
-                    if not object[ID] in artworks and is_jsonable(object):  # remove duplicates
+                    # remove duplicates
+                    if object[ID] not in artworks and is_jsonable(object):
                         object[TYPE] = ARTWORK[SINGULAR]
                         extract_dicts.append(object)
                         artworks.add(object[ID])
@@ -277,8 +280,7 @@ def merge_artworks() -> List[Dict]:
 
 
 def extract_art_ontology() -> None:
-    """Extracts *.csv and *.json files for artworks and subjects (e. g. motifs, movements) from wikidata
-    """
+    """Extracts *.csv and *.json files for artworks and subjects (e. g. motifs, movements) from wikidata"""
 
     # Array of already crawled wikidata items
     already_crawled_wikidata_items = set(BLOCKLIST)
@@ -339,7 +341,14 @@ def extract_art_ontology() -> None:
 
     # Get distinct classes from artworks, motifs, etc.
     extracted_classes = load_wd_entities.get_distinct_extracted_classes(
-        merged_artworks, motifs, genres, materials, movements, artists, locations, classes,
+        merged_artworks,
+        motifs,
+        genres,
+        materials,
+        movements,
+        artists,
+        locations,
+        classes,
     )
     [c.update({TYPE: CLASS[SINGULAR]}) for c in extracted_classes]
 
@@ -361,14 +370,10 @@ def extract_art_ontology() -> None:
         locations,
         merged_artworks,
         movements,
-    ) = load_wd_entities.get_country_labels_for_merged_artworks_and_locations(
-        locations, merged_artworks, movements
-    )
+    ) = load_wd_entities.get_country_labels_for_merged_artworks_and_locations(locations, merged_artworks, movements)
 
     # Get labels for artists
-    artists = load_wd_entities.get_labels_for_artists(
-        artists, [GENDER, PLACE_OF_BIRTH, PLACE_OF_DEATH, CITIZENSHIP]
-    )
+    artists = load_wd_entities.get_labels_for_artists(artists, [GENDER, PLACE_OF_BIRTH, PLACE_OF_DEATH, CITIZENSHIP])
 
     # Get unit symbols from qid for artworks
     distinct_unit_qids = load_wd_entities.get_distinct_unit_symbol_qids(merged_artworks)
@@ -376,14 +381,10 @@ def extract_art_ontology() -> None:
     load_wd_entities.resolve_unit_id_to_unit_symbol(merged_artworks, unit_symbols)
 
     # Get exhibition histories as subdict
-    merged_artworks = load_wd_entities.resolve_exhibition_ids_to_exhibition_entities(
-        merged_artworks
-    )
+    merged_artworks = load_wd_entities.resolve_exhibition_ids_to_exhibition_entities(merged_artworks)
 
     # Significant events as subdict
-    merged_artworks = load_wd_entities.resolve_significant_event_id_entities_to_labels(
-        merged_artworks
-    )
+    merged_artworks = load_wd_entities.resolve_significant_event_id_entities_to_labels(merged_artworks)
 
     # Write to JSON
     write_data_to_json_and_csv(
@@ -405,16 +406,16 @@ if __name__ == "__main__":
         print(sys.argv)
         dev_count_set = False
         if "-d" in sys.argv:
-            if len(sys.argv) > sys.argv.index('-d') + 1 and any([c.isdigit() for c in sys.argv]):
-                DEV_CHUNK_LIMIT = int(sys.argv[sys.argv.index('-d') + 1])
+            if len(sys.argv) > sys.argv.index("-d") + 1 and any([c.isdigit() for c in sys.argv]):
+                DEV_CHUNK_LIMIT = int(sys.argv[sys.argv.index("-d") + 1])
                 dev_count_set = True
             print("DEV MODE: on, DEV_LIM={0}".format(DEV_CHUNK_LIMIT))
             DEV = True
         if "-r" in sys.argv:
             RECOVER_MODE = True
         if "-t" in sys.argv:
-            if len(sys.argv) > sys.argv.index('-t') + 1 and sys.argv[sys.argv.index('-t') + 1].isdigit():
-                CLASS_LIM = int(sys.argv[sys.argv.index('-t') + 1])
+            if len(sys.argv) > sys.argv.index("-t") + 1 and sys.argv[sys.argv.index("-t") + 1].isdigit():
+                CLASS_LIM = int(sys.argv[sys.argv.index("-t") + 1])
             print("TEST MODE: on, CLASS_LIM={0}".format(CLASS_LIM))
             TEST_MODE = True
             DEV = True

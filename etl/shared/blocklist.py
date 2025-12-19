@@ -1,3 +1,1 @@
-
-BLOCKLIST = ['Q8396']
-
+BLOCKLIST = ["Q8396"]

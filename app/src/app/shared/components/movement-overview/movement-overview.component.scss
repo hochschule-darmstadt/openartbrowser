@@ -16,7 +16,6 @@
     .ngx-slider-inner-tooltip {
       cursor: default !important;
       pointer-events: none !important;
-
     }
 
     .ngx-slider-ceil,
@@ -43,20 +42,11 @@
 
   background: #cccccc;
   color: #222222;
-  -webkit-box-shadow: inset -1px 0 0 #222222,
-  inset 0  -1px 0 #222222,
-  inset 0 1px 0 #222222,
-  inset 0 0 1px #222222;
+  -webkit-box-shadow: inset -1px 0 0 #222222, inset 0 -1px 0 #222222, inset 0 1px 0 #222222, inset 0 0 1px #222222;
 
-  -moz-box-shadow: inset -1px 0 0 #222222,
-  inset 0  -1px 0 #222222,
-  inset 0 1px 0 #222222,
-  inset 0 0 1px #222222;
+  -moz-box-shadow: inset -1px 0 0 #222222, inset 0 -1px 0 #222222, inset 0 1px 0 #222222, inset 0 0 1px #222222;
 
-  box-shadow: inset -1px 0 0 #222222,
-  inset 0  -1px 0 #222222,
-  inset 0 1px 0 #222222,
-  inset 0 0 1px #222222;
+  box-shadow: inset -1px 0 0 #222222, inset 0 -1px 0 #222222, inset 0 1px 0 #222222, inset 0 0 1px #222222;
 }
 
 .box:hover {
@@ -174,6 +164,10 @@ a {
   font-size: large;
   max-height: 10%;
   min-height: 2rem;
+}
+
+.normal-timeline {
+  position: relative;
 }
 
 #svg {

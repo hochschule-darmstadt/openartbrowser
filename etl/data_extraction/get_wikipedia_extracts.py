@@ -9,36 +9,37 @@ Examples:
 Returns:
     *.json files with added attributes wikipediaLink and abstract
 """
+
+# ruff: noqa: F405
 import datetime
 import json
 import sys
 from pathlib import Path
 from typing import Dict, List, Optional
 
+# ruff: noqa: F403
 from data_extraction.constants import *
 from data_extraction.request_utils import send_http_request
 from shared.constants import JSON
-from shared.utils import chunks, create_new_path, language_config_to_list, setup_logger, check_state, write_state
+from shared.utils import check_state, chunks, create_new_path, language_config_to_list, setup_logger, write_state
 
 RECOVER_MODE = False
 
 logger = setup_logger(
     "data_extraction.get_wikipedia_extracts",
-    Path(__file__).parent.parent.absolute()
-    / "logs"
-    / GET_WIKIPEDIA_EXTRACS_LOG_FILENAME,
+    Path(__file__).parent.parent.absolute() / "logs" / GET_WIKIPEDIA_EXTRACS_LOG_FILENAME,
 )
 
 lang_keys = [item[0] for item in language_config_to_list()]
 
 
 def get_wikipedia_page_ids(
-        items: List[Dict],
-        indices: List[int],
-        langkey: str,
-        timeout: Optional[int] = TIMEOUT,
-        sleep_time: Optional[int] = SLEEP_TIME,
-        maxlag: Optional[int] = MAX_LAG,
+    items: List[Dict],
+    indices: List[int],
+    langkey: str,
+    timeout: Optional[int] = TIMEOUT,
+    sleep_time: Optional[int] = SLEEP_TIME,
+    maxlag: Optional[int] = MAX_LAG,
 ) -> Dict:
     """Function to get the wikipedia page ids from their label referenced in the sitelinks
 
@@ -51,10 +52,12 @@ def get_wikipedia_page_ids(
         langkey: A specific language key e. g. 'en'
         timeout: Timeout on the request. Defaults to TIMEOUT.
         sleep_time: Waiting time if there are serverside problems. Defaults to SLEEP_TIME.
-        maxlag: Maxlag for the wikidata server see https://www.mediawiki.org/wiki/Manual:Maxlag_parameter. Defaults to MAX_LAG
+        maxlag: Maxlag for the wikidata server see https://www.mediawiki.org/wiki/Manual:Maxlag_parameter.
+            Defaults to MAX_LAG
 
     Returns:
-        A dictionary which maps the wikipedia page id (which is not a qid like in wikidata) to an index in the items dictionary
+        A dictionary which maps the wikipedia page id (which is not a qid like in wikidata)
+            to an index in the items dictionary
 
     Source:
         https://stackoverflow.com/questions/52787504/how-to-get-page-id-from-wikipedia-page-title
@@ -62,13 +65,7 @@ def get_wikipedia_page_ids(
     title_indice_dictionary = {}
     wikipedia_url = f"https://{langkey}.wikipedia.org/wiki/"
     for index in indices:
-        title_indice_dictionary.update(
-            {
-                items[index][f"{WIKIPEDIA_LINK}_{langkey}"].replace(
-                    wikipedia_url, ""
-                ): index
-            }
-        )
+        title_indice_dictionary.update({items[index][f"{WIKIPEDIA_LINK}_{langkey}"].replace(wikipedia_url, ""): index})
 
     parameters = {
         "action": "query",
@@ -110,12 +107,12 @@ def get_wikipedia_page_ids(
 
 
 def get_wikipedia_extracts(
-        items: List[Dict],
-        page_id_index_dictionary: Dict,
-        langkey: str,
-        timeout: Optional[int] = TIMEOUT,
-        sleep_time: Optional[int] = SLEEP_TIME,
-        maxlag: Optional[int] = MAX_LAG,
+    items: List[Dict],
+    page_id_index_dictionary: Dict,
+    langkey: str,
+    timeout: Optional[int] = TIMEOUT,
+    sleep_time: Optional[int] = SLEEP_TIME,
+    maxlag: Optional[int] = MAX_LAG,
 ):
     """Get the wikipedia extracts (in our data model they're called abstracts)
 
@@ -127,7 +124,8 @@ def get_wikipedia_extracts(
         langkey: A specific language key e. g. 'en'
         timeout: Timeout on the request. Defaults to TIMEOUT.
         sleep_time: Waiting time if there are serverside problems. Defaults to SLEEP_TIME.
-        maxlag: Maxlag for the wikidata server see https://www.mediawiki.org/wiki/Manual:Maxlag_parameter. Defaults to MAX_LAG
+        maxlag: Maxlag for the wikidata server see https://www.mediawiki.org/wiki/Manual:Maxlag_parameter.
+            Defaults to MAX_LAG
 
     Returns:
         A dictionary with index and abstract which is added to the entity of the index later
@@ -165,9 +163,8 @@ def get_wikipedia_extracts(
     for page_id, index in page_id_index_dictionary.items():
         if int(page_id) < 0:
             print(
-                "For the wikidata item {0} there was no pageid found on the {1}.wikipedia site. Therefore the extract is set to an empty string now".format(
-                    items[index]["id"], langkey
-                )
+                "For the wikidata item {0} there was no pageid found on the {1}.wikipedia site."
+                " Therefore the extract is set to an empty string now".format(items[index]["id"], langkey)
             )
             # Return empty extract for those cases
             index_extract_dictionary[index] = ""
@@ -176,7 +173,10 @@ def get_wikipedia_extracts(
     return index_extract_dictionary
 
 
-def add_wikipedia_extracts(language_keys: Optional[List[str]] = lang_keys, ) -> None:
+# ruff: noqa: C901
+def add_wikipedia_extracts(
+    language_keys: Optional[List[str]] = lang_keys,
+) -> None:
     """Add the wikipedia extracts to the already existing files
 
     Args:
@@ -198,69 +198,65 @@ def add_wikipedia_extracts(language_keys: Optional[List[str]] = lang_keys, ) -> 
             filename,
         )
         try:
-            with open(
-                    (create_new_path(filename)).with_suffix(f".{JSON}"), encoding="utf-8"
-            ) as file:
+            with open((create_new_path(filename)).with_suffix(f".{JSON}"), encoding="utf-8") as file:
                 if RECOVER_MODE and check_state(ETL_STATES.GET_WIKIPEDIA_EXTRACTS.EXTRACT_ABSTRACTS + filename):
                     continue
                 items = json.load(file)
                 for key in language_keys:
                     item_indices_with_wiki_link_for_lang = [
-                        items.index(item)
-                        for item in items
-                        if item[f"{WIKIPEDIA_LINK}_{key}"] != ""
+                        items.index(item) for item in items if item[f"{WIKIPEDIA_LINK}_{key}"] != ""
                     ]
                     print(
-                        f"There are {len(item_indices_with_wiki_link_for_lang)} {key}.wikipedia links within the {len(items)} {filename} items"
+                        f"There are {len(item_indices_with_wiki_link_for_lang)} {key}.wikipedia links "
+                        f"within the {len(items)} {filename} items"
                     )
 
                     # retry operation until its done
                     done = False
                     # ToDo: The limit for extracts seems to be 20, there is an excontinue parameter which
-                    # could be used to increase the performance and load more at once (50 is allowed by the API) if needed
+                    # could be used to increase the performance and load more at once (50 is allowed by the API)
                     # The request method has to be adjusted for this
                     # Further information https://stackoverflow.com/questions/9846795/prop-extracts-not-returning-all-extracts-in-the-wikimedia-api
                     chunk_size = 20
 
                     while not done:
                         try:
-                            item_indices_chunks = chunks(
-                                item_indices_with_wiki_link_for_lang, chunk_size
-                            )
+                            item_indices_chunks = chunks(item_indices_with_wiki_link_for_lang, chunk_size)
                             extracted_count = 0
-                            # Fill json objects without wikilink to an abstract with empty key-value pairs (could be removed if frontend is adjusted)
+                            # Fill json objects without wikilink to an abstract with empty key-value pairs
+                            # (could be removed if frontend is adjusted)
                             for j in range(len(items)):
                                 if j not in item_indices_with_wiki_link_for_lang:
                                     items[j][f"{ABSTRACT}_{key}"] = ""
 
                             for chunk in item_indices_chunks:
                                 # Get PageIds from URL https://en.wikipedia.org/w/api.php?action=query&titles=Jean_Wauquelin_presenting_his_'Chroniques_de_Hainaut'_to_Philip_the_Good
-                                page_id_indices_dictionary = get_wikipedia_page_ids(
-                                    items, chunk, key
-                                )
+                                page_id_indices_dictionary = get_wikipedia_page_ids(items, chunk, key)
                                 # Get Extracts from PageId https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&pageids=70889|1115370
-                                raw_response = get_wikipedia_extracts(
-                                    items, page_id_indices_dictionary, key
-                                )
+                                raw_response = get_wikipedia_extracts(items, page_id_indices_dictionary, key)
                                 # add extracted abstracts to json objects
                                 for i in chunk:
                                     items[i][f"{ABSTRACT}_{key}"] = raw_response[i]
 
                                 extracted_count += len(chunk)
                                 print(
-                                    f"Extracts for {filename} and language {key} status: {extracted_count}/{len(item_indices_with_wiki_link_for_lang)}",
+                                    f"Extracts for {filename} and language {key} "
+                                    f"status: {extracted_count}/{len(item_indices_with_wiki_link_for_lang)}",
                                     end="\r",
                                     flush=True,
                                 )
 
-                                # If a chunk is finished and the chunk size is < 20 (e.g. the previous chunk failed but the current one succeeded): increase the chunk size
+                                # If a chunk is finished and the chunk size is < 20 (e.g. the previous
+                                # chunk failed but the current one succeeded): increase the chunk size
                                 chunk_size = chunk_size + 5 if chunk_size < 20 else chunk_size
-
 
                             # set done to true after all items have been processed
                             done = True
                         except Exception as error:
-                            logger.error(f"Fetching wikipedia extracs for {filename}, lang:{key} and chunk size:{chunk_size} failed!")
+                            logger.error(
+                                f"Fetching wikipedia extracts for {filename}, lang:{key} and "
+                                f"chunk size:{chunk_size} failed!"
+                            )
                             logger.error(error)
 
                             # lower chunk size and try again in while loop
@@ -274,18 +270,16 @@ def add_wikipedia_extracts(language_keys: Optional[List[str]] = lang_keys, ) -> 
 
             # overwrite file
             with open(
-                    (create_new_path(filename)).with_suffix(f".{JSON}"),
-                    "w",
-                    newline="",
-                    encoding="utf-8",
+                (create_new_path(filename)).with_suffix(f".{JSON}"),
+                "w",
+                newline="",
+                encoding="utf-8",
             ) as file:
                 json.dump(items, file, ensure_ascii=False)
             write_state(ETL_STATES.GET_WIKIPEDIA_EXTRACTS.EXTRACT_ABSTRACTS + filename)
 
         except Exception as error:
-            print(
-                f"Error when opening following file: {filename}. Error: {error}. Skipping file now."
-            )
+            print(f"Error when opening following file: {filename}. Error: {error}. Skipping file now.")
             continue
         print(
             datetime.datetime.now(),

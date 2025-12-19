@@ -36,8 +36,7 @@ export class DataService {
    * @param type if specified, it is assured that the returned entity has this entityType
    */
   public async findById<T>(id: string, type?: EntityType): Promise<T> {
-    const body = bodyBuilder()
-      .query('match', 'id', id);
+    const body = bodyBuilder().query('match', 'id', id);
     const entities = await this.performQuery<T>(body, this.searchEndPoint, type);
     return !entities.length ? null : entities[0];
   }
@@ -49,12 +48,12 @@ export class DataService {
    * @param count the number of items returned
    */
   public async findMultipleById<T>(ids: string[], type?: EntityType, count = 400): Promise<T[]> {
-    const copyids = ids && ids.filter(id => !!id);
+    const copyids = ids && ids.filter((id) => !!id);
     if (!copyids || copyids.length === 0) {
       return [];
     }
     const body = bodyBuilder().size(count);
-    _.each(ids, id => body.orQuery('match', 'id', id));
+    _.each(ids, (id) => body.orQuery('match', 'id', id));
     return this.performQuery<T>(body, this.searchEndPoint, type);
   }
 
@@ -72,17 +71,15 @@ export class DataService {
       .sort(defaultSortField, 'desc')
       .size(count)
       .from(from);
-    _.each(ids, id => body.orQuery('match', usePlural(type), id));
+    _.each(ids, (id) => body.orQuery('match', usePlural(type), id));
     return this.performQuery<Artwork>(body);
   }
 
   public async countArtworksByType(type: EntityType, ids: string[]) {
-    const body = bodyBuilder()
-      .queryMinimumShouldMatch(1, true)
-      .query('match', 'type', EntityType.ARTWORK);
-    _.each(ids, id => body.orQuery('match', usePlural(type), id));
+    const body = bodyBuilder().queryMinimumShouldMatch(1, true).query('match', 'type', EntityType.ARTWORK);
+    _.each(ids, (id) => body.orQuery('match', usePlural(type), id));
     const response: any = await this.http.post(this.countEndPoint, body.build()).toPromise();
-    return (response && response.count) ? response.count : undefined;
+    return response && response.count ? response.count : undefined;
   }
 
   /**
@@ -90,9 +87,9 @@ export class DataService {
    * @param topMovementId Id of 'parent' movement
    */
   public getHasPartMovements(topMovementId: string): Promise<Movement[]> {
-    return this.findById<Movement>(topMovementId, EntityType.MOVEMENT).then(topMovement => {
-      return this.findMultipleById<Movement>(topMovement.has_part, EntityType.MOVEMENT).then(hasPartMovements => {
-        return hasPartMovements.filter(m => m.start_time && m.end_time);
+    return this.findById<Movement>(topMovementId, EntityType.MOVEMENT).then((topMovement) => {
+      return this.findMultipleById<Movement>(topMovement.has_part, EntityType.MOVEMENT).then((hasPartMovements) => {
+        return hasPartMovements.filter((m) => m.start_time && m.end_time);
       });
     });
   }
@@ -102,9 +99,9 @@ export class DataService {
    * @param subMovementId Id of 'sub' movement
    */
   public getPartOfMovements(subMovementId: string): Promise<Movement[]> {
-    return this.findById<Movement>(subMovementId, EntityType.MOVEMENT).then(subMovement => {
-      return this.findMultipleById<Movement>(subMovement.part_of, EntityType.MOVEMENT).then(partOfMovements => {
-        return partOfMovements.filter(m => m.start_time && m.end_time);
+    return this.findById<Movement>(subMovementId, EntityType.MOVEMENT).then((subMovement) => {
+      return this.findMultipleById<Movement>(subMovement.part_of, EntityType.MOVEMENT).then((partOfMovements) => {
+        return partOfMovements.filter((m) => m.start_time && m.end_time);
       });
     });
   }
@@ -141,14 +138,12 @@ export class DataService {
     }
     _.each(searchObj, (arr, key) => {
       if (Array.isArray(arr)) {
-        _.each(arr, val => body.query('match', key, val));
+        _.each(arr, (val) => body.query('match', key, val));
       }
     });
-    _.each(keywords, keyword =>
+    _.each(keywords, (keyword) =>
       body.query('bool', (q) => {
-        return q.orQuery('match', 'label', keyword)
-          .orQuery('match', 'description', keyword)
-          .orQuery('match', 'abstract', keyword);
+        return q.orQuery('match', 'label', keyword).orQuery('match', 'description', keyword).orQuery('match', 'abstract', keyword);
       })
     );
     return this.performQuery<Entity>(body);
@@ -167,18 +162,16 @@ export class DataService {
     }
     _.each(searchObj, (arr, key) => {
       if (Array.isArray(arr)) {
-        _.each(arr, val => body.query('match', key, val));
+        _.each(arr, (val) => body.query('match', key, val));
       }
     });
-    _.each(keywords, keyword =>
+    _.each(keywords, (keyword) =>
       body.query('bool', (q) => {
-        return q.orQuery('match', 'label', keyword)
-          .orQuery('match', 'description', keyword)
-          .orQuery('match', 'abstract', keyword);
+        return q.orQuery('match', 'label', keyword).orQuery('match', 'description', keyword).orQuery('match', 'abstract', keyword);
       })
     );
     const response: any = await this.http.post(this.countEndPoint, body.build()).toPromise();
-    return (response && response.count) ? response.count : 0;
+    return response && response.count ? response.count : 0;
   }
 
   /**
@@ -188,11 +181,7 @@ export class DataService {
    * @param from the offset of the query
    */
   public async getEntityItems<T>(type: EntityType, count = 20, from = 0): Promise<T[]> {
-    const body = bodyBuilder()
-      .query('match', 'type', type)
-      .sort(defaultSortField, 'desc')
-      .size(count)
-      .from(from);
+    const body = bodyBuilder().query('match', 'type', type).sort(defaultSortField, 'desc').size(count).from(from);
     return this.performQuery<T>(body);
   }
 
@@ -201,8 +190,7 @@ export class DataService {
    * @param type the type which should be counted
    */
   public async countEntityItems<T>(type: EntityType) {
-    const body = bodyBuilder()
-      .query('match', 'type', type);
+    const body = bodyBuilder().query('match', 'type', type);
     const response: any = await this.http.post(this.countEndPoint, body.build()).toPromise();
     return response && response.count ? response.count : undefined;
   }
@@ -227,11 +215,7 @@ export class DataService {
    * @param count size of return set
    */
   public async getCategoryItems<T>(type: EntityType, count = 20): Promise<T[]> {
-    const body = bodyBuilder()
-      .query('match', 'type', type)
-      .query('prefix', 'image', 'http')
-      .sort(defaultSortField, 'desc')
-      .size(count);
+    const body = bodyBuilder().query('match', 'type', type).query('prefix', 'image', 'http').sort(defaultSortField, 'desc').size(count);
     return this.performQuery(body);
   }
 
@@ -252,7 +236,7 @@ export class DataService {
         }
       })
     );
-    return iconclassData.filter(entry => entry !== null);
+    return iconclassData.filter((entry) => entry !== null);
   }
 
   /**
@@ -265,7 +249,7 @@ export class DataService {
     const response = await this.http.post<T>(url, query.build()).toPromise();
     const entities = this.filterData<T>(response, type);
     // set type specific attributes
-    entities.forEach(entity => this.setTypes(entity));
+    entities.forEach((entity) => this.setTypes(entity));
 
     if (!entities.length) {
       console.warn(NoResultsWarning(query));
@@ -282,7 +266,7 @@ export class DataService {
     const entities: T[] = [];
     _.each(
       data.hits.hits,
-      function(val) {
+      function (val) {
         if (!filterBy || (filterBy && val._source.type === filterBy)) {
           entities.push(this.addThumbnails(val._source));
         }
@@ -324,7 +308,7 @@ export class DataService {
   }
 }
 
-const NoResultsWarning = query => `
+const NoResultsWarning = (query) => `
   The performed es-query did not yield any results. This might result in strange behavior in the application.
 
   If you encounter any such issues please consider opening a bug report: https://github.com/hochschule-darmstadt/openartbrowser/issues/new?assignees=&labels=&template=bug_report.md&title=

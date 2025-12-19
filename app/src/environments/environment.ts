@@ -6,14 +6,14 @@ export const environment = {
   production: false,
   elastic: {
     base: '/api',
-    nonScrollingMaxQuerySize: 10000
+    nonScrollingMaxQuerySize: 10000,
   },
   imagesBase: '/api/images',
   analytics: {
     enabled: false,
     url: 'https://openartbrowser.org/api/analytics/',
-    propertyId: '2'
-  }
+    propertyId: '2',
+  },
 };
 
 /*
@@ -23,4 +23,4 @@ export const environment = {
  * This import should be commented out in production mode because it will have a negative impact
  * on performance if an error is thrown.
  */
-// import 'zone.js/dist/zone-error';  // Included with Angular CLI.
+// import 'zone.js/plugins/zone-error';  // Included with Angular CLI.

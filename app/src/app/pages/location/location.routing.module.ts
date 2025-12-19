@@ -7,13 +7,13 @@ import { SharedModule } from '../../shared/shared.module';
 const locationRoutes: Routes = [
   {
     path: '',
-    component: LocationComponent
-  }
+    component: LocationComponent,
+  },
 ];
 
 @NgModule({
   declarations: [LocationComponent],
   imports: [CommonModule, SharedModule, RouterModule.forChild(locationRoutes)],
-  exports: [LocationComponent]
+  exports: [LocationComponent],
 })
 export class LocationRoutingModule {}

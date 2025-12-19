@@ -6,10 +6,13 @@ Example:
 Raises:
     Exception: If an unexpected type is in the art_ontology_en.json an error is thrown
 """
+
 import datetime
 import json
 import urllib
 from pathlib import Path
+
+from loguru import logger
 
 
 def uri_validator(uri: str) -> bool:
@@ -24,18 +27,16 @@ def uri_validator(uri: str) -> bool:
     try:
         result = urllib.parse.urlparse(uri)
         return all([result.scheme, result.netloc, result.path])
-    except:
+    except Exception as e:
+        logger.error(e)
         return False
 
 
+# ruff: noqa: C901
 def generate_rdf(
-    file: str = Path(__file__).parent.parent.absolute()
-    / "crawler_output"
-    / "art_ontology_en.json",
+    file: str = Path(__file__).parent.parent.absolute() / "crawler_output" / "art_ontology_en.json",
     header: str = Path(__file__).parent.absolute() / "art_ontology_header.txt",
-    ontology: str = Path(__file__).parent.parent.absolute()
-    / "crawler_output"
-    / "art_ontology_en.ttl",
+    ontology: str = Path(__file__).parent.parent.absolute() / "crawler_output" / "art_ontology_en.ttl",
 ) -> None:
     """Generates an RDF Turtle file 'art_ontology_en.ttl' from *.json files
 
@@ -145,12 +146,7 @@ def generate_rdf(
                 output.write("\n\n# " + config + "\n\n")
                 json_data = json.loads(configs[config]["json_array"])
                 for json_object in json_data:
-                    output.write(
-                        "wd:"
-                        + json_object["id"]
-                        + " rdf:type "
-                        + configs[config]["class"]
-                    )
+                    output.write("wd:" + json_object["id"] + " rdf:type " + configs[config]["class"])
                     classes = json_object["classes"]
                     for c in classes:
                         output.write(", wd:" + c)
@@ -161,16 +157,10 @@ def generate_rdf(
                                 value = json_object[key]
                                 if key == "videos":
                                     count = 0
-                                    output.write(
-                                        " ;\n    " + properties[key]["property"] + " "
-                                    )
+                                    output.write(" ;\n    " + properties[key]["property"] + " ")
                                     for v in value:
                                         count += 1
-                                        output.write(
-                                            quotechars[t]["start"]
-                                            + v
-                                            + quotechars[t]["end"]
-                                        )
+                                        output.write(quotechars[t]["start"] + v + quotechars[t]["end"])
                                         if count != len(value):
                                             output.write(" , ")
                                 else:
@@ -180,20 +170,14 @@ def generate_rdf(
                                         value = f"{result.scheme}://{result.netloc}{urllib.parse.quote(result.path)}"
                                     if value != "":  # cell not empty
                                         if t == "string" and '"' in value:
-                                            value = value.replace(
-                                                '"', "'"
-                                            )  # replace double quotes by single quotes
-                                        if (
-                                            key == "abstract"
-                                        ):  # abstract need a \n character in string
+                                            value = value.replace('"', "'")  # replace double quotes by single quotes
+                                        if key == "abstract":  # abstract need a \n character in string
                                             output.write(
                                                 " ;\n    "
                                                 + properties[key]["property"]
                                                 + " "
                                                 + quotechars[t]["start"]
-                                                + value.replace("\n", "\\n").replace(
-                                                    "\\", "\\\\"
-                                                )
+                                                + value.replace("\n", "\\n").replace("\\", "\\\\")
                                                 + quotechars[t]["end"]
                                             )
                                         else:
@@ -206,21 +190,11 @@ def generate_rdf(
                                                 + quotechars[t]["end"]
                                             )
                             elif t == "list":
-                                if (
-                                    json_object[key] != ""
-                                ):  # cell not empty - should not happen
-                                    ids = json_object[
-                                        key
-                                    ]  # parses list of ids from string
-                                    if (
-                                        len(ids) != 0 and "" not in ids
-                                    ):  # list should not be empty
+                                if json_object[key] != "":  # cell not empty - should not happen
+                                    ids = json_object[key]  # parses list of ids from string
+                                    if len(ids) != 0 and "" not in ids:  # list should not be empty
                                         first = True
-                                        output.write(
-                                            " ;\n    "
-                                            + properties[key]["property"]
-                                            + " "
-                                        )
+                                        output.write(" ;\n    " + properties[key]["property"] + " ")
                                         for id in ids:
                                             if first:
                                                 first = False

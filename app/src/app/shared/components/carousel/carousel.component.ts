@@ -3,10 +3,9 @@ import { Component, Input, SimpleChanges, OnChanges, EventEmitter, Output, ViewC
 import { Entity, Artwork } from '../../models/models';
 import { HostListener } from '@angular/core';
 
-
 export interface Slide {
   /** artworks displayed on this slide */
-  items: Entity[];
+  items: any[];
   /** previous slide of slider */
   prevSlide: Slide;
   /** next slide of slider */
@@ -35,25 +34,25 @@ export function makeDefaultSlide(id: number = 0, items: Array<Entity> = []): Sli
     isLastSlide: false,
     nextSlide: null,
     prevSlide: null,
-    loadContent: null
+    loadContent: null,
   };
 }
 
 @Component({
   selector: 'app-slider',
   templateUrl: './carousel.component.html',
-  styleUrls: ['./carousel.component.scss']
+  styleUrls: ['./carousel.component.scss'],
 })
 export class CarouselComponent implements OnChanges {
-  @ViewChild("carousel", {static:false}) caurosel:NgbCarousel;
+  @ViewChild('carousel', { static: false }) caurosel: NgbCarousel;
 
   /** title of this slider */
   @Input() heading: string;
 
   /**  entities that should be displayed in this slider */
-  @Input() items: Entity[] = [];
+  @Input() items: any[] = [];
 
-  @Input() artwork: Artwork;
+  @Input() artwork: any;
 
   @Input() tab_type: string;
 
@@ -63,7 +62,7 @@ export class CarouselComponent implements OnChanges {
   private isMobile = false;
 
   /** emits hovered artwork on hover event. */
-  @Output() itemHover: EventEmitter<Entity> = new EventEmitter<Entity>();
+  @Output() itemHover: EventEmitter<any> = new EventEmitter<any>();
 
   constructor() {
     this.checkIsMobile();

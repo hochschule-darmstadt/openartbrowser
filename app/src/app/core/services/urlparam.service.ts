@@ -1,21 +1,19 @@
-import {Injectable} from '@angular/core';
-import {Router} from "@angular/router";
-import {Location} from "@angular/common";
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UrlParamService {
-  queryQueue: object[] = []
+  queryQueue: object[] = [];
 
   params = {};
 
-  constructor(private router: Router, private location: Location) {
-
-  }
+  constructor(private router: Router, private location: Location) {}
 
   changeQueryParams(change): UrlParamService {
-    if (this.queryQueue.length === 0 || this.queryQueue[this.queryQueue.length-1] !== change) {
+    if (this.queryQueue.length === 0 || this.queryQueue[this.queryQueue.length - 1] !== change) {
       // only add if change is new
       this.queryQueue.push(change);
     }
@@ -29,16 +27,17 @@ export class UrlParamService {
     // nothing to resolve
     if (this.queryQueue.length === 0) return;
 
-    this.queryQueue.forEach(change => {
-      this.params = Object.assign(this.params, change)
+    this.queryQueue.forEach((change) => {
+      this.params = Object.assign(this.params, change);
       // remove change from queue
       this.queryQueue.shift();
-    })
-    const url = this.router.createUrlTree(
-      [], {
+    });
+    const url = this.router
+      .createUrlTree([], {
         queryParams: this.params,
-        queryParamsHandling: 'merge'
-      }).toString();
+        queryParamsHandling: 'merge',
+      })
+      .toString();
     this.location.replaceState(url);
   }
 }

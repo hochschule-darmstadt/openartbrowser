@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AnalyticsComponent } from './analytics.component';
-import { Angulartics2RouterlessModule } from 'angulartics2/routerlessmodule';
+import { Angulartics2RouterlessModule } from 'angulartics2';
 
 describe('AnalyticsComponent', () => {
   let component: AnalyticsComponent;
@@ -10,7 +10,7 @@ describe('AnalyticsComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [AnalyticsComponent],
-      imports: [Angulartics2RouterlessModule.forRoot()]
+      imports: [Angulartics2RouterlessModule.forRoot()],
     }).compileComponents();
   }));
 

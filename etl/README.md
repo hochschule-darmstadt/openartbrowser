@@ -17,7 +17,7 @@ Installation on ubuntu (with apt):
 - Install nodejs with apt-get
   - > sudo apt-get install nodejs
 
-The versions are recommandations older versions may work.
+The versions are recommendations older versions may work.
 
 In order to install the dependencies of python and node.js run the install_etl.sh script.
 

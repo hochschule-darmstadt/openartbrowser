@@ -7,13 +7,13 @@ import { DataProtectionComponent } from './data-protection.component';
 const dataProtectionRoutes: Routes = [
   {
     path: '',
-    component: DataProtectionComponent
-  }
+    component: DataProtectionComponent,
+  },
 ];
 
 @NgModule({
   declarations: [DataProtectionComponent],
   imports: [CommonModule, SharedModule, RouterModule.forChild(dataProtectionRoutes)],
-  exports: [DataProtectionComponent]
+  exports: [DataProtectionComponent],
 })
 export class DataProtectionRoutingModule {}

@@ -9,7 +9,7 @@
   display: none;
 }
 
-.tabs-select{
+.tabs-select {
   margin: auto;
   display: block;
   background: #222;
@@ -17,21 +17,21 @@
   font-weight: bold;
   text-align: center;
   font-size: 20px;
-  padding: .5rem;
-  border-radius: .25rem;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
   color: #fff;
   background-color: #444;
   border-color: #767676;
 }
 
 @media (max-width: 768px) {
-  .tabs{
+  .tabs {
     display: none;
   }
 }
 
 @media (min-width: 768px) {
-  .tabs-select{
+  .tabs-select {
     display: none;
   }
 }

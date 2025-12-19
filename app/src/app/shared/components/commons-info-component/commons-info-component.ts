@@ -18,6 +18,7 @@ export class CommonsInfoComponent implements OnInit {
   meta$!: Observable<ImageMeta>;
   error?: string;
   imageName?: string;
+  authorText?: string;
 
   constructor(private commonsService: CommonsService) { }
 
@@ -29,5 +30,13 @@ export class CommonsInfoComponent implements OnInit {
     }
     this.imageName = decodeURIComponent(this.fileUrl.split('/').pop()!);
     this.meta$ = this.commonsService.fetchImageMeta(this.imageName);
+    this.meta$.subscribe({
+      next: (meta) => {
+        const div = document.createElement('div');
+        div.innerHTML = meta.author;
+        this.authorText = div.innerText;
+      },
+      error: (err) => this.error = err.message,
+    });
   }
 }

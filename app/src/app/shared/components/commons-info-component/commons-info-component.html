@@ -1,17 +1,16 @@
 <div *ngIf="meta$ | async as meta" class="license-info d-inline-flex align-items-center">
-  <div class="author badge rounded-pill bg-secondary first-letter d-flex badge-transparent m-0 flex-wrap flex-grow-0">
+  <div class="author rounded-pill bg-secondary first-letter d-flex badge-transparent m-0 flex-wrap flex-grow-0 fs-6 px-2">
     <div>
-      <a class="ms-1" [href]="'https://commons.wikimedia.org/wiki/File:' + imageName" target="_blank" rel="noopener">
-        <span *ngIf="meta.author.length; else noAuthor" [innerHTML]="meta.author"></span>
-        <ng-template #noAuthor>Source</ng-template>
-        <i class="ms-1 font-sm fas fa-external-link-alt"></i> </a
-      >,
+      <span *ngIf="meta.author.length; else noAuthor">{{authorText}}</span>
+      <ng-template #noAuthor>Source</ng-template>,
     </div>
-    <ng-container *ngIf="meta.licenseUrl; else noLicense">
-      <a [href]="meta.licenseUrl" target="_blank" rel="noopener">{{ meta.licenseShortName }}, </a>
+    <ng-container *ngIf="meta.licenseUrl; else noLicense" class="ms-1">
+      <a [href]="meta.licenseUrl" target="_blank" rel="noopener">{{ meta.licenseShortName }},</a>
       <i class="fas fa-external-link"></i>
     </ng-container>
-    <ng-template #noLicense>{{ meta.licenseShortName }}</ng-template>
-    , via Wikimedia Commons
+    <ng-template #noLicense class="ms-1">{{ meta.licenseShortName }},</ng-template>
+    <a class="ms-1" [href]="'https://commons.wikimedia.org/wiki/File:' + imageName" target="_blank" rel="noopener"
+      >via Wikimedia Commons <i class="ms-1 font-sm fas fa-external-link-alt"></i
+    ></a>
   </div>
 </div>

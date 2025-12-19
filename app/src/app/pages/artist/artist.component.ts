@@ -15,9 +15,10 @@ enum Tab {
 }
 
 @Component({
-  selector: 'app-artist',
-  templateUrl: './artist.component.html',
-  styleUrls: ['./artist.component.scss'],
+    selector: 'app-artist',
+    templateUrl: './artist.component.html',
+    styleUrls: ['./artist.component.scss'],
+    standalone: false
 })
 export class ArtistComponent implements OnInit, OnDestroy {
   /* TODO:REVIEW

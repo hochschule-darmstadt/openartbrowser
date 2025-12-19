@@ -39,9 +39,10 @@ export interface Page {
 }
 
 @Component({
-  selector: 'app-fetching-list',
-  templateUrl: './fetching-list.component.html',
-  styleUrls: ['./fetching-list.component.scss'],
+    selector: 'app-fetching-list',
+    templateUrl: './fetching-list.component.html',
+    styleUrls: ['./fetching-list.component.scss'],
+    standalone: false
 })
 export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
   /** all pages to display, pageNumber starts at 0 */

@@ -3,9 +3,10 @@ import { Iconclass } from '../../models/models';
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 
 @Component({
-  selector: 'app-iconclass',
-  templateUrl: './iconclass.component.html',
-  styleUrls: ['./iconclass.component.scss'],
+    selector: 'app-iconclass',
+    templateUrl: './iconclass.component.html',
+    styleUrls: ['./iconclass.component.scss'],
+    standalone: false
 })
 export class IconclassComponent implements OnChanges {
   @Input()

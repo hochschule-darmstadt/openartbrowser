@@ -3,10 +3,11 @@ import { Entity, Artwork } from '../../models/models';
 import { usePlural, EntityIcon } from '../../models/entity.interface';
 
 @Component({
-  selector: 'app-badge',
-  templateUrl: './badge.component.html',
-  encapsulation: ViewEncapsulation.None,
-  styleUrls: ['./badge.component.scss'],
+    selector: 'app-badge',
+    templateUrl: './badge.component.html',
+    encapsulation: ViewEncapsulation.None,
+    styleUrls: ['./badge.component.scss'],
+    standalone: false
 })
 export class BadgeComponent implements OnInit, OnChanges {
   @Input() entity: any;

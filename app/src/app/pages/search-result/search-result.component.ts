@@ -30,9 +30,10 @@ interface EntityTab {
 }
 
 @Component({
-  selector: 'app-search-result',
-  templateUrl: './search-result.component.html',
-  styleUrls: ['./search-result.component.scss'],
+    selector: 'app-search-result',
+    templateUrl: './search-result.component.html',
+    styleUrls: ['./search-result.component.scss'],
+    standalone: false
 })
 export class SearchResultComponent implements OnInit, OnDestroy {
   /** Count for search results */

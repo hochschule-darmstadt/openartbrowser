@@ -2,9 +2,10 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { SignificantEvent } from '../../models/artwork.interface';
 
 @Component({
-  selector: 'app-event-table',
-  templateUrl: './event-table.component.html',
-  styleUrls: ['./event-table.component.scss'],
+    selector: 'app-event-table',
+    templateUrl: './event-table.component.html',
+    styleUrls: ['./event-table.component.scss'],
+    standalone: false
 })
 export class EventTableComponent implements OnChanges {
   @Input()

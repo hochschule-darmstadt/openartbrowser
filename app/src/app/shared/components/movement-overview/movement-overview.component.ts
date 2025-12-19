@@ -15,17 +15,18 @@ interface MovementItem extends Movement {
 }
 
 @Component({
-  selector: 'app-movement-overview',
-  templateUrl: './movement-overview.component.html',
-  styleUrls: ['./movement-overview.component.scss'],
-  animations: [
-    trigger('newThumb', [
-      state('hide', style({ opacity: '0' })), // transform: 'scale(0)'})),
-      state('show', style({ opacity: '1' })), // transform: 'scale(1)'})),
-      transition('show => hide', [animate(0)]),
-      transition('hide => show', [animate(500)]),
-    ]),
-  ],
+    selector: 'app-movement-overview',
+    templateUrl: './movement-overview.component.html',
+    styleUrls: ['./movement-overview.component.scss'],
+    animations: [
+        trigger('newThumb', [
+            state('hide', style({ opacity: '0' })), // transform: 'scale(0)'})),
+            state('show', style({ opacity: '1' })), // transform: 'scale(1)'})),
+            transition('show => hide', [animate(0)]),
+            transition('hide => show', [animate(500)]),
+        ]),
+    ],
+    standalone: false
 })
 export class MovementOverviewComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
   dataService: DataService;

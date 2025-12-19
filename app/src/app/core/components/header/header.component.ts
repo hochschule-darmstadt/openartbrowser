@@ -1,12 +1,13 @@
 import { Component, LOCALE_ID, Inject, ElementRef, ViewChild, OnDestroy, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
-import * as elementResizeDetectorMaker from 'element-resize-detector';
+import elementResizeDetectorMaker from 'element-resize-detector';
 import { interval } from 'rxjs';
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss'],
+    selector: 'app-header',
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.scss'],
+    standalone: false
 })
 export class HeaderComponent implements AfterViewInit, OnDestroy {
   public path: string = '';

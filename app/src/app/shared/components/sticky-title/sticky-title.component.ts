@@ -3,9 +3,10 @@ import { Entity } from '../../models/entity.interface';
 import { usePlural } from '../../models/entity.interface';
 
 @Component({
-  selector: 'app-sticky-title',
-  templateUrl: './sticky-title.component.html',
-  styleUrls: ['./sticky-title.component.scss'],
+    selector: 'app-sticky-title',
+    templateUrl: './sticky-title.component.html',
+    styleUrls: ['./sticky-title.component.scss'],
+    standalone: false
 })
 export class StickyTitleComponent implements OnDestroy, AfterViewInit {
   @Input() entity: Entity;

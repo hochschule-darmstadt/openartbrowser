@@ -1,8 +1,8 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 
 @Component({
-  selector: 'app-image-viewer',
-  template: `
+    selector: 'app-image-viewer',
+    template: `
     <div class="image-viewer" [style.background-color]="config?.containerBackgroundColor || 'transparent'">
       <div class="controls gap-1 align-items-center flex-wrap-reverse flex-md-nowrap ms-1 me-1">
         <app-commons-info
@@ -39,7 +39,8 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild }
       </div>
     </div>
   `,
-  styleUrls: ['./image-viewer.component.scss'],
+    styleUrls: ['./image-viewer.component.scss'],
+    standalone: false
 })
 export class ImageViewerComponent implements OnInit {
   @Input() src: string[] | string;

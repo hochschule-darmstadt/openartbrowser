@@ -1,12 +1,10 @@
 #image-main {
-  max-width: 100%;
-  max-height: 70vh;
+  max-height: 30em;
 }
 
 .img-container {
   position: relative;
-
-  &:hover {
+  img {
     cursor: pointer;
   }
 }
@@ -32,6 +30,10 @@
   -ms-transform: scale(1.5) translate(-4px, -4px);
   transform: scale(1.5) translate(-4px, -4px);
   opacity: 0.8;
+}
+
+.license-info {
+  font-size: 0.6rem;
 }
 
 .modal {

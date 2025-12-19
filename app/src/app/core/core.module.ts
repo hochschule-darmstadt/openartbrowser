@@ -13,6 +13,7 @@ import { Angulartics2Module } from 'angulartics2';
 import { AnalyticsOptions } from './components/analytics/analyticsOptions';
 import { BrowserModule, HAMMER_GESTURE_CONFIG, HammerModule } from '@angular/platform-browser';
 import { HammerConfig } from 'src/config/hammer.config';
+import { CommonsService } from './services/commons-service';
 
 /** Everything that should be loaded globally and only once goes here */
 @NgModule({
@@ -20,6 +21,7 @@ import { HammerConfig } from 'src/config/hammer.config';
   imports: [CommonModule, NgbModule, FormsModule, SharedModule, RouterModule, Angulartics2Module.forRoot(AnalyticsOptions), BrowserModule, HammerModule],
   exports: [HeaderComponent, FooterComponent, AnalyticsComponent],
   providers: [
+    CommonsService, 
     DataService,
     SearchService,
     {

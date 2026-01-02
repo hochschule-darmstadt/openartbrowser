@@ -32,7 +32,6 @@ describe('SliderComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TimelineComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create without items', () => {

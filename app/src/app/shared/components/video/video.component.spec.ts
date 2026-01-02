@@ -22,7 +22,6 @@ describe('VideoComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(VideoComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

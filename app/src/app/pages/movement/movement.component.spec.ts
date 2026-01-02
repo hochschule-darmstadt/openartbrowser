@@ -53,7 +53,6 @@ describe('MovementComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(MovementComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

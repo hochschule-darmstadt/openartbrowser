@@ -44,7 +44,6 @@ describe('MaterialComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(MaterialComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

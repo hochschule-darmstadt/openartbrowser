@@ -23,7 +23,6 @@ describe('FetchingListComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(FetchingListComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

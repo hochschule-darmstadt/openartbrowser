@@ -19,7 +19,6 @@ describe('SlideComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SlideComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

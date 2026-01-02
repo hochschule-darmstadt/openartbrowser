@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { CommonsInfoComponent } from './commons-info-component';
 
@@ -8,7 +9,7 @@ describe('CommonsInfoComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CommonsInfoComponent]
+      imports: [HttpClientTestingModule, CommonsInfoComponent],
     })
     .compileComponents();
 

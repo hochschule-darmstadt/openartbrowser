@@ -9,7 +9,7 @@ dependencies = [
     "ijson==2.3",
     "loguru>=0.7.3",
     "pywikibot>=10.7.2",
-    "requests==2.31.0",
+    "requests==2.32.4",
     "sparqlwrapper==1.8.5",
     "wikitextparser==0.47.0",
 ]

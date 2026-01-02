@@ -1,6 +1,6 @@
 <div *ngIf="idDoesNotExist" class="container entity movement">
   <div class="row pb-4 pb-sm-5 mb-sm-5">
-    <app-error-message  [id]="movementId"></app-error-message>
+    <app-error-message [id]="movementId"></app-error-message>
   </div>
 </div>
 
@@ -10,18 +10,25 @@
       <app-title [entity]="movement"></app-title>
       <app-sticky-title [entity]="movement"></app-sticky-title>
 
-      <app-information i18n-label="Period label@@period" label="Period" [value]="movement.start_time + ' - ' + movement.end_time" *ngIf="movement.start_time && movement.end_time" [isEntityPage]="true"></app-information>
+      <app-information
+        i18n-label="Period label@@period"
+        label="Period"
+        [value]="movement.start_time + ' - ' + movement.end_time"
+        *ngIf="movement.start_time && movement.end_time"
+        [isEntityPage]="true"
+      ></app-information>
       <div class="mt-2" *ngIf="movement?.abstract?.length || movement?.influenced_by?.length">
         <app-collapse [showVideo]="videoExists">
           <app-abstract [entity]="movement"></app-abstract>
 
           <div class="videos">
-            <div class="video" *ngFor="let url of uniqueEntityVideos;  let i=index">
-              <app-video *ngIf="(i < 4)" [videoUrl]="url" (videoFound)="videoFound($event)"></app-video>
+            <div class="video" *ngFor="let url of uniqueEntityVideos; let i = index">
+              <app-video *ngIf="i < 4" [videoUrl]="url" (videoFound)="videoFound($event)"></app-video>
             </div>
           </div>
 
-          <app-information i18n-label="Influenced by label@@influenced_by" label="Influenced by" [values]="movement?.influenced_by" [isEntityPage]="true"> </app-information>
+          <app-information i18n-label="Influenced by label@@influenced_by" label="Influenced by" [values]="movement?.influenced_by" [isEntityPage]="true">
+          </app-information>
         </app-collapse>
       </div>
     </div>
@@ -33,56 +40,52 @@
 
   <div>
     <ul class="nav nav-tabs tabs">
-      <li *ngIf="timelineItems?.length>0" class="nav-item">
-        <a class="nav-link" (click)="setActiveTab(Tab.Timeline)"
-           [ngClass]="{ active: activeTab === Tab.Timeline }"
-           data-toggle="tab" href="#timeline_tab">
-          <i class="mr-1 fa fa-ruler-horizontal"></i>
+      <li *ngIf="timelineItems?.length > 0" class="nav-item">
+        <button type="button" class="nav-link" (click)="setActiveTab(Tab.Timeline)" [ngClass]="{ active: activeTab === Tab.Timeline }">
+          <i class="me-1 fa fa-ruler-horizontal"></i>
           <ng-container i18n="Timeline toggle label@@toggletimeline">Timeline</ng-container>
-        </a>
+        </button>
       </li>
       <li *ngIf="fetchOptions?.queryCount" class="nav-item">
-        <a class="nav-link" (click)="setActiveTab(Tab.Artworks)"
-           [ngClass]="{ active: activeTab === Tab.Artworks }"
-           data-toggle="tab" href="#artworks_tab">
-          <i class="mr-1 fas fa-image"></i>
-          <span class="ml-1 mt-auto mb-auto mr-1 artworks-amount">{{ movement?.absoluteRank }}</span>
+        <button type="button" class="nav-link" (click)="setActiveTab(Tab.Artworks)" [ngClass]="{ active: activeTab === Tab.Artworks }">
+          <i class="me-1 fas fa-image"></i>
+          <span class="ms-1 mt-auto mb-auto me-1 artworks-amount">{{ movement?.absoluteRank }}</span>
           <ng-container i18n="Timeline toggle label@@toggleartworks">Artworks</ng-container>
-        </a>
+        </button>
       </li>
-      <li *ngIf="movement && relatedMovements.length > 0"  class="nav-item">
-        <a class="nav-link" (click)="setActiveTab(Tab.MovementOverview)"
-           [ngClass]="{ active: activeTab === Tab.MovementOverview }"
-           data-toggle="tab" href="#movement_overview_tab">
-          <i class="mr-1 fa fa-wind"></i>
+
+      <li *ngIf="movement && relatedMovements.length > 0" class="nav-item">
+        <button type="button" class="nav-link" (click)="setActiveTab(Tab.MovementOverview)" [ngClass]="{ active: activeTab === Tab.MovementOverview }">
+          <i class="me-1 fa fa-wind"></i>
           <ng-container i18n="Timeline toggle label@@togglerelatedmovements">Related Movements</ng-container>
-        </a>
+        </button>
       </li>
     </ul>
 
     <select class="tabs-select form-select mb-2" (change)="onChange($event)">
-      <option *ngIf="timelineItems?.length>0" [value]="Tab.Timeline" [selected]="activeTab === Tab.Timeline">
+      <option *ngIf="timelineItems?.length > 0" [value]="Tab.Timeline" [selected]="activeTab === Tab.Timeline">
         <ng-container i18n="Timeline toggle label@@toggletimeline">Timeline</ng-container>
       </option>
       <option *ngIf="fetchOptions?.queryCount" [value]="Tab.Artworks" [selected]="activeTab === Tab.Artworks">
         <ng-container i18n="Timeline toggle label@@toggleartworks">Artworks</ng-container>
       </option>
-      <option *ngIf="movement && relatedMovements.length > 0"  [value]="Tab.MovementOverview" [selected]="activeTab === Tab.MovementOverview">
+      <option *ngIf="movement && relatedMovements.length > 0" [value]="Tab.MovementOverview" [selected]="activeTab === Tab.MovementOverview">
         <ng-container i18n="Timeline toggle label@@togglerelatedmovements">Related Movements</ng-container>
       </option>
     </select>
 
     <div class="tab-content">
       <div class="tab-pane fade" [ngClass]="{ 'show active': activeTab === Tab.Timeline }" id="timeline_tab">
-        <app-timeline [artworks]="timelineItems" displayArtists="true"></app-timeline>
+        <app-timeline [artworks]="timelineItems" [displayArtists]="true"></app-timeline>
       </div>
       <div class="tab-pane fade" [ngClass]="{ 'show active': activeTab === Tab.Artworks }" id="artworks_tab">
         <app-fetching-list id="artworks_tab-list" [query]="query" [options]="fetchOptions"></app-fetching-list>
       </div>
       <div class="tab-pane fade" [ngClass]="{ 'show active': activeTab === Tab.MovementOverview }" id="movement_overview_tab">
         <app-movement-overview
-          *ngIf="(activeTab === Tab.MovementOverview) && movement && relatedMovements.length > 0"
-          [inputMovements]="relatedMovements"></app-movement-overview>
+          *ngIf="activeTab === Tab.MovementOverview && movement && relatedMovements.length > 0"
+          [inputMovements]="relatedMovements"
+        ></app-movement-overview>
       </div>
     </div>
   </div>

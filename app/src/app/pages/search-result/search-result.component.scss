@@ -1,5 +1,5 @@
 .colon-suffix:after {
-  content: ":";
+  content: ':';
 }
 
 .loading-placeholder {
@@ -26,18 +26,18 @@
   i {
     display: block;
     margin-left: auto;
-    margin-right: auto
+    margin-right: auto;
   }
 }
 
-.tabs-select{
+.tabs-select {
   margin: auto;
   display: block;
   font-weight: bold;
   text-align: center;
   font-size: 20px;
-  padding: .5rem;
-  border-radius: .25rem;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
   color: #fff;
   background-color: #444;
   border-color: #767676;
@@ -61,7 +61,7 @@
   .container > .row {
     margin: 0;
   }
-  .container > .row > [class^="col-"] {
+  .container > .row > [class^='col-'] {
     padding: 0;
   }
 }

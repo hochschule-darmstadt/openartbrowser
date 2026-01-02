@@ -16,21 +16,22 @@ import { TimelineComponent } from './components/timeline/timeline.component';
 import { CollapseComponent } from './components/collapse/collapse.component';
 import { Angulartics2Module } from 'angulartics2';
 import { MovementOverviewComponent } from './components/movement-overview/movement-overview.component';
-import { NgxFitTextModule } from 'ngx-fit-text';
 import { DimensionsComponent } from './components/dimensions/dimensions.component';
 import { InfiniteScrollComponent } from './components/infinite-scroll/infinite-scroll.component';
 import { FetchingListComponent } from './components/fetching-list/fetching-list.component';
 import { EventTableComponent } from './components/event-table/event-table.component';
-import { InViewportModule } from 'ng-in-viewport';
 import { PaginatorComponent } from './components/fetching-list/paginator/paginator.component';
 import { StickyTitleComponent } from './components/sticky-title/sticky-title.component';
 import { ErrorMessageComponent } from './components/error-message/error-message.component';
-import {NgxSliderModule} from "@angular-slider/ngx-slider";
+import { InViewportModule } from 'ng-in-viewport';
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { CategoryContainerComponent } from './components/category-container/category-container.component';
+import { CommonsInfoComponent } from './components/commons-info-component/commons-info-component';
 
 /** Everything that should be used within multiple feature modules but isn't always required goes here */
 @NgModule({
   declarations: [
+    CarouselComponent,
     CarouselComponent,
     SlideComponent,
     SearchComponent,
@@ -50,18 +51,9 @@ import { CategoryContainerComponent } from './components/category-container/cate
     PaginatorComponent,
     StickyTitleComponent,
     CategoryContainerComponent,
-    ErrorMessageComponent
+    ErrorMessageComponent,
   ],
-    imports: [
-        CommonModule,
-        NgbModule,
-        RouterModule,
-        FormsModule,
-        Angulartics2Module,
-        NgxFitTextModule,
-        InViewportModule,
-        NgxSliderModule
-    ],
+  imports: [CommonModule, NgbModule, RouterModule, FormsModule, NgxSliderModule, InViewportModule, Angulartics2Module, CommonsInfoComponent],
   exports: [
     CarouselComponent,
     SearchComponent,
@@ -71,6 +63,7 @@ import { CategoryContainerComponent } from './components/category-container/cate
     NgbModule,
     TitleComponent,
     InformationComponent,
+    CommonsInfoComponent,
     AbstractComponent,
     IconclassComponent,
     CollapseComponent,
@@ -83,8 +76,7 @@ import { CategoryContainerComponent } from './components/category-container/cate
     StickyTitleComponent,
     PaginatorComponent,
     CategoryContainerComponent,
-    ErrorMessageComponent
-  ]
+    ErrorMessageComponent,
+  ],
 })
-export class SharedModule {
-}
+export class SharedModule { }

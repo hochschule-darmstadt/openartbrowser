@@ -17,19 +17,21 @@ describe('SliderComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NgbModule, NgxSliderModule, HttpClientModule, RouterModule.forRoot([], { relativeLinkResolution: 'legacy' }), BrowserAnimationsModule],
+      imports: [NgbModule, NgxSliderModule, HttpClientModule, RouterModule.forRoot([], {}), BrowserAnimationsModule],
       declarations: [TimelineComponent],
-      providers: [DataService, {
-        provide: HAMMER_GESTURE_CONFIG,
-        useClass: HammerConfig
-      }]
+      providers: [
+        DataService,
+        {
+          provide: HAMMER_GESTURE_CONFIG,
+          useClass: HammerConfig,
+        },
+      ],
     }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TimelineComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create without items', () => {
@@ -47,7 +49,7 @@ describe('SliderComponent', () => {
         route: '',
         absoluteRank: 37,
         relativeRank: 0.9795063116489386,
-        date: 1300
+        date: 1300,
       },
       {
         id: 'Q549172',
@@ -58,7 +60,7 @@ describe('SliderComponent', () => {
         route: '',
         absoluteRank: 46,
         relativeRank: 0.9944890206318238,
-        date: 1305
+        date: 1305,
       },
       {
         id: 'Q979440',
@@ -69,7 +71,7 @@ describe('SliderComponent', () => {
         route: '',
         absoluteRank: 36,
         relativeRank: 0.9762525340301427,
-        date: 1333
+        date: 1333,
       },
       {
         id: 'Q3815314',
@@ -81,8 +83,8 @@ describe('SliderComponent', () => {
         route: '',
         absoluteRank: 21,
         relativeRank: 0.22987683344390347,
-        date: 1352
-      }
+        date: 1352,
+      },
     ];
     expect(component).toBeTruthy();
   });

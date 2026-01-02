@@ -1,38 +1,39 @@
-<div *ngIf='idDoesNotExist' class='container entity artwork'>
-  <div class='row pb-4 pb-sm-5 mb-sm-5 border-bottom mobile-no-border'>
-    <app-error-message [id]='artworkId'></app-error-message>
+<div *ngIf="idDoesNotExist" class="container entity artwork">
+  <div class="row pb-4 pb-sm-5 mb-sm-5 border-bottom mobile-no-border">
+    <app-error-message [id]="artworkId"></app-error-message>
   </div>
 </div>
 
-<div *ngIf='!idDoesNotExist' class='container entity artwork'>
-  <div class='row pb-4 pb-sm-5 border-bottom' *ngIf='!imageHidden && artwork?.imageMedium'>
-    <div class='img-container mx-auto d-block' (click)='showModal()'>
-      <img class='img-fluid d-block' id='image-main' (error)='hideImage()' src='{{ artwork?.imageMedium }}' alt='' />
-      <div class='enlarge'>
-        <i class='fas fa-expand' (click)='showModal()'></i>
+<div *ngIf="!idDoesNotExist" class="container entity artwork">
+  <div class="row pb-4 pb-sm-5 border-bottom" *ngIf="!imageHidden && artwork?.imageMedium" [ngStyle]="{ 'display': imageLoaded ? 'block' : 'none' }">
+    <div class="img-container d-flex flex-column">
+      <img class="img-fluid mx-auto" id="image-main" (error)="hideImage()" (click)="showModal()" src="{{ artwork?.imageMedium }}" alt="" />
+      <app-commons-info class="license-info mt-2 mx-auto" (loaded)="onLicenseInfoLoaded()" [fileUrl]="artwork?.image"></app-commons-info>
+      <div class="enlarge">
+        <i class="fas fa-expand" (click)="showModal()"></i>
       </div>
-    </div>
+    </div>  
   </div>
+  <div class="img-placeholder d-flex flex-column justify-content-center align-items-center" *ngIf="!imageLoaded || imageHidden">
+    <i class="fa fa-paint-brush"></i>
+    <span i18n="error text@@fetching_list_error" class="mt-3">Painting in progress</span>
+  </div>
+  <div class="row pt-3 pb-3 border-bottom" *ngIf="artwork">
+    <div class="col-sm-12">
+      <app-title [entity]="artwork"></app-title>
 
-  <div class='row pt-3 pb-3 border-bottom' *ngIf='artwork'>
-    <div class='col-sm-12'>
-      <app-title [entity]='artwork'></app-title>
+      <app-information i18n-label="Artist label@@artist" label="Artist" [values]="artwork?.artists"></app-information>
+      <app-information i18n-label="Location label@@location" label="Location" [values]="artwork?.locations"></app-information>
 
-      <app-information i18n-label='Artist label@@artist' label='Artist' [values]='artwork?.artists'></app-information>
-
-      <app-information i18n-label='Location label@@location' label='Location'
-                       [values]='artwork?.locations'></app-information>
-
-      <app-information i18n-label='Inception label@@inception' label='Inception'
-                       [value]="artwork?.inception+''"></app-information>
+      <app-information i18n-label="Inception label@@inception" label="Inception" [value]="artwork?.inception + ''"></app-information>
 
       <!--
         Check the length of attributes "genres", "movements", "materials" or "motifs", if one of them not empty
         show the collapse element
       -->
       <div
-        class='mt-2'
-        *ngIf='
+        class="mt-2"
+        *ngIf="
           artwork?.abstract?.length ||
           artwork?.genres?.length ||
           artwork?.movements?.length ||
@@ -40,72 +41,66 @@
           artwork?.motifs?.length ||
           artwork?.main_subjects?.length ||
           (artwork?.height && artwork?.width)
-        '
+        "
       >
-        <app-collapse [showVideo]='videoExists'>
-          <app-abstract [entity]='artwork'></app-abstract>
+        <app-collapse [showVideo]="videoExists">
+          <app-abstract [entity]="artwork"></app-abstract>
 
-          <div class='videos'>
-            <div class='video' *ngFor='let url of uniqueVideos; let i = index'>
-              <app-video *ngIf='i < 3' [videoUrl]='url' (videoFound)='videoFound($event)'></app-video>
+          <div class="videos">
+            <div class="video" *ngFor="let url of uniqueVideos; let i = index">
+              <app-video *ngIf="i < 3" [videoUrl]="url" (videoFound)="videoFound($event)"></app-video>
             </div>
           </div>
 
-          <app-information i18n-label='Genre label@@genre' label='Genre' [values]='artwork?.genres'></app-information>
+          <app-information i18n-label="Genre label@@genre" label="Genre" [values]="artwork?.genres"></app-information>
 
-          <app-information i18n-label='Movement label@@movement' label='Movement'
-                           [values]='artwork?.movements'></app-information>
+          <app-information i18n-label="Movement label@@movement" label="Movement" [values]="artwork?.movements"></app-information>
 
-          <app-information i18n-label='Material label@@material' label='Material'
-                           [values]='artwork?.materials'></app-information>
+          <app-information i18n-label="Material label@@material" label="Material" [values]="artwork?.materials"></app-information>
 
-          <app-information i18n-label='Class label@@class' label='Class'
-                           [values]='artwork?.classes'></app-information>
+          <app-information i18n-label="Class label@@class" label="Class" [values]="artwork?.classes"></app-information>
 
-          <app-information i18n-label='Main Motif label@@main_motif' label='Main Motif'
-                           [values]='artwork?.main_subjects'></app-information>
+          <app-information i18n-label="Main Motif label@@main_motif" label="Main Motif" [values]="artwork?.main_subjects"></app-information>
 
-          <app-information i18n-label='Motif label@@motif' label='Motifs'
-                           [values]='filterDuplicateMotifs()'></app-information>
+          <app-information i18n-label="Motif label@@motif" label="Motifs" [values]="filterDuplicateMotifs()"></app-information>
 
-          <app-iconclass i18n-label='Iconography label@@iconography' [iconclasses]='artwork.iconclasses'
-                         label='Iconography'></app-iconclass>
+          <app-iconclass i18n-label="Iconography label@@iconography" [iconclasses]="artwork.iconclasses" label="Iconography"></app-iconclass>
 
-          <app-dimensions *ngIf='artwork' [artwork]='artwork'></app-dimensions>
+          <app-dimensions *ngIf="artwork" [artwork]="artwork"></app-dimensions>
 
-          <app-event-table i18n-label='Events label@@events' label='Events' [events]='artwork.events'></app-event-table>
+          <app-event-table i18n-label="Events label@@events" label="Events" [events]="artwork.events"></app-event-table>
         </app-collapse>
       </div>
     </div>
   </div>
 
-  <div class='row mb-3 pt-3'>
-    <div class='col-sm-12'>
-      <h3 i18n='Related Artworks label@@related_artworks'>Related Artworks</h3>
+  <div class="row mb-3 pt-3">
+    <div class="col-sm-12">
+      <h3 i18n="Related Artworks label@@related_artworks">Related Artworks</h3>
 
       <!--
         For each tab of the slider carousel, create a nav-tabs item to switch between the sliders
       -->
-      <ul class='nav nav-tabs tabs'>
-        <ng-container *ngFor='let tab of artworkTabs'>
-          <li class='nav-item' *ngIf='artwork && tab.items.length > 0'>
-            <a class='nav-link' [ngClass]='{ active: tab.active }' data-toggle='tab' href='#{{ tab.type }}_tab'>
-              <i class='mr-1 fas' [ngClass]='tab.icon'></i>
-              <ng-container i18n='Entity Type Labels@@entity_labels' *ngIf='tab.type; let type'>
+      <ul class="nav nav-tabs tabs">
+        <ng-container *ngFor="let tab of artworkTabs">
+          <li class="nav-item" *ngIf="artwork && tab.items.length > 0">
+            <button type="button" class="nav-link" [ngClass]="{ active: tab.active }" (click)="setActiveTab(tab.type)">
+              <i class="me-1 fas" [ngClass]="tab.icon"></i>
+              <ng-container i18n="Entity Type Labels@@entity_labels" *ngIf="tab.type; let type">
                 {type, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material
-                  {Material} main_motif {Main Motif} class {Class} }
+                {Material} main_motif {Main Motif} class {Class} }
               </ng-container>
-            </a>
+            </button>
           </li>
         </ng-container>
       </ul>
 
-      <select class='tabs-select form-select' (change)='onChange($event)'>
-        <ng-container *ngFor='let tab of artworkTabs'>
-          <option *ngIf='artwork && tab.items.length > 0' [value]='tab.type'>
-            <ng-container i18n='Entity Type Labels@@entity_labels' *ngIf='tab.type; let type'>
-              {type, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material
-                {Material} main_motif {Main Motif} class {Class} }
+      <select class="tabs-select form-select" (change)="onChange($event)">
+        <ng-container *ngFor="let tab of artworkTabs">
+          <option *ngIf="artwork && tab.items.length > 0" [value]="tab.type">
+            <ng-container i18n="Entity Type Labels@@entity_labels" *ngIf="tab.type; let type">
+              {type, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material}
+              main_motif {Main Motif} class {Class} }
             </ng-container>
           </option>
         </ng-container>
@@ -115,46 +110,38 @@
         For each tab of the slider carousel, create an app-slider. If the attribute "active" of the tab is set to true,
         set tab as active
       -->
-      <div class='tab-content'>
-        <div *ngFor='let tab of artworkTabs' class='tab-pane fade'
-             [ngClass]="{ 'show active': tab.active }" id='{{ tab.type }}_tab'>
+      <div class="tab-content">
+        <div *ngFor="let tab of artworkTabs" class="tab-pane fade" [ngClass]="{ 'show active': tab.active }" id="{{ tab.type }}_tab">
           <!--
             Listen for an event and assign the attribute "hoveredArtwork" to the hovered artwork.
           -->
-          <app-slider (itemHover)='this.hoveredArtwork = $event' [items]='tab.items' [artwork]='artwork'
-                      [tab_type]='tab.type'></app-slider>
+          <app-slider (itemHover)="this.hoveredArtwork = $event" [items]="tab.items" [artwork]="artwork" [tab_type]="tab.type"></app-slider>
 
           <!-- Collapse element for common tags -->
-          <div id='common-tags'>
+          <div id="common-tags">
             <h3
-              class='mt-2 mb-0 more'
-              aria-controls='commonTagsDiv'
-              [attr.aria-expanded]='!commonTagsCollapsed'
-              (click)='commonTagsCollapsed = !commonTagsCollapsed'
+              class="mt-2 mb-0 more"
+              aria-controls="commonTagsDiv"
+              [attr.aria-expanded]="!commonTagsCollapsed"
+              (click)="commonTagsCollapsed = !commonTagsCollapsed"
             >
-              <ng-container i18n='Related Artworks headline text before tab name @@related_artworks_headline_prev'>
-                Common
-              </ng-container>
-              <span *ngIf="tab != 'all'">
-                <ng-container i18n='Related Artworks headline text tab name@@related_artworks_headline_tab_name'>
+              <ng-container i18n="Related Artworks headline text before tab name @@related_artworks_headline_prev"> Common </ng-container>
+              <span *ngIf="tab.type !== 'all'">
+                <ng-container i18n="Related Artworks headline text tab name@@related_artworks_headline_tab_name">
                   {tab, select, all {all} motif {motif} artist {artist} location {location} genre {genre} movement {movement} material {material} class {class}}
                 </ng-container>
               </span>
-              <ng-container i18n='Related Artworks headline text after tab name @@related_artworks_headline_after'>
-                tags with artwork
-              </ng-container>
-              <span>"{{ artwork?.label?.length > 35 ? (artwork?.label | slice: 0:35) + '...' : artwork?.label }}"</span>
-              <i *ngIf='commonTagsCollapsed' class='ml-2 fas fa-chevron-down'></i>
-              <i *ngIf='!commonTagsCollapsed' class='ml-2 fas fa-chevron-up'></i>
+              <ng-container i18n="Related Artworks headline text after tab name @@related_artworks_headline_after"> tags with artwork </ng-container>
+              <span>"{{ artwork?.label?.length > 35 ? (artwork?.label | slice : 0 : 35) + '...' : artwork?.label }}"</span>
+              <i *ngIf="commonTagsCollapsed" class="ms-2 fas fa-chevron-down"></i>
+              <i *ngIf="!commonTagsCollapsed" class="ms-2 fas fa-chevron-up"></i>
             </h3>
 
-            <div class='collapse' [ngbCollapse]='commonTagsCollapsed' id='commonTagsDiv'>
-              <p class='mb-4 mt-0'>
+            <div class="collapse" [ngbCollapse]="commonTagsCollapsed" id="commonTagsDiv">
+              <p class="mb-4 mt-0">
                 <em>
                   (
-                  <ng-container i18n='Related Artworks hint text@@related_artworks_hint'>
-                    move the mouse over an artwork to display common tags
-                  </ng-container>
+                  <ng-container i18n="Related Artworks hint text@@related_artworks_hint"> move the mouse over an artwork to display common tags </ng-container>
                   )
                 </em>
               </p>
@@ -166,45 +153,37 @@
                 associated attribute of hoveredArtwork, add the class badge-light to highlight
                 the chip.
               -->
-              <span *ngIf="artwork?.main_subjects?.length && (tab.type == 'main_motif' || tab.type == 'all')"
-                    class='mb-1'>
-                <app-badge *ngFor='let main_subject of artwork?.main_subjects' [entity]='main_subject'
-                           [isHoverBadge]='true' [hoveredArtwork]='hoveredArtwork'> </app-badge>
+              <span *ngIf="artwork?.main_subjects?.length && (tab.type === 'main_motif' || tab.type === EntityTypeEnum.ALL)" class="mb-1">
+                <app-badge *ngFor="let main_subject of artwork?.main_subjects" [entity]="main_subject" [isHoverBadge]="true" [hoveredArtwork]="hoveredArtwork">
+                </app-badge>
               </span>
 
-              <span *ngIf="artwork?.motifs?.length && (tab.type == 'motif' || tab.type == 'all')" class='mb-1'>
-                <app-badge *ngFor='let motif of artwork?.motifs' [entity]='motif' [isHoverBadge]='true'
-                           [hoveredArtwork]='hoveredArtwork'> </app-badge>
+              <span *ngIf="artwork?.motifs?.length && (tab.type === 'motif' || tab.type === 'all')" class="mb-1">
+                <app-badge *ngFor="let motif of artwork?.motifs" [entity]="motif" [isHoverBadge]="true" [hoveredArtwork]="hoveredArtwork"> </app-badge>
               </span>
 
-              <span *ngIf="artwork?.artists?.length && (tab.type == 'artist' || tab.type == 'all')" class='mb-1'>
-                <app-badge *ngFor='let artist of artwork?.artists' [entity]='artist' [isHoverBadge]='true'
-                           [hoveredArtwork]='hoveredArtwork'> </app-badge>
+              <span *ngIf="artwork?.artists?.length && (tab.type === 'artist' || tab.type === 'all')" class="mb-1">
+                <app-badge *ngFor="let artist of artwork?.artists" [entity]="artist" [isHoverBadge]="true" [hoveredArtwork]="hoveredArtwork"> </app-badge>
               </span>
 
-              <span *ngIf="artwork?.genres?.length && (tab.type == 'genre' || tab.type == 'all')" class='mb-1'>
-                <app-badge *ngFor='let genre of artwork?.genres' [entity]='genre' [isHoverBadge]='true'
-                           [hoveredArtwork]='hoveredArtwork'> </app-badge>
+              <span *ngIf="artwork?.genres?.length && (tab.type === 'genre' || tab.type === 'all')" class="mb-1">
+                <app-badge *ngFor="let genre of artwork?.genres" [entity]="genre" [isHoverBadge]="true" [hoveredArtwork]="hoveredArtwork"> </app-badge>
               </span>
 
-              <span *ngIf="artwork?.movements?.length && (tab.type == 'movement' || tab.type == 'all')" class='mb-1'>
-                <app-badge *ngFor='let movement of artwork?.movements' [entity]='movement' [isHoverBadge]='true'
-                           [hoveredArtwork]='hoveredArtwork'> </app-badge>
+              <span *ngIf="artwork?.movements?.length && (tab.type === 'movement' || tab.type === 'all')" class="mb-1">
+                <app-badge *ngFor="let movement of artwork?.movements" [entity]="movement" [isHoverBadge]="true" [hoveredArtwork]="hoveredArtwork"> </app-badge>
               </span>
 
-              <span *ngIf="artwork?.materials?.length && (tab.type == 'material' || tab.type == 'all')" class='mb-1'>
-                <app-badge *ngFor='let material of artwork?.materials' [entity]='material' [isHoverBadge]='true'
-                           [hoveredArtwork]='hoveredArtwork'> </app-badge>
+              <span *ngIf="artwork?.materials?.length && (tab.type === 'material' || tab.type === 'all')" class="mb-1">
+                <app-badge *ngFor="let material of artwork?.materials" [entity]="material" [isHoverBadge]="true" [hoveredArtwork]="hoveredArtwork"> </app-badge>
               </span>
 
-              <span *ngIf="artwork?.locations?.length && (tab.type == 'location' || tab.type == 'all')" class='mb-1'>
-                <app-badge *ngFor='let location of artwork?.locations' [entity]='location' [isHoverBadge]='true'
-                           [hoveredArtwork]='hoveredArtwork'> </app-badge>
+              <span *ngIf="artwork?.locations?.length && (tab.type === 'location' || tab.type === 'all')" class="mb-1">
+                <app-badge *ngFor="let location of artwork?.locations" [entity]="location" [isHoverBadge]="true" [hoveredArtwork]="hoveredArtwork"> </app-badge>
               </span>
 
-              <span *ngIf="artwork?.classes?.length && (tab.type == 'class' || tab.type == 'all')" class='mb-1'>
-                <app-badge *ngFor='let class of artwork?.classes' [entity]='class' [isHoverBadge]='true'
-                           [hoveredArtwork]='hoveredArtwork'> </app-badge>
+              <span *ngIf="artwork?.classes?.length && (tab.type === 'class' || tab.type === 'all')" class="mb-1">
+                <app-badge *ngFor="let class of artwork?.classes" [entity]="class" [isHoverBadge]="true" [hoveredArtwork]="hoveredArtwork"> </app-badge>
               </span>
             </div>
           </div>
@@ -216,12 +195,10 @@
   <!--
     Modal for page overlay when enlarging image, shown when "modalIsVisible" is set to true
   -->
-  <div class='modal' *ngIf='modalIsVisible' id='img-modal'>
-    <span class='close' (click)='closeModal()'>&times;</span>
-    <!-- Zoom in and out functionality, see package ngx-image-viewer -->
-    <div class='modal-content my-auto'>
-      <ngx-image-viewer
-        [src]='[artwork?.image]'
+  <div class="modal modal-dialog modal-fullscreen" *ngIf="modalIsVisible">
+    <div class="modal-content">
+      <app-image-viewer
+        [src]="[artwork?.image]"
         [config]="{
           allowFullscreen: false,
           zoomFactor: 0.1,
@@ -236,7 +213,8 @@
             prev: false
           }
         }"
-      ></ngx-image-viewer>
+        (closed)="closeModal()"
+      ></app-image-viewer>
     </div>
   </div>
 </div>

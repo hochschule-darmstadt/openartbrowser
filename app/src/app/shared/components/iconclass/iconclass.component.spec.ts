@@ -12,14 +12,13 @@ describe('IconclassComponent', () => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule],
       declarations: [IconclassComponent],
-      providers: [DataService]
+      providers: [DataService],
     }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(IconclassComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

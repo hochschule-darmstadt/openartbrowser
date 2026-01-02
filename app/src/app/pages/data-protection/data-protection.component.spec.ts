@@ -8,7 +8,7 @@ describe('DataProtectionComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [DataProtectionComponent]
+      declarations: [DataProtectionComponent],
     }).compileComponents();
   }));
 

@@ -5,7 +5,7 @@ import { SlideComponent } from 'src/app/shared/components/carousel/slide/slide.c
 import { CarouselComponent } from 'src/app/shared/components/carousel/carousel.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientModule } from '@angular/common/http';
-import { ImageViewerModule } from 'ngx-image-viewer';
+import { ImageViewerModule } from 'src/app/shared/image-viewer/image-viewer.module';
 import { RouterModule } from '@angular/router';
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 import { VideoComponent } from '../../shared/components/video/video.component';
@@ -16,7 +16,7 @@ import { AbstractComponent } from 'src/app/shared/components/abstract/abstract.c
 import { TitleComponent } from 'src/app/shared/components/title/title.component';
 import { IconclassComponent } from 'src/app/shared/components/iconclass/iconclass.component';
 import { DimensionsComponent } from 'src/app/shared/components/dimensions/dimensions.component';
-import { EventTableComponent } from 'src/app/shared/components/event-table/event-table.component'
+import { EventTableComponent } from 'src/app/shared/components/event-table/event-table.component';
 
 describe('ArtworkComponent', () => {
   let component: ArtworkComponent;
@@ -24,7 +24,7 @@ describe('ArtworkComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NgbModule, HttpClientModule, ImageViewerModule.forRoot(), RouterModule.forRoot([], { relativeLinkResolution: 'legacy' })],
+      imports: [NgbModule, HttpClientModule, ImageViewerModule, RouterModule.forRoot([], {})],
       declarations: [
         ArtworkComponent,
         SlideComponent,
@@ -38,16 +38,15 @@ describe('ArtworkComponent', () => {
         VideoComponent,
         CollapseComponent,
         InformationComponent,
-        IconclassComponent
+        IconclassComponent,
       ],
-      providers: [DataService]
+      providers: [DataService],
     }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ArtworkComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

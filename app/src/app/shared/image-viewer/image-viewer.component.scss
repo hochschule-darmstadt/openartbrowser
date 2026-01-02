@@ -1,0 +1,48 @@
+.image-viewer {
+  max-width: 100%;
+  height: 100vh;
+}
+.iv-viewport {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  touch-action: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.iv-image {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: none;
+  max-height: none;
+  transform-origin: center center;
+  will-change: transform;
+  user-select: none;
+  -webkit-user-drag: none;
+  cursor: grab;
+}
+.iv-image.dragging {
+  cursor: grabbing;
+}
+.controls {
+  position: absolute;
+  bottom: 0;
+  right: 0rem;
+  z-index: 10;
+  display: flex;
+  text-decoration: none;
+}
+.controls button {
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.license-info{
+  max-width: 100vw;
+}

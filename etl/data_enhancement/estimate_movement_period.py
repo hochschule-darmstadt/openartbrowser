@@ -1,14 +1,17 @@
 """Script to estimate start and end of each movement by finding first and last artwork of the movement."""
 
 import json
-from pathlib import Path
-import ijson
-from shared.utils import write_state, check_state, DecimalEncoder
-from shared.constants import ETL_STATES
 import sys
+from pathlib import Path
+
+import ijson
+
+from shared.constants import ETL_STATES
+from shared.utils import DecimalEncoder, check_state, write_state
 
 inceptions = {}
 RECOVER_MODE = False
+
 
 def find_start_end_in_artworks(artworks_file):
     """Finds the first and last inception for each movement in a batch of artworks.
@@ -50,18 +53,10 @@ if __name__ == "__main__":
 
     # start = datetime.now()
     movements_file = (
-            Path(__file__).resolve().parent.parent
-            / "crawler_output"
-            / "intermediate_files"
-            / "json"
-            / "movements.json"
+        Path(__file__).resolve().parent.parent / "crawler_output" / "intermediate_files" / "json" / "movements.json"
     )
     artworks_file = (
-            Path(__file__).resolve().parent.parent
-            / "crawler_output"
-            / "intermediate_files"
-            / "json"
-            / "artworks.json"
+        Path(__file__).resolve().parent.parent / "crawler_output" / "intermediate_files" / "json" / "artworks.json"
     )
     movements_output_file = movements_file  # Change here for different output file
     movements_list = ijson.items(open(movements_file, "r", encoding="utf-8"), "item")
@@ -73,29 +68,17 @@ if __name__ == "__main__":
     for movement in movements_list:
         if movement["id"] in inceptions.keys():
             if (
-                    not movement["start_time"]
-                    and (
-                            not movement["end_time"]
-                            or inceptions[movement["id"]]["start"] < movement["end_time"]
-                    )
-            ) or (
-                    movement["start_time"]
-                    and inceptions[movement["id"]]["start"] < movement["start_time"]
-            ):
+                not movement["start_time"]
+                and (not movement["end_time"] or inceptions[movement["id"]]["start"] < movement["end_time"])
+            ) or (movement["start_time"] and inceptions[movement["id"]]["start"] < movement["start_time"]):
                 movement["start_time_est"] = inceptions[movement["id"]]["start"]
             else:
                 movement["start_time_est"] = ""
 
             if (
-                    not movement["end_time"]
-                    and (
-                            not movement["start_time"]
-                            or inceptions[movement["id"]]["end"] > movement["start_time"]
-                    )
-            ) or (
-                    movement["end_time"]
-                    and inceptions[movement["id"]]["end"] > movement["end_time"]
-            ):
+                not movement["end_time"]
+                and (not movement["start_time"] or inceptions[movement["id"]]["end"] > movement["start_time"])
+            ) or (movement["end_time"] and inceptions[movement["id"]]["end"] > movement["end_time"]):
                 movement["end_time_est"] = inceptions[movement["id"]]["end"]
             else:
                 movement["end_time_est"] = ""

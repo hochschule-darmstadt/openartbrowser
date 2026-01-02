@@ -8,7 +8,7 @@ describe('ImprintComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ImprintComponent]
+      declarations: [ImprintComponent],
     }).compileComponents();
   }));
 

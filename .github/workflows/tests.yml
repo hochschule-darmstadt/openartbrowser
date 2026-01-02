@@ -1,51 +1,51 @@
 name: TESTING
-on: [ workflow_dispatch, push, pull_request ]
+on: [workflow_dispatch, push, pull_request]
 
 jobs:
   crawler_test:
-
+    name: python
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python 3.7
-        uses: actions/setup-python@v4
+      - uses: actions/checkout@v5
+
+      - name: "Set up Python"
+        uses: actions/setup-python@v6
         with:
-          # Semantic version range syntax or exact version of a Python version
-          python-version: '3.7'
-      - name: Install dependencies
-        run: |
-          cd etl/
-          export PYTHONPATH="${PYTHONPATH}:${pwd}"
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-      - name: Run crawler test
-        run: |
-          cd etl/
-          export PYTHONPATH="${PYTHONPATH}:${pwd}"
-          python data_extraction/get_wikidata_items.py -t 2 -d 1
-          python data_extraction/get_wikipedia_extracts.py
+          python-version: '3.14'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Install the project
+        working-directory: etl
+        run: uv sync --locked --all-extras --dev
+
+      - name: Run get_wikidata_items (uv)
+        working-directory: etl
+        run: uv run python -m data_extraction.get_wikidata_items -t 2 -d 1
+      
+      - name: Run get_wikipedia_extracts (uv)
+        working-directory: etl
+        run: uv run python -m data_extraction.get_wikipedia_extracts
 
   frontend_test:
-
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
       - name: Reconfigure git to use HTTP authentication
         run: >
           git config --global url."https://github.com/".insteadOf
           ssh://git@github.com/
-      - name: Use Node.js 14 (Angular 11 compatible)
-        uses: actions/setup-node@v3
+      - name: Use Node.js 18
+        uses: actions/setup-node@v4
         with:
-          node-version: 14
+          node-version: 18
       - name: Cache Node.js modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
-          # npm cache files are stored in `~/.npm` on Linux/macOS
           path: ~/.npm
           key: ${{ runner.OS }}-node-${{ hashFiles('app/package-lock.json') }}
           restore-keys: |

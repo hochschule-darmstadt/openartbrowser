@@ -5,14 +5,17 @@ Implemented as specified in https://github.com/hochschule-darmstadt/openartbrows
 Returns:
     The ranked entities which means the attributes absolute rank and relative rank.
 """
-import json
+
+# ruff: noqa: F403 F405
 import datetime
-from numbers import Number
-from typing import List, Dict
-from shared.constants import *
-from shared.utils import create_new_path, write_state, check_state, setup_logger
-from pathlib import Path
+import json
 import sys
+from numbers import Number
+from pathlib import Path
+from typing import Dict, List
+
+from shared.constants import *
+from shared.utils import check_state, create_new_path, setup_logger, write_state
 
 # setup logger
 logger = setup_logger(
@@ -22,18 +25,20 @@ logger = setup_logger(
 
 RECOVER_MODE = False
 
-def rank_artworks(
-        artworks: List[Dict], ignore_keys: List[str] = [ABSOLUTE_RANK, RELATIVE_RANK]
-) -> List[Dict]:
+
+def rank_artworks(artworks: List[Dict], ignore_keys: List[str] = None) -> List[Dict]:
     """Ranks a list of artwork entities (JSON-Objects)
 
     Args:
         artworks: List of artworks
-        ignore_keys: Keys within the artwork entities which have to be ignored. Defaults to [ABSOLUTE_RANK, RELATIVE_RANK].
+        ignore_keys: Keys within the artwork entities which have to be ignored.
+            Defaults to [ABSOLUTE_RANK, RELATIVE_RANK].
 
     Returns:
         Ranked artwork list
     """
+    if ignore_keys is None:
+        ignore_keys = [ABSOLUTE_RANK, RELATIVE_RANK]
     for artwork in artworks:
         absolute_rank = 0
         for key, value in artwork.items():
@@ -50,9 +55,7 @@ def rank_artworks(
     return calc_relative_rank(artworks)
 
 
-def rank_subjects(
-        attribute_name: str, subjects: List[Dict], artworks: List[Dict]
-) -> List[Dict]:
+def rank_subjects(attribute_name: str, subjects: List[Dict], artworks: List[Dict]) -> List[Dict]:
     """Ranks subjects like movements
 
     Args:
@@ -102,13 +105,13 @@ if __name__ == "__main__":
         CLASS[PLURAL],
     ]:
         print(
-            datetime.datetime.now(), "Starting ranking with", filename,
+            datetime.datetime.now(),
+            "Starting ranking with",
+            filename,
         )
         try:
             # Read in file
-            with open(
-                    (create_new_path(filename)).with_suffix(f".{JSON}"), encoding="utf-8"
-            ) as file:
+            with open((create_new_path(filename)).with_suffix(f".{JSON}"), encoding="utf-8") as file:
                 if filename is ARTWORK[PLURAL]:
                     artworks = out_file = rank_artworks(json.load(file))
                 else:
@@ -116,19 +119,19 @@ if __name__ == "__main__":
             # Overwrite file
             # TODO if merging is done with sth else as js script than overwrite current file
             with open(
-                    (create_new_path(filename)).with_suffix(f".{JSON}"),
-                    "w",
-                    newline="",
-                    encoding="utf-8",
+                (create_new_path(filename)).with_suffix(f".{JSON}"),
+                "w",
+                newline="",
+                encoding="utf-8",
             ) as file:
                 json.dump(out_file, file, ensure_ascii=False)
             print(
-                datetime.datetime.now(), "Finished ranking with", filename,
+                datetime.datetime.now(),
+                "Finished ranking with",
+                filename,
             )
         except Exception as error:
-            logger.error(
-                f"Error when opening following file: {filename}. Skipping file now.\nError:"
-            )
+            logger.error(f"Error when opening following file: {filename}. Skipping file now.\nError:")
             logger.exception(error)
             continue
     write_state(ETL_STATES.DATA_TRANSFORMATION.RANKING)

@@ -9,8 +9,8 @@ describe('FooterComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [RouterModule.forRoot([], { relativeLinkResolution: 'legacy' })],
-      declarations: [FooterComponent]
+      imports: [RouterModule.forRoot([], {})],
+      declarations: [FooterComponent],
     }).compileComponents();
   }));
 

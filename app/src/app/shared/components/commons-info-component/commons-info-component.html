@@ -1,8 +1,8 @@
-<div *ngIf="meta$ | async as meta" class="license-info d-inline-flex align-items-center">
-  <div class="author rounded-pill bg-secondary first-letter d-flex badge-transparent m-0 flex-wrap flex-grow-0 fs-6 px-2">
+<div *ngIf="meta$ | async as meta" class="license-info align-items-center">
+  <div class="author rounded-pill bg-secondary first-letter badge-transparent d-inline-flex flex-wrap fs-6 px-2">
     <div>
       <span *ngIf="meta.author.length; else noAuthor">{{authorText}}</span>
-      <ng-template #noAuthor>Source</ng-template>,
+      <ng-template #noAuthor>Source</ng-template><span class="me-1">,</span>
     </div>
     <ng-container *ngIf="meta.licenseUrl; else noLicense" class="ms-1">
       <a [href]="meta.licenseUrl" target="_blank" rel="noopener">{{ meta.licenseShortName }},</a>

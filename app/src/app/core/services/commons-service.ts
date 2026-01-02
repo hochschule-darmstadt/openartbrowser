@@ -65,8 +65,6 @@ export class CommonsService {
     return this.http.get<CommonsApiResponse>(this.apiUrl, { params })
       .pipe(
         map(res => {
-
-          console.log(res);
           const pages = res.query.pages;
           const page = Object.values(pages)[0];
 

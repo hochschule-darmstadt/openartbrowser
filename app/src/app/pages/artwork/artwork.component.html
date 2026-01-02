@@ -5,16 +5,19 @@
 </div>
 
 <div *ngIf="!idDoesNotExist" class="container entity artwork">
-  <div class="row pb-4 pb-sm-5 border-bottom" *ngIf="!imageHidden && artwork?.imageMedium">
+  <div class="row pb-4 pb-sm-5 border-bottom" *ngIf="!imageHidden && artwork?.imageMedium" [ngStyle]="{ 'display': imageLoaded ? 'block' : 'none' }">
     <div class="img-container d-flex flex-column">
       <img class="img-fluid mx-auto" id="image-main" (error)="hideImage()" (click)="showModal()" src="{{ artwork?.imageMedium }}" alt="" />
+      <app-commons-info class="license-info mt-2 mx-auto" (loaded)="onLicenseInfoLoaded()" [fileUrl]="artwork?.image"></app-commons-info>
       <div class="enlarge">
         <i class="fas fa-expand" (click)="showModal()"></i>
       </div>
-      <app-commons-info class="license-info mt-2 mx-auto" [fileUrl]="artwork?.image"></app-commons-info>
-    </div>
+    </div>  
   </div>
-
+  <div class="img-placeholder d-flex flex-column justify-content-center align-items-center" *ngIf="!imageLoaded || imageHidden">
+    <i class="fa fa-paint-brush"></i>
+    <span i18n="error text@@fetching_list_error" class="mt-3">Painting in progress</span>
+  </div>
   <div class="row pt-3 pb-3 border-bottom" *ngIf="artwork">
     <div class="col-sm-12">
       <app-title [entity]="artwork"></app-title>

@@ -74,6 +74,7 @@ export class ArtworkComponent implements OnInit, OnDestroy {
   videoExists = false;
   /* List of unique Videos */
   uniqueVideos: string[] = [];
+  imageLoaded: boolean = false;
 
   constructor(private dataService: DataService, private route: ActivatedRoute) {}
 
@@ -157,6 +158,10 @@ export class ArtworkComponent implements OnInit, OnDestroy {
    */
   hideImage() {
     this.imageHidden = true;
+  }
+
+  onLicenseInfoLoaded() {
+    this.imageLoaded = true;
   }
 
   /**

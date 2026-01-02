@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
@@ -19,6 +19,7 @@ export class CommonsInfoComponent implements OnInit {
   error?: string;
   imageName?: string;
   authorText?: string;
+  @Output() loaded = new EventEmitter<void>();
 
   constructor(private commonsService: CommonsService) { }
 
@@ -32,9 +33,11 @@ export class CommonsInfoComponent implements OnInit {
     this.meta$ = this.commonsService.fetchImageMeta(this.imageName);
     this.meta$.subscribe({
       next: (meta) => {
+        console.log('Fetched meta:', meta);
         const div = document.createElement('div');
         div.innerHTML = meta.author;
         this.authorText = div.innerText;
+        this.loaded.emit();
       },
       error: (err) => this.error = err.message,
     });

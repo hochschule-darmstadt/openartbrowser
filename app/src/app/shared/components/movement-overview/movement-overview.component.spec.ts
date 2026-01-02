@@ -22,7 +22,6 @@ describe('MovementOverviewComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(MovementOverviewComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

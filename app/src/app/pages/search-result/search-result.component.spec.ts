@@ -24,7 +24,6 @@ describe('SearchResultComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SearchResultComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

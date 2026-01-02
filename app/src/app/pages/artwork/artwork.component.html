@@ -5,21 +5,24 @@
 </div>
 
 <div *ngIf="!idDoesNotExist" class="container entity artwork">
-  <div class="row pb-4 pb-sm-5 border-bottom" *ngIf="!imageHidden && artwork?.imageMedium">
-    <div class="img-container d-block" (click)="showModal()">
-      <img class="img-fluid mx-auto d-block" id="image-main" (error)="hideImage()" src="{{ artwork?.imageMedium }}" alt="" />
+  <div class="row pb-4 pb-sm-5 border-bottom" *ngIf="!imageHidden && artwork?.imageMedium" [ngStyle]="{ 'display': imageLoaded ? 'block' : 'none' }">
+    <div class="img-container d-flex flex-column">
+      <img class="img-fluid mx-auto" id="image-main" (error)="hideImage()" (click)="showModal()" src="{{ artwork?.imageMedium }}" alt="" />
+      <app-commons-info class="license-info mt-2 mx-auto" (loaded)="onLicenseInfoLoaded()" [fileUrl]="artwork?.image"></app-commons-info>
       <div class="enlarge">
         <i class="fas fa-expand" (click)="showModal()"></i>
       </div>
-    </div>
+    </div>  
   </div>
-
+  <div class="img-placeholder d-flex flex-column justify-content-center align-items-center" *ngIf="!imageLoaded || imageHidden">
+    <i class="fa fa-paint-brush"></i>
+    <span i18n="error text@@fetching_list_error" class="mt-3">Painting in progress</span>
+  </div>
   <div class="row pt-3 pb-3 border-bottom" *ngIf="artwork">
     <div class="col-sm-12">
       <app-title [entity]="artwork"></app-title>
 
       <app-information i18n-label="Artist label@@artist" label="Artist" [values]="artwork?.artists"></app-information>
-
       <app-information i18n-label="Location label@@location" label="Location" [values]="artwork?.locations"></app-information>
 
       <app-information i18n-label="Inception label@@inception" label="Inception" [value]="artwork?.inception + ''"></app-information>
@@ -192,8 +195,7 @@
   <!--
     Modal for page overlay when enlarging image, shown when "modalIsVisible" is set to true
   -->
-  <div class="modal" *ngIf="modalIsVisible" id="img-modal">
-    <!-- Zoom in and out functionality, see package ngx-image-viewer -->
+  <div class="modal modal-dialog modal-fullscreen" *ngIf="modalIsVisible">
     <div class="modal-content">
       <app-image-viewer
         [src]="[artwork?.image]"

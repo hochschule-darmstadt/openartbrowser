@@ -47,7 +47,6 @@ describe('ArtistComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ArtistComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

@@ -19,7 +19,6 @@ describe('IconclassComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(IconclassComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

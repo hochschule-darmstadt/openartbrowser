@@ -4,11 +4,18 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild }
   selector: 'app-image-viewer',
   template: `
     <div class="image-viewer" [style.background-color]="config?.containerBackgroundColor || 'transparent'">
-      <div class="controls">
-        <button (click)="zoomIn()" title="Zoom in">+</button>
-        <button (click)="zoomOut()" title="Zoom out">-</button>
-        <button (click)="reset()" title="Reset">⤾</button>
-        <button (click)="emitClose()" title="Close">X</button>
+      <div class="controls gap-1 align-items-center flex-wrap-reverse flex-md-nowrap ms-1 me-1">
+        <app-commons-info
+        *ngIf="firstSrc"
+          class="license-info ms-auto mb-1" 
+          [fileUrl]="firstSrc">
+        </app-commons-info>
+        <div class="d-flex gap-1 mb-1 ms-auto">
+          <button (click)="zoomIn()" title="Zoom in">+</button>
+          <button (click)="zoomOut()" title="Zoom out">-</button>
+          <button (click)="reset()" title="Reset">⤾</button>
+          <button (click)="emitClose()" title="Close">X</button>
+        </div>
       </div>
       <div
         #viewport
@@ -42,7 +49,7 @@ export class ImageViewerComponent implements OnInit {
   @Output()
   closed: EventEmitter<void> = new EventEmitter<void>();
 
-  scale = 1;
+  scale = 0;
   minScale = 0.05;
   maxScale = 35;
   translateX = 0;

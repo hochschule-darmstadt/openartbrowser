@@ -46,7 +46,6 @@ describe('GenreComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(GenreComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

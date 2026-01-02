@@ -1,5 +1,5 @@
-import { Component, Directive, OnInit } from '@angular/core';
-import { Angulartics2Piwik } from 'angulartics2/piwik';
+import { Component, Directive } from '@angular/core';
+import { Angulartics2Matomo } from 'angulartics2';
 import { environment } from '../../../../environments/environment';
 
 declare global {
@@ -10,10 +10,10 @@ declare global {
 
 @Component({
   selector: 'app-analytics',
-  template: ''
+  template: '',
 })
-export class AnalyticsComponent implements OnInit {
-  constructor(public analytics: Angulartics2Piwik) {
+export class AnalyticsComponent {
+  constructor(public analytics: Angulartics2Matomo) {
     if (environment.analytics.enabled) {
       const _paq = window._paq || [];
       _paq.push(['disableCookies']);
@@ -22,6 +22,4 @@ export class AnalyticsComponent implements OnInit {
       analytics.startTracking();
     }
   }
-
-  ngOnInit() {}
 }

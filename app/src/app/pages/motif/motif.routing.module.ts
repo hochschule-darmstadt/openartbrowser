@@ -7,13 +7,13 @@ import { SharedModule } from '../../shared/shared.module';
 const motifRoutes: Routes = [
   {
     path: '',
-    component: MotifComponent
-  }
+    component: MotifComponent,
+  },
 ];
 
 @NgModule({
   declarations: [MotifComponent],
   imports: [CommonModule, SharedModule, RouterModule.forChild(motifRoutes)],
-  exports: [MotifComponent]
+  exports: [MotifComponent],
 })
 export class MotifRoutingModule {}

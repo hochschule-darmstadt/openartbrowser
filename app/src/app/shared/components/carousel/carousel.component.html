@@ -1,11 +1,14 @@
 <h3 *ngIf="items?.length > 0 && heading">{{ heading }}</h3>
 <ngb-carousel #carousel *ngIf="items.length" class="border-bottom mb-4 mt-4 custom-carousel" data-interval="15000">
   <ng-template ngbSlide *ngFor="let slide of slides">
-    <div (swipeleft)="carousel.next()"
-         (swiperight)="carousel.prev()"
-         >
-      <app-slide [slide]="slide" (itemHover)="itemHover.emit($event)"
-                (deleteUnusedSlides)="deleteUnusedSlides()" [artwork]="artwork" [tab_type]="tab_type"></app-slide>
+    <div (swipeleft)="carousel.next()" (swiperight)="carousel.prev()">
+      <app-slide
+        [slide]="slide"
+        (itemHover)="itemHover.emit($event)"
+        (deleteUnusedSlides)="deleteUnusedSlides()"
+        [artwork]="artwork"
+        [tab_type]="tab_type"
+      ></app-slide>
     </div>
   </ng-template>
 </ngb-carousel>

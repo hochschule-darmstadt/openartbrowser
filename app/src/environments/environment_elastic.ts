@@ -1,3 +1,3 @@
 export const environment = {
-  serverURI: 'http://openartbrowser.org/api'
+  serverURI: 'http://openartbrowser.org/api',
 };

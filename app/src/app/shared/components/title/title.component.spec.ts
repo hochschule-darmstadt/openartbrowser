@@ -9,8 +9,8 @@ describe('TitleComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [RouterModule.forRoot([], { relativeLinkResolution: 'legacy' })],
-      declarations: [TitleComponent]
+      imports: [RouterModule.forRoot([], {})],
+      declarations: [TitleComponent],
     }).compileComponents();
   }));
 

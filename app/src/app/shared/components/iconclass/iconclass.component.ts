@@ -1,13 +1,13 @@
-import { Component, LOCALE_ID, Inject, Input, Type } from '@angular/core';
+import { Component, LOCALE_ID, Inject, Input, Type, OnChanges } from '@angular/core';
 import { Iconclass } from '../../models/models';
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 
 @Component({
   selector: 'app-iconclass',
   templateUrl: './iconclass.component.html',
-  styleUrls: ['./iconclass.component.scss']
+  styleUrls: ['./iconclass.component.scss'],
 })
-export class IconclassComponent {
+export class IconclassComponent implements OnChanges {
   @Input()
   label: string;
 
@@ -26,7 +26,7 @@ export class IconclassComponent {
     this.checkRequiredFields();
     this.loadData()
       .then(() => {})
-      .catch(error => {
+      .catch((error) => {
         console.warn(error);
       });
   }

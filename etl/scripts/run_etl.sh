@@ -22,11 +22,6 @@ Usage: run_etl.sh [options]
   esac
 done
 
-if [ ! $LOCAL_MODE ] && [ $(id -u) -ne 0 ]; then
-  echo "The script must be executed with sudo rights"
-  exit 1
-fi
-
 LOCKFILE=/tmp/etl.lock
 trap "rm -rf $LOCKFILE; echo \"lock file deleted\"" ERR EXIT
 if ! mkdir $LOCKFILE 2>/dev/null; then

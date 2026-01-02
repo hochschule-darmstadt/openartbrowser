@@ -165,7 +165,7 @@ a {
   }
 }
 
-.item-caption{
+.item-caption {
   overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -173,14 +173,12 @@ a {
   text-align: center;
 }
 @media (max-width: 768px) {
-  .desktop{
-    display: none;   
+  .desktop {
+    display: none;
   }
-  
 }
 @media (min-width: 768px) {
-  .mobile{
-    display: none;      
+  .mobile {
+    display: none;
   }
-  
 }

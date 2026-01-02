@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { CollapseComponent } from './collapse.component';
-import { Angulartics2RouterlessModule } from 'angulartics2/routerlessmodule';
+import { Angulartics2RouterlessModule } from 'angulartics2';
 
 describe('CollapseComponent', () => {
   let component: CollapseComponent;
@@ -10,7 +10,7 @@ describe('CollapseComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [CollapseComponent],
-      imports: [Angulartics2RouterlessModule.forRoot()]
+      imports: [Angulartics2RouterlessModule.forRoot()],
     }).compileComponents();
   }));
 

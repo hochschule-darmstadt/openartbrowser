@@ -7,13 +7,13 @@ import { SharedModule } from '../../shared/shared.module';
 const errorRoutes: Routes = [
   {
     path: '',
-    component: ErrorComponent
-  }
+    component: ErrorComponent,
+  },
 ];
 
 @NgModule({
   declarations: [ErrorComponent],
   imports: [CommonModule, SharedModule, RouterModule.forChild(errorRoutes)],
-  exports: [ErrorComponent]
+  exports: [ErrorComponent],
 })
 export class ErrorRoutingModule {}

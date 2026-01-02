@@ -2,45 +2,44 @@
   <div class="container border-bottom navbar-collapse p-3" id="navbar" #navbar>
     <ul class="navbar-nav">
       <li class="nav-item flex-shrink-0">
-        <a class="navbar-brand" [routerLink]="['/']">
-          <div class="row mr-1" id="title">
-            <span>open</span>
-            <h3>ArtBrowser</h3>
-          </div>
+        <a class="navbar-brand row me-1" id="title" [routerLink]="['/']">
+          <span>open</span>
+          <h3>ArtBrowser</h3>
         </a>
       </li>
       <li class="nav-item search-form">
         <app-search class="form-group has-feedback" [isHeaderSearch]="true"></app-search>
       </li>
-      <li class="nav-item dropdown flex-shrink-0">
-        <a class="nav-link dropdown-toggle" id="dropdownLanguage" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">
+      <li class="nav-item dropdown flex-shrink-0" ngbDropdown>
+        <button class="nav-link dropdown-toggle" id="dropdownLanguage" ngbDropdownToggle type="button" aria-haspopup="true" aria-label="Language">
           <h3><i class="fas fa-globe-americas"></i></h3>
-        </a>
-        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownLanguage">
-          <a class="dropdown-item" href="/en{{ path }}" [ngClass]="{ active: locale == 'en' }">English</a>
+        </button>
+        <div class="dropdown-menu dropdown-menu-end" ngbDropdownMenu aria-labelledby="dropdownLanguage">
+          <a ngbDropdownItem class="dropdown-item" href="/en{{ path }}" [ngClass]="{ active: locale === 'en' }">English</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="/de{{ path }}" [ngClass]="{ active: locale == 'de' }">Deutsch</a>
+          <a ngbDropdownItem class="dropdown-item" href="/de{{ path }}" [ngClass]="{ active: locale === 'de' }">Deutsch</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="/fr{{ path }}" [ngClass]="{ active: locale == 'fr' }">Français</a>
+          <a ngbDropdownItem class="dropdown-item" href="/fr{{ path }}" [ngClass]="{ active: locale === 'fr' }">Français</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="/es{{ path }}" [ngClass]="{ active: locale == 'es' }">Español</a>
+          <a ngbDropdownItem class="dropdown-item" href="/es{{ path }}" [ngClass]="{ active: locale === 'es' }">Español</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="/it{{ path }}" [ngClass]="{ active: locale == 'it' }">Italiano</a>
+          <a ngbDropdownItem class="dropdown-item" href="/it{{ path }}" [ngClass]="{ active: locale === 'it' }">Italiano</a>
         </div>
       </li>
-      <li class="nav-item dropdown flex-shrink-0">
-        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">
+      <li class="nav-item dropdown flex-shrink-0" ngbDropdown>
+        <button class="nav-link dropdown-toggle" id="navbarDropdown" ngbDropdownToggle type="button" aria-haspopup="true" aria-label="Menu">
           <h3><i class="fas fa-bars"></i></h3>
-        </a>
-        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" [routerLink]="['/']" i18n="Menu Home item label@@menuHome">Home</a>
+        </button>
+        <div class="dropdown-menu dropdown-menu-end" ngbDropdownMenu aria-labelledby="navbarDropdown">
+          <a ngbDropdownItem class="dropdown-item" [routerLink]="['/']" i18n="Menu Home item label@@menuHome">Home</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" [routerLink]="['/about']" i18n="Menu About item label@@menuAbout">About</a>
+          <a ngbDropdownItem class="dropdown-item" [routerLink]="['/about']" i18n="Menu About item label@@menuAbout">About</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" [routerLink]="['/imprint']" i18n="Menu Legal Notice item label@@menuLegalNotice">Legal Notice</a>
+          <a ngbDropdownItem class="dropdown-item" [routerLink]="['/imprint']" i18n="Menu Legal Notice item label@@menuLegalNotice">Legal Notice</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" [routerLink]="['/data-protection']" i18n="Menu Data Protection Declaration item label@@menuDataProtection"
-            >Data Protection Declaration</a>
+          <a ngbDropdownItem class="dropdown-item" [routerLink]="['/data-protection']" i18n="Menu Data Protection Declaration item label@@menuDataProtection"
+            >Data Protection Declaration</a
+          >
         </div>
       </li>
     </ul>

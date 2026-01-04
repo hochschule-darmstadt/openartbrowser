@@ -42,3 +42,22 @@ To build and run the elasticsearch docker container for local development, run t
 directory. The building might take some time because of the included wiki crawling. For the docker container
 the wiki crawling is limited to a specific amount of objects per category. This amount is represented by the **DEV_LIMIT**
 variable in the **get_wikidata_items.py** script and thus can be adjusted there.
+
+
+## Angualar Frontend Installation after checkout master
+sudo git pull
+sudo apt update
+sudo apt install -y build-essential python3 make g++
+sudo apt install -y python-is-python3
+npm config set python /usr/bin/python3
+export PYTHON=/usr/bin/python3
+echo 'export PYTHON=/usr/bin/python3' >> ~/.bashrc
+sudo apt install -y python2
+sudo mkdir backup
+sudo cp -r /var/www/html/* backup/
+cd /home/oab/openartbrowser/app/
+sudo npm install
+sudo npm run build-locale
+sudo cp -r dist/browser/* /var/www/html/
+
+

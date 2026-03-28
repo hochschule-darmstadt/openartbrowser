@@ -282,15 +282,15 @@ export class DataService {
   private addThumbnails(entity: Entity) {
     const prefix = 'https://upload.wikimedia.org/wikipedia/commons/';
     if (entity.image && !entity.image.endsWith('.tif') && !entity.image.endsWith('.tiff')) {
-      entity.imageSmall = entity.image.replace(prefix, prefix + 'thumb/') + '/256px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1);
-      entity.imageMedium = entity.image.replace(prefix, prefix + 'thumb/') + '/512px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1);
+      entity.imageSmall = entity.image.replace(prefix, prefix + 'thumb/') + '/250px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1);
+      entity.imageMedium = entity.image.replace(prefix, prefix + 'thumb/') + '/500px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1);
     } else {
       // There can only be loaded 4 images at once https://phabricator.wikimedia.org/T255854 so HTTP 429 error may occur.
       if (entity.image) {
         entity.imageSmall =
-          entity.image.replace(prefix, prefix + 'thumb/') + '/lossy-page1-256px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1) + '.jpg';
+          entity.image.replace(prefix, prefix + 'thumb/') + '/lossy-page1-250px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1) + '.jpg';
         entity.image = entity.imageMedium =
-          entity.image.replace(prefix, prefix + 'thumb/') + '/lossy-page1-512px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1) + '.jpg';
+          entity.image.replace(prefix, prefix + 'thumb/') + '/lossy-page1-500px-' + entity.image.substring(entity.image.lastIndexOf('/') + 1) + '.jpg';
       }
     }
     return entity;

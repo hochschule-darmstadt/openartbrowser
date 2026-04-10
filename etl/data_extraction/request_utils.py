@@ -12,6 +12,9 @@ from urllib3.util import Retry
 from data_extraction.constants import MAX_LAG, SLEEP_TIME, TIMEOUT
 
 
+class IncompleteAbstractsError(RuntimeError):
+    """Raised when Wikipedia extract responses are incomplete for a requested batch."""
+
 # ruff: noqa: C901
 def send_http_request(
     parameters: Dict,
@@ -74,7 +77,7 @@ def send_http_request(
                     "Looks like not all extracts were loaded from wikipedia. Decrease the groupsize to avoid "
                     "this behavior. Raising RuntimeError"
                 )
-                raise RuntimeError
+                raise IncompleteAbstractsError("wikipedia_extracts_incomplete")
             if "error" in response:
                 # ToDo: more specific error handling since unknown ids error throws a different message
                 print(
@@ -92,7 +95,17 @@ def send_http_request(
                 f"couldn't be loaded: {items}"
             )
             time.sleep(sleep_time)
-            sleep_time *= 2  # increase sleep time if this happens again
+            sleep_time = min(sleep_time * 2, 320)  # increase sleep time if this happens again
+            continue
+        except RecursionError as recursionError:
+            # Rare but observed: malformed/garbled HTTP responses can trigger recursion during header parsing
+            # deep inside http.client/email parsing. Treat as transient and retry with backoff.
+            logging.error(
+                f"Request error. Time: {datetime.datetime.now()}. RecursionError: {recursionError}. Following items "
+                f"couldn't be loaded: {items}"
+            )
+            time.sleep(sleep_time)
+            sleep_time = min(sleep_time * 2, 320)
             continue
         except NameError as nameError:
             logging.error(
@@ -110,8 +123,8 @@ def send_http_request(
                 return ""
             else:
                 continue
-        except RuntimeError as runtimeError:
-            raise runtimeError
+        except IncompleteAbstractsError:
+            raise
         except Exception as error:
             print(
                 f"Unknown error. Time: {datetime.datetime.now()}. Error: {error}. "

@@ -82,9 +82,10 @@ cd crawler_output/intermediate_files/json/
 split_args=()
 [[ $REC_MODE == true ]] && split_args+=(-r)
 BATCH_SIZE=${ART_ONTOLOGY_BATCH_SIZE:-2000}
-python3 ../../../data_enhancement/split_languages.py -b "$BATCH_SIZE" "${split_args[@]}"
+cd ../../..
+python3 -m data_enhancement.split_languages -b "$BATCH_SIZE" "${split_args[@]}"
 
-python3 ../../../upload_to_elasticsearch/elasticsearch_helper.py
+python3 -m upload_to_elasticsearch.elasticsearch_helper
 
 cd ../../..
 

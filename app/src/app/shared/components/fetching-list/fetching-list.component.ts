@@ -39,10 +39,10 @@ export interface Page {
 }
 
 @Component({
-    selector: 'app-fetching-list',
-    templateUrl: './fetching-list.component.html',
-    styleUrls: ['./fetching-list.component.scss'],
-    standalone: false
+  selector: 'app-fetching-list',
+  templateUrl: './fetching-list.component.html',
+  styleUrls: ['./fetching-list.component.scss'],
+  standalone: false
 })
 export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
   /** all pages to display, pageNumber starts at 0 */
@@ -77,7 +77,7 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
     private route: ActivatedRoute,
     private changeDetectionRef: ChangeDetectorRef,
     private urlParamService: UrlParamService
-  ) {}
+  ) { }
 
   /**
    * returns the current vertical position at the page
@@ -99,7 +99,7 @@ export class FetchingListComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private static setScrollTop(currentScrollTop: number, delta: number): void {
-    window.scrollBy(0, delta);
+    window.scrollBy({ top: delta, behavior: 'instant' });
   }
 
   // order by ascending property key (as number)

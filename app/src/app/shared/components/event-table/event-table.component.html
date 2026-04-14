@@ -1,13 +1,18 @@
-<div class="row" *ngIf="events?.length">
-  <div class="col-md-1">
-    <p class="mb-1 text-muted">{{ label }}:</p>
-  </div>
-
-  <div class="col-md-11">
-    <div *ngFor="let event of events" class="event-entry">
-      <div class="time-label">{{ getTimeLabel(event) }}</div>
-      <div class="event-label">{{ getEventLabel(event) }}</div>
-      <div *ngIf="event.description" class="event-description">{{ getEventDescription(event) }}</div>
+@if (events?.length) {
+  <div class="row">
+    <div class="col-md-1">
+      <p class="mb-1 text-muted">{{ label }}:</p>
+    </div>
+    <div class="col-md-11">
+      @for (event of events; track event) {
+        <div class="event-entry">
+          <div class="time-label">{{ getTimeLabel(event) }}</div>
+          <div class="event-label">{{ getEventLabel(event) }}</div>
+          @if (event.description) {
+            <div class="event-description">{{ getEventDescription(event) }}</div>
+          }
+        </div>
+      }
     </div>
   </div>
-</div>
+}

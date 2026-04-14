@@ -91,12 +91,18 @@
   justify-content: space-between;
   overflow: hidden;
   cursor: pointer;
+  opacity: 1;
+  transition: opacity 500ms ease;
 
   &:hover .overlay_view {
     -webkit-transform: scale(1);
     -ms-transform: scale(1);
     transform: scale(1);
   }
+}
+
+.thumbnail.thumbnail-fading {
+  opacity: 0;
 }
 
 .overlay-container {

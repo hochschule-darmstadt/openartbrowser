@@ -1,7 +1,7 @@
 <div class="container">
   <h2>
     <span i18n="All@@all">All</span>
-    <span>{{ fetchOptions.queryCount.constructor.name === 'Number' ? ' ' + fetchOptions.queryCount : '' }}</span>
+    <span>{{ fetchOptions.queryCount !== null ? ' ' + fetchOptions.queryCount : '' }}</span>
     @if (fetchOptions.entityType; as type) {
       <span i18n="Entities Type Labels@@entities_labels">
       {type, select, artwork {Artworks} motif {Motifs} artist {Artists} location {Locations} genre {Genres} movement {Movements} material {Materials} class
@@ -13,7 +13,7 @@
     <ng-template>
       <h5>
         <span i18n="All@@all">All</span>
-        <span>{{ fetchOptions.queryCount.constructor.name === 'Number' ? ' ' + fetchOptions.queryCount : '' }}</span>
+        <span>{{ fetchOptions.queryCount !== null ? ' ' + fetchOptions.queryCount : '' }}</span>
         @if (fetchOptions.entityType; as type) {
           <span i18n="Entities Type Labels@@entities_labels">
           {type, select, artwork {Artworks} motif {Motifs} artist {Artists} location {Locations} genre {Genres} movement {Movements} material {Materials} class

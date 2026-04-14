@@ -77,8 +77,13 @@ export class DataService {
   public async countArtworksByType(type: EntityType, ids: string[]) {
     const body = bodybuilder().queryMinimumShouldMatch(1, true).query('match', 'type', EntityType.ARTWORK);
     _.each(ids, (id) => body.orQuery('match', usePlural(type), id));
-    const response: any = await this.http.post(this.countEndPoint, body.build()).toPromise();
-    return response && response.count ? response.count : undefined;
+    try {
+      const response: any = await this.http.post(this.countEndPoint, body.build()).toPromise();
+      return response && response.count ? response.count : 0;
+    } catch (error) {
+      console.warn(error);
+      return 0;
+    }
   }
 
   /**
@@ -169,8 +174,13 @@ export class DataService {
         return q.orQuery('match', 'label', keyword).orQuery('match', 'description', keyword).orQuery('match', 'abstract', keyword);
       })
     );
-    const response: any = await this.http.post(this.countEndPoint, body.build()).toPromise();
-    return response && response.count ? response.count : 0;
+    try {
+      const response: any = await this.http.post(this.countEndPoint, body.build()).toPromise();
+      return response && response.count ? response.count : 0;
+    } catch (error) {
+      console.warn(error);
+      return 0;
+    }
   }
 
   /**
@@ -190,8 +200,13 @@ export class DataService {
    */
   public async countEntityItems<T>(type: EntityType) {
     const body = bodybuilder().query('match', 'type', type);
-    const response: any = await this.http.post(this.countEndPoint, body.build()).toPromise();
-    return response && response.count ? response.count : undefined;
+    try {
+      const response: any = await this.http.post(this.countEndPoint, body.build()).toPromise();
+      return response && response.count ? response.count : 0;
+    } catch (error) {
+      console.warn(error);
+      return 0;
+    }
   }
 
   /**
@@ -245,15 +260,20 @@ export class DataService {
    * @param type type to filter for
    */
   private async performQuery<T>(query: any, url: string = this.searchEndPoint, type?: EntityType) {
-    const response = await this.http.post<T>(url, query.build()).toPromise();
-    const entities = this.filterData<T>(response, type);
-    // set type specific attributes
-    entities.forEach((entity) => this.setTypes(entity));
+    try {
+      const response = await this.http.post<T>(url, query.build()).toPromise();
+      const entities = this.filterData<T>(response, type);
+      // set type specific attributes
+      entities.forEach((entity) => this.setTypes(entity));
 
-    if (!entities.length) {
-      console.warn(NoResultsWarning(query));
+      if (!entities.length) {
+        console.warn(NoResultsWarning(query));
+      }
+      return entities;
+    } catch (error) {
+      console.warn(error);
+      return [];
     }
-    return entities;
   }
 
   /**

@@ -27,6 +27,8 @@ describe('HomeComponent', () => {
           provide: DataService,
           useValue: {
             getCategoryItems: () => Promise.resolve([]),
+            findMultipleById: () => Promise.resolve([]),
+            findArtworksByMovement: () => Promise.resolve([]),
           },
         },
       ],

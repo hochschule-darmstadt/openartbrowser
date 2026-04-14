@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Options } from '@angular-slider/ngx-slider';
 import { Subject, timer } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -18,14 +17,6 @@ interface MovementItem extends Movement {
     selector: 'app-movement-overview',
     templateUrl: './movement-overview.component.html',
     styleUrls: ['./movement-overview.component.scss'],
-    animations: [
-        trigger('newThumb', [
-            state('hide', style({ opacity: '0' })), // transform: 'scale(0)'})),
-            state('show', style({ opacity: '1' })), // transform: 'scale(1)'})),
-            transition('show => hide', [animate(0)]),
-            transition('hide => show', [animate(500)]),
-        ]),
-    ],
     standalone: false
 })
 export class MovementOverviewComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
@@ -52,6 +43,7 @@ export class MovementOverviewComponent implements OnInit, OnChanges, AfterViewIn
   /** start and end of the displayed period */
   timelineStart: number;
   timelineEnd: number;
+  timelineValue = 0;
 
   /** stores current selection to refer on it in onResize()  */
   currentMovementId: string;
@@ -121,6 +113,10 @@ export class MovementOverviewComponent implements OnInit, OnChanges, AfterViewIn
   }
 
   initializeMovements() {
+    if (!this.movements || this.movements.length === 0) {
+      return;
+    }
+
     for (const movement of this.movements) {
       movement.artworks = [];
     }
@@ -157,8 +153,8 @@ export class MovementOverviewComponent implements OnInit, OnChanges, AfterViewIn
   }
 
   /** Determine values based on screen width (responsivity) */
-  @HostListener('window:resize', ['$event'])
-  onResize(event?: any) {
+  @HostListener('window:resize')
+  onResize() {
     const screenWidth = window.innerWidth;
     /** Determine the amount of marked steps in the slider, depending on screen width */
     this.averagePeriodCount = Math.min(7, Math.floor(screenWidth / 125));
@@ -190,6 +186,7 @@ export class MovementOverviewComponent implements OnInit, OnChanges, AfterViewIn
     /** get the biggest multiple of firstStart that is less than firstDate / same for lastDate */
     this.timelineStart = firstStart - (firstStart % this.periodSpan);
     this.timelineEnd = lastEnd - (lastEnd % this.periodSpan) + this.periodSpan;
+    this.timelineValue = this.timelineStart;
 
     /** Set slider options */
     const newOptions: Options = Object.assign({}, this.options);
@@ -378,10 +375,6 @@ export class MovementOverviewComponent implements OnInit, OnChanges, AfterViewIn
       1
     );
     this.setRandomThumbnail(this.currentMovementId);
-  }
-
-  resetShowThumbnail() {
-    this.showThumbnail = true;
   }
 
   private static getStartTime(movement: Movement): number {

@@ -6,9 +6,10 @@ import { FetchOptions } from '../../shared/components/fetching-list/fetching-lis
 import { useSingular } from 'src/app/shared/models/entity.interface';
 
 @Component({
-  selector: 'app-entities',
-  templateUrl: './entities.component.html',
-  styleUrls: ['./entities.component.scss'],
+    selector: 'app-entities',
+    templateUrl: './entities.component.html',
+    styleUrls: ['./entities.component.scss'],
+    standalone: false
 })
 export class EntitiesComponent implements OnInit {
   fetchOptions = {

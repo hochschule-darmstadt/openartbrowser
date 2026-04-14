@@ -16,9 +16,10 @@ interface ArtworkTab {
 }
 
 @Component({
-  selector: 'app-artwork',
-  templateUrl: './artwork.component.html',
-  styleUrls: ['./artwork.component.scss'],
+    selector: 'app-artwork',
+    templateUrl: './artwork.component.html',
+    styleUrls: ['./artwork.component.scss'],
+    standalone: false
 })
 export class ArtworkComponent implements OnInit, OnDestroy {
   EntityTypeEnum = EntityType;

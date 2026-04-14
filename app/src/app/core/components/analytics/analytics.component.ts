@@ -9,8 +9,9 @@ declare global {
 }
 
 @Component({
-  selector: 'app-analytics',
-  template: '',
+    selector: 'app-analytics',
+    template: '',
+    standalone: false
 })
 export class AnalyticsComponent {
   constructor(public analytics: Angulartics2Matomo) {

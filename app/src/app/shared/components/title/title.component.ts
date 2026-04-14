@@ -3,9 +3,10 @@ import { Entity } from '../../models/models';
 import { usePlural } from '../../models/entity.interface';
 
 @Component({
-  selector: 'app-title',
-  templateUrl: './title.component.html',
-  styleUrls: ['./title.component.scss'],
+    selector: 'app-title',
+    templateUrl: './title.component.html',
+    styleUrls: ['./title.component.scss'],
+    standalone: false
 })
 export class TitleComponent implements OnInit, OnChanges {
   @Input() entity: Entity;

@@ -50,7 +50,7 @@ RUN ["python", "-m", "data_enhancement.add_youtube_videos"]
 RUN ["python", "-m", "data_enhancement.ranking"]
 # ------------------------------------------------
 
-FROM stedolan/jq:latest AS merge_files
+FROM jetbrainsinfra/jq:latest AS merge_files
 
 WORKDIR /app
 

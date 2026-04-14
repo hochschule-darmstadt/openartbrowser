@@ -2,9 +2,10 @@ import { Component, Input } from '@angular/core';
 import { Angulartics2 } from 'angulartics2';
 
 @Component({
-  selector: 'app-collapse',
-  templateUrl: './collapse.component.html',
-  styleUrls: ['./collapse.component.scss'],
+    selector: 'app-collapse',
+    templateUrl: './collapse.component.html',
+    styleUrls: ['./collapse.component.scss'],
+    standalone: false
 })
 export class CollapseComponent {
   /** Change collapse icon; true if more infos are folded in */

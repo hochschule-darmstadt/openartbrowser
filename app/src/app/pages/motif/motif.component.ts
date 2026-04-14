@@ -7,9 +7,10 @@ import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 import { FetchOptions } from '../../shared/components/fetching-list/fetching-list.component';
 
 @Component({
-  selector: 'app-motif',
-  templateUrl: './motif.component.html',
-  styleUrls: ['./motif.component.scss'],
+    selector: 'app-motif',
+    templateUrl: './motif.component.html',
+    styleUrls: ['./motif.component.scss'],
+    standalone: false
 })
 export class MotifComponent implements OnInit, OnDestroy {
   /** use this to end subscription to url parameter in ngOnDestroy */

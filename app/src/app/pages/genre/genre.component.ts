@@ -7,9 +7,10 @@ import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 import { FetchOptions } from '../../shared/components/fetching-list/fetching-list.component';
 
 @Component({
-  selector: 'app-genre',
-  templateUrl: './genre.component.html',
-  styleUrls: ['./genre.component.scss'],
+    selector: 'app-genre',
+    templateUrl: './genre.component.html',
+    styleUrls: ['./genre.component.scss'],
+    standalone: false
 })
 export class GenreComponent implements OnInit, OnDestroy {
   /* TODO:REVIEW

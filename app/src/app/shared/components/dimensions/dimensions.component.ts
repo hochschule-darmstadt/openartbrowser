@@ -2,9 +2,10 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Artwork } from '../../models/models';
 
 @Component({
-  selector: 'app-dimensions',
-  templateUrl: './dimensions.component.html',
-  styleUrls: ['./dimensions.component.scss'],
+    selector: 'app-dimensions',
+    templateUrl: './dimensions.component.html',
+    styleUrls: ['./dimensions.component.scss'],
+    standalone: false
 })
 export class DimensionsComponent implements OnInit {
   @Input() artwork: Artwork;

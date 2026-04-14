@@ -7,9 +7,10 @@ import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 import { FetchOptions } from '../../shared/components/fetching-list/fetching-list.component';
 
 @Component({
-  selector: 'app-location',
-  templateUrl: './location.component.html',
-  styleUrls: ['./location.component.scss'],
+    selector: 'app-location',
+    templateUrl: './location.component.html',
+    styleUrls: ['./location.component.scss'],
+    standalone: false
 })
 export class LocationComponent implements OnInit, OnDestroy {
   /* TODO:REVIEW

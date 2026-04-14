@@ -8,10 +8,11 @@ import { Entity, EntityType } from '../../models/models';
 import { Angulartics2 } from 'angulartics2';
 
 @Component({
-  selector: 'app-search',
-  templateUrl: './search.component.html',
-  styleUrls: ['./search.component.scss'],
-  providers: [SearchService],
+    selector: 'app-search',
+    templateUrl: './search.component.html',
+    styleUrls: ['./search.component.scss'],
+    providers: [SearchService],
+    standalone: false
 })
 export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('input')

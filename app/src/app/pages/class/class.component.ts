@@ -7,9 +7,10 @@ import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 import { FetchOptions } from '../../shared/components/fetching-list/fetching-list.component';
 
 @Component({
-  selector: 'app-class',
-  templateUrl: './class.component.html',
-  styleUrls: ['./class.component.scss'],
+    selector: 'app-class',
+    templateUrl: './class.component.html',
+    styleUrls: ['./class.component.scss'],
+    standalone: false
 })
 export class ClassComponent implements OnInit, OnDestroy {
   /** use this to end subscription to url parameter in ngOnDestroy */

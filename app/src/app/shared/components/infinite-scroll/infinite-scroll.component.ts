@@ -1,9 +1,10 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 
 @Component({
-  selector: 'app-infinite-scroll',
-  templateUrl: './infinite-scroll.component.html',
-  styleUrls: ['./infinite-scroll.component.scss'],
+    selector: 'app-infinite-scroll',
+    templateUrl: './infinite-scroll.component.html',
+    styleUrls: ['./infinite-scroll.component.scss'],
+    standalone: false
 })
 export class InfiniteScrollComponent implements OnDestroy, AfterViewInit {
   @Input() options = {};

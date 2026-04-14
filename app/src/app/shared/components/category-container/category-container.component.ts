@@ -2,9 +2,10 @@ import { Component, Input } from '@angular/core';
 import { usePlural } from '../../models/entity.interface';
 
 @Component({
-  selector: 'app-category-container',
-  templateUrl: './category-container.component.html',
-  styleUrls: ['./category-container.component.scss'],
+    selector: 'app-category-container',
+    templateUrl: './category-container.component.html',
+    styleUrls: ['./category-container.component.scss'],
+    standalone: false
 })
 export class CategoryContainerComponent {
   @Input() category: any;

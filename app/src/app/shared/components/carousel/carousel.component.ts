@@ -39,9 +39,10 @@ export function makeDefaultSlide(id: number = 0, items: Array<Entity> = []): Sli
 }
 
 @Component({
-  selector: 'app-slider',
-  templateUrl: './carousel.component.html',
-  styleUrls: ['./carousel.component.scss'],
+    selector: 'app-slider',
+    templateUrl: './carousel.component.html',
+    styleUrls: ['./carousel.component.scss'],
+    standalone: false
 })
 export class CarouselComponent implements OnChanges {
   @ViewChild('carousel', { static: false }) caurosel: NgbCarousel;

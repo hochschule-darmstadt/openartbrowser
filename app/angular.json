@@ -39,16 +39,19 @@
       },
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
             "allowedCommonJsDependencies": [
               "lodash", "bodybuilder", "element-resize-detector", "rxjs/operators", "rxjs"
             ],
-            "outputPath": "dist/art-browser",
+            "outputPath": {
+              "base": "dist/art-browser"
+            },
             "deleteOutputPath": false,
             "index": "src/index.html",
-            "main": "src/main.ts",
-            "polyfills": "src/polyfills.ts",
+            "polyfills": [
+              "src/polyfills.ts"
+            ],
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
@@ -58,12 +61,11 @@
               "src/styles/main.scss"
             ],
             "scripts": [],
-            "vendorChunk": true,
             "extractLicenses": false,
-            "buildOptimizer": false,
             "sourceMap": true,
             "optimization": false,
-            "namedChunks": true
+            "namedChunks": true,
+            "browser": "src/main.ts"
           },
           "configurations": {
             "production": {
@@ -78,8 +80,6 @@
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -102,7 +102,9 @@
             "localize": [
               "en"
             ],
-              "outputPath": "dist/browser",
+              "outputPath": {
+                "base": "dist"
+              },
               "i18nMissingTranslation": "error"
             },
             "fr": {
@@ -115,7 +117,9 @@
             "localize": [
               "fr"
             ],
-              "outputPath": "dist/browser",
+              "outputPath": {
+                "base": "dist"
+              },
               "i18nMissingTranslation": "error"
             },
             "de": {
@@ -128,7 +132,9 @@
             "localize": [
               "de"
             ],
-              "outputPath": "dist/browser",
+              "outputPath": {
+                "base": "dist"
+              },
               "i18nMissingTranslation": "error"
             },
             "es": {
@@ -141,7 +147,9 @@
             "localize": [
               "es"
             ],
-              "outputPath": "dist/browser",
+              "outputPath": {
+                "base": "dist"
+              },
               "i18nMissingTranslation": "error"
             },
             "it": {
@@ -154,7 +162,9 @@
             "localize": [
               "it"
             ],
-              "outputPath": "dist/browser",
+              "outputPath": {
+                "base": "dist"
+              },
               "i18nMissingTranslation": "error"
             },
             "en-production": {
@@ -172,8 +182,6 @@
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -185,7 +193,9 @@
                   "maximumWarning": "6kb"
                 }
               ],
-              "outputPath": "dist/browser",
+              "outputPath": {
+                "base": "dist"
+              },
               "i18nMissingTranslation": "error"
             },
             "fr-production": {
@@ -203,8 +213,6 @@
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -216,7 +224,9 @@
                   "maximumWarning": "6kb"
                 }
               ],
-              "outputPath": "dist/browser",
+              "outputPath": {
+                "base": "dist"
+              },
               "i18nMissingTranslation": "error"
             },
             "de-production": {
@@ -234,8 +244,6 @@
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -247,7 +255,9 @@
                   "maximumWarning": "6kb"
                 }
               ],
-              "outputPath": "dist/browser",
+              "outputPath": {
+                "base": "dist"
+              },
               "i18nMissingTranslation": "error"
             },
             "es-production": {
@@ -265,8 +275,6 @@
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -278,7 +286,9 @@
                   "maximumWarning": "6kb"
                 }
               ],
-              "outputPath": "dist/browser",
+              "outputPath": {
+                "base": "dist"
+              },
               "i18nMissingTranslation": "error"
             },
             "it-production": {
@@ -296,8 +306,6 @@
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -309,7 +317,9 @@
                   "maximumWarning": "6kb"
                 }
               ],
-              "outputPath": "dist/browser",
+              "outputPath": {
+                "base": "dist"
+              },
               "i18nMissingTranslation": "error"
             },
             "docker": {
@@ -323,8 +333,6 @@
               "outputHashing": "all",
               "namedChunks": false,
               "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",

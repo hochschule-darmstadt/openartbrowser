@@ -4,8 +4,7 @@ import { Inject, Injectable, LOCALE_ID } from '@angular/core';
 import { ArtSearch, Artwork, Entity, EntityIcon, EntityType, Iconclass, Movement } from 'src/app/shared/models/models';
 import { environment } from 'src/environments/environment';
 import { usePlural } from 'src/app/shared/models/entity.interface';
-import * as bodyBuilder from 'bodybuilder';
-import { Bodybuilder } from 'bodybuilder';
+import bodybuilder from 'bodybuilder';
 
 const defaultSortField = 'relativeRank';
 
@@ -36,7 +35,7 @@ export class DataService {
    * @param type if specified, it is assured that the returned entity has this entityType
    */
   public async findById<T>(id: string, type?: EntityType): Promise<T> {
-    const body = bodyBuilder().query('match', 'id', id);
+    const body = bodybuilder().query('match', 'id', id);
     const entities = await this.performQuery<T>(body, this.searchEndPoint, type);
     return !entities.length ? null : entities[0];
   }
@@ -52,7 +51,7 @@ export class DataService {
     if (!copyids || copyids.length === 0) {
       return [];
     }
-    const body = bodyBuilder().size(count);
+    const body = bodybuilder().size(count);
     _.each(ids, (id) => body.orQuery('match', 'id', id));
     return this.performQuery<T>(body, this.searchEndPoint, type);
   }
@@ -65,7 +64,7 @@ export class DataService {
    * @param from the offset from where the result set should start
    */
   public findArtworksByType(type: EntityType, ids: string[], count = 200, from = 0): Promise<Artwork[]> {
-    const body = bodyBuilder()
+    const body = bodybuilder()
       .queryMinimumShouldMatch(1, true)
       .query('match', 'type', EntityType.ARTWORK)
       .sort(defaultSortField, 'desc')
@@ -76,7 +75,7 @@ export class DataService {
   }
 
   public async countArtworksByType(type: EntityType, ids: string[]) {
-    const body = bodyBuilder().queryMinimumShouldMatch(1, true).query('match', 'type', EntityType.ARTWORK);
+    const body = bodybuilder().queryMinimumShouldMatch(1, true).query('match', 'type', EntityType.ARTWORK);
     _.each(ids, (id) => body.orQuery('match', usePlural(type), id));
     const response: any = await this.http.post(this.countEndPoint, body.build()).toPromise();
     return response && response.count ? response.count : undefined;
@@ -112,7 +111,7 @@ export class DataService {
    * @param count number of returned items
    */
   public findArtworksByMovement(movement: string, count = 5): Promise<Artwork[]> {
-    const body = bodyBuilder()
+    const body = bodybuilder()
       .size(count)
       .sort(defaultSortField, 'desc')
       .query('match', 'type', EntityType.ARTWORK)
@@ -129,7 +128,7 @@ export class DataService {
    * @param type type of the results.
    */
   public searchResultsByType(searchObj: ArtSearch, keywords: string[] = [], count = 200, from = 0, type: EntityType): Promise<Entity[]> {
-    const body = bodyBuilder()
+    const body = bodybuilder()
       .size(count)
       // .sort(defaultSortField, 'desc')
       .from(from);
@@ -156,7 +155,7 @@ export class DataService {
    * @param type type of the results.
    */
   public async countSearchResultItems<T>(searchObj: ArtSearch, keywords: string[] = [], type: EntityType): Promise<number> {
-    const body = bodyBuilder();
+    const body = bodybuilder();
     if (type) {
       body.query('match', 'type', type);
     }
@@ -181,7 +180,7 @@ export class DataService {
    * @param from the offset of the query
    */
   public async getEntityItems<T>(type: EntityType, count = 20, from = 0): Promise<T[]> {
-    const body = bodyBuilder().query('match', 'type', type).sort(defaultSortField, 'desc').size(count).from(from);
+    const body = bodybuilder().query('match', 'type', type).sort(defaultSortField, 'desc').size(count).from(from);
     return this.performQuery<T>(body);
   }
 
@@ -190,7 +189,7 @@ export class DataService {
    * @param type the type which should be counted
    */
   public async countEntityItems<T>(type: EntityType) {
-    const body = bodyBuilder().query('match', 'type', type);
+    const body = bodybuilder().query('match', 'type', type);
     const response: any = await this.http.post(this.countEndPoint, body.build()).toPromise();
     return response && response.count ? response.count : undefined;
   }
@@ -201,7 +200,7 @@ export class DataService {
    * @param count the number of items returned
    */
   public findByLabel(label: string, count = 200): Promise<any[]> {
-    const body = bodyBuilder()
+    const body = bodybuilder()
       .orQuery('match', 'label', label)
       .orQuery('wildcard', 'label', '*' + label + '*')
       .sort(defaultSortField, 'desc')
@@ -215,7 +214,7 @@ export class DataService {
    * @param count size of return set
    */
   public async getCategoryItems<T>(type: EntityType, count = 20): Promise<T[]> {
-    const body = bodyBuilder().query('match', 'type', type).query('prefix', 'image', 'http').sort(defaultSortField, 'desc').size(count);
+    const body = bodybuilder().query('match', 'type', type).query('prefix', 'image', 'http').sort(defaultSortField, 'desc').size(count);
     return this.performQuery(body);
   }
 
@@ -245,7 +244,7 @@ export class DataService {
    * @param url endpoint
    * @param type type to filter for
    */
-  private async performQuery<T>(query: Bodybuilder, url: string = this.searchEndPoint, type?: EntityType) {
+  private async performQuery<T>(query: any, url: string = this.searchEndPoint, type?: EntityType) {
     const response = await this.http.post<T>(url, query.build()).toPromise();
     const entities = this.filterData<T>(response, type);
     // set type specific attributes

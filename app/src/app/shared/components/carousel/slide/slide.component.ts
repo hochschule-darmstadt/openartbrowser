@@ -8,9 +8,10 @@ import { Slide, makeDefaultSlide } from '../carousel.component';
  * and all following items move one position to the left to fill the gap.
  */
 @Component({
-  selector: 'app-slide',
-  templateUrl: './slide.component.html',
-  styleUrls: ['./slide.component.scss'],
+    selector: 'app-slide',
+    templateUrl: './slide.component.html',
+    styleUrls: ['./slide.component.scss'],
+    standalone: false
 })
 export class SlideComponent implements AfterViewInit {
   /** the slide that should be displayed */

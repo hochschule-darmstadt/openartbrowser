@@ -16,9 +16,10 @@ enum Tab {
 }
 
 @Component({
-  selector: 'app-movement',
-  templateUrl: './movement.component.html',
-  styleUrls: ['./movement.component.scss'],
+    selector: 'app-movement',
+    templateUrl: './movement.component.html',
+    styleUrls: ['./movement.component.scss'],
+    standalone: false
 })
 export class MovementComponent implements OnInit, OnDestroy {
   /* TODO:REVIEW

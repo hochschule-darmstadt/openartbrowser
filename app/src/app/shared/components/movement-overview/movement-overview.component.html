@@ -1,20 +1,25 @@
 <div class="normal-timeline custom-bootgrid col justify-content-center">
   <div class="custom-slider">
-    <ngx-slider *ngIf="movements.length > 0" id="ngxSlider" [options]="options"></ngx-slider>
+    @if (movements.length > 0) {
+      <ngx-slider id="ngxSlider" [options]="options"></ngx-slider>
+    }
   </div>
   <div class="box-container">
-    <div class="row" *ngFor="let row of this.boxes">
-      <div
-        *ngFor="let movement of row; index as i"
-        id="{{ movement.id }}"
-        class="item"
-        [ngClass]="movement?.label ? 'box' : ''"
-        [style.width]="movement.width + '%'"
-        (click)="movement.label && onClickMovementBox($event)"
-      >
-        <div class="fit-text-container">{{ movement.label | titlecase }}</div>
+    @for (row of this.boxes; track row) {
+      <div class="row">
+        @for (movement of row; track movement; let i = $index) {
+          <div
+            id="{{ movement.id }}"
+            class="item"
+            [ngClass]="movement?.label ? 'box' : ''"
+            [style.width]="movement.width + '%'"
+            (click)="movement.label && onClickMovementBox($event)"
+            >
+            <div class="fit-text-container">{{ movement.label | titlecase }}</div>
+          </div>
+        }
       </div>
-    </div>
+    }
   </div>
 
   <div class="thumbnail-container">
@@ -27,22 +32,25 @@
       angularticsAction="Timeline"
       [@newThumb]="showThumbnail ? 'show' : 'hide'"
       (@newThumb.start)="resetShowThumbnail()"
-    >
+      >
       <div class="overlay-container">
-        <img
-          *ngIf="thumbnail?.imageMedium"
-          class="img_self"
-          src="{{ thumbnail?.imageMedium }}"
-          alt="{{ thumbnail?.label }}"
-          [ngStyle]="{ display: thumbnailLoaded ? 'block' : 'none' }"
-          (load)="onThumbnailLoaded()"
-          (error)="onLoadingError(thumbnail)"
-        />
+        @if (thumbnail?.imageMedium) {
+          <img
+            class="img_self"
+            src="{{ thumbnail?.imageMedium }}"
+            alt="{{ thumbnail?.label }}"
+            [ngStyle]="{ display: thumbnailLoaded ? 'block' : 'none' }"
+            (load)="onThumbnailLoaded()"
+            (error)="onLoadingError(thumbnail)"
+            />
+        }
         <div class="overlay_view" [ngClass]="isType(thumbnail?.type, EntityTypeEnum.ARTIST) ? 'rounded-circle' : ''">
           <span class="img_description">{{ this.currentMovementLabel | titlecase }}</span>
         </div>
       </div>
-      <div *ngIf="this.currentDate" class="item-caption">{{ this.currentDate }}</div>
+      @if (this.currentDate) {
+        <div class="item-caption">{{ this.currentDate }}</div>
+      }
     </a>
   </div>
 
@@ -52,7 +60,9 @@
 </div>
 
 <div class="badge-timeline custom-bootgrid col justify-content-center">
-  <span *ngFor="let movement of inputMovements">
-    <app-information label="{{ movement.start_time }}-{{ movement.end_time }}" [values]="[movement]"></app-information>
-  </span>
+  @for (movement of inputMovements; track movement) {
+    <span>
+      <app-information label="{{ movement.start_time }}-{{ movement.end_time }}" [values]="[movement]"></app-information>
+    </span>
+  }
 </div>

@@ -4,30 +4,41 @@
       <h2 class="mb-3 first-letter" i18n="Search results label@@searchResults">Search results</h2>
 
       <div class="row">
-        <ng-container *ngFor="let result of searchObjects; let i = index">
-          <div class="col-md-3 pe-sm-0" *ngIf="result?.items">
-            <p class="mb-1 text-muted">{{ result?.key | titlecase }}:</p>
-          </div>
+        @for (result of searchObjects; track result; let i = $index) {
+          @if (result?.items) {
+            <div class="col-md-3 pe-sm-0">
+              <p class="mb-1 text-muted">{{ result?.key | titlecase }}:</p>
+            </div>
+          }
+          @if (result?.items) {
+            <div class="col-md-9 ps-sm-0 info">
+              <p class="mb-1">
+                @for (item of result?.items; track item) {
+                  <span class="badge rounded-pill bg-secondary first-letter chip" [routerLink]="['/' + result?.key, item?.id]">
+                    <i class="fas {{ result?.icon }}"></i>
+                    {{ item?.label }}
+                  </span>
+                }
+              </p>
+            </div>
+          }
+        }
 
-          <div class="col-md-9 ps-sm-0 info" *ngIf="result?.items">
-            <p class="mb-1">
-              <span *ngFor="let item of result?.items" class="badge rounded-pill bg-secondary first-letter chip" [routerLink]="['/' + result?.key, item?.id]">
-                <i class="fas {{ result?.icon }}"></i>
-                {{ item?.label }}
-              </span>
+        @if (searchTerms?.length) {
+          <div class="col-md-3 pe-sm-0">
+            <p class="mb-1 text-muted colon-suffix" i18n="Terms label@@terms">Terms</p>
+          </div>
+        }
+
+        @if (searchTerms?.length) {
+          <div class="col-md-9 ps-sm-0 info">
+            <p class="mb-1 ms-sm-2 me-sm-2">
+              @for (term of searchTerms; track term) {
+                <span class="first-letter"> "{{ term }}" </span>
+              }
             </p>
           </div>
-        </ng-container>
-
-        <div class="col-md-3 pe-sm-0" *ngIf="searchTerms?.length">
-          <p class="mb-1 text-muted colon-suffix" i18n="Terms label@@terms">Terms</p>
-        </div>
-
-        <div class="col-md-9 ps-sm-0 info" *ngIf="searchTerms?.length">
-          <p class="mb-1 ms-sm-2 me-sm-2">
-            <span *ngFor="let term of searchTerms" class="first-letter"> "{{ term }}" </span>
-          </p>
-        </div>
+        }
 
         <div class="col-md-3 pe-sm-0">
           <p class="mb-1 text-muted colon-suffix" i18n="Results label@@results">All results</p>
@@ -41,55 +52,66 @@
       </div>
     </div>
   </div>
-  <div *ngIf="!allTabLoaded" class="loading-placeholder">
-    <div class="spinner-border text-success" style="width: 5rem; height: 5rem" role="status">
-      <span class="visually-hidden">Loading...</span>
+  @if (!allTabLoaded) {
+    <div class="loading-placeholder">
+      <div class="spinner-border text-success" style="width: 5rem; height: 5rem" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
     </div>
-  </div>
-  <div *ngIf="allTabLoaded">
-    <ul class="nav nav-tabs tabs">
-      <ng-container *ngFor="let tab of entityTabs">
-        <li class="nav-item" *ngIf="tab.loaded">
-          <button type="button" class="nav-link" [ngClass]="{ active: tab.active }" (click)="tabClicked(tab)">
-            <span>
-              <i class="me-1 fas" [ngClass]="tab.icon"></i>
-              <ng-container i18n="Entity Type Labels@@entity_labels" *ngIf="tab.type; let type">
+  }
+  @if (allTabLoaded) {
+    <div>
+      <ul class="nav nav-tabs tabs">
+        @for (tab of entityTabs; track tab) {
+          @if (tab.loaded) {
+            <li class="nav-item">
+              <button type="button" class="nav-link" [ngClass]="{ active: tab.active }" (click)="tabClicked(tab)">
+                <span>
+                  <i class="me-1 fas" [ngClass]="tab.icon"></i>
+                  @if (tab.type; as type) {
+                    <ng-container i18n="Entity Type Labels@@entity_labels">
                 {type, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material
                 {Material} main_motif {Main Motif} class {Class} }
               </ng-container>
-            </span>
-          </button>
-        </li>
-      </ng-container>
-    </ul>
-
-    <select class="tabs-select form-select" (change)="onChange($event)">
-      <ng-container *ngFor="let tab of entityTabs">
-        <option *ngIf="tab.loaded" [value]="tab.type">
-          <ng-container i18n="Entity Type Labels@@entity_labels" *ngIf="tab.type; let type">
+                  }
+                </span>
+              </button>
+            </li>
+          }
+        }
+      </ul>
+      <select class="tabs-select form-select" (change)="onChange($event)">
+        @for (tab of entityTabs; track tab) {
+          @if (tab.loaded) {
+            <option [value]="tab.type">
+              @if (tab.type; as type) {
+                <ng-container i18n="Entity Type Labels@@entity_labels">
             {type, select, all {All} artwork {Artwork} motif {Motif} artist {Artist} location {Location} genre {Genre} movement {Movement} material {Material}
             main_motif {Main Motif} class {Class} }
           </ng-container>
-        </option>
-      </ng-container>
-    </select>
-
-    <div class="tab-content">
-      <ng-container *ngFor="let tab of entityTabs">
-        <div class="tab-pane fade" [ngClass]="{ 'show active': tab.active }" id="{{ tab.type }}_tab">
-          <app-fetching-list
-            *ngIf="tab.fetchOptions.queryCount && tab.initialized"
-            id="{{ tab.type }}_list"
-            [query]="tab.query"
-            [options]="tab.fetchOptions"
-            [enableHover]="true"
-          >
-            <ng-template let-entity="entity" let-type="entityType">
-              <div class="typebadge"><i class="fas" [ngClass]="entity.icon"></i></div>
-            </ng-template>
-          </app-fetching-list>
-        </div>
-      </ng-container>
+              }
+            </option>
+          }
+        }
+      </select>
+      <div class="tab-content">
+        @for (tab of entityTabs; track tab) {
+          <div class="tab-pane fade" [ngClass]="{ 'show active': tab.active }" id="{{ tab.type }}_tab">
+            @if (tab.fetchOptions.queryCount && tab.initialized) {
+              <app-fetching-list
+                id="{{ tab.type }}_list"
+                [query]="tab.query"
+                [options]="tab.fetchOptions"
+                [enableHover]="true"
+                >
+                <ng-template let-entity="entity" let-type="entityType">
+                  <div class="typebadge"><i class="fas" [ngClass]="entity.icon"></i></div>
+                </ng-template>
+              </app-fetching-list>
+            }
+          </div>
+        }
+      </div>
     </div>
-  </div>
+  }
 </div>

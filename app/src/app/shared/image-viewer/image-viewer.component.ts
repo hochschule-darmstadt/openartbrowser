@@ -5,11 +5,12 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild }
     template: `
     <div class="image-viewer" [style.background-color]="config?.containerBackgroundColor || 'transparent'">
       <div class="controls gap-1 align-items-center flex-wrap-reverse flex-md-nowrap ms-1 me-1">
-        <app-commons-info
-        *ngIf="firstSrc"
-          class="license-info ms-auto mb-1" 
-          [fileUrl]="firstSrc">
-        </app-commons-info>
+        @if (firstSrc) {
+          <app-commons-info
+            class="license-info ms-auto mb-1"
+            [fileUrl]="firstSrc">
+          </app-commons-info>
+        }
         <div class="d-flex gap-1 mb-1 ms-auto">
           <button (click)="zoomIn()" title="Zoom in">+</button>
           <button (click)="zoomOut()" title="Zoom out">-</button>
@@ -25,20 +26,21 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild }
         (pointercancel)="onPointerUp($event)"
         (pointermove)="onPointerMove($event)"
         (wheel)="onWheel($event)"
-      >
-        <img
-          #imgEl
-          *ngIf="firstSrc"
-          [src]="firstSrc"
-          (load)="onImageLoad()"
-          [style.transform]="transformStyle"
-          class="iv-image"
-          [class.dragging]="dragging"
-          draggable="false"
-        />
+        >
+        @if (firstSrc) {
+          <img
+            #imgEl
+            [src]="firstSrc"
+            (load)="onImageLoad()"
+            [style.transform]="transformStyle"
+            class="iv-image"
+            [class.dragging]="dragging"
+            draggable="false"
+            />
+        }
       </div>
     </div>
-  `,
+    `,
     styleUrls: ['./image-viewer.component.scss'],
     standalone: false
 })

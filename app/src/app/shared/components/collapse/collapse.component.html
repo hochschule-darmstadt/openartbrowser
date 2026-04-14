@@ -1,12 +1,18 @@
 <div class="col-md row more" (click)="toggle()">
-  <div class="me-2 mt-auto mb-auto text-muted" *ngIf="showVideo">
-    <i class="fab fa-youtube fa-2x"></i>
-  </div>
+  @if (showVideo) {
+    <div class="me-2 mt-auto mb-auto text-muted">
+      <i class="fab fa-youtube fa-2x"></i>
+    </div>
+  }
 
   <h4 class="mt-auto mb-auto debug">
     <ng-container i18n="Detail More label@@more">More</ng-container>
-    <i *ngIf="collapse" class="fas fa-chevron-down"> </i>
-    <i *ngIf="!collapse" class="fas fa-chevron-up"> </i>
+    @if (collapse) {
+      <i class="fas fa-chevron-down"> </i>
+    }
+    @if (!collapse) {
+      <i class="fas fa-chevron-up"> </i>
+    }
   </h4>
 </div>
 
@@ -15,6 +21,6 @@
     'collapse-element': collapse,
     'collapse-element-show': !collapse
   }"
->
+  >
   <ng-content></ng-content>
 </div>

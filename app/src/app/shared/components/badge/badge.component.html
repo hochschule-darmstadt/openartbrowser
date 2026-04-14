@@ -1,17 +1,18 @@
-<a
-  *ngIf="entity"
-  class="badge rounded-pill bg-secondary first-letter chip"
-  [ngClass]="{ 'badge-transparent': isHoverBadge, 'badge-light': highlight }"
-  tooltipClass="tooltip"
-  [ngbTooltip]="tooltip !== null ? htmlContent : ''"
-  [routerLink]="[redirectUrl]"
-  angulartics2On="click"
-  angularticsAction="Badge"
-  angularticsCategory="Navigation"
->
-  <i class="me-1 fas {{ entity?.icon }}"></i>
-  {{ entity?.label }}
-</a>
+@if (entity) {
+  <a
+    class="badge rounded-pill bg-secondary first-letter chip"
+    [ngClass]="{ 'badge-transparent': isHoverBadge, 'badge-light': highlight }"
+    tooltipClass="tooltip"
+    [ngbTooltip]="tooltip !== null ? htmlContent : ''"
+    [routerLink]="[redirectUrl]"
+    angulartics2On="click"
+    angularticsAction="Badge"
+    angularticsCategory="Navigation"
+    >
+    <i class="me-1 fas {{ entity?.icon }}"></i>
+    {{ entity?.label }}
+  </a>
+}
 
 <ng-template #htmlContent>
   <div class="tooltip-container">
@@ -20,8 +21,10 @@
         {{ tooltip }}
       </span>
     </div>
-    <div *ngIf="entity.imageSmall && isImageSourceValid" class="tooltip-image-container">
-      <img id="tooltip-image" [src]="entity.imageSmall" (error)="handleInvalidImageSource($event)" />
-    </div>
+    @if (entity.imageSmall && isImageSourceValid) {
+      <div class="tooltip-image-container">
+        <img id="tooltip-image" [src]="entity.imageSmall" (error)="handleInvalidImageSource($event)" />
+      </div>
+    }
   </div>
 </ng-template>

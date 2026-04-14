@@ -12,10 +12,9 @@
         <!-- container for all x items -->
         @for (item of items | slice : slideStart : slideEnd; track item) {
           <div
-            [@slideNext]="slideOutRight ? 'out' : 'in'"
-            (@slideNext.start)="resetSlideAnimation()"
-            [@slidePrev]="slideOutLeft ? 'out' : 'in'"
-            (@slidePrev.start)="resetSlideAnimation()"
+            [class.slide-in-from-right]="slideOutRight"
+            [class.slide-in-from-left]="slideOutLeft"
+            (animationend)="resetSlideAnimation()"
             class="item-container"
             >
             <a

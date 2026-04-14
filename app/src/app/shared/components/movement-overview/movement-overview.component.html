@@ -1,7 +1,7 @@
 <div class="normal-timeline custom-bootgrid col justify-content-center">
   <div class="custom-slider">
     @if (movements.length > 0) {
-      <ngx-slider id="ngxSlider" [options]="options"></ngx-slider>
+      <ngx-slider id="ngxSlider" [value]="timelineValue" [options]="options"></ngx-slider>
     }
   </div>
   <div class="box-container">
@@ -30,8 +30,7 @@
       angulartics2On="click"
       angularticsCategory="Navigation"
       angularticsAction="Timeline"
-      [@newThumb]="showThumbnail ? 'show' : 'hide'"
-      (@newThumb.start)="resetShowThumbnail()"
+      [class.thumbnail-fading]="!showThumbnail"
       >
       <div class="overlay-container">
         @if (thumbnail?.imageMedium) {

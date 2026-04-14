@@ -3,7 +3,6 @@ import { Subject, timer } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { Artist, Artwork, Entity, EntityType } from 'src/app/shared/models/models';
 import { CustomStepDefinition, Options } from '@angular-slider/ngx-slider';
-import { animate, state, style, transition, trigger } from '@angular/animations';
 import { DataService } from 'src/app/core/services/elasticsearch/data.service';
 
 interface TimelineItem extends Entity {
@@ -14,20 +13,6 @@ interface TimelineItem extends Entity {
     selector: 'app-timeline',
     templateUrl: './timeline.component.html',
     styleUrls: ['./timeline.component.scss'],
-    animations: [
-        trigger('slideNext', [
-            state('out', style({ transform: 'translateX(7%)', opacity: 0 })),
-            state('in', style({ transform: 'translateX(0)', opacity: 1 })),
-            transition('in => out', [animate(0)]),
-            transition('out => in', [animate(300)]),
-        ]),
-        trigger('slidePrev', [
-            state('out', style({ transform: 'translateX(-7%)', opacity: 0 })),
-            state('in', style({ transform: 'translateX(0)', opacity: 1 })),
-            transition('in => out', [animate(0)]),
-            transition('out => in', [animate(300)]),
-        ]),
-    ],
     standalone: false
 })
 export class TimelineComponent implements OnInit, OnChanges, OnDestroy {
@@ -77,15 +62,15 @@ export class TimelineComponent implements OnInit, OnChanges, OnDestroy {
   private timerSubscription;
 
   /** The current value of the slider */
-  value: number;
+  value = 0;
   /** Used to determine which animation direction to trigger when slider was clicked */
-  previousValue: number;
+  previousValue = 0;
   /** Settings for slider component */
   options: Options = {
     showTicksValues: false,
     showTicks: true,
     showSelectionBar: false,
-    stepsArray: [],
+    stepsArray: [{ value: 0 }],
     animateOnMove: true,
     getPointerColor() {
       return '#00bc8c';
@@ -103,7 +88,7 @@ export class TimelineComponent implements OnInit, OnChanges, OnDestroy {
   };
 
   /** Determine values based on screen width (responsivity) */
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
   onResize() {
     const screenWidth = window.innerWidth;
     /** Set itemCountPerPeriod to value between 1 and 4, depending on screen width */
@@ -134,6 +119,11 @@ export class TimelineComponent implements OnInit, OnChanges, OnDestroy {
       }
       this.sortItems();
       this.items = this.items.filter((item) => item.date);
+      if (this.items.length === 0) {
+        this.value = 0;
+        this.previousValue = 0;
+        return;
+      }
       const beginOfTimeline = this.items[0].date - (this.items[0].date % this.periodSpan);
       const endOfTimeline = this.items[this.items.length - 1].date - (this.items[this.items.length - 1].date % this.periodSpan) + this.periodSpan;
       // Set the slider of the timeline to the middle!

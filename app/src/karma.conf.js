@@ -38,6 +38,7 @@ module.exports = function (config) {
       '/api': {
         target: 'https://openartbrowser.org',
         secure: false,
+        changeOrigin: true,
       },
     },
   });

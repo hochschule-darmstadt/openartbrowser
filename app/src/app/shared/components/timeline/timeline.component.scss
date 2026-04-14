@@ -91,6 +91,38 @@ $container-height: 20em;
   height: 100%;
 }
 
+.item-container.slide-in-from-right {
+  animation: timeline-slide-in-from-right 300ms ease-out;
+}
+
+.item-container.slide-in-from-left {
+  animation: timeline-slide-in-from-left 300ms ease-out;
+}
+
+@keyframes timeline-slide-in-from-right {
+  from {
+    transform: translateX(7%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes timeline-slide-in-from-left {
+  from {
+    transform: translateX(-7%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
 .item {
   position: relative;
   height: 100%;

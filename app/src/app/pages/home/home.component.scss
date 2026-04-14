@@ -96,6 +96,14 @@ $color1: #00bc8c;
   height: 3.5rem;
   font-size: 1.7rem;
 
+  border-bottom: 1px solid white;
+
+  transition: all 0.3s ease;
+  -webkit-animation: fade 4s infinite;
+  -moz-animation: fade 4s infinite;
+  -o-animation: fade 4s infinite;
+  animation: fade 4s infinite;
+
   @media (min-width: 577px) and (max-width: 767px) {
     height: 2.5rem;
     font-size: 1.1rem;
@@ -108,14 +116,6 @@ $color1: #00bc8c;
     height: 2rem;
     font-size: 0.8rem;
   }
-
-  border-bottom: 1px solid white;
-
-  transition: all 0.3s ease;
-  -webkit-animation: fade 4s infinite;
-  -moz-animation: fade 4s infinite;
-  -o-animation: fade 4s infinite;
-  animation: fade 4s infinite;
 
   &:focus {
     background-color: white;

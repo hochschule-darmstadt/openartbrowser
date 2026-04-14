@@ -2,9 +2,9 @@
     Main SASS File
 **********************/
 
-@import 'bootstrap/dist/css/bootstrap.min.css';
-@import 'bootswatch/dist/darkly/bootstrap.min.css';
+@use 'entity';
 
-@import 'entity';
+@use './styles';
 
-@import './styles.scss';
+@import url('bootstrap/dist/css/bootstrap.min.css');
+@import url('bootswatch/dist/darkly/bootstrap.min.css');
